@@ -1,0 +1,27 @@
+name: Push merged version tag
+
+on:
+  pull_request:
+    types: [closed]
+
+jobs:
+  version_tag:
+    if: github.event.pull_request.merged && github.head_ref == 'version-bump'
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Read version
+        id: yaml_data
+        uses: jbutcher5/read-yaml@main
+        with:
+          file: './pubspec.yaml'
+          key-path: '["version"]'
+
+      - name: Push tag
+        id: tag_version
+        uses: mathieudutour/github-tag-action@v6.1
+        with:
+          github_token: ${{ secrets.BOT_ACCESS_TOKEN }}
+          custom_tag: ${{ steps.yaml_data.outputs.data }}

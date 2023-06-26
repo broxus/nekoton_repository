@@ -1,0 +1,53 @@
+name: Build and test package
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+  schedule:
+    # runs the CI everyday at 6AM
+    - cron: "0 6 * * *"
+
+jobs:
+  semantic_pull_request:
+    uses: VeryGoodOpenSource/very_good_workflows/.github/workflows/semantic_pull_request.yml@v1
+
+  build_and_test:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Setup
+      - uses: actions/checkout@v3
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.10.4'
+          channel: 'stable'
+          cache: true
+          cache-key: flutter-:os:-:channel:-:version:-:arch:-:hash:-${{ hashFiles('**/pubspec.lock') }}
+      - uses: bluefireteam/melos-action@v2
+
+      - name: Clean before check-format
+        run: melos clean
+
+      - name: Boostrap everything
+        run: melos bs
+
+      - name: Check Dart format
+        run: melos run check-format --no-select
+
+      - name: Generate dart code
+        run: melos codegen --no-select
+
+      - name: Dart code analysis
+        run: melos run analyze --no-select
+
+      - name: Run Flutter tests
+        run: melos run test --no-select
+
+      - name: Check git diff
+        run: melos git-check

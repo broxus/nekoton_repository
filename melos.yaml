@@ -1,0 +1,50 @@
+name: nekoton_repository
+
+packages:
+  - .
+
+scripts:
+  codegen:
+    description: Generate code for all packages
+    exec: "flutter packages pub run build_runner build --delete-conflicting-outputs"
+    failFast: true
+    packageFilters:
+      dependsOn: "build_runner"
+
+  analyze:
+    description: Analyze a specific package in this project.
+    exec: flutter analyze . && flutter pub run dart_code_metrics:metrics analyze lib
+    failFast: true
+    packageFilters:
+      dependsOn: "dart_code_metrics"
+
+  check-format:
+    description: Check the format of a specific package in this project.
+    exec: dart format --set-exit-if-changed .
+    failFast: true
+
+  test:
+    description: Run Flutter tests for a specific package in this project.
+    exec: "flutter test test"
+    failFast: true
+    packageFilters:
+      flutter: true
+      dirExists: test
+
+  check-all:
+    description: Prepare to commit by checking all things
+    run: melos check-format && melos analyze && melos test
+    failFast: true
+
+  git-check:
+    run: bash scripts/git-check.sh
+    description: Check if some code changed during build
+
+command:
+  clean:
+    hooks:
+      post: bash scripts/clean.sh
+
+  version:
+    hooks:
+      preCommit: melos bs && git add --all
