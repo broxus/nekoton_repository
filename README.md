@@ -23,6 +23,31 @@ Install it:
 flutter packages get
 ```
 
+## Basic usage 🛠
+
+Setup DI:
+
+```dart
+@InjectableInit(  
+  externalPackageModulesBefore: [
+    ExternalModule(NekotonRepositoryPackageModule),
+  ],
+)  
+void configureDependencies() => getIt.init();  
+```
+
+Init:
+
+```dart
+Future<void> configureNekoton() async {
+  final nekotonRepository = inject<NekotonRepository>();
+
+  await nekotonRepository.setupNekotonAndStorage(
+    storage: inject<NekotonStorageService>(),
+  );
+}
+```
+
 ---
 
 ## Continuous Integration 🤖
