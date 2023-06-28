@@ -86,6 +86,14 @@ class Seed extends Equatable {
         isLegacy: masterKey.isLegacy,
       );
 
+  /// Rename seed with [masterKey] to [name].
+  /// This changes name in storage, not in keystore.
+  Future<void> rename({required String name}) =>
+      GetIt.instance<SeedKeyRepository>().renameSeed(
+        masterKey: publicKey,
+        name: name,
+      );
+
   /// This method allows remove full seed and all related keys (master and sub)
   Future<void> remove() =>
       GetIt.instance<SeedKeyRepository>().removeKeys(allKeys);
