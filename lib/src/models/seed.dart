@@ -22,8 +22,10 @@ class Seed extends Equatable {
   /// This key is derived directly from seed phrase.
   final SeedKey masterKey;
 
+  /// Name of seed itself, this name stores in app's storage, not in keystore
   final String? _name;
 
+  // TODO(alex-a4): replace masterKey.key.name to masterKey.key.toEllipse()
   /// If seed has name, it will be returned, otherwise master key name.
   String get name => _name ?? masterKey.key.name;
 
@@ -99,5 +101,5 @@ class Seed extends Equatable {
       GetIt.instance<SeedKeyRepository>().removeKeys(allKeys);
 
   @override
-  List<Object?> get props => allKeys;
+  List<Object?> get props => [allKeys, _name];
 }
