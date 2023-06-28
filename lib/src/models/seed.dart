@@ -15,14 +15,17 @@ class Seed extends Equatable {
   const Seed({
     required this.masterKey,
     required this.subKeys,
-  });
+    required String? name,
+  }) : _name = name;
 
   /// Master key of seed.
   /// This key is derived directly from seed phrase.
   final SeedKey masterKey;
 
-  /// Proxy getter of name of master key
-  String get name => masterKey.key.name;
+  final String? _name;
+
+  /// If seed has name, it will be returned, otherwise master key name.
+  String get name => _name ?? masterKey.key.name;
 
   /// Proxy getter of public key of master key
   String get publicKey => masterKey.key.publicKey;

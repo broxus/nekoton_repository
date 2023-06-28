@@ -144,6 +144,9 @@ class NekotonRepository
     currentTransportStream
         .skip(1)
         .listen((transport) => _updateSeedList(transport: transport));
+    _storageRepository.seedNamesStream
+        .skip(1)
+        .listen((names) => _updateSeedList(seedNames: names));
 
     _updateSeedList();
   }
@@ -156,6 +159,7 @@ class NekotonRepository
     List<String>? hiddenAccounts,
     Map<String, List<String>>? externalAccounts,
     TransportStrategy? transport,
+    Map<String, String>? seedNames,
   }) {
     _seedsSubject.add(
       buildSeeds(
@@ -165,6 +169,7 @@ class NekotonRepository
         externalAccounts:
             externalAccounts ?? _storageRepository.externalAccounts,
         transport: transport ?? currentTransport,
+        seedNames: seedNames ?? _storageRepository.seedNames,
       ),
     );
   }
@@ -179,6 +184,7 @@ class NekotonRepository
     required List<String> hiddenAccounts,
     required Map<String, List<String>> externalAccounts,
     required TransportStrategy transport,
+    required Map<String, String> seedNames,
   }) {
     final planeExternalAccounts = externalAccounts.values.expand((e) => e);
     final transportedAllAccounts = allAccounts.where(
@@ -205,6 +211,7 @@ class NekotonRepository
     }
 
     return SeedList(
+      seedNames: seedNames,
       allKeys: allKeys,
       mappedAccounts: mapped.map(
         (key, value) => MapEntry(

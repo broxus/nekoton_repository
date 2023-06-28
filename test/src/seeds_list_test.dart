@@ -16,6 +16,8 @@ class OnlyV3WalletTypeSupports extends Fake implements TransportStrategy {
 }
 
 void main() {
+  const superMasterName = 'SUPER MASTER';
+
   final masterKey = KeyStoreEntry(
     name: 'MasterKey',
     masterKey: 'key1',
@@ -140,12 +142,14 @@ void main() {
   group('SeedList test', () {
     test('SeedList only keys creation', () {
       final seedsList = SeedList(
+        seedNames: {masterKey.publicKey: superMasterName},
         allKeys: [masterKey, subKey1, subKey2, masterKey2],
         mappedAccounts: const {},
       );
 
       expect(seedsList.seeds.length, 2);
       final seed1 = seedsList.findSeed('key1')!;
+      expect(seed1.name, superMasterName);
       expect(
         seed1.masterKey,
         SeedKey(
@@ -167,6 +171,7 @@ void main() {
         ]),
       );
       final seed2 = seedsList.findSeed('key4')!;
+      expect(seed2.name, masterKey2.name);
       expect(
         seed2.masterKey,
         SeedKey(
@@ -179,6 +184,7 @@ void main() {
 
     test('SeedsList creation keys with accounts', () {
       final seedsList = SeedList(
+        seedNames: const {},
         allKeys: [masterKey, subKey1, subKey2, masterKey2],
         mappedAccounts: {
           masterKey.publicKey: accounts1,
@@ -190,6 +196,7 @@ void main() {
 
       expect(seedsList.seeds.length, 2);
       final seed1 = seedsList.findSeed('key1')!;
+      expect(seed1.name, masterKey.name);
       expect(
         seed1.masterKey,
         SeedKey(key: masterKey, accountList: accounts1),
@@ -215,6 +222,7 @@ void main() {
         ]),
       );
       final seed2 = seedsList.findSeed('key4')!;
+      expect(seed2.name, masterKey2.name);
       expect(
         seed2.masterKey,
         SeedKey(key: masterKey2, accountList: accounts2),
@@ -227,6 +235,7 @@ void main() {
     test('All accounts available by transport', () {
       final strategy = AllWalletTypeSupports();
       final seedsList = NekotonRepository().buildSeeds(
+        seedNames: {masterKey.publicKey: superMasterName},
         allKeys: [masterKey, subKey1, subKey2, masterKey2],
         allAccounts: [
           account1Pure.account,
@@ -248,6 +257,7 @@ void main() {
 
       expect(seedsList.seeds.length, 2);
       final seed1 = seedsList.findSeed('key1')!;
+      expect(seed1.name, superMasterName);
       expect(
         seed1.masterKey,
         SeedKey(key: masterKey, accountList: accounts1),
@@ -273,6 +283,7 @@ void main() {
         ]),
       );
       final seed2 = seedsList.findSeed('key4')!;
+      expect(seed2.name, masterKey2.name);
       expect(
         seed2.masterKey,
         SeedKey(key: masterKey2, accountList: accounts2),
@@ -300,10 +311,12 @@ void main() {
           masterKey2.publicKey: [account2External.account.address],
         },
         transport: strategy,
+        seedNames: {},
       );
 
       expect(seedsList.seeds.length, 2);
       final seed1 = seedsList.findSeed('key1')!;
+      expect(seed1.name, masterKey.name);
       expect(
         seed1.masterKey,
         SeedKey(
@@ -323,6 +336,7 @@ void main() {
         ]),
       );
       final seed2 = seedsList.findSeed('key4')!;
+      expect(seed2.name, masterKey2.name);
       expect(
         seed2.masterKey,
         SeedKey(
