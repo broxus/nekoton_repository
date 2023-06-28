@@ -56,6 +56,8 @@ class SeedKey extends Equatable {
   }
 
   /// Rename this key (sub or master) to [name].
+  ///
+  /// This renames only key instance, to rename Seed, see [Seed.rename]
   Future<void> rename({required String name}) =>
       GetIt.instance<SeedKeyRepository>().renameKey(
         publicKey: key.publicKey,

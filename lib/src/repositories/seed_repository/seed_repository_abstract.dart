@@ -49,6 +49,13 @@ abstract class SeedKeyRepository {
     required bool isLegacy,
   });
 
+  /// Rename seed with [masterKey] to [name].
+  /// This changes name in storage, not in keystore.
+  Future<void> renameSeed({
+    required String masterKey,
+    required String name,
+  });
+
   /// Return seeds phrase of [masterKey].
   /// Do not works for ledger key.
   Future<List<String>> exportSeed({

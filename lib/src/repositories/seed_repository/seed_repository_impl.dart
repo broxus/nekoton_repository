@@ -231,6 +231,13 @@ mixin SeedKeyRepositoryImpl on TransportRepository
   }
 
   @override
+  Future<void> renameSeed({
+    required String masterKey,
+    required String name,
+  }) =>
+      storageRepository.updateSeedName(masterKey: masterKey, name: name);
+
+  @override
   Future<List<String>> exportSeed({
     required String masterKey,
     required String password,
