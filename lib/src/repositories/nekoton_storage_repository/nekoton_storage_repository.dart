@@ -7,7 +7,6 @@ const _hiddenAccountsKey = 'hidden_accounts_key';
 const _seedsKey = 'seeds_key';
 const _nekotonBridgeKey = 'nekoton_bridge_key';
 const _externalAccountsKey = 'external_accounts_key';
-const _seedNamesMigratedKey = 'seed_names_migrated_key';
 
 const _accountSeedPreferencesKey = 'account_seed_preferences_key';
 
@@ -20,7 +19,7 @@ class NekotonStorageRepository {
   final EncryptedStorage _storage;
 
   Future<void> init() => Future.wait([
-        _streamedSeeds(),
+        _streamedSeedNames(),
         _streamedHiddenAccounts(),
         _streamedExternalAccounts(),
       ]);
@@ -53,37 +52,37 @@ class NekotonStorageRepository {
   /// Subject of public keys names
   final _seedsSubject = BehaviorSubject<Map<String, String>>();
 
-  /// Stream of public keys names
-  Stream<Map<String, String>> get seedsStream => _seedsSubject;
+  /// Stream of seed names
+  Stream<Map<String, String>> get seedNamesStream => _seedsSubject;
 
-  /// Get previously cached seeds
-  Map<String, String> get seeds => _seedsSubject.value;
+  /// Get previously cached seeds names
+  Map<String, String> get seedNames => _seedsSubject.value;
 
-  /// Put public keys names to stream
-  Future<void> _streamedSeeds() async => _seedsSubject.add(await readSeeds());
+  /// Put seed names to stream
+  Future<void> _streamedSeedNames() async =>
+      _seedsSubject.add(await readSeedNames());
 
-  /// Get all names of public keys from storage
-  Future<Map<String, String>> readSeeds() =>
+  /// Get all names of seeds from storage
+  Future<Map<String, String>> readSeedNames() =>
       _storage.getDomain(domain: _seedsKey);
 
-  /// Add or rename public key
+  /// Add new or change seed name.
   ///
-  /// DEPRECATED: this names will be migrated to nekoton's KeyStoreEntry.name
-  /// after first launch, see [isSeedNamesMigrated].
-  Future<void> addSeedOrRename({
+  /// Seed names a bit different from key names, so it stores here separately.
+  Future<void> updateSeedName({
     required String masterKey,
     required String name,
   }) async {
     await _storage.set(masterKey, name, domain: _seedsKey);
 
-    return _streamedSeeds();
+    return _streamedSeedNames();
   }
 
-  /// Remove name of public key
-  Future<void> removeSeed(String masterKey) async {
+  /// Remove name of seed
+  Future<void> removeSeedName(String masterKey) async {
     await _storage.delete(masterKey, domain: _seedsKey);
 
-    return _streamedSeeds();
+    return _streamedSeedNames();
   }
 
   /// Clear information about all names of public keys
@@ -258,22 +257,4 @@ class NekotonStorageRepository {
   /// Clear information about all preferences
   Future<void> clearPreferences() =>
       _storage.clearDomain(_accountSeedPreferencesKey);
-
-  /// Get flag that tells that names of seeds were migrated, see
-  /// [addSeedOrRename].
-  Future<bool> get isSeedNamesMigrated async {
-    final encoded = await _storage.get(
-      _seedNamesMigratedKey,
-      domain: _accountSeedPreferencesKey,
-    );
-
-    return jsonDecode(encoded ?? 'false') as bool;
-  }
-
-  /// Set flag seed names were migrated to nekoton's KeyStoreEntry.name field.
-  Future<void> saveIsSeedNamesMigrated() => _storage.set(
-        _seedNamesMigratedKey,
-        jsonEncode(true),
-        domain: _accountSeedPreferencesKey,
-      );
 }
