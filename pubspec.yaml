@@ -1,6 +1,6 @@
 name: nekoton_repository
 description: Nekoton repository package
-version: 0.1.1-dev.2
+version: 0.1.1-dev.3
 repository: https://github.com/broxus/nekoton_repository
 publish_to: none
 
