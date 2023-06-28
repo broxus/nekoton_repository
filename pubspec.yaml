@@ -9,7 +9,7 @@ environment:
 
 dependencies:
   collection: ^1.17.0
-  encrypted_storage: 0.1.0-dev.0+2
+  encrypted_storage: 0.1.0+1
   equatable: ^2.0.5
   flutter:
     sdk: flutter
