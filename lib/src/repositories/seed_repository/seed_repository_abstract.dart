@@ -4,6 +4,15 @@ import 'package:nekoton_repository/nekoton_repository.dart';
 /// This repository can be used as <SeedKeyRepositoryImpl> or you can add
 /// custom logic.
 abstract class SeedKeyRepository {
+  /// Returns list of public keys that can be used in [deriveKeys] from
+  /// seed with [masterKey] and [password].
+  /// Returns list of up to 100 public keys, that could be displayed by pages.
+  /// !!! Seed should not be legacy.
+  Future<List<String>> getKeysToDerive({
+    required String masterKey,
+    required String password,
+  });
+
   /// Derive keys from [masterKey] which is key of seed.
   /// !!! This method won't work for legacy keys.
   /// This method returns list of public keys that allows add additional logic
@@ -40,9 +49,16 @@ abstract class SeedKeyRepository {
     required bool isLegacy,
   });
 
+  /// Rename seed with [masterKey] to [name].
+  /// This changes name in storage, not in keystore.
+  Future<void> renameSeed({
+    required String masterKey,
+    required String name,
+  });
+
   /// Return seeds phrase of [masterKey].
   /// Do not works for ledger key.
-  Future<List<String>> exportKey({
+  Future<List<String>> exportSeed({
     required String masterKey,
     required String password,
     required bool isLegacy,

@@ -1,6 +1,6 @@
 name: nekoton_repository
 description: Nekoton repository package
-version: 0.1.0+1
+version: 0.1.1-dev.3
 repository: https://github.com/broxus/nekoton_repository
 publish_to: none
 
@@ -9,7 +9,7 @@ environment:
 
 dependencies:
   collection: ^1.17.0
-  encrypted_storage: 0.1.0-dev.0+2
+  encrypted_storage: 0.1.0+1
   equatable: ^2.0.5
   flutter:
     sdk: flutter

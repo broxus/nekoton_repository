@@ -15,14 +15,19 @@ class Seed extends Equatable {
   const Seed({
     required this.masterKey,
     required this.subKeys,
-  });
+    required String? name,
+  }) : _name = name;
 
   /// Master key of seed.
   /// This key is derived directly from seed phrase.
   final SeedKey masterKey;
 
-  /// Proxy getter of name of master key
-  String get name => masterKey.key.name;
+  /// Name of seed itself, this name stores in app's storage, not in keystore
+  final String? _name;
+
+  // TODO(alex-a4): replace masterKey.key.name to masterKey.key.toEllipse()
+  /// If seed has name, it will be returned, otherwise master key name.
+  String get name => _name ?? masterKey.key.name;
 
   /// Proxy getter of public key of master key
   String get publicKey => masterKey.key.publicKey;
@@ -37,6 +42,16 @@ class Seed extends Equatable {
   /// Get instance of SeedKey if [publicKey] is part of this seed.
   SeedKey? findKeyByPublicKey(String publicKey) =>
       allKeys.firstWhereOrNull((key) => key.publicKey == publicKey);
+
+  /// Returns list of public keys that can be used in [deriveKeys] from
+  /// seed with [masterKey] and [password].
+  /// Returns list of up to 100 public keys, that could be displayed by pages.
+  /// !!! Seed should not be legacy.
+  Future<List<String>> getKeysToDerive(String password) =>
+      GetIt.instance<SeedKeyRepository>().getKeysToDerive(
+        masterKey: masterKey.publicKey,
+        password: password,
+      );
 
   /// Derive keys from [masterKey] this call adds list of sub keys to
   /// [subKeys].
@@ -67,10 +82,18 @@ class Seed extends Equatable {
   /// Return seeds phrase of this seed.
   /// Do not works for ledger key.
   Future<List<String>> export(String password) =>
-      GetIt.instance<SeedKeyRepository>().exportKey(
+      GetIt.instance<SeedKeyRepository>().exportSeed(
         masterKey: masterKey.publicKey,
         password: password,
         isLegacy: masterKey.isLegacy,
+      );
+
+  /// Rename seed with [masterKey] to [name].
+  /// This changes name in storage, not in keystore.
+  Future<void> rename({required String name}) =>
+      GetIt.instance<SeedKeyRepository>().renameSeed(
+        masterKey: publicKey,
+        name: name,
       );
 
   /// This method allows remove full seed and all related keys (master and sub)
@@ -78,5 +101,5 @@ class Seed extends Equatable {
       GetIt.instance<SeedKeyRepository>().removeKeys(allKeys);
 
   @override
-  List<Object?> get props => allKeys;
+  List<Object?> get props => [allKeys, _name];
 }
