@@ -17,8 +17,8 @@ mixin SeedKeyRepositoryImpl on TransportRepository
   NekotonStorageRepository get storageRepository;
 
   @override
-  Future<List<String>> getKeysToDerive({
-    required String masterKey,
+  Future<List<PublicKey>> getKeysToDerive({
+    required PublicKey masterKey,
     required String password,
   }) {
     return keyStore.getPublicKeys(
@@ -37,10 +37,10 @@ mixin SeedKeyRepositoryImpl on TransportRepository
   }
 
   @override
-  Future<List<String>> deriveKeys({
+  Future<List<PublicKey>> deriveKeys({
     required List<int> accountIds,
     required String password,
-    required String masterKey,
+    required PublicKey masterKey,
   }) async {
     final publicKeys = await keyStore.addKeys(
       accountIds
@@ -67,7 +67,7 @@ mixin SeedKeyRepositoryImpl on TransportRepository
   }
 
   @override
-  Future<String> addSeed({
+  Future<PublicKey> addSeed({
     required List<String> phrase,
     required String password,
     String? name,
@@ -112,7 +112,7 @@ mixin SeedKeyRepositoryImpl on TransportRepository
   }
 
   /// Trigger adding accounts to [AccountRepository] by public keys.
-  Future<void> triggerAddingAccounts(List<String> publicKeys) async {
+  Future<void> triggerAddingAccounts(List<PublicKey> publicKeys) async {
     final foundAccounts = <ExistingWalletInfo>[];
     final accountsToAdd = <AccountToAdd>[];
 
@@ -150,7 +150,7 @@ mixin SeedKeyRepositoryImpl on TransportRepository
         AccountToAdd(
           publicKey: a.publicKey,
           contract: a.walletType,
-          workchain: AddressUtils.workchain(a.address),
+          workchain: a.address.workchain,
           name: transport.defaultAccountName(a.walletType),
         ),
       );
@@ -161,7 +161,7 @@ mixin SeedKeyRepositoryImpl on TransportRepository
 
   @override
   Future<void> changeSeedPassword({
-    required String publicKey,
+    required PublicKey publicKey,
     required String oldPassword,
     required String newPassword,
     required bool isLegacy,
@@ -207,8 +207,8 @@ mixin SeedKeyRepositoryImpl on TransportRepository
 
   @override
   Future<void> renameKey({
-    required String publicKey,
-    required String masterKey,
+    required PublicKey publicKey,
+    required PublicKey masterKey,
     required String name,
     required bool isLegacy,
   }) async {
@@ -232,14 +232,14 @@ mixin SeedKeyRepositoryImpl on TransportRepository
 
   @override
   Future<void> renameSeed({
-    required String masterKey,
+    required PublicKey masterKey,
     required String name,
   }) =>
       storageRepository.updateSeedName(masterKey: masterKey, name: name);
 
   @override
   Future<List<String>> exportSeed({
-    required String masterKey,
+    required PublicKey masterKey,
     required String password,
     required bool isLegacy,
   }) async {
@@ -282,7 +282,7 @@ mixin SeedKeyRepositoryImpl on TransportRepository
   @override
   Future<List<EncryptedData>> encrypt({
     required String data,
-    required List<String> publicKeys,
+    required List<PublicKey> publicKeys,
     required EncryptionAlgorithm algorithm,
     required SignInput signInput,
   }) =>
@@ -337,7 +337,7 @@ mixin SeedKeyRepositoryImpl on TransportRepository
       );
 
   @override
-  Future<List<String>> removeKeys(List<SeedKey> keys) async {
+  Future<List<PublicKey>> removeKeys(List<SeedKey> keys) async {
     final removed = await keyStore.removeKeys(
       publicKeys: keys.map((e) => e.publicKey).toList(),
     );

@@ -13,8 +13,8 @@ import 'package:nekoton_repository/nekoton_repository.dart';
 class SeedList extends Equatable {
   SeedList({
     required List<KeyStoreEntry> allKeys,
-    required Map<String, AccountList> mappedAccounts,
-    required Map<String, String> seedNames,
+    required Map<PublicKey, AccountList> mappedAccounts,
+    required Map<PublicKey, String> seedNames,
   }) : _seedsMap = _mapKeysToSeeds(allKeys, mappedAccounts, seedNames) {
     _allKeys = _seedsMap.values.expand((seed) => seed.allKeys).toList();
   }
@@ -23,13 +23,13 @@ class SeedList extends Equatable {
   /// This structure uses to simplify searching of seeds.
   /// Key - publicKey of masterKey.
   /// Value - Seed.
-  final Map<String, Seed> _seedsMap;
+  final Map<PublicKey, Seed> _seedsMap;
 
   /// Get seed by masterKey if it's in list.
-  Seed? findSeed(String masterKey) => _seedsMap[masterKey];
+  Seed? findSeed(PublicKey masterKey) => _seedsMap[masterKey];
 
   /// Get seed from list by public key of master key or of sub key.
-  Seed? findSeedByAnyPublicKey(String publicKey) {
+  Seed? findSeedByAnyPublicKey(PublicKey publicKey) {
     for (final seed in _seedsMap.values) {
       if (seed.findKeyByPublicKey(publicKey) != null) {
         return seed;
@@ -52,7 +52,7 @@ class SeedList extends Equatable {
   /// This method can be helpful in browser.
   ///
   /// Returns found key or null.
-  SeedKey? findSeedKey(String publicKey) =>
+  SeedKey? findSeedKey(PublicKey publicKey) =>
       _allKeys.firstWhereOrNull((k) => k.publicKey == publicKey);
 
   /// Get account instance by it's address.
@@ -60,7 +60,7 @@ class SeedList extends Equatable {
   /// This method can be helpful in browser.
   ///
   /// Returns found account or null.
-  KeyAccount? findAccountByAddress(String accountAddress) {
+  KeyAccount? findAccountByAddress(Address accountAddress) {
     for (final key in _allKeys) {
       final found = key.findAccountByAddress(accountAddress);
       if (found != null) return found;
@@ -71,7 +71,7 @@ class SeedList extends Equatable {
 
   /// Add new seed to application.
   /// Returns publicKey of masterKey of added seed.
-  Future<String> addSeed({
+  Future<PublicKey> addSeed({
     required List<String> phrase,
     required String password,
     String? name,
@@ -87,9 +87,9 @@ class SeedList extends Equatable {
   /// If there is no key for [publicKey], exception will be thrown.
   Future<List<EncryptedData>> encrypt({
     required String data,
-    required List<String> publicKeys,
+    required List<PublicKey> publicKeys,
     required EncryptionAlgorithm algorithm,
-    required String publicKey,
+    required PublicKey publicKey,
     required String password,
   }) {
     final key = _allKeys.firstWhere((k) => k.publicKey == publicKey);
@@ -106,7 +106,7 @@ class SeedList extends Equatable {
   /// If there is no key for [publicKey], exception will be thrown.
   Future<String> decrypt({
     required EncryptedData data,
-    required String publicKey,
+    required PublicKey publicKey,
     required String password,
   }) {
     final key = _allKeys.firstWhere((k) => k.publicKey == publicKey);
@@ -122,7 +122,7 @@ class SeedList extends Equatable {
   /// [signatureId] is [Transport.getSignatureId].
   Future<String> sign({
     required String data,
-    required String publicKey,
+    required PublicKey publicKey,
     required String password,
     required int? signatureId,
   }) {
@@ -140,7 +140,7 @@ class SeedList extends Equatable {
   /// [signatureId] is [Transport.getSignatureId].
   Future<SignedData> signData({
     required String data,
-    required String publicKey,
+    required PublicKey publicKey,
     required String password,
     required int? signatureId,
   }) {
@@ -158,7 +158,7 @@ class SeedList extends Equatable {
   /// [signatureId] is [Transport.getSignatureId].
   Future<SignedDataRaw> signRawData({
     required String data,
-    required String publicKey,
+    required PublicKey publicKey,
     required String password,
     required int? signatureId,
   }) {
@@ -174,7 +174,7 @@ class SeedList extends Equatable {
   /// Check if password of [publicKey] equals to [password].
   /// [signatureId] is [Transport.getSignatureId].
   Future<bool> checkKeyPassword({
-    required String publicKey,
+    required PublicKey publicKey,
     required String password,
     required int? signatureId,
   }) async {
@@ -198,15 +198,15 @@ class SeedList extends Equatable {
   ///
   /// [mappedAccounts] - key is publicKey of key. value - list of accounts that
   /// related to this key.
-  static Map<String, Seed> _mapKeysToSeeds(
+  static Map<PublicKey, Seed> _mapKeysToSeeds(
     List<KeyStoreEntry> allKeys,
-    Map<String, AccountList> mappedAccounts,
-    Map<String, String> seedNames,
+    Map<PublicKey, AccountList> mappedAccounts,
+    Map<PublicKey, String> seedNames,
   ) {
     /// Key - publicKey of masterKey.
     /// Value - list of all keys that derives from this masterKey.
     /// MasterKey is always first in this list.
-    final seeds = <String, List<KeyStoreEntry>>{};
+    final seeds = <PublicKey, List<KeyStoreEntry>>{};
 
     for (final key in allKeys) {
       if (seeds.containsKey(key.masterKey)) {

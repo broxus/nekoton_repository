@@ -8,8 +8,8 @@ abstract class SeedKeyRepository {
   /// seed with [masterKey] and [password].
   /// Returns list of up to 100 public keys, that could be displayed by pages.
   /// !!! Seed should not be legacy.
-  Future<List<String>> getKeysToDerive({
-    required String masterKey,
+  Future<List<PublicKey>> getKeysToDerive({
+    required PublicKey masterKey,
     required String password,
   });
 
@@ -17,15 +17,15 @@ abstract class SeedKeyRepository {
   /// !!! This method won't work for legacy keys.
   /// This method returns list of public keys that allows add additional logic
   /// related to newly added keys.
-  Future<List<String>> deriveKeys({
+  Future<List<PublicKey>> deriveKeys({
     required List<int> accountIds,
     required String password,
-    required String masterKey,
+    required PublicKey masterKey,
   });
 
   /// Add new seed to application.
   /// Returns publicKey of masterKey of added seed.
-  Future<String> addSeed({
+  Future<PublicKey> addSeed({
     required List<String> phrase,
     required String password,
     String? name,
@@ -35,7 +35,7 @@ abstract class SeedKeyRepository {
   // TODO(alex-a4): verify accepting this action to master key, recursively
   //   change password of all sub keys.
   Future<void> changeSeedPassword({
-    required String publicKey,
+    required PublicKey publicKey,
     required String oldPassword,
     required String newPassword,
     required bool isLegacy,
@@ -43,8 +43,8 @@ abstract class SeedKeyRepository {
 
   /// Rename key (sub or master) with [publicKey] to [name].
   Future<void> renameKey({
-    required String publicKey,
-    required String masterKey,
+    required PublicKey publicKey,
+    required PublicKey masterKey,
     required String name,
     required bool isLegacy,
   });
@@ -52,14 +52,14 @@ abstract class SeedKeyRepository {
   /// Rename seed with [masterKey] to [name].
   /// This changes name in storage, not in keystore.
   Future<void> renameSeed({
-    required String masterKey,
+    required PublicKey masterKey,
     required String name,
   });
 
   /// Return seeds phrase of [masterKey].
   /// Do not works for ledger key.
   Future<List<String>> exportSeed({
-    required String masterKey,
+    required PublicKey masterKey,
     required String password,
     required bool isLegacy,
   });
@@ -68,7 +68,7 @@ abstract class SeedKeyRepository {
   /// [signInput] can be get from [SeedKey.signInput].
   Future<List<EncryptedData>> encrypt({
     required String data,
-    required List<String> publicKeys,
+    required List<PublicKey> publicKeys,
     required EncryptionAlgorithm algorithm,
     required SignInput signInput,
   });
@@ -108,5 +108,5 @@ abstract class SeedKeyRepository {
   });
 
   /// Remove keys from keystore and return public keys that were deleted
-  Future<List<String>> removeKeys(List<SeedKey> keys);
+  Future<List<PublicKey>> removeKeys(List<SeedKey> keys);
 }
