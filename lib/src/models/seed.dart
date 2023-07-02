@@ -25,9 +25,7 @@ class Seed extends Equatable {
   /// Name of seed itself, this name stores in app's storage, not in keystore
   final String? _name;
 
-  // TODO(alex-a4): replace masterKey.key.name to masterKey.key.toEllipse()
-  /// If seed has name, it will be returned, otherwise master key name.
-  String get name => _name ?? masterKey.key.name;
+  String get name => _name ?? masterKey.key.masterKey.toEllipseString();
 
   /// Proxy getter of public key of master key
   PublicKey get publicKey => masterKey.key.publicKey;
