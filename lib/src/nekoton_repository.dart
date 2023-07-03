@@ -115,7 +115,6 @@ class NekotonRepository
   Future<void> clear() async {
     await _keyStore.clearStore();
     await _accountsStorage.clear();
-    _updateSeedList();
   }
 
   // TODO(alex-a4): add diff checking and hooks for outer usage
