@@ -14,6 +14,8 @@ mixin SeedKeyRepositoryImpl on TransportRepository
     implements SeedKeyRepository {
   KeyStore get keyStore;
 
+  AccountsStorage get accountsStorage;
+
   NekotonStorageRepository get storageRepository;
 
   @override
@@ -127,11 +129,15 @@ mixin SeedKeyRepositoryImpl on TransportRepository
       );
 
       final activeAccounts = found.where((e) => e.isActive);
-      // TODO(alex-a4): check if this logic really needed
-      // final isExists = accounts.any((e) => e.address == activeWallet.
-      // address);
 
-      /// If no accounts were found for this key, then create default one
+      // If account already in storage, skip it
+      final notExistedAccounts = activeAccounts.where(
+        (active) =>
+            accountsStorage.accounts.every((a) => a.address != active.address),
+      );
+
+      // If no accounts were found for this key, then create default one.
+      // We must create default if no accounts were found in general.
       if (activeAccounts.isEmpty) {
         accountsToAdd.add(
           AccountToAdd(
@@ -142,7 +148,8 @@ mixin SeedKeyRepositoryImpl on TransportRepository
           ),
         );
       } else {
-        foundAccounts.addAll(activeAccounts);
+        // but we add here only accounts not existed in storage
+        foundAccounts.addAll(notExistedAccounts);
       }
     }
     for (final a in foundAccounts) {
