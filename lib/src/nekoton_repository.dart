@@ -111,6 +111,13 @@ class NekotonRepository
     await _hasSeeds.close();
   }
 
+  /// Clear the repository by calling nekoton methods
+  Future<void> clear() async {
+    await _keyStore.clearStore();
+    await _accountsStorage.clear();
+    _updateSeedList();
+  }
+
   // TODO(alex-a4): add diff checking and hooks for outer usage
   /// List of all keys mapped into seeds
   final _seedsSubject = BehaviorSubject<SeedList>();
