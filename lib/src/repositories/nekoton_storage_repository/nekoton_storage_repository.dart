@@ -30,6 +30,7 @@ class NekotonStorageRepository {
         clearStorageData(),
         clearSeeds(),
         clearExternalAccounts(),
+        clearHiddenAccounts(),
       ]);
 
   /// Get data of nekoton storage
