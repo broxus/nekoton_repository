@@ -20,7 +20,7 @@ class KeyAccount extends Equatable {
   /// Key for which this account specified.
   /// For external accounts this value can be different from account.publicKey
   /// but for internal usages this key is same as for key this account stores in
-  final String publicKey;
+  final PublicKey publicKey;
 
   /// Flag that allows identify if this account is external.
   final bool isExternal;
@@ -32,7 +32,7 @@ class KeyAccount extends Equatable {
   String get name => account.name;
 
   /// Proxy getter of address of account
-  String get address => account.address;
+  Address get address => account.address;
 
   /// Proxy getter of workchain of account
   int get workchain => account.workchain;
@@ -53,16 +53,16 @@ class KeyAccount extends Equatable {
       .hideAccounts([account.address]);
 
   /// Add token to this account
-  Future<void> addTokenWallet(String rootTokenContract) =>
+  Future<void> addTokenWallet(Address rootTokenContract) =>
       GetIt.instance<AccountRepository>().addTokenWallet(
-        accountAddress: account.address,
+        address: account.address,
         rootTokenContract: rootTokenContract,
       );
 
   /// Remove token from this account
-  Future<void> removeTokenWallet(String rootTokenContract) =>
+  Future<void> removeTokenWallet(Address rootTokenContract) =>
       GetIt.instance<AccountRepository>().removeTokenWallet(
-        accountAddress: account.address,
+        address: account.address,
         rootTokenContract: rootTokenContract,
       );
 

@@ -162,10 +162,10 @@ class NekotonRepository
   void _updateSeedList({
     List<KeyStoreEntry>? allKeys,
     List<AssetsList>? allAccounts,
-    List<String>? hiddenAccounts,
-    Map<String, List<String>>? externalAccounts,
+    List<Address>? hiddenAccounts,
+    Map<PublicKey, List<Address>>? externalAccounts,
     TransportStrategy? transport,
-    Map<String, String>? seedNames,
+    Map<PublicKey, String>? seedNames,
   }) {
     _seedsSubject.add(
       buildSeeds(
@@ -187,16 +187,16 @@ class NekotonRepository
   SeedList buildSeeds({
     required List<KeyStoreEntry> allKeys,
     required List<AssetsList> allAccounts,
-    required List<String> hiddenAccounts,
-    required Map<String, List<String>> externalAccounts,
+    required List<Address> hiddenAccounts,
+    required Map<PublicKey, List<Address>> externalAccounts,
     required TransportStrategy transport,
-    required Map<String, String> seedNames,
+    required Map<PublicKey, String> seedNames,
   }) {
     final planeExternalAccounts = externalAccounts.values.expand((e) => e);
     final transportedAllAccounts = allAccounts.where(
       (a) => transport.availableWalletTypes.contains(a.tonWallet.contract),
     );
-    final mapped = <String, List<KeyAccount>>{};
+    final mapped = <PublicKey, List<KeyAccount>>{};
     for (final account in transportedAllAccounts) {
       var key = account.publicKey;
       final isHidden = hiddenAccounts.contains(account.address);

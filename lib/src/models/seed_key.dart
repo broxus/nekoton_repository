@@ -22,7 +22,7 @@ class SeedKey extends Equatable {
   String get name => key.name;
 
   /// Proxy getter of public key of key
-  String get publicKey => key.publicKey;
+  PublicKey get publicKey => key.publicKey;
 
   /// Proxy getter of master flag of key
   bool get isMaster => key.isMaster;
@@ -35,7 +35,7 @@ class SeedKey extends Equatable {
   /// This method can be helpful in browser.
   ///
   /// Returns found account or null.
-  KeyAccount? findAccountByAddress(String accountAddress) {
+  KeyAccount? findAccountByAddress(Address accountAddress) {
     for (final account in accountList.allAccounts) {
       if (account.account.address == accountAddress) {
         return account;
