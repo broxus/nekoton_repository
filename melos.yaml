@@ -23,6 +23,10 @@ scripts:
     exec: dart format --set-exit-if-changed .
     failFast: true
 
+  format:
+    exec: dart format .
+    description: Format a specific package in this project.
+
   test:
     description: Run Flutter tests for a specific package in this project.
     exec: "flutter test test"
