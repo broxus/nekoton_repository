@@ -15,8 +15,8 @@ abstract class AccountRepository {
   /// [name] is optional.
   /// This method calls [addAccount] inside.
   Future<void> addExternalAccount({
-    required String publicKey,
-    required String address,
+    required PublicKey publicKey,
+    required Address address,
     String? name,
   });
 
@@ -33,17 +33,17 @@ abstract class AccountRepository {
   Future<void> removeExternalAccounts(List<KeyAccount> accounts);
 
   /// Change name of account with [address] to [newName].
-  Future<void> renameAccount(String address, String newName);
+  Future<void> renameAccount(Address address, String newName);
 
-  /// Add token to [accountAddress] with [rootTokenContract].
+  /// Add token to [address] with [rootTokenContract].
   Future<void> addTokenWallet({
-    required String accountAddress,
-    required String rootTokenContract,
+    required Address address,
+    required Address rootTokenContract,
   });
 
-  /// Remove token with [rootTokenContract] from [accountAddress].
+  /// Remove token with [rootTokenContract] from [address].
   Future<void> removeTokenWallet({
-    required String accountAddress,
-    required String rootTokenContract,
+    required Address address,
+    required Address rootTokenContract,
   });
 }

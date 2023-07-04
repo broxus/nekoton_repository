@@ -17,34 +17,40 @@ class OnlyV3WalletTypeSupports extends Fake implements TransportStrategy {
 
 void main() {
   const superMasterName = 'SUPER MASTER';
+  const key1 = PublicKey(publicKey: '1111111111111111111');
+  final key1Ellipse = key1.toEllipseString();
+  const key2 = PublicKey(publicKey: '2222222222222222222');
+  const key3 = PublicKey(publicKey: '3333333333333333333');
+  const key4 = PublicKey(publicKey: '4444444444444444444');
+  final key4Ellipse = key4.toEllipseString();
 
   final masterKey = KeyStoreEntry(
     name: 'MasterKey',
-    masterKey: 'key1',
+    masterKey: key1,
     accountId: 0,
-    publicKey: 'key1',
+    publicKey: key1,
     signerName: const KeySigner.derived().name,
   );
   final subKey1 = KeyStoreEntry(
     name: 'SubKey',
-    masterKey: 'key1',
+    masterKey: key1,
     accountId: 1,
-    publicKey: 'key2',
+    publicKey: key2,
     signerName: const KeySigner.derived().name,
   );
   final subKey2 = KeyStoreEntry(
     name: 'SubKey',
-    masterKey: 'key1',
+    masterKey: key1,
     accountId: 2,
-    publicKey: 'key3',
+    publicKey: key3,
     signerName: const KeySigner.derived().name,
   );
 
   final masterKey2 = KeyStoreEntry(
     name: 'MasterKey2',
-    masterKey: 'key4',
+    masterKey: key4,
     accountId: 10,
-    publicKey: 'key4',
+    publicKey: key4,
     signerName: const KeySigner.encrypted().name,
   );
 
@@ -54,7 +60,7 @@ void main() {
       additionalAssets: {},
       tonWallet: TonWalletAsset(
         publicKey: masterKey.publicKey,
-        address: '0:address1',
+        address: const Address(address: '0:address1'),
         contract: const WalletType.everWallet(),
       ),
     ),
@@ -67,8 +73,8 @@ void main() {
       name: 'Account1Ex',
       additionalAssets: {},
       tonWallet: TonWalletAsset(
-        publicKey: 'RandomExernalKey',
-        address: '0:address1ex',
+        publicKey: PublicKey(publicKey: 'RandomExernalKey'),
+        address: Address(address: '0:address1ex'),
         contract: WalletType.everWallet(),
       ),
     ),
@@ -83,7 +89,7 @@ void main() {
       additionalAssets: {},
       tonWallet: TonWalletAsset(
         publicKey: subKey1.publicKey,
-        address: '0:addressSub1',
+        address: const Address(address: '0:addressSub1'),
         contract: const WalletType.everWallet(),
       ),
     ),
@@ -98,7 +104,7 @@ void main() {
       additionalAssets: {},
       tonWallet: TonWalletAsset(
         publicKey: subKey2.publicKey,
-        address: '0:addressSub2',
+        address: const Address(address: '0:addressSub2'),
         contract: const WalletType.walletV3(),
       ),
     ),
@@ -112,8 +118,8 @@ void main() {
       name: 'AccountSub2',
       additionalAssets: {},
       tonWallet: TonWalletAsset(
-        publicKey: 'RandomExernalKey2',
-        address: '0:addressSub2Ex',
+        publicKey: PublicKey(publicKey: 'RandomExernalKey2'),
+        address: Address(address: '0:addressSub2Ex'),
         contract: WalletType.multisig(MultisigType.multisig2_1),
       ),
     ),
@@ -148,7 +154,7 @@ void main() {
       );
 
       expect(seedsList.seeds.length, 2);
-      final seed1 = seedsList.findSeed('key1')!;
+      final seed1 = seedsList.findSeed(key1)!;
       expect(seed1.name, superMasterName);
       expect(
         seed1.masterKey,
@@ -170,8 +176,8 @@ void main() {
           ),
         ]),
       );
-      final seed2 = seedsList.findSeed('key4')!;
-      expect(seed2.name, masterKey2.name);
+      final seed2 = seedsList.findSeed(masterKey2.masterKey)!;
+      expect(seed2.name, key4Ellipse);
       expect(
         seed2.masterKey,
         SeedKey(
@@ -195,8 +201,8 @@ void main() {
       );
 
       expect(seedsList.seeds.length, 2);
-      final seed1 = seedsList.findSeed('key1')!;
-      expect(seed1.name, masterKey.name);
+      final seed1 = seedsList.findSeed(key1)!;
+      expect(seed1.name, key1Ellipse);
       expect(
         seed1.masterKey,
         SeedKey(key: masterKey, accountList: accounts1),
@@ -221,13 +227,78 @@ void main() {
           SeedKey(key: subKey2, accountList: accountsSub2),
         ]),
       );
-      final seed2 = seedsList.findSeed('key4')!;
-      expect(seed2.name, masterKey2.name);
+      final seed2 = seedsList.findSeed(key4)!;
+      expect(seed2.name, key4Ellipse);
       expect(
         seed2.masterKey,
         SeedKey(key: masterKey2, accountList: accounts2),
       );
       expect(seed2.subKeys, equals([]));
+    });
+
+    test('SeedsList.findSeedKey', () {
+      final seedsList = SeedList(
+        seedNames: const {},
+        allKeys: [masterKey, subKey1, subKey2, masterKey2],
+        mappedAccounts: {
+          masterKey.publicKey: accounts1,
+          masterKey2.publicKey: accounts2,
+          subKey1.publicKey: accountsSub1,
+          subKey2.publicKey: accountsSub2,
+        },
+      );
+
+      final seedKey = seedsList.findSeedKey(key2);
+      expect(seedKey, isNotNull);
+      expect(seedKey!.publicKey, key2);
+      expect(seedKey.key, subKey1);
+
+      final notExisted =
+          seedsList.findSeedKey(const PublicKey(publicKey: '000000'));
+      expect(notExisted, isNull);
+    });
+
+    test('SeedsList.findSeedByAnyPublicKey', () {
+      final seedsList = SeedList(
+        seedNames: const {},
+        allKeys: [masterKey, subKey1, subKey2, masterKey2],
+        mappedAccounts: {
+          masterKey.publicKey: accounts1,
+          masterKey2.publicKey: accounts2,
+          subKey1.publicKey: accountsSub1,
+          subKey2.publicKey: accountsSub2,
+        },
+      );
+
+      final seed = seedsList.findSeedByAnyPublicKey(key2);
+      expect(seed, isNotNull);
+      expect(seed!.masterKey.key, masterKey);
+      expect(seed.subKeys.length, 2);
+
+      final notExisted = seedsList
+          .findSeedByAnyPublicKey(const PublicKey(publicKey: '000000'));
+      expect(notExisted, isNull);
+    });
+
+    test('SeedsList.findAccountByAddress', () {
+      final seedsList = SeedList(
+        seedNames: const {},
+        allKeys: [masterKey, subKey1, subKey2, masterKey2],
+        mappedAccounts: {
+          masterKey.publicKey: accounts1,
+          masterKey2.publicKey: accounts2,
+          subKey1.publicKey: accountsSub1,
+          subKey2.publicKey: accountsSub2,
+        },
+      );
+
+      final account = seedsList.findAccountByAddress(account1Pure.address);
+      expect(account, isNotNull);
+      expect(account!.address, account1Pure.address);
+
+      final notExisted =
+          seedsList.findAccountByAddress(const Address(address: '0'));
+      expect(notExisted, isNull);
     });
   });
 
@@ -256,7 +327,7 @@ void main() {
       );
 
       expect(seedsList.seeds.length, 2);
-      final seed1 = seedsList.findSeed('key1')!;
+      final seed1 = seedsList.findSeed(key1)!;
       expect(seed1.name, superMasterName);
       expect(
         seed1.masterKey,
@@ -282,8 +353,8 @@ void main() {
           SeedKey(key: subKey2, accountList: accountsSub2),
         ]),
       );
-      final seed2 = seedsList.findSeed('key4')!;
-      expect(seed2.name, masterKey2.name);
+      final seed2 = seedsList.findSeed(key4)!;
+      expect(seed2.name, key4Ellipse);
       expect(
         seed2.masterKey,
         SeedKey(key: masterKey2, accountList: accounts2),
@@ -315,8 +386,8 @@ void main() {
       );
 
       expect(seedsList.seeds.length, 2);
-      final seed1 = seedsList.findSeed('key1')!;
-      expect(seed1.name, masterKey.name);
+      final seed1 = seedsList.findSeed(key1)!;
+      expect(seed1.name, key1Ellipse);
       expect(
         seed1.masterKey,
         SeedKey(
@@ -335,8 +406,8 @@ void main() {
           SeedKey(key: subKey2, accountList: accountsSub2),
         ]),
       );
-      final seed2 = seedsList.findSeed('key4')!;
-      expect(seed2.name, masterKey2.name);
+      final seed2 = seedsList.findSeed(key4)!;
+      expect(seed2.name, key4Ellipse);
       expect(
         seed2.masterKey,
         SeedKey(

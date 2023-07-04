@@ -27,7 +27,7 @@ abstract class TransportStrategy {
   String get nativeTokenTicker;
 
   /// Address of native token in network
-  String get nativeTokenAddress;
+  Address get nativeTokenAddress;
 
   /// !!! This is like ID for specified network !!!
   ///
@@ -42,7 +42,7 @@ abstract class TransportStrategy {
 
   /// This must return URL link to network explorer specified to
   /// [accountAddress].
-  String accountExplorerLink(String accountAddress);
+  String accountExplorerLink(Address accountAddress);
 
   /// This must return URL link to transaction explorer specified to
   /// [transactionHash].

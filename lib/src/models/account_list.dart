@@ -14,8 +14,10 @@ class AccountList extends Equatable {
     required this.publicKey,
   });
 
-  factory AccountList.empty(String publicKey) =>
-      AccountList(allAccounts: const [], publicKey: publicKey);
+  factory AccountList.empty(PublicKey publicKey) => AccountList(
+        allAccounts: const [],
+        publicKey: publicKey,
+      );
 
   /// List of all accounts specified for [publicKey].
   final List<KeyAccount> allAccounts;
@@ -35,7 +37,7 @@ class AccountList extends Equatable {
       allAccounts.where((a) => a.isExternal).toList();
 
   /// Key for which this list of accounts exists.
-  final String publicKey;
+  final PublicKey publicKey;
 
   /// Add account to key with [publicKey] and [walletType].
   /// [workchain] specify Transport network that should be used for this account
@@ -62,7 +64,7 @@ class AccountList extends Equatable {
   /// [name] is optional.
   /// This method calls [addAccount] inside.
   Future<void> addExternalAccount({
-    required String address,
+    required Address address,
     String? name,
   }) {
     return GetIt.instance<AccountRepository>().addExternalAccount(

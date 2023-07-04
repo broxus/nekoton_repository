@@ -26,8 +26,8 @@ mixin AccountRepositoryImpl on TransportRepository
 
   @override
   Future<void> addExternalAccount({
-    required String publicKey,
-    required String address,
+    required PublicKey publicKey,
+    required Address address,
     String? name,
   }) async {
     final custodians = await TonWallet.getWalletCustodians(
@@ -56,7 +56,7 @@ mixin AccountRepositoryImpl on TransportRepository
                   .defaultAccountName(existingWalletInfo.walletType),
           publicKey: publicKey,
           contract: existingWalletInfo.walletType,
-          workchain: AddressUtils.workchain(existingWalletInfo.address),
+          workchain: existingWalletInfo.address.workchain,
           explicitAddress: address,
         ),
       );
@@ -117,7 +117,7 @@ mixin AccountRepositoryImpl on TransportRepository
 
     final localKeys = keyStore.keys.map((e) => e.publicKey).toList();
 
-    final externalAccounts = <String, List<String>>{};
+    final externalAccounts = <PublicKey, List<Address>>{};
     for (final account in accounts) {
       externalAccounts[account.publicKey] = [
         ...?externalAccounts[account.publicKey],
@@ -149,27 +149,27 @@ mixin AccountRepositoryImpl on TransportRepository
   }
 
   @override
-  Future<void> renameAccount(String address, String newName) =>
+  Future<void> renameAccount(Address address, String newName) =>
       accountsStorage.renameAccount(address, newName);
 
   @override
   Future<void> addTokenWallet({
-    required String accountAddress,
-    required String rootTokenContract,
+    required Address address,
+    required Address rootTokenContract,
   }) =>
       accountsStorage.addTokenWallet(
-        accountAddress: accountAddress,
+        address: address,
         rootTokenContract: rootTokenContract,
         networkGroup: currentTransport.transport.group,
       );
 
   @override
   Future<void> removeTokenWallet({
-    required String accountAddress,
-    required String rootTokenContract,
+    required Address address,
+    required Address rootTokenContract,
   }) =>
       accountsStorage.removeTokenWallet(
-        accountAddress: accountAddress,
+        address: address,
         rootTokenContract: rootTokenContract,
         networkGroup: currentTransport.transport.group,
       );

@@ -1,6 +1,6 @@
 name: nekoton_repository
 description: Nekoton repository package
-version: 0.1.1-dev.3
+version: 0.1.1-dev.4
 repository: https://github.com/broxus/nekoton_repository
 publish_to: none
 
@@ -16,7 +16,7 @@ dependencies:
   flutter_nekoton_bridge:
     git:
       url: https://github.com/broxus/nekoton_bridge.git
-      ref: flutter_nekoton_bridge-v1.8.0-dev.12
+      ref: flutter_nekoton_bridge-v1.8.0-dev.13
       path: packages/flutter_nekoton_bridge
   get_it: ^7.6.0
   injectable: ^2.1.0

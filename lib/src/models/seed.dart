@@ -25,12 +25,12 @@ class Seed extends Equatable {
   /// Name of seed itself, this name stores in app's storage, not in keystore
   final String? _name;
 
-  // TODO(alex-a4): replace masterKey.key.name to masterKey.key.toEllipse()
-  /// If seed has name, it will be returned, otherwise master key name.
-  String get name => _name ?? masterKey.key.name;
+  /// If seed has name, it will be returned, otherwise master publick key with
+  /// ellipsis.
+  String get name => _name ?? masterKey.key.masterKey.toEllipseString();
 
   /// Proxy getter of public key of master key
-  String get publicKey => masterKey.key.publicKey;
+  PublicKey get publicKey => masterKey.key.publicKey;
 
   /// List of derived keys of [masterKey].
   /// This list do not contains [masterKey].
@@ -40,14 +40,14 @@ class Seed extends Equatable {
   List<SeedKey> get allKeys => [masterKey, ...subKeys];
 
   /// Get instance of SeedKey if [publicKey] is part of this seed.
-  SeedKey? findKeyByPublicKey(String publicKey) =>
+  SeedKey? findKeyByPublicKey(PublicKey publicKey) =>
       allKeys.firstWhereOrNull((key) => key.publicKey == publicKey);
 
   /// Returns list of public keys that can be used in [deriveKeys] from
   /// seed with [masterKey] and [password].
   /// Returns list of up to 100 public keys, that could be displayed by pages.
   /// !!! Seed should not be legacy.
-  Future<List<String>> getKeysToDerive(String password) =>
+  Future<List<PublicKey>> getKeysToDerive(String password) =>
       GetIt.instance<SeedKeyRepository>().getKeysToDerive(
         masterKey: masterKey.publicKey,
         password: password,
@@ -57,7 +57,7 @@ class Seed extends Equatable {
   /// [subKeys].
   /// This method returns list of public keys that allows add additional logic
   /// related to newly added keys.
-  Future<List<String>> deriveKeys({
+  Future<List<PublicKey>> deriveKeys({
     required List<int> accountIds,
     required String password,
   }) =>

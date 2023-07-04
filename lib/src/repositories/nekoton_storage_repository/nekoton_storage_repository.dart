@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:encrypted_storage/encrypted_storage.dart';
+import 'package:nekoton_repository/nekoton_repository.dart';
 import 'package:rxdart/rxdart.dart';
 
 const _hiddenAccountsKey = 'hidden_accounts_key';
@@ -29,6 +30,7 @@ class NekotonStorageRepository {
         clearStorageData(),
         clearSeeds(),
         clearExternalAccounts(),
+        clearHiddenAccounts(),
       ]);
 
   /// Get data of nekoton storage
@@ -50,37 +52,42 @@ class NekotonStorageRepository {
   Future<void> clearStorageData() => _storage.clearDomain(_nekotonBridgeKey);
 
   /// Subject of public keys names
-  final _seedsSubject = BehaviorSubject<Map<String, String>>();
+  final _seedNamesSubject = BehaviorSubject<Map<PublicKey, String>>();
 
   /// Stream of seed names
-  Stream<Map<String, String>> get seedNamesStream => _seedsSubject;
+  Stream<Map<PublicKey, String>> get seedNamesStream => _seedNamesSubject;
 
   /// Get previously cached seeds names
-  Map<String, String> get seedNames => _seedsSubject.value;
+  Map<PublicKey, String> get seedNames => _seedNamesSubject.value;
 
   /// Put seed names to stream
   Future<void> _streamedSeedNames() async =>
-      _seedsSubject.add(await readSeedNames());
+      _seedNamesSubject.add(await readSeedNames());
 
   /// Get all names of seeds from storage
-  Future<Map<String, String>> readSeedNames() =>
-      _storage.getDomain(domain: _seedsKey);
+  Future<Map<PublicKey, String>> readSeedNames() async =>
+      (await _storage.getDomain(domain: _seedsKey)).map(
+        (key, value) => MapEntry(
+          PublicKey(publicKey: key),
+          value,
+        ),
+      );
 
   /// Add new or change seed name.
   ///
   /// Seed names a bit different from key names, so it stores here separately.
   Future<void> updateSeedName({
-    required String masterKey,
+    required PublicKey masterKey,
     required String name,
   }) async {
-    await _storage.set(masterKey, name, domain: _seedsKey);
+    await _storage.set(masterKey.publicKey, name, domain: _seedsKey);
 
     return _streamedSeedNames();
   }
 
   /// Remove name of seed
-  Future<void> removeSeedName(String masterKey) async {
-    await _storage.delete(masterKey, domain: _seedsKey);
+  Future<void> removeSeedName(PublicKey masterKey) async {
+    await _storage.delete(masterKey.publicKey, domain: _seedsKey);
 
     return _streamedSeedNames();
   }
@@ -89,24 +96,24 @@ class NekotonStorageRepository {
   Future<void> clearSeeds() async {
     await _storage.clearDomain(_seedsKey);
 
-    return _seedsSubject.add({});
+    return _seedNamesSubject.add({});
   }
 
   /// Subject of hidden accounts
-  final _hiddenAccountsSubject = BehaviorSubject<List<String>>();
+  final _hiddenAccountsSubject = BehaviorSubject<List<Address>>();
 
   /// Get previously cached hidden accounts
-  List<String> get hiddenAccounts => _hiddenAccountsSubject.value;
+  List<Address> get hiddenAccounts => _hiddenAccountsSubject.value;
 
   /// Stream of hidden accounts
-  Stream<List<String>> get hiddenAccountsStream => _hiddenAccountsSubject;
+  Stream<List<Address>> get hiddenAccountsStream => _hiddenAccountsSubject;
 
   /// Put last viewed seeds to stream
   Future<void> _streamedHiddenAccounts() async =>
       _hiddenAccountsSubject.add(await readHiddenAccounts());
 
   /// Read from storage list of addresses of accounts that were hidden by user
-  Future<List<String>> readHiddenAccounts() async {
+  Future<List<Address>> readHiddenAccounts() async {
     final accounts = await _storage.get(
       _hiddenAccountsKey,
       domain: _accountSeedPreferencesKey,
@@ -116,11 +123,14 @@ class NekotonStorageRepository {
     }
     final accountsList = jsonDecode(accounts) as List<dynamic>;
 
-    return accountsList.cast<String>();
+    return accountsList
+        .cast<String>()
+        .map((address) => Address(address: address))
+        .toList();
   }
 
   /// Hide account addresses so it won't be displayed at accounts list
-  Future<void> hideAccounts(List<String> addresses) async {
+  Future<void> hideAccounts(List<Address> addresses) async {
     final accounts = await readHiddenAccounts();
     accounts.addAll(addresses);
     await _storage.set(
@@ -133,7 +143,7 @@ class NekotonStorageRepository {
   }
 
   /// Show account addresses so it will be displayed at accounts list
-  Future<void> showAccounts(List<String> addresses) async {
+  Future<void> showAccounts(List<Address> addresses) async {
     final accounts = await readHiddenAccounts();
     accounts.removeWhere((a) => addresses.contains(a));
     await _storage.set(
@@ -156,14 +166,15 @@ class NekotonStorageRepository {
   }
 
   /// Subject of external accounts
-  final _externalAccountsSubject = BehaviorSubject<Map<String, List<String>>>();
+  final _externalAccountsSubject =
+      BehaviorSubject<Map<PublicKey, List<Address>>>();
 
   /// Get previously cached external accounts
-  Map<String, List<String>> get externalAccounts =>
+  Map<PublicKey, List<Address>> get externalAccounts =>
       _externalAccountsSubject.value;
 
   /// Stream of external accounts
-  Stream<Map<String, List<String>>> get externalAccountsStream =>
+  Stream<Map<PublicKey, List<Address>>> get externalAccountsStream =>
       _externalAccountsSubject;
 
   /// Put last viewed seeds to stream
@@ -172,24 +183,27 @@ class NekotonStorageRepository {
 
   /// Read from storage external accounts where key - public key,
   /// value - list of addresses of accounts
-  Future<Map<String, List<String>>> readExternalAccounts() async {
+  Future<Map<PublicKey, List<Address>>> readExternalAccounts() async {
     final accounts = await _storage.getDomain(domain: _externalAccountsKey);
 
     return accounts.map(
       (key, value) => MapEntry(
-        key,
-        (jsonDecode(value) as List<dynamic>).cast<String>(),
+        PublicKey(publicKey: key),
+        (jsonDecode(value) as List<dynamic>)
+            .cast<String>()
+            .map((address) => Address(address: address))
+            .toList(),
       ),
     );
   }
 
   /// Add external account for specified [publicKey]
   Future<void> addExternalAccount({
-    required String publicKey,
-    required String address,
+    required PublicKey publicKey,
+    required Address address,
   }) async {
     final accountsEncoded = await _storage.get(
-      publicKey,
+      publicKey.publicKey,
       domain: _externalAccountsKey,
     );
 
@@ -201,7 +215,7 @@ class NekotonStorageRepository {
           ];
 
     await _storage.set(
-      publicKey,
+      publicKey.publicKey,
       jsonEncode(accounts),
       domain: _externalAccountsKey,
     );
@@ -211,11 +225,11 @@ class NekotonStorageRepository {
 
   /// Update list of accounts for specified [publicKey].
   Future<void> updateExternalAccounts({
-    required String publicKey,
+    required PublicKey publicKey,
     required List<String> accounts,
   }) async {
     await _storage.set(
-      publicKey,
+      publicKey.publicKey,
       jsonEncode(accounts),
       domain: _externalAccountsKey,
     );
@@ -225,21 +239,23 @@ class NekotonStorageRepository {
 
   /// Remove external account for specified [publicKey]
   Future<void> removeExternalAccounts({
-    required String publicKey,
-    required List<String> addresses,
+    required PublicKey publicKey,
+    required List<Address> addresses,
   }) async {
     final accountsEncoded = await _storage.get(
-      publicKey,
+      publicKey.publicKey,
       domain: _externalAccountsKey,
     );
 
     final accounts = accountsEncoded == null
         ? List<String>.empty()
-        : (jsonDecode(accountsEncoded) as List<dynamic>).cast<String>()
-      ..removeWhere((a) => addresses.contains(a));
+        : ((jsonDecode(accountsEncoded) as List<dynamic>).cast<String>())
+      ..removeWhere(
+        (a) => addresses.map((address) => address.address).contains(a),
+      );
 
     await _storage.set(
-      publicKey,
+      publicKey.publicKey,
       jsonEncode(accounts),
       domain: _externalAccountsKey,
     );
