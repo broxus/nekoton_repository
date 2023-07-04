@@ -3,6 +3,43 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## 2023-07-04
+
+### Changes
+
+---
+
+Packages with breaking changes:
+
+ - [`nekoton_repository` - `v0.1.1-dev.5`](#nekoton_repository---v011-dev5)
+
+Packages with other changes:
+
+ - There are no other changes in this release.
+
+---
+
+#### `nekoton_repository` - `v0.1.1-dev.5`
+
+ - **FIX**: update props for seed (#12).
+ - **FEAT**: clear nekoton directly (#15).
+ - **FEAT**: add rename method to Seed (#10).
+ - **FEAT**: add seed names to Seed instance (#7).
+ - **FEAT**: seed detail (#4).
+ - **BREAKING** **REFACTOR**: add PublicKey and Address dataclasses (#14).
+
+## 0.1.1-dev.5
+
+> Note: This release has breaking changes.
+
+ - **FIX**: update props for seed (#12).
+ - **FEAT**: clear nekoton directly (#15).
+ - **FEAT**: add rename method to Seed (#10).
+ - **FEAT**: add seed names to Seed instance (#7).
+ - **FEAT**: seed detail (#4).
+ - **BREAKING** **REFACTOR**: add PublicKey and Address dataclasses (#14).
+
+
 ## 2023-07-03
 
 ### Changes
