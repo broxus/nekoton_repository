@@ -15,14 +15,14 @@ jobs:
       - name: Create GitHub release
         uses: softprops/action-gh-release@v1
 
-  # publish_pubdev:
-  #   permissions:
-  #     id-token: write # This is required for authentication using OIDC
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - uses: actions/checkout@v3
-  #     - uses: dart-lang/setup-dart@v1
-  #     - uses: subosito/flutter-action@v2
+  publish_pubdev:
+    permissions:
+      id-token: write # This is required for authentication using OIDC
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: dart-lang/setup-dart@v1
+      - uses: subosito/flutter-action@v2
       
-  #     - name: Publish
-  #       run: flutter pub publish --force
+      - name: Publish
+        run: flutter pub publish --force
