@@ -4,6 +4,10 @@ packages:
   - .
 
 scripts:
+  build_and_test:
+    description: GA main script
+    run: bash scripts/build_and_test.sh
+
   codegen:
     description: Generate code for all packages
     exec: "flutter packages pub run build_runner build --delete-conflicting-outputs"
