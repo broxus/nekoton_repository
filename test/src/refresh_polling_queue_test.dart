@@ -19,12 +19,6 @@ void main() {
   const queueTimeout = Duration(seconds: 2);
   const refresherDelay = Duration(seconds: 1);
 
-  /// We must use this method except of thenThrow because it will broke
-  /// awaiting of refresh method. THIS IS SOME BUG IDK HOW TO FIX IT
-  Future<void> throwError() async {
-    throw Exception('ERROR');
-  }
-
   group('RefreshPollingQueue', () {
     test('Request refresh by runSingleRefresh', () async {
       final refresher = RefresherImplementation();
@@ -54,16 +48,21 @@ void main() {
       );
       when(callback.call).thenReturn(null);
 
-      RefreshPollingQueue(
+      final queue = RefreshPollingQueue(
         refresher: refresher,
         refreshInterval: queueTimeout,
         refreshCompleteCallback: callback.call,
-      ).startPolling();
+      )..startPolling();
 
-      // 7.2 secs lasts, refreshed 3 times
-      await Future<void>.delayed(queueTimeout * 3.6);
-      verify(refresher.refresh).called(3);
-      verify(callback.call).called(3);
+      // 6.2 secs lasts, refreshed 2 times
+      await Future<void>.delayed(
+        queueTimeout * 2 +
+            refresherDelay * 2 +
+            const Duration(milliseconds: 300),
+      );
+      queue.stopPolling();
+      verify(refresher.refresh).called(2);
+      verify(callback.call).called(2);
     });
 
     test('Request refresh by polling with refreshImmediately=true', () async {
@@ -72,14 +71,19 @@ void main() {
         (_) => Future<void>.delayed(refresherDelay),
       );
 
-      RefreshPollingQueue(
+      final queue = RefreshPollingQueue(
         refresher: refresher,
         refreshInterval: queueTimeout,
-      ).startPolling(refreshImmediately: true);
+      )..startPolling(refreshImmediately: true);
 
-      // 7 secs lasts, refreshed 4 times
-      await Future<void>.delayed(queueTimeout * 3.5);
-      verify(refresher.refresh).called(4);
+      // 7.3 secs lasts, refreshed 3 times
+      await Future<void>.delayed(
+        queueTimeout * 2 +
+            refresherDelay * 3 +
+            const Duration(milliseconds: 300),
+      );
+      queue.stopPolling();
+      verify(refresher.refresh).called(3);
     });
 
     test('Refresh when refresher takes more time when polling', () async {
@@ -102,7 +106,7 @@ void main() {
       final refresher = RefresherImplementation();
       final callback = RefreshCompleteCallback();
 
-      when(refresher.refresh).thenAnswer((_) => throwError());
+      when(refresher.refresh).thenThrow(Exception('ERROR'));
       when(() => callback.call(any(that: isNotNull))).thenReturn(null);
 
       RefreshPollingQueue(
@@ -121,7 +125,7 @@ void main() {
       final refresher = RefresherImplementation();
       final callback = RefreshCompleteCallback();
 
-      when(refresher.refresh).thenAnswer((_) => throwError());
+      when(refresher.refresh).thenThrow(Exception('ERROR'));
       when(() => callback.call(any(that: isNotNull))).thenReturn(null);
 
       RefreshPollingQueue(

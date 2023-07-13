@@ -5,6 +5,6 @@ const maxLastSelectedSeeds = 4;
 const defaultWorkchainId = 0;
 
 extension ExpireAtToTimeout on DateTime {
-  /// Convert timeout duration from current moment and int microseconds
+  /// Convert timeout duration from current moment
   Duration toTimeout() => difference(DateTime.now());
 }

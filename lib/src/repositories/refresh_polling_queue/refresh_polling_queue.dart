@@ -1,8 +1,5 @@
 import 'dart:async';
-import 'dart:collection';
-
 import 'package:logging/logging.dart';
-
 import 'package:nekoton_repository/nekoton_repository.dart';
 
 /// Callback that will be called during every refresh completes.
@@ -25,15 +22,14 @@ class RefreshPollingQueue {
 
   static final _logger = Logger('RefreshPollingQueue');
 
-  /// Queue of refresh requests.
-  /// Requests adds to the queue by calling [_requestRefresh], so there can be
-  /// many requests in the queue, but after taking next request, the queue will
-  /// be cleared.
+  /// Flag for refresh requests.
+  /// Flag is rising by calling [startPolling], this means, that polling
+  /// queue must start refresh operation when possible.
   ///
-  /// Items from the queue will be removed by calling [_checkQueue] method.
-  /// This method will be called after refresh is finished or after adding new
-  /// request by calling [_requestRefresh].
-  final _queue = Queue<void>();
+  /// Flag will be omitted by calling [stopPolling] method.
+  ///
+  /// This means, that refreshes will be called until this flag is raised.
+  bool _hasRequest = false;
 
   /// If true, then polling will be stopped after error during refresh.
   /// To rerun process, you should call [startPolling] again.
@@ -48,8 +44,8 @@ class RefreshPollingQueue {
   /// Callback that will be called every time, when refresh completes.
   /// This can be helpful to handle some states during polling.
   ///
-  /// Result sends before checking for queue, so you can stop polling in
-  /// callback if needed.
+  /// Result sends before checking for [_hasRequest] flag, so you can stop
+  /// polling in callback if needed.
   ///
   /// !!! This callback calls with both successful result or error.
   ///     If completed with error, callback argument will be sent.
@@ -58,11 +54,20 @@ class RefreshPollingQueue {
   /// Completer that indicates that current refresh operation in progress.
   Completer<void>? _refreshCompleter;
 
-  /// Timer that calls [refresher].refresh method
+  /// Timer that calls [refresher].refresh method after time passed.
+  ///
+  /// This timer is not periodic, it will be created and launched every time,
+  /// when refresh operation completes.
+  ///
+  /// To start timer work, use [startPolling].
   Timer? _timer;
 
-  /// Get if polling is active now
-  bool get isPolling => _timer != null && _timer!.isActive;
+  /// Get if polling is active now.
+  /// Timer can be paused after it was completed, but not launched again after
+  /// the refresh operation completion, so we check both states.
+  bool get isPolling =>
+      _timer != null && _timer!.isActive ||
+      _refreshCompleter != null && !_refreshCompleter!.isCompleted;
 
   /// Returns future that completes when current refresh is finished.
   /// Or empty future if there is no refresh action.
@@ -72,54 +77,70 @@ class RefreshPollingQueue {
       _isRefreshing() ? _refreshCompleter?.future : Future.value();
 
   /// Request only one refresh operation without polling.
-  void runSingleRefresh() => _requestRefresh();
+  void runSingleRefresh() {
+    _hasRequest = true;
+    _requestRefresh();
+    _hasRequest = false;
+  }
 
-  /// Start refreshing by polling.
-  /// [refreshImmediately] will try to call refresh immediately.
+  /// Start refreshing by polling by launching timer or immediately calling
+  /// refresh operation.
+  /// [refreshImmediately] will try to call refresh immediately without creating
+  /// timer.
+  /// If [refreshImmediately] is false, then timer will be created and launched.
+  /// This timer recreates every time, when refresh operation completes, so
+  /// we have next workflow:
+  /// 1) Timer created (3 secs)
+  /// 2) Refresh operation completed (5 secs)
+  /// 3) Timer created (3 secs)
+  /// and etc.
+  /// So for timer 3 secs and refresh duration 5 secs, we will have 8 secs for
+  /// single flow.
+  /// If [refreshImmediately] is true, then 1-st step of workflow above will be
+  /// omitted and started with refresh operation.
   void startPolling({bool refreshImmediately = false}) {
-    if (_timer != null) {
+    if (_hasRequest) {
       return;
     }
 
-    _timer = Timer.periodic(
-      refreshInterval,
-      (_) => _requestRefresh(),
-    );
+    _hasRequest = true;
 
     if (refreshImmediately) {
       _requestRefresh();
+    } else {
+      _createTimer();
     }
   }
 
+  /// Create delay timer after which refresh will be called.
+  /// This timer calls in the beginning of [startPolling] or in the end of
+  /// refresh operation.
+  void _createTimer() {
+    if (!_hasRequest) return;
+
+    _timer = Timer(refreshInterval, _requestRefresh);
+  }
+
   /// Stop refresh polling.
-  ///
-  /// [clearQueue] allows to clear all requested refreshes.
-  void stopPolling({bool clearQueue = true}) {
+  void stopPolling() {
     _timer?.cancel();
     _timer = null;
-
-    if (clearQueue) _queue.clear();
+    _hasRequest = false;
   }
 
   /// ---------------------------------------------------
   /// Internal methods
   /// ---------------------------------------------------
 
-  /// Request refreshing by adding value to the queue and try to refresh if
-  /// if possible.
+  /// Try to refresh if possible.
   void _requestRefresh() {
-    _queue.add(null);
-    _checkQueue();
-  }
+    _timer?.cancel();
+    _timer = null;
 
-  /// Check if we have refresh requests and if we can refresh.
-  /// If we can refresh then refresh and clear requests from the queue.
-  void _checkQueue() {
-    if (_queue.isEmpty) return;
+    if (!_hasRequest) return;
 
     if (_isRefreshing()) return;
 
-    _queue.clear();
     // ignore to avoid throwing exception to startPolling and runSingleRefresh
     _refresh().ignore();
   }
@@ -157,7 +178,7 @@ class RefreshPollingQueue {
       refreshCompleteCallback?.call((e, s));
     } finally {
       _refreshCompleter = null;
-      _checkQueue();
+      _createTimer();
     }
   }
 }

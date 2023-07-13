@@ -2,7 +2,7 @@ import 'package:nekoton_repository/nekoton_repository.dart';
 
 /// This is a repository that lets you subscribe for TonWallet and call its
 /// methods for communication with blockchain.
-/// You can also and refresh its state by polling or pause it.
+/// You can also refresh its state by polling or pause it.
 ///
 /// Repository will store all instances of wallet, so you do not need to
 /// unsubscribe from it directly, it will be better to call [unsubscribe] method
