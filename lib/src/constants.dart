@@ -3,3 +3,8 @@ const maxLastSelectedSeeds = 4;
 
 /// Default workchain for loading accounts
 const defaultWorkchainId = 0;
+
+extension ExpireAtToTimeout on DateTime {
+  /// Convert timeout duration from current moment
+  Duration toTimeout() => difference(DateTime.now());
+}

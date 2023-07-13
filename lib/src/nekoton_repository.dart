@@ -10,7 +10,7 @@ import 'package:rxdart/rxdart.dart';
 /// Nekoton repository package.
 ///
 /// To look through different modules logic, see [TransportRepository],
-/// [SeedKeyRepository], [AccountRepository].
+/// [SeedKeyRepository], [AccountRepository], [TonWalletRepository].
 ///
 /// To full initialization of repository, use [setupLogger] ->
 /// [setupNekotonAndStorage] -> [updateTransport] -> [setupSeedListUpdating].
@@ -18,7 +18,11 @@ import 'package:rxdart/rxdart.dart';
 /// {@endtemplate}
 @singleton
 class NekotonRepository
-    with TransportRepositoryImpl, SeedKeyRepositoryImpl, AccountRepositoryImpl {
+    with
+        TransportRepositoryImpl,
+        SeedKeyRepositoryImpl,
+        AccountRepositoryImpl,
+        TonWalletRepositoryImpl {
   /// {@macro nekoton_repository}
   NekotonRepository();
 
@@ -48,6 +52,12 @@ class NekotonRepository
   @override
   NekotonStorageRepository get storageRepository => _storageRepository;
 
+  /// Storage that stores ton wallet transactions and information.
+  late final TonWalletTransactionsStorage _tonWalletStorage;
+
+  @override
+  TonWalletTransactionsStorage get tonWalletStorage => _tonWalletStorage;
+
   // TODO(alex-a4): uncomment when ledger will be implemented
   // late final fnb.LedgerConnection _ledgerConnection;
 
@@ -69,8 +79,10 @@ class NekotonRepository
   /// Setup nekoton storages
   Future<void> setupNekotonAndStorage({
     required NekotonStorageRepository storage,
+    required TonWalletTransactionsStorage tonWalletStorage,
   }) async {
     _storageRepository = storage;
+    _tonWalletStorage = tonWalletStorage;
 
     await fnb.initRustToDartCaller();
     _nekotonStorage = await Storage.create(

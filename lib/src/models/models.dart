@@ -5,4 +5,5 @@ export 'seed.dart';
 export 'seed_key.dart';
 export 'seed_list.dart';
 export 'seed_utils.dart';
+export 'ton_wallet_related/ton_wallet_related.dart';
 export 'transport_strategy.dart';
