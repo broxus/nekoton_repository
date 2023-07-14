@@ -20,6 +20,10 @@ class NekotonRepositoryPackageModule extends _i1.MicroPackageModule {
     gh.singleton<_i3.NekotonRepository>(_i3.NekotonRepository());
     gh.singleton<_i4.SeedKeyRepository>(
         nekotonRepositoryModule.registerSeedKey(gh<_i4.NekotonRepository>()));
+    gh.singleton<_i4.TokenWalletRepository>(nekotonRepositoryModule
+        .registerTokenWallet(gh<_i4.NekotonRepository>()));
+    gh.singleton<_i4.TonWalletRepository>(
+        nekotonRepositoryModule.registerTonWallet(gh<_i4.NekotonRepository>()));
     gh.singleton<_i4.TransportRepository>(
         nekotonRepositoryModule.registerTransport(gh<_i4.NekotonRepository>()));
     gh.singleton<_i4.AccountRepository>(

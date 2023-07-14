@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/foundation.dart';
+import 'package:get_it/get_it.dart';
 import 'package:logging/logging.dart';
 import 'package:nekoton_repository/nekoton_repository.dart';
 import 'package:nekoton_repository/src/repositories/ton_wallet_repository/ton_wallet_gql_block_poller.dart';
@@ -71,7 +72,7 @@ mixin TonWalletRepositoryImpl implements TonWalletRepository {
       walletType: asset.contract,
     );
 
-    return addWallet(wallet);
+    return addWalletInst(wallet);
   }
 
   @override
@@ -83,7 +84,7 @@ mixin TonWalletRepositoryImpl implements TonWalletRepository {
       address: address,
     );
 
-    return addWallet(wallet);
+    return addWalletInst(wallet);
   }
 
   @override
@@ -97,7 +98,7 @@ mixin TonWalletRepositoryImpl implements TonWalletRepository {
       existingWallet: existingWallet,
     );
 
-    return addWallet(wallet);
+    return addWalletInst(wallet);
   }
 
   @override
@@ -134,7 +135,7 @@ mixin TonWalletRepositoryImpl implements TonWalletRepository {
 
   @override
   void unsubscribe(Address address) {
-    final wallet = removeWallet(address);
+    final wallet = removeWalletInst(address);
     pollingQueues.remove(address)?.stopPolling();
     wallet?.dispose();
   }
@@ -146,8 +147,9 @@ mixin TonWalletRepositoryImpl implements TonWalletRepository {
     for (final wallet in wallets) {
       wallet.dispose();
     }
-    // TODO(alex-a4): trigger closing all subscriptions for TokenWallets
     _walletsSubject.add({});
+
+    GetIt.instance<TokenWalletRepository>().closeAllTokenSubscriptions();
   }
 
   @override
@@ -377,10 +379,11 @@ mixin TonWalletRepositoryImpl implements TonWalletRepository {
         .toList();
   }
 
+  @override
   TonWallet getWallet(Address address) {
     final wallet = walletsMap[address];
     if (wallet == null) {
-      throw Exception('Wallet $address not found to prepare deploy');
+      throw Exception('TonWallet $address not found');
     }
 
     return wallet;
@@ -391,7 +394,7 @@ mixin TonWalletRepositoryImpl implements TonWalletRepository {
   /// [subscribeByAddress] or [subscribeByExistingWallet].
   @protected
   @visibleForTesting
-  TonWallet addWallet(TonWallet wallet) {
+  TonWallet addWalletInst(TonWallet wallet) {
     final wallets = walletsMap;
     wallets[wallet.address] = wallet;
     walletSubscriptions[wallet.address] = _createWalletSubscription(wallet);
@@ -404,7 +407,7 @@ mixin TonWalletRepositoryImpl implements TonWalletRepository {
   /// You must not call this method directly form app, use [unsubscribe].
   @protected
   @visibleForTesting
-  TonWallet? removeWallet(Address address) {
+  TonWallet? removeWalletInst(Address address) {
     final wallets = walletsMap;
     final wallet = wallets.remove(address);
     walletSubscriptions.remove(address)?.close();

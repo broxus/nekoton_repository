@@ -22,7 +22,8 @@ class NekotonRepository
         TransportRepositoryImpl,
         SeedKeyRepositoryImpl,
         AccountRepositoryImpl,
-        TonWalletRepositoryImpl {
+        TonWalletRepositoryImpl,
+        TokenWalletRepositoryImpl {
   /// {@macro nekoton_repository}
   NekotonRepository();
 
@@ -57,6 +58,11 @@ class NekotonRepository
 
   @override
   TonWalletTransactionsStorage get tonWalletStorage => _tonWalletStorage;
+
+  late final TokenWalletTransactionsStorage _tokenWalletStorage;
+
+  @override
+  TokenWalletTransactionsStorage get tokenWalletStorage => _tokenWalletStorage;
 
   // TODO(alex-a4): uncomment when ledger will be implemented
   // late final fnb.LedgerConnection _ledgerConnection;
