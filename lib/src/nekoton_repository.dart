@@ -86,9 +86,11 @@ class NekotonRepository
   Future<void> setupNekotonAndStorage({
     required NekotonStorageRepository storage,
     required TonWalletTransactionsStorage tonWalletStorage,
+    required TokenWalletTransactionsStorage tokenWalletStorage,
   }) async {
     _storageRepository = storage;
     _tonWalletStorage = tonWalletStorage;
+    _tokenWalletStorage = tokenWalletStorage;
 
     await fnb.initRustToDartCaller();
     _nekotonStorage = await Storage.create(
