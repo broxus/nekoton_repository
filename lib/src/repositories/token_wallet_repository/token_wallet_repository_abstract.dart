@@ -105,5 +105,10 @@ abstract class TokenWalletRepository {
   /// before.
   TokenWallet getTokenWallet(Address owner, Address rootTokenContract);
 
-// TODO(alex-a4): add mapping transactions
+  /// Map list of transactions for TokenWallet to list of
+  /// [TokenWalletOrdinaryTransaction].
+  List<TokenWalletOrdinaryTransaction> mapOrdinaryTokenTransactions({
+    required Address rootTokenContract,
+    required List<TransactionWithData<TokenWalletTransaction?>> transactions,
+  });
 }

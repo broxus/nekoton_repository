@@ -323,4 +323,102 @@ mixin TokenWalletRepositoryImpl implements TokenWalletRepository {
       ),
     );
   }
+
+  @override
+  List<TokenWalletOrdinaryTransaction> mapOrdinaryTokenTransactions({
+    required Address rootTokenContract,
+    required List<TransactionWithData<TokenWalletTransaction?>> transactions,
+  }) =>
+      transactions.where((e) => e.data != null).map(
+        (e) {
+          final lt = e.transaction.id.lt;
+
+          final prevTransactionLt = e.transaction.prevTransactionId?.lt;
+
+          final sender = e.data!.maybeWhen(
+                incomingTransfer: (tokenIncomingTransfer) =>
+                    tokenIncomingTransfer.senderAddress,
+                orElse: () => null,
+              ) ??
+              e.transaction.inMessage.src;
+
+          final recipient = e.data!.maybeWhen(
+                outgoingTransfer: (tokenOutgoingTransfer) =>
+                    tokenOutgoingTransfer.to.data,
+                orElse: () => null,
+              ) ??
+              e.transaction.outMessages.firstOrNull?.dst;
+
+          final value = e.data!.when(
+            incomingTransfer: (tokenIncomingTransfer) =>
+                tokenIncomingTransfer.tokens,
+            outgoingTransfer: (tokenOutgoingTransfer) =>
+                tokenOutgoingTransfer.tokens,
+            swapBack: (tokenSwapBack) => tokenSwapBack.tokens,
+            accept: (data) => data,
+            transferBounced: (data) => data,
+            swapBackBounced: (data) => data,
+          );
+
+          final isOutgoing = e.data!.when(
+            incomingTransfer: (tokenIncomingTransfer) => false,
+            outgoingTransfer: (tokenOutgoingTransfer) => true,
+            swapBack: (tokenSwapBack) => true,
+            accept: (data) => false,
+            transferBounced: (data) => false,
+            swapBackBounced: (data) => false,
+          );
+
+          final address =
+              (isOutgoing ? recipient : sender) ?? rootTokenContract;
+
+          final date = e.transaction.createdAt;
+
+          final fees = e.transaction.totalFees;
+
+          final hash = e.transaction.id.hash;
+
+          TokenIncomingTransfer? incomingTransfer;
+
+          TokenOutgoingTransfer? outgoingTransfer;
+
+          TokenSwapBack? swapBack;
+
+          Fixed? accept;
+
+          Fixed? transferBounced;
+
+          Fixed? swapBackBounced;
+
+          e.data!.when(
+            incomingTransfer: (tokenIncomingTransfer) =>
+                incomingTransfer = tokenIncomingTransfer,
+            outgoingTransfer: (tokenOutgoingTransfer) =>
+                outgoingTransfer = tokenOutgoingTransfer,
+            swapBack: (tokenSwapBack) => swapBack = tokenSwapBack,
+            accept: (data) => accept = data,
+            transferBounced: (data) => transferBounced = data,
+            swapBackBounced: (data) => swapBackBounced = data,
+          );
+
+          final transaction = TokenWalletOrdinaryTransaction(
+            lt: lt,
+            prevTransactionLt: prevTransactionLt,
+            isOutgoing: isOutgoing,
+            value: value,
+            address: address,
+            date: date,
+            fees: fees,
+            hash: hash,
+            incomingTransfer: incomingTransfer,
+            outgoingTransfer: outgoingTransfer,
+            swapBack: swapBack,
+            accept: accept,
+            transferBounced: transferBounced,
+            swapBackBounced: swapBackBounced,
+          );
+
+          return transaction;
+        },
+      ).toList();
 }

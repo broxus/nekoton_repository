@@ -172,5 +172,69 @@ abstract class TonWalletRepository {
   /// before.
   TonWallet getWallet(Address address);
 
-// TODO(alex-a4): add mapping transactions
+  /// Map list of transactions for TonWallet to list of completed transactions.
+  ///
+  /// [transactions] - list of transactions from
+  ///   [TonWalletTransactionsStorage.addFoundTransactions].
+  List<TonWalletOrdinaryTransaction> mapOrdinaryTransactions({
+    required Address walletAddress,
+    required List<TransactionWithData<TransactionAdditionalInfo?>> transactions,
+  });
+
+  /// Map list of transactions for TonWallet to list of pending transactions.
+  ///
+  /// [pendingTransactions] - list of transactions from
+  ///   [TonWalletTransactionsStorage.addPendingTransaction].
+  List<TonWalletPendingTransaction> mapPendingTransactions({
+    required Address walletAddress,
+    required List<PendingTransactionWithData> pendingTransactions,
+  });
+
+  /// Map list of transactions for TonWallet to list of expired transactions.
+  ///
+  /// [expiredTransactions] - list of transactions from
+  ///   [TonWalletTransactionsStorage.addExpiredTransaction].
+  List<TonWalletExpiredTransaction> mapExpiredTransactions({
+    required Address walletAddress,
+    required List<PendingTransactionWithData> expiredTransactions,
+  });
+
+  /// Map list of transactions for TonWallet to list multisig ordinary
+  /// transactions.
+  ///
+  /// [transactions] - list of transactions from
+  ///   [TonWalletTransactionsStorage.addFoundTransactions].
+  /// [multisigPendingTransactions] - list of transactions from
+  ///   [TonWallet.getUnconfirmedTransactions]
+  List<TonWalletMultisigOrdinaryTransaction> mapMultisigOrdinaryTransactions({
+    required Address walletAddress,
+    required List<TransactionWithData<TransactionAdditionalInfo?>> transactions,
+    required List<MultisigPendingTransaction> multisigPendingTransactions,
+  });
+
+  /// Map list of transactions for TonWallet to list multisig pending
+  /// transactions.
+  ///
+  /// [transactions] - list of transactions from
+  ///   [TonWalletTransactionsStorage.addFoundTransactions].
+  /// [multisigPendingTransactions] - list of transactions from
+  ///   [TonWallet.getUnconfirmedTransactions]
+  List<TonWalletMultisigPendingTransaction> mapMultisigPendingTransactions({
+    required Address walletAddress,
+    required List<TransactionWithData<TransactionAdditionalInfo?>> transactions,
+    required List<MultisigPendingTransaction> multisigPendingTransactions,
+  });
+
+  /// Map list of transactions for TonWallet to list multisig expired
+  /// transactions.
+  ///
+  /// [transactions] - list of transactions from
+  ///   [TonWalletTransactionsStorage.addFoundTransactions].
+  /// [multisigPendingTransactions] - list of transactions from
+  ///   [TonWallet.getUnconfirmedTransactions]
+  List<TonWalletMultisigExpiredTransaction> mapMultisigExpiredTransactions({
+    required Address walletAddress,
+    required List<TransactionWithData<TransactionAdditionalInfo?>> transactions,
+    required List<MultisigPendingTransaction> multisigPendingTransactions,
+  });
 }
