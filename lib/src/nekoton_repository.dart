@@ -22,7 +22,8 @@ class NekotonRepository
         TransportRepositoryImpl,
         SeedKeyRepositoryImpl,
         AccountRepositoryImpl,
-        TonWalletRepositoryImpl {
+        TonWalletRepositoryImpl,
+        TokenWalletRepositoryImpl {
   /// {@macro nekoton_repository}
   NekotonRepository();
 
@@ -58,6 +59,11 @@ class NekotonRepository
   @override
   TonWalletTransactionsStorage get tonWalletStorage => _tonWalletStorage;
 
+  late final TokenWalletTransactionsStorage _tokenWalletStorage;
+
+  @override
+  TokenWalletTransactionsStorage get tokenWalletStorage => _tokenWalletStorage;
+
   // TODO(alex-a4): uncomment when ledger will be implemented
   // late final fnb.LedgerConnection _ledgerConnection;
 
@@ -80,9 +86,11 @@ class NekotonRepository
   Future<void> setupNekotonAndStorage({
     required NekotonStorageRepository storage,
     required TonWalletTransactionsStorage tonWalletStorage,
+    required TokenWalletTransactionsStorage tokenWalletStorage,
   }) async {
     _storageRepository = storage;
     _tonWalletStorage = tonWalletStorage;
+    _tokenWalletStorage = tokenWalletStorage;
 
     await fnb.initRustToDartCaller();
     _nekotonStorage = await Storage.create(

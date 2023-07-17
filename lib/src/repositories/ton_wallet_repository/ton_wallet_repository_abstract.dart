@@ -150,5 +150,11 @@ abstract class TonWalletRepository {
   /// If you need put current key at 1-st place, you can sort it manually.
   List<PublicKey>? localCustodians(Address address);
 
+  /// Get instance of wallet that was added by [subscribe], [subscribeByAddress]
+  /// or [subscribeByExistingWallet].
+  /// This method will throw error if there is no wallet that had been added
+  /// before.
+  TonWallet getWallet(Address address);
+
 // TODO(alex-a4): add mapping transactions
 }

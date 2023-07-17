@@ -15,4 +15,12 @@ abstract class NekotonRepositoryModule {
   @singleton
   AccountRepository registerAccounts(NekotonRepository repository) =>
       repository;
+
+  @singleton
+  TonWalletRepository registerTonWallet(NekotonRepository repository) =>
+      repository;
+
+  @singleton
+  TokenWalletRepository registerTokenWallet(NekotonRepository repository) =>
+      repository;
 }

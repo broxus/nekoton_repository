@@ -85,7 +85,7 @@ void main() {
       when(() => wallet.onStateChangedStream).thenAnswer((_) => stateStream);
       when(() => wallet.address).thenReturn(address);
 
-      repository.addWallet(wallet);
+      repository.addWalletInst(wallet);
 
       expect(repository.walletsMap[address], wallet);
       expect(repository.walletSubscriptions[address], isNotNull);
@@ -107,8 +107,8 @@ void main() {
       when(() => wallet.address).thenReturn(address);
 
       repository
-        ..addWallet(wallet)
-        ..removeWallet(address);
+        ..addWalletInst(wallet)
+        ..removeWalletInst(address);
 
       expect(repository.walletsMap[address], isNull);
       expect(repository.walletSubscriptions[address], isNull);
@@ -135,7 +135,7 @@ void main() {
       repository.pollingQueues[address] = poller;
 
       repository
-        ..addWallet(wallet)
+        ..addWalletInst(wallet)
         ..unsubscribe(address);
 
       expect(repository.walletsMap[address], isNull);
@@ -171,7 +171,7 @@ void main() {
       repository.pollingQueues[duplicateAddress] = poller2;
 
       repository
-        ..addWallet(wallet)
+        ..addWalletInst(wallet)
         ..stopPolling();
 
       expect(repository.pollingQueues[address], isNull);
@@ -201,7 +201,7 @@ void main() {
       repository.pollingQueues[duplicateAddress] = oldPoller;
 
       repository
-        ..addWallet(wallet)
+        ..addWalletInst(wallet)
         ..startPolling(address);
 
       expect(repository.pollingQueues[address], isNotNull);
@@ -228,7 +228,7 @@ void main() {
       repository.pollingQueues[duplicateAddress] = oldPoller;
 
       repository
-        ..addWallet(wallet)
+        ..addWalletInst(wallet)
         ..startPolling(address, stopPrevious: false);
 
       expect(repository.pollingQueues[address], isNotNull);
@@ -362,7 +362,7 @@ void main() {
         refreshInterval: tonWalletRefreshInterval,
       )..startPolling();
       repository.pollingQueues[address] = oldPoller;
-      repository.addWallet(wallet);
+      repository.addWalletInst(wallet);
 
       ///----------------------------
       /// Main flow
@@ -471,7 +471,7 @@ void main() {
         refreshInterval: tonWalletRefreshInterval,
       )..startPolling();
       repository.pollingQueues[address] = oldPoller;
-      repository.addWallet(wallet);
+      repository.addWalletInst(wallet);
 
       ///----------------------------
       /// Main flow
@@ -587,7 +587,7 @@ void main() {
         ),
       ).thenAnswer((_) => Future.value(pendingWithData));
 
-      repository.addWallet(wallet);
+      repository.addWalletInst(wallet);
 
       ///----------------------------
       /// Main flow
@@ -675,7 +675,7 @@ void main() {
         ),
       ).thenAnswer((_) => Future<void>.value());
 
-      repository.addWallet(wallet);
+      repository.addWalletInst(wallet);
 
       ///----------------------------
       /// Main flow
