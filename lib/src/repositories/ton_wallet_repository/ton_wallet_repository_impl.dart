@@ -21,7 +21,15 @@ mixin TonWalletRepositoryImpl implements TonWalletRepository {
 
   TonWalletTransactionsStorage get tonWalletStorage;
 
+  /// Current transport of application
   TransportStrategy get currentTransport;
+
+  /// Last assets that were used for subscription.
+  /// This value is used during [updateSubscriptions] to detect which wallets
+  /// should be unsubscribed and which of them could be used.
+  @protected
+  @visibleForTesting
+  List<TonWalletAsset>? lastUpdatedAssets;
 
   /// Subject that allows listening for wallets subscribing/unsubscribing
   final _walletsSubject = BehaviorSubject<Map<Address, TonWallet>>.seeded({});
@@ -154,14 +162,49 @@ mixin TonWalletRepositoryImpl implements TonWalletRepository {
 
   @override
   Future<void> updateSubscriptions(List<TonWalletAsset> assets) async {
-    closeAllSubscriptions();
-    for (final asset in assets) {
+    final last = lastUpdatedAssets;
+    final toSubscribe = <TonWalletAsset>[];
+    final toUnsubscribe = <TonWalletAsset>[];
+
+    if (last != null) {
+      toUnsubscribe.addAll(
+        // pick all elements from old list, which is not contains in a new list
+        last.where((asset) => !assets.any((a) => a.address == asset.address)),
+      );
+      toSubscribe.addAll(
+        // pick all elements from new list, which is not contains in old list
+        assets.where((a) => !last.any((asset) => asset.address == a.address)),
+      );
+    } else {
+      toSubscribe.addAll(assets);
+    }
+
+    for (final asset in toUnsubscribe) {
+      unsubscribe(asset.address);
+    }
+
+    lastUpdatedAssets = assets;
+
+    for (final asset in toSubscribe) {
       await subscribe(asset);
 
       // Make this pseudo event to allow other operations in event loop
       // to be executed
       await Future<void>.delayed(Duration.zero);
     }
+  }
+
+  @override
+  Future<void> updateTransportSubscriptions() async {
+    closeAllSubscriptions();
+
+    final last = lastUpdatedAssets;
+    if (last == null) return;
+
+    // make null to avoid comparing for subscriptions
+    lastUpdatedAssets = null;
+
+    return updateSubscriptions(last);
   }
 
   @override

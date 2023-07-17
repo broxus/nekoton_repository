@@ -63,10 +63,15 @@ abstract class TonWalletRepository {
   void unsubscribe(Address address);
 
   /// Dispose all existing wallet instances and remove them from repository.
+  ///
+  /// This method automatically calls
+  /// [TokenWalletRepository.closeAllTokenSubscriptions].
   void closeAllSubscriptions();
 
-  /// This is a method to update all subscriptions for wallets if transport
-  /// or list of current active accounts was changed.
+  /// This is a method to update all subscriptions for wallets if list of
+  /// current active accounts was changed.
+  /// To update subscriptions after transport changed,
+  /// use [updateTransportSubscriptions].
   ///
   /// This is a heavy operation that interacts with network, so this method
   /// should not be called often.
@@ -74,6 +79,17 @@ abstract class TonWalletRepository {
   /// !!! This method must be called from app side because repository does not
   /// track current active accounts.
   Future<void> updateSubscriptions(List<TonWalletAsset> assets);
+
+  /// Update subscriptions when transport changed.
+  /// To get new transport, [TransportRepository.currentTransport] should be
+  /// used.
+  /// If subscriptions was not created before this method, then nothing will
+  /// happen.
+  /// To create new subscriptions for accounts, use [updateSubscriptions].
+  ///
+  /// This method automatically calls [closeAllSubscriptions] and then
+  /// recreates subscriptions.
+  Future<void> updateTransportSubscriptions();
 
   /// Prepare wallet with [address] to be deployed.
   /// [expiration] is a timeout after which action will be failed.
@@ -97,7 +113,7 @@ abstract class TonWalletRepository {
   /// and [amount] of tokens.
   ///
   /// To transfer token wallets, it must be calculated via
-  /// <TokenWalletRepository.prepareTransfer> and recalculated amount of
+  /// [TokenWalletRepository.prepareTokenTransfer] and recalculated amount of
   /// original tokens.
   Future<UnsignedMessage> prepareTransfer({
     required Address address,
