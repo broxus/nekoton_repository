@@ -34,6 +34,8 @@ abstract class $TonWalletExpiredTransactionCopyWith<$Res> {
           TonWalletExpiredTransaction>;
   @useResult
   $Res call({Address address, DateTime date, DateTime expireAt});
+
+  $AddressCopyWith<$Res> get address;
 }
 
 /// @nodoc
@@ -50,12 +52,12 @@ class _$TonWalletExpiredTransactionCopyWithImpl<$Res,
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? address = freezed,
+    Object? address = null,
     Object? date = null,
     Object? expireAt = null,
   }) {
     return _then(_value.copyWith(
-      address: freezed == address
+      address: null == address
           ? _value.address
           : address // ignore: cast_nullable_to_non_nullable
               as Address,
@@ -69,6 +71,14 @@ class _$TonWalletExpiredTransactionCopyWithImpl<$Res,
               as DateTime,
     ) as $Val);
   }
+
+  @override
+  @pragma('vm:prefer-inline')
+  $AddressCopyWith<$Res> get address {
+    return $AddressCopyWith<$Res>(_value.address, (value) {
+      return _then(_value.copyWith(address: value) as $Val);
+    });
+  }
 }
 
 /// @nodoc
@@ -81,6 +91,9 @@ abstract class _$$_TonWalletExpiredTransactionCopyWith<$Res>
   @override
   @useResult
   $Res call({Address address, DateTime date, DateTime expireAt});
+
+  @override
+  $AddressCopyWith<$Res> get address;
 }
 
 /// @nodoc
@@ -96,12 +109,12 @@ class __$$_TonWalletExpiredTransactionCopyWithImpl<$Res>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? address = freezed,
+    Object? address = null,
     Object? date = null,
     Object? expireAt = null,
   }) {
     return _then(_$_TonWalletExpiredTransaction(
-      address: freezed == address
+      address: null == address
           ? _value.address
           : address // ignore: cast_nullable_to_non_nullable
               as Address,
@@ -140,15 +153,14 @@ class _$_TonWalletExpiredTransaction implements _TonWalletExpiredTransaction {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$_TonWalletExpiredTransaction &&
-            const DeepCollectionEquality().equals(other.address, address) &&
+            (identical(other.address, address) || other.address == address) &&
             (identical(other.date, date) || other.date == date) &&
             (identical(other.expireAt, expireAt) ||
                 other.expireAt == expireAt));
   }
 
   @override
-  int get hashCode => Object.hash(runtimeType,
-      const DeepCollectionEquality().hash(address), date, expireAt);
+  int get hashCode => Object.hash(runtimeType, address, date, expireAt);
 
   @JsonKey(ignore: true)
   @override
