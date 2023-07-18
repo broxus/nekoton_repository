@@ -170,11 +170,11 @@ mixin TonWalletRepositoryImpl implements TonWalletRepository {
     if (last != null) {
       toUnsubscribe.addAll(
         // pick all elements from old list, which is not contains in a new list
-        last.where((asset) => !assets.any((a) => a.address == asset.address)),
+        last.where((l) => !assets.any((a) => a.address == l.address)),
       );
       toSubscribe.addAll(
         // pick all elements from new list, which is not contains in old list
-        assets.where((a) => !last.any((asset) => asset.address == a.address)),
+        assets.where((a) => !last.any((l) => l.address == a.address)),
       );
     } else {
       toSubscribe.addAll(assets);
