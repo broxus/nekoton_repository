@@ -40,7 +40,7 @@ abstract class TonWalletTransactionsStorage {
   /// [PendingTransaction.messageHash].
   ///
   /// To identify wallet, use [networkId], [group] and [address].
-  Future<PendingTransactionWithData> deletePendingTransaction({
+  Future<PendingTransactionWithData?> deletePendingTransaction({
     required int networkId,
     required String group,
     required Address address,
