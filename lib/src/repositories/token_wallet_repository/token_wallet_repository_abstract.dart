@@ -67,6 +67,17 @@ abstract class TokenWalletRepository {
   /// track current active accounts.
   Future<void> updateTokenSubscriptions(List<AssetsList> accounts);
 
+  /// Update subscriptions when transport changed.
+  /// To get new transport, [TransportRepository.currentTransport] should be
+  /// used.
+  /// If subscriptions was not created before this method, then nothing will
+  /// happen.
+  /// To create new subscriptions for accounts, use [updateTokenSubscriptions].
+  ///
+  /// This method automatically calls [closeAllTokenSubscriptions] and then
+  /// recreates subscriptions in scope of new transport group.
+  Future<void> updateTokenTransportSubscriptions();
+
   /// Prepare transfer of any token from wallet with [owner] and token contract
   /// with [rootTokenContract] to [destination] and [amount] of tokens.
   ///
@@ -94,5 +105,10 @@ abstract class TokenWalletRepository {
   /// before.
   TokenWallet getTokenWallet(Address owner, Address rootTokenContract);
 
-// TODO(alex-a4): add mapping transactions
+  /// Map list of transactions for TokenWallet to list of
+  /// [TokenWalletOrdinaryTransaction].
+  List<TokenWalletOrdinaryTransaction> mapOrdinaryTokenTransactions({
+    required Address rootTokenContract,
+    required List<TransactionWithData<TokenWalletTransaction?>> transactions,
+  });
 }

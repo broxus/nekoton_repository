@@ -13,7 +13,8 @@ import 'package:rxdart/rxdart.dart';
 /// [SeedKeyRepository], [AccountRepository], [TonWalletRepository].
 ///
 /// To full initialization of repository, use [setupLogger] ->
-/// [setupNekotonAndStorage] -> [updateTransport] -> [setupSeedListUpdating].
+/// [setupNekotonAndStorage] -> [updateTransport] -> [setupSeedListUpdating]
+/// -> [setupWalletsSubscriptions].
 ///
 /// {@endtemplate}
 @singleton
@@ -175,6 +176,17 @@ class NekotonRepository
         .listen((names) => _updateSeedList(seedNames: names));
 
     _updateSeedList();
+  }
+
+  /// Start listening for transport changing to update Ton/Token wallets
+  /// subscriptions.
+  void setupWalletsSubscriptions() {
+    // skip 1 to avoid duplicate init because first init should be called
+    // from app side via [updateSubscriptions].
+    currentTransportStream.skip(1).listen((_) async {
+      await updateTransportSubscriptions();
+      await updateTokenTransportSubscriptions();
+    });
   }
 
   /// Helper method that allows update one of incoming param of [buildSeeds].

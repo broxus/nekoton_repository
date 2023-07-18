@@ -18,6 +18,23 @@ mixin TokenWalletRepositoryImpl implements TokenWalletRepository {
   final _tokenWalletsSubject =
       BehaviorSubject<Map<(Address, Address), TokenWallet>>.seeded({});
 
+  /// Last assets that were used for subscription.
+  /// This value is used during [updateTokenSubscriptions] to detect which
+  /// wallets should be unsubscribed and which of them could be used in scope
+  /// of networkGroup.
+  ///
+  /// 1-st item - owner, 2-nd rootTokenContract.
+  @protected
+  @visibleForTesting
+  List<AssetsList>? lastUpdatedTokenAssets;
+
+  /// [Transport.group] that was used last time when subscriptions were created.
+  /// This value is set with [lastUpdatedTokenAssets] and should not be set
+  /// manually.
+  @protected
+  @visibleForTesting
+  String? lastUpdatedNetworkGroup;
+
   /// Subscriptions for wallets, that allows automatically update transactions
   /// and states in storage.
   /// This subscriptions uses [TokenWalletTransactionsStorage] to update data.
@@ -121,25 +138,94 @@ mixin TokenWalletRepositoryImpl implements TokenWalletRepository {
 
   @override
   Future<void> updateTokenSubscriptions(List<AssetsList> accounts) async {
-    closeAllTokenSubscriptions();
-
     final networkGroup = currentTransport.transport.group;
-
     final tokenWallets = accounts
         .map(
           (e) => e.additionalAssets[networkGroup]?.tokenWallets
               .map((el) => (e.tonWallet.address, el.rootTokenContract)),
         )
         .whereNotNull()
-        .expand((e) => e);
+        .expand((e) => e)
+        .toList();
 
-    for (final wallet in tokenWallets) {
+    List<(Address, Address)>? last;
+    if (lastUpdatedTokenAssets != null && lastUpdatedNetworkGroup != null) {
+      last = lastUpdatedTokenAssets!
+          .map(
+            (e) => e.additionalAssets[lastUpdatedNetworkGroup!]?.tokenWallets
+                .map((el) => (e.tonWallet.address, el.rootTokenContract)),
+          )
+          .whereNotNull()
+          .expand((e) => e)
+          .toList();
+    }
+
+    lastUpdatedTokenAssets = accounts;
+    lastUpdatedNetworkGroup = networkGroup;
+
+    return _updateTokenSubscriptionsPairs(tokenWallets, last);
+  }
+
+  /// Update subscriptions for wallets for current transport.
+  /// [tokenWallets] - wallets that should be used in scope of current transport
+  /// [last] - wallets that were used before update in scope of
+  ///   [lastUpdatedNetworkGroup].
+  Future<void> _updateTokenSubscriptionsPairs(
+    List<(Address, Address)> tokenWallets,
+    List<(Address, Address)>? last,
+  ) async {
+    final toSubscribe = <(Address, Address)>[];
+    final toUnsubscribe = <(Address, Address)>[];
+
+    if (last != null) {
+      toUnsubscribe.addAll(
+        // pick all elements from old list, which is not contains in a new list
+        last.where((asset) => !tokenWallets.any((a) => a == asset)),
+      );
+      toSubscribe.addAll(
+        // pick all elements from new list, which is not contains in old list
+        tokenWallets.where((a) => !last.any((asset) => asset == a)),
+      );
+    } else {
+      toSubscribe.addAll(tokenWallets);
+    }
+
+    for (final asset in toUnsubscribe) {
+      unsubscribeToken(asset.$1, asset.$2);
+    }
+
+    for (final wallet in toSubscribe) {
       await subscribeToken(owner: wallet.$1, rootTokenContract: wallet.$2);
 
       // Make this pseudo event to allow other operations in event loop
       // to be executed
       await Future<void>.delayed(Duration.zero);
     }
+  }
+
+  @override
+  Future<void> updateTokenTransportSubscriptions() async {
+    closeAllTokenSubscriptions();
+
+    final last = lastUpdatedTokenAssets;
+    final lastGroup = lastUpdatedNetworkGroup;
+    if (last == null || lastGroup == null) return;
+
+    // update only last network group, because accounts are same
+    lastUpdatedNetworkGroup = currentTransport.transport.group;
+
+    // assets in scope of new group, but from old list
+    final networkGroup = lastUpdatedNetworkGroup!;
+    final tokenWallets = last
+        .map(
+          (e) => e.additionalAssets[networkGroup]?.tokenWallets
+              .map((el) => (e.tonWallet.address, el.rootTokenContract)),
+        )
+        .whereNotNull()
+        .expand((e) => e)
+        .toList();
+
+    return _updateTokenSubscriptionsPairs(tokenWallets, null);
   }
 
   @override
@@ -154,15 +240,13 @@ mixin TokenWalletRepositoryImpl implements TokenWalletRepository {
   }) async {
     final tokenWallet = getTokenWallet(owner, rootTokenContract);
 
-    final internalMessage = await tokenWallet.prepareTransfer(
+    return tokenWallet.prepareTransfer(
       destination: destination,
       amount: amount,
       notifyReceiver: notifyReceiver,
       payload: payload,
       attachedAmount: attachedAmount,
     );
-
-    return internalMessage;
   }
 
   @override
@@ -172,6 +256,7 @@ mixin TokenWalletRepositoryImpl implements TokenWalletRepository {
     required String fromLt,
   }) {
     final tokenWallet = getTokenWallet(owner, rootTokenContract);
+
     return tokenWallet.preloadTransactions(fromLt: fromLt);
   }
 
@@ -237,4 +322,101 @@ mixin TokenWalletRepositoryImpl implements TokenWalletRepository {
       ),
     );
   }
+
+  @override
+  // ignore: long-method
+  List<TokenWalletOrdinaryTransaction> mapOrdinaryTokenTransactions({
+    required Address rootTokenContract,
+    required List<TransactionWithData<TokenWalletTransaction?>> transactions,
+  }) =>
+      transactions.where((e) => e.data != null).map(
+        (e) {
+          final lt = e.transaction.id.lt;
+
+          final prevTransactionLt = e.transaction.prevTransactionId?.lt;
+
+          final sender = e.data!.maybeWhen(
+                incomingTransfer: (tokenIncomingTransfer) =>
+                    tokenIncomingTransfer.senderAddress,
+                orElse: () => null,
+              ) ??
+              e.transaction.inMessage.src;
+
+          final recipient = e.data!.maybeWhen(
+                outgoingTransfer: (tokenOutgoingTransfer) =>
+                    tokenOutgoingTransfer.to.data,
+                orElse: () => null,
+              ) ??
+              e.transaction.outMessages.firstOrNull?.dst;
+
+          final value = e.data!.when(
+            incomingTransfer: (tokenIncomingTransfer) =>
+                tokenIncomingTransfer.tokens,
+            outgoingTransfer: (tokenOutgoingTransfer) =>
+                tokenOutgoingTransfer.tokens,
+            swapBack: (tokenSwapBack) => tokenSwapBack.tokens,
+            accept: (data) => data,
+            transferBounced: (data) => data,
+            swapBackBounced: (data) => data,
+          );
+
+          final isOutgoing = e.data!.when(
+            incomingTransfer: (tokenIncomingTransfer) => false,
+            outgoingTransfer: (tokenOutgoingTransfer) => true,
+            swapBack: (tokenSwapBack) => true,
+            accept: (data) => false,
+            transferBounced: (data) => false,
+            swapBackBounced: (data) => false,
+          );
+
+          final address =
+              (isOutgoing ? recipient : sender) ?? rootTokenContract;
+
+          final date = e.transaction.createdAt;
+
+          final fees = e.transaction.totalFees;
+
+          final hash = e.transaction.id.hash;
+
+          TokenIncomingTransfer? incomingTransfer;
+
+          TokenOutgoingTransfer? outgoingTransfer;
+
+          TokenSwapBack? swapBack;
+
+          Fixed? accept;
+
+          Fixed? transferBounced;
+
+          Fixed? swapBackBounced;
+
+          e.data!.when(
+            incomingTransfer: (tokenIncomingTransfer) =>
+                incomingTransfer = tokenIncomingTransfer,
+            outgoingTransfer: (tokenOutgoingTransfer) =>
+                outgoingTransfer = tokenOutgoingTransfer,
+            swapBack: (tokenSwapBack) => swapBack = tokenSwapBack,
+            accept: (data) => accept = data,
+            transferBounced: (data) => transferBounced = data,
+            swapBackBounced: (data) => swapBackBounced = data,
+          );
+
+          return TokenWalletOrdinaryTransaction(
+            lt: lt,
+            prevTransactionLt: prevTransactionLt,
+            isOutgoing: isOutgoing,
+            value: value,
+            address: address,
+            date: date,
+            fees: fees,
+            hash: hash,
+            incomingTransfer: incomingTransfer,
+            outgoingTransfer: outgoingTransfer,
+            swapBack: swapBack,
+            accept: accept,
+            transferBounced: transferBounced,
+            swapBackBounced: swapBackBounced,
+          );
+        },
+      ).toList();
 }
