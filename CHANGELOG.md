@@ -3,6 +3,51 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## 2023-07-18
+
+### Changes
+
+---
+
+Packages with breaking changes:
+
+ - [`nekoton_repository` - `v0.2.0`](#nekoton_repository---v020)
+
+Packages with other changes:
+
+ - There are no other changes in this release.
+
+---
+
+#### `nekoton_repository` - `v0.2.0`
+
+ - **FIX**: update props for seed (#12).
+ - **FEAT**: add transactions mapping (#24).
+ - **FEAT**: add TokenWalletRepository (#23).
+ - **FEAT**: add TonWalletRepository (#22).
+ - **FEAT**: use flutter templates repository (#21).
+ - **FEAT**: clear nekoton directly (#15).
+ - **FEAT**: add rename method to Seed (#10).
+ - **FEAT**: add seed names to Seed instance (#7).
+ - **FEAT**: seed detail (#4).
+ - **BREAKING** **REFACTOR**: add PublicKey and Address dataclasses (#14).
+
+## 0.2.0
+
+> Note: This release has breaking changes.
+
+ - **FIX**: update props for seed (#12).
+ - **FEAT**: add transactions mapping (#24).
+ - **FEAT**: add TokenWalletRepository (#23).
+ - **FEAT**: add TonWalletRepository (#22).
+ - **FEAT**: use flutter templates repository (#21).
+ - **FEAT**: clear nekoton directly (#15).
+ - **FEAT**: add rename method to Seed (#10).
+ - **FEAT**: add seed names to Seed instance (#7).
+ - **FEAT**: seed detail (#4).
+ - **BREAKING** **REFACTOR**: add PublicKey and Address dataclasses (#14).
+
+
 ## 2023-07-07
 
 ### Changes
