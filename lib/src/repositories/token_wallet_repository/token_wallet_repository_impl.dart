@@ -240,15 +240,13 @@ mixin TokenWalletRepositoryImpl implements TokenWalletRepository {
   }) async {
     final tokenWallet = getTokenWallet(owner, rootTokenContract);
 
-    final internalMessage = await tokenWallet.prepareTransfer(
+    return tokenWallet.prepareTransfer(
       destination: destination,
       amount: amount,
       notifyReceiver: notifyReceiver,
       payload: payload,
       attachedAmount: attachedAmount,
     );
-
-    return internalMessage;
   }
 
   @override
@@ -258,6 +256,7 @@ mixin TokenWalletRepositoryImpl implements TokenWalletRepository {
     required String fromLt,
   }) {
     final tokenWallet = getTokenWallet(owner, rootTokenContract);
+
     return tokenWallet.preloadTransactions(fromLt: fromLt);
   }
 
@@ -325,6 +324,7 @@ mixin TokenWalletRepositoryImpl implements TokenWalletRepository {
   }
 
   @override
+  // ignore: long-method
   List<TokenWalletOrdinaryTransaction> mapOrdinaryTokenTransactions({
     required Address rootTokenContract,
     required List<TransactionWithData<TokenWalletTransaction?>> transactions,
@@ -401,7 +401,7 @@ mixin TokenWalletRepositoryImpl implements TokenWalletRepository {
             swapBackBounced: (data) => swapBackBounced = data,
           );
 
-          final transaction = TokenWalletOrdinaryTransaction(
+          return TokenWalletOrdinaryTransaction(
             lt: lt,
             prevTransactionLt: prevTransactionLt,
             isOutgoing: isOutgoing,
@@ -417,8 +417,6 @@ mixin TokenWalletRepositoryImpl implements TokenWalletRepository {
             transferBounced: transferBounced,
             swapBackBounced: swapBackBounced,
           );
-
-          return transaction;
         },
       ).toList();
 }

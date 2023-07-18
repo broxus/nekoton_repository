@@ -501,6 +501,7 @@ mixin TonWalletRepositoryImpl implements TonWalletRepository {
   }
 
   @override
+  // ignore: long-method
   List<TonWalletOrdinaryTransaction> mapOrdinaryTransactions({
     required Address walletAddress,
     required List<TransactionWithData<TransactionAdditionalInfo?>> transactions,
@@ -600,7 +601,7 @@ mixin TonWalletRepositoryImpl implements TonWalletRepository {
             orElse: () => null,
           );
 
-          final transaction = TonWalletOrdinaryTransaction(
+          return TonWalletOrdinaryTransaction(
             lt: lt,
             prevTransactionLt: prevTransactionLt,
             isOutgoing: isOutgoing,
@@ -616,8 +617,6 @@ mixin TonWalletRepositoryImpl implements TonWalletRepository {
             tokenWalletDeployedNotification: tokenWalletDeployedNotification,
             walletInteractionInfo: walletInteractionInfo,
           );
-
-          return transaction;
         },
       ).toList();
 
@@ -632,13 +631,11 @@ mixin TonWalletRepositoryImpl implements TonWalletRepository {
 
           final date = e.createdAt;
 
-          final transaction = TonWalletPendingTransaction(
+          return TonWalletPendingTransaction(
             expireAt: expireAt,
             address: walletAddress,
             date: date,
           );
-
-          return transaction;
         },
       ).toList();
 
@@ -655,17 +652,16 @@ mixin TonWalletRepositoryImpl implements TonWalletRepository {
 
           final date = e.createdAt;
 
-          final transaction = TonWalletExpiredTransaction(
+          return TonWalletExpiredTransaction(
             expireAt: expireAt,
             address: address,
             date: date,
           );
-
-          return transaction;
         },
       ).toList();
 
   @override
+  // ignore: long-method
   List<TonWalletMultisigOrdinaryTransaction> mapMultisigOrdinaryTransactions({
     required Address walletAddress,
     required List<TransactionWithData<TransactionAdditionalInfo?>> transactions,
@@ -787,7 +783,7 @@ mixin TonWalletRepositoryImpl implements TonWalletRepository {
             orElse: () => null,
           );
 
-          final transaction = TonWalletMultisigOrdinaryTransaction(
+          return TonWalletMultisigOrdinaryTransaction(
             lt: lt,
             prevTransactionLt: prevTransactionLt,
             creator: creator,
@@ -806,12 +802,11 @@ mixin TonWalletRepositoryImpl implements TonWalletRepository {
             tokenWalletDeployedNotification: tokenWalletDeployedNotification,
             walletInteractionInfo: walletInteractionInfo,
           );
-
-          return transaction;
         },
       ).toList();
 
   @override
+  // ignore: long-method
   List<TonWalletMultisigPendingTransaction> mapMultisigPendingTransactions({
     required Address walletAddress,
     required List<TransactionWithData<TransactionAdditionalInfo?>> transactions,
@@ -957,7 +952,7 @@ mixin TonWalletRepositoryImpl implements TonWalletRepository {
 
           final expireAt = date.add(timeForConfirmation);
 
-          final transaction = TonWalletMultisigPendingTransaction(
+          return TonWalletMultisigPendingTransaction(
             lt: lt,
             prevTransactionLt: prevTransactionLt,
             creator: creator,
@@ -983,12 +978,11 @@ mixin TonWalletRepositoryImpl implements TonWalletRepository {
             canConfirm: canConfirm,
             expireAt: expireAt,
           );
-
-          return transaction;
         },
       ).toList();
 
   @override
+  // ignore: long-method
   List<TonWalletMultisigExpiredTransaction> mapMultisigExpiredTransactions({
     required Address walletAddress,
     required List<TransactionWithData<TransactionAdditionalInfo?>> transactions,
@@ -1111,7 +1105,7 @@ mixin TonWalletRepositoryImpl implements TonWalletRepository {
             orElse: () => null,
           );
 
-          final transaction = TonWalletMultisigExpiredTransaction(
+          return TonWalletMultisigExpiredTransaction(
             lt: lt,
             prevTransactionLt: prevTransactionLt,
             creator: creator,
@@ -1130,8 +1124,6 @@ mixin TonWalletRepositoryImpl implements TonWalletRepository {
             tokenWalletDeployedNotification: tokenWalletDeployedNotification,
             walletInteractionInfo: walletInteractionInfo,
           );
-
-          return transaction;
         },
       ).toList();
 }
@@ -1245,6 +1237,7 @@ extension TonWalletTransactionExtension
 
     final foundConfirms =
         transactions.where((e) => e.isConfirmTransaction(transId)).length;
+
     // -1 because 1-st submit transaction is confirmation itself
     return foundConfirms >= details.requiredConfirmations! - 1;
   }
