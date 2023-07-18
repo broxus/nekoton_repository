@@ -3,7 +3,7 @@ import 'package:nekoton_repository/nekoton_repository.dart';
 /// Interface that lets [TonWalletRepository] handles transactions during wallet
 /// lifetime.
 /// This interface is used to store transactions or wallet info in cash storage.
-abstract interface class TonWalletTransactionsStorage {
+abstract class TonWalletTransactionsStorage {
   /// Put information about ton wallet to cash storage.
   /// This callback calls, when [TonWallet.onStateChangedStream] triggered some
   /// action.
