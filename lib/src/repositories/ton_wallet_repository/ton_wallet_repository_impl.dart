@@ -490,12 +490,14 @@ mixin TonWalletRepositoryImpl implements TonWalletRepository {
           networkId: wallet.transport.networkId,
           messageHash: trans.messageHash,
         );
-        await tonWalletStorage.addExpiredTransaction(
-          address: wallet.address,
-          group: wallet.transport.group,
-          networkId: wallet.transport.networkId,
-          transaction: expired,
-        );
+        if (expired != null) {
+          await tonWalletStorage.addExpiredTransaction(
+            address: wallet.address,
+            group: wallet.transport.group,
+            networkId: wallet.transport.networkId,
+            transaction: expired,
+          );
+        }
       },
     );
   }
