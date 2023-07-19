@@ -59,4 +59,8 @@ abstract class TransportStrategy {
   /// Method depends on transport because this same [walletType] may has
   /// different names in different networks.
   String defaultAccountName(WalletType walletType);
+
+  /// Number of numbers after decimal point for native token.
+  /// For ever and venom it's 9.
+  int get defaultNativeCurrencyDecimal;
 }
