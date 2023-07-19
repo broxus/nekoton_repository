@@ -20,6 +20,17 @@ mixin TransportRepositoryImpl implements TransportRepository {
   Future<void> updateTransport(TransportStrategy transport) async {
     final prev = _transportSubject.valueOrNull;
     _transportSubject.add(transport);
+
+    final decimals = transport.defaultNativeCurrencyDecimal;
+    final patternDigits = decimals > 0 ? '0.${'#' * decimals}' : '0';
+    Currencies().register(
+      Currency.create(
+        transport.nativeTokenTicker,
+        decimals,
+        pattern: '$patternDigits S',
+      ),
+    );
+
     prev?.transport.dispose();
   }
 
