@@ -166,6 +166,11 @@ mixin TokenWalletRepositoryImpl implements TokenWalletRepository {
     return _updateTokenSubscriptionsPairs(tokenWallets, last);
   }
 
+  /// Last call of [updateTokenSubscriptions] that will be stopped if needed.
+  ///
+  /// This allows interrupt updating if there was new request.
+  CancellableLongOperation<void>? _lastOperation;
+
   /// Update subscriptions for wallets for current transport.
   /// [tokenWallets] - wallets that should be used in scope of current transport
   /// [last] - wallets that were used before update in scope of
@@ -176,6 +181,14 @@ mixin TokenWalletRepositoryImpl implements TokenWalletRepository {
   ) async {
     final toSubscribe = <(Address, Address)>[];
     final toUnsubscribe = <(Address, Address)>[];
+
+    // Stop last created operation if possible
+    final oldOperation = _lastOperation;
+
+    if (oldOperation != null) {
+      oldOperation.stop();
+      await oldOperation.resultFuture;
+    }
 
     if (last != null) {
       toUnsubscribe.addAll(
@@ -194,13 +207,19 @@ mixin TokenWalletRepositoryImpl implements TokenWalletRepository {
       unsubscribeToken(asset.$1, asset.$2);
     }
 
-    for (final wallet in toSubscribe) {
-      await subscribeToken(owner: wallet.$1, rootTokenContract: wallet.$2);
+    late CancellableLongOperation<void> operation;
+    operation = CancellableLongOperation(() async {
+      for (final wallet in toSubscribe) {
+        await subscribeToken(owner: wallet.$1, rootTokenContract: wallet.$2);
 
-      // Make this pseudo event to allow other operations in event loop
-      // to be executed
-      await Future<void>.delayed(Duration.zero);
-    }
+        // Make this pseudo event to allow other operations in event loop
+        // to be executed
+        await Future<void>.delayed(Duration.zero);
+      }
+    });
+    _lastOperation = operation;
+
+    await operation.resultFuture;
   }
 
   @override
@@ -324,7 +343,7 @@ mixin TokenWalletRepositoryImpl implements TokenWalletRepository {
   }
 
   @override
-  // ignore: long-method
+// ignore: long-method
   List<TokenWalletOrdinaryTransaction> mapOrdinaryTokenTransactions({
     required Address rootTokenContract,
     required List<TransactionWithData<TokenWalletTransaction?>> transactions,
