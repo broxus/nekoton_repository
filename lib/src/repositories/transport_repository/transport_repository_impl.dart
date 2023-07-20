@@ -23,11 +23,13 @@ mixin TransportRepositoryImpl implements TransportRepository {
 
     final decimals = transport.defaultNativeCurrencyDecimal;
     final patternDigits = decimals > 0 ? '0.${'#' * decimals}' : '0';
+
     Currencies().register(
       Currency.create(
         transport.nativeTokenTicker,
         decimals,
-        pattern: '$patternDigits S',
+        symbol: transport.nativeTokenTicker,
+        pattern: patternDigits,
       ),
     );
 
