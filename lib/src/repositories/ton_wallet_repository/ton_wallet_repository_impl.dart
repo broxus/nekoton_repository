@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:async/async.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
 import 'package:get_it/get_it.dart';
@@ -164,7 +165,7 @@ mixin TonWalletRepositoryImpl implements TonWalletRepository {
   /// Last call of [updateSubscriptions] that will be stopped if needed.
   ///
   /// This allows interrupt updating if there was new request.
-  CancellableLongOperation<void>? _lastOperation;
+  CancelableOperation<void>? _lastOperation;
 
   @override
   Future<void> updateSubscriptions(List<TonWalletAsset> assets) async {
@@ -176,8 +177,7 @@ mixin TonWalletRepositoryImpl implements TonWalletRepository {
     final oldOperation = _lastOperation;
 
     if (oldOperation != null) {
-      oldOperation.stop();
-      await oldOperation.resultFuture;
+      await oldOperation.cancel();
     }
 
     if (last != null) {
@@ -199,8 +199,9 @@ mixin TonWalletRepositoryImpl implements TonWalletRepository {
 
     lastUpdatedAssets = assets;
 
-    late CancellableLongOperation<void> operation;
-    operation = CancellableLongOperation(() async {
+    late CancelableOperation<void> operation;
+
+    operation = CancelableOperation.fromFuture(() async {
       for (final asset in toSubscribe) {
         await subscribe(asset);
 
@@ -210,12 +211,12 @@ mixin TonWalletRepositoryImpl implements TonWalletRepository {
 
         // If operation was stopped by changing transport/active accounts, then
         // stop subscribing.
-        if (operation.isStopped) return;
+        if (operation.isCanceled) return;
       }
-    });
+    }());
     _lastOperation = operation;
 
-    await operation.resultFuture;
+    await operation.valueOrCancellation();
   }
 
   @override

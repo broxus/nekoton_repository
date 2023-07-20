@@ -7,6 +7,7 @@ environment:
   sdk: '>=3.0.0 <4.0.0'
 
 dependencies:
+  async: ^2.11.0
   collection: ^1.17.0
   encrypted_storage: ^0.1.0+2
   equatable: ^2.0.5

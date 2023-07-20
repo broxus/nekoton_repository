@@ -1,6 +1,6 @@
+import 'package:async/async.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
-import 'package:nekoton_repository/nekoton_repository.dart';
 
 class FutureOperation {
   Future<void> call() async {}
@@ -9,7 +9,7 @@ class FutureOperation {
 class MockFunction extends Mock implements FutureOperation {}
 
 void main() {
-  group('CancellableLongOperation', () {
+  group('CancelableOperation', () {
     test('Complete operation itself', () async {
       final function = MockFunction();
       when(function.call).thenAnswer(
@@ -17,9 +17,9 @@ void main() {
       );
 
       final start = DateTime.now();
-      final operation = CancellableLongOperation<void>(function.call);
+      final operation = CancelableOperation<void>.fromFuture(function.call());
 
-      await operation.resultFuture;
+      await operation.valueOrCancellation();
       final end = DateTime.now();
 
       expect(end.difference(start).inSeconds, 1);
@@ -32,19 +32,19 @@ void main() {
         (_) => Future.delayed(const Duration(seconds: 1)),
       );
 
-      late CancellableLongOperation<void> operation;
-      operation = CancellableLongOperation<void>(() async {
+      late CancelableOperation<void> operation;
+      operation = CancelableOperation<void>.fromFuture(() async {
         for (var i = 0; i < 5; i++) {
           await function.call();
-          if (operation.isStopped) return;
+          if (operation.isCanceled) return;
         }
-      });
+      }());
 
-      final fut = operation.resultFuture;
+      final fut = operation.valueOrCancellation();
 
       await Future<void>.delayed(const Duration(seconds: 2));
 
-      operation.stop();
+      await operation.cancel();
       await fut;
 
       verify(function.call).called(2);
@@ -56,15 +56,15 @@ void main() {
         (_) => Future.delayed(const Duration(seconds: 1)),
       );
 
-      late CancellableLongOperation<void> operation;
-      operation = CancellableLongOperation<void>(() async {
+      late CancelableOperation<void> operation;
+      operation = CancelableOperation<void>.fromFuture(() async {
         for (var i = 0; i < 5; i++) {
           await function.call();
           if (i == 1) throw Exception();
         }
-      });
+      }());
 
-      await expectLater(operation.resultFuture, throwsException);
+      await expectLater(operation.valueOrCancellation(), throwsException);
 
       verify(function.call).called(2);
     });

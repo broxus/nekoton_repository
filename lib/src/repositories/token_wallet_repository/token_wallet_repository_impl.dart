@@ -1,3 +1,4 @@
+import 'package:async/async.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
 import 'package:nekoton_repository/nekoton_repository.dart';
@@ -7,8 +8,6 @@ import 'package:rxdart/rxdart.dart';
 const tokenWalletRefreshInterval = Duration(seconds: 15);
 
 mixin TokenWalletRepositoryImpl implements TokenWalletRepository {
-  KeyStore get keyStore;
-
   TokenWalletTransactionsStorage get tokenWalletStorage;
 
   TransportStrategy get currentTransport;
@@ -169,7 +168,7 @@ mixin TokenWalletRepositoryImpl implements TokenWalletRepository {
   /// Last call of [updateTokenSubscriptions] that will be stopped if needed.
   ///
   /// This allows interrupt updating if there was new request.
-  CancellableLongOperation<void>? _lastOperation;
+  CancelableOperation<void>? _lastOperation;
 
   /// Update subscriptions for wallets for current transport.
   /// [tokenWallets] - wallets that should be used in scope of current transport
@@ -186,8 +185,7 @@ mixin TokenWalletRepositoryImpl implements TokenWalletRepository {
     final oldOperation = _lastOperation;
 
     if (oldOperation != null) {
-      oldOperation.stop();
-      await oldOperation.resultFuture;
+      await oldOperation.cancel();
     }
 
     if (last != null) {
@@ -207,8 +205,8 @@ mixin TokenWalletRepositoryImpl implements TokenWalletRepository {
       unsubscribeToken(asset.$1, asset.$2);
     }
 
-    late CancellableLongOperation<void> operation;
-    operation = CancellableLongOperation(() async {
+    late CancelableOperation<void> operation;
+    operation = CancelableOperation.fromFuture(() async {
       for (final wallet in toSubscribe) {
         await subscribeToken(owner: wallet.$1, rootTokenContract: wallet.$2);
 
@@ -216,10 +214,10 @@ mixin TokenWalletRepositoryImpl implements TokenWalletRepository {
         // to be executed
         await Future<void>.delayed(Duration.zero);
       }
-    });
+    }());
     _lastOperation = operation;
 
-    await operation.resultFuture;
+    await operation.valueOrCancellation();
   }
 
   @override
