@@ -3,6 +3,59 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## 2023-07-20
+
+### Changes
+
+---
+
+Packages with breaking changes:
+
+ - [`nekoton_repository` - `v0.5.0`](#nekoton_repository---v050)
+
+Packages with other changes:
+
+ - There are no other changes in this release.
+
+---
+
+#### `nekoton_repository` - `v0.5.0`
+
+ - **FIX**: deleting pending transaction (#28).
+ - **FIX**: change interface to pure class (#26).
+ - **FIX**: update props for seed (#12).
+ - **FEAT**: add cancellable operation (#32).
+ - **FEAT**: add registering currency after transport update (#30).
+ - **FEAT**: add transactions mapping (#24).
+ - **FEAT**: add TokenWalletRepository (#23).
+ - **FEAT**: add TonWalletRepository (#22).
+ - **FEAT**: use flutter templates repository (#21).
+ - **FEAT**: clear nekoton directly (#15).
+ - **FEAT**: add rename method to Seed (#10).
+ - **FEAT**: add seed names to Seed instance (#7).
+ - **FEAT**: seed detail (#4).
+ - **BREAKING** **REFACTOR**: add PublicKey and Address dataclasses (#14).
+
+## 0.5.0
+
+> Note: This release has breaking changes.
+
+ - **FIX**: deleting pending transaction (#28).
+ - **FIX**: change interface to pure class (#26).
+ - **FIX**: update props for seed (#12).
+ - **FEAT**: add cancellable operation (#32).
+ - **FEAT**: add registering currency after transport update (#30).
+ - **FEAT**: add transactions mapping (#24).
+ - **FEAT**: add TokenWalletRepository (#23).
+ - **FEAT**: add TonWalletRepository (#22).
+ - **FEAT**: use flutter templates repository (#21).
+ - **FEAT**: clear nekoton directly (#15).
+ - **FEAT**: add rename method to Seed (#10).
+ - **FEAT**: add seed names to Seed instance (#7).
+ - **FEAT**: seed detail (#4).
+ - **BREAKING** **REFACTOR**: add PublicKey and Address dataclasses (#14).
+
+
 ## 2023-07-19
 
 ### Changes
