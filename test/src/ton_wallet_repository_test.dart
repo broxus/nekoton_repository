@@ -838,6 +838,25 @@ void main() {
       final local = repository.getLocalCustodians(notMultisigAddress);
       expect(local, isNull);
     });
+
+    test('Return null custodians for not multisig if it has custodians ', () {
+      when(() => wallet.onMessageExpiredStream)
+          .thenAnswer((_) => expiredStream);
+      when(() => wallet.onMessageSentStream)
+          .thenAnswer((_) => messageSentStream);
+      when(() => wallet.onTransactionsFoundStream)
+          .thenAnswer((_) => transactionsFoundStream);
+      when(() => wallet.onStateChangedStream).thenAnswer((_) => stateStream);
+
+      when(() => transport.transport).thenReturn(jrpc);
+      when(() => keystore.keys).thenReturn([notMultisigKeyEntry]);
+      when(() => wallet.custodians).thenReturn([notMultisigKey]);
+      when(() => wallet.address).thenReturn(notMultisigAddress);
+
+      repository.addWalletInst(wallet);
+      final local = repository.getLocalCustodians(notMultisigAddress);
+      expect(local, isNull);
+    });
   });
 
   group('getLocalCustodiansAsync', () {

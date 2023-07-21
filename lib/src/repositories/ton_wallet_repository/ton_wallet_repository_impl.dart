@@ -463,7 +463,7 @@ mixin TonWalletRepositoryImpl implements TonWalletRepository {
     final custodians = wallet.custodians;
 
     // wallet is not multisig
-    if (custodians == null) return null;
+    if (custodians == null || custodians.length == 1) return null;
 
     return keyStore.keys
         .map((e) => e.publicKey)
