@@ -13,7 +13,7 @@ sealed class PendingTransactionWithData
   const factory PendingTransactionWithData({
     required final PendingTransaction transaction,
     required final Address destination,
-    @amountJsonConverter required final Fixed amount,
+    @amountJsonConverter required final BigInt amount,
     required final DateTime createdAt,
   }) = _PendingTransactionWithAdditionalInfo;
 

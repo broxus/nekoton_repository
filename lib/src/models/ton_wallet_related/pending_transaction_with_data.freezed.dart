@@ -24,7 +24,7 @@ mixin _$PendingTransactionWithData {
   PendingTransaction get transaction => throw _privateConstructorUsedError;
   Address get destination => throw _privateConstructorUsedError;
   @amountJsonConverter
-  Fixed get amount => throw _privateConstructorUsedError;
+  BigInt get amount => throw _privateConstructorUsedError;
   DateTime get createdAt => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
@@ -43,7 +43,7 @@ abstract class $PendingTransactionWithDataCopyWith<$Res> {
   $Res call(
       {PendingTransaction transaction,
       Address destination,
-      @amountJsonConverter Fixed amount,
+      @amountJsonConverter BigInt amount,
       DateTime createdAt});
 
   $PendingTransactionCopyWith<$Res> get transaction;
@@ -81,7 +81,7 @@ class _$PendingTransactionWithDataCopyWithImpl<$Res,
       amount: null == amount
           ? _value.amount
           : amount // ignore: cast_nullable_to_non_nullable
-              as Fixed,
+              as BigInt,
       createdAt: null == createdAt
           ? _value.createdAt
           : createdAt // ignore: cast_nullable_to_non_nullable
@@ -118,7 +118,7 @@ abstract class _$$_PendingTransactionWithAdditionalInfoCopyWith<$Res>
   $Res call(
       {PendingTransaction transaction,
       Address destination,
-      @amountJsonConverter Fixed amount,
+      @amountJsonConverter BigInt amount,
       DateTime createdAt});
 
   @override
@@ -157,7 +157,7 @@ class __$$_PendingTransactionWithAdditionalInfoCopyWithImpl<$Res>
       amount: null == amount
           ? _value.amount
           : amount // ignore: cast_nullable_to_non_nullable
-              as Fixed,
+              as BigInt,
       createdAt: null == createdAt
           ? _value.createdAt
           : createdAt // ignore: cast_nullable_to_non_nullable
@@ -187,7 +187,7 @@ class _$_PendingTransactionWithAdditionalInfo
   final Address destination;
   @override
   @amountJsonConverter
-  final Fixed amount;
+  final BigInt amount;
   @override
   final DateTime createdAt;
 
@@ -236,7 +236,7 @@ abstract class _PendingTransactionWithAdditionalInfo
   const factory _PendingTransactionWithAdditionalInfo(
           {required final PendingTransaction transaction,
           required final Address destination,
-          @amountJsonConverter required final Fixed amount,
+          @amountJsonConverter required final BigInt amount,
           required final DateTime createdAt}) =
       _$_PendingTransactionWithAdditionalInfo;
   const _PendingTransactionWithAdditionalInfo._() : super._();
@@ -251,7 +251,7 @@ abstract class _PendingTransactionWithAdditionalInfo
   Address get destination;
   @override
   @amountJsonConverter
-  Fixed get amount;
+  BigInt get amount;
   @override
   DateTime get createdAt;
   @override

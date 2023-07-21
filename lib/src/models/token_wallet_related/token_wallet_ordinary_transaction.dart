@@ -10,17 +10,17 @@ class TokenWalletOrdinaryTransaction with _$TokenWalletOrdinaryTransaction {
   const factory TokenWalletOrdinaryTransaction({
     required String lt,
     required bool isOutgoing,
-    @amountJsonConverter required Fixed value,
+    @amountJsonConverter required BigInt value,
     required Address address,
     @dateSecondsSinceEpochJsonConverter required DateTime date,
-    @amountJsonConverter required Fixed fees,
+    @amountJsonConverter required BigInt fees,
     required String hash,
     String? prevTransactionLt,
     TokenIncomingTransfer? incomingTransfer,
     TokenOutgoingTransfer? outgoingTransfer,
     TokenSwapBack? swapBack,
-    @amountJsonConverter Fixed? accept,
-    @amountJsonConverter Fixed? transferBounced,
-    @amountJsonConverter Fixed? swapBackBounced,
+    @amountJsonConverter BigInt? accept,
+    @amountJsonConverter BigInt? transferBounced,
+    @amountJsonConverter BigInt? swapBackBounced,
   }) = _TokenWalletOrdinaryTransaction;
 }

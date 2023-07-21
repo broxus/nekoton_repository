@@ -250,9 +250,9 @@ mixin TokenWalletRepositoryImpl implements TokenWalletRepository {
     required Address owner,
     required Address rootTokenContract,
     required Address destination,
-    required Fixed amount,
+    required BigInt amount,
     required bool notifyReceiver,
-    Fixed? attachedAmount,
+    BigInt? attachedAmount,
     String? payload,
   }) async {
     final tokenWallet = getTokenWallet(owner, rootTokenContract);
@@ -401,11 +401,11 @@ mixin TokenWalletRepositoryImpl implements TokenWalletRepository {
 
           TokenSwapBack? swapBack;
 
-          Fixed? accept;
+          BigInt? accept;
 
-          Fixed? transferBounced;
+          BigInt? transferBounced;
 
-          Fixed? swapBackBounced;
+          BigInt? swapBackBounced;
 
           e.data!.when(
             incomingTransfer: (tokenIncomingTransfer) =>
