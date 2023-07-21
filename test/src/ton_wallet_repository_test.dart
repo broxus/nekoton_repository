@@ -4,6 +4,8 @@ import 'package:nekoton_repository/nekoton_repository.dart';
 import 'package:nekoton_repository/src/repositories/ton_wallet_repository/ton_wallet_gql_block_poller.dart';
 import 'package:tuple/tuple.dart';
 
+class MockBridge extends Mock implements NekotonBridge {}
+
 class MockTransport extends Mock implements TransportStrategy {}
 
 class MockKeystore extends Mock implements KeyStore {}
@@ -53,6 +55,54 @@ void main() {
   const address = Address(address: '0:1111111111111');
   const duplicateAddress = Address(address: '0:22222222222');
 
+  const multisigAddress = Address(
+    address:
+        '0:91b689ad990660249eb00140577e6a98d70043ccaa7f63acfc0436336bdbd80f',
+  );
+
+  const multisigKey1 = PublicKey(
+    publicKey:
+        'aa693399a5fa114e2c0345dd6dcbfd1bb6f334e78b5fedb8c980d28dda6715cf',
+  );
+  const multisigKey1Entry = KeyStoreEntry(
+    signerName: '',
+    name: '',
+    publicKey: multisigKey1,
+    masterKey: multisigKey1,
+    accountId: 0,
+  );
+  const multisigKey2 = PublicKey(
+    publicKey:
+        'bb9c2578a1b9d0c7a6c947c419afe61c691052ff459df65e3eb4375faf3b25c6',
+  );
+  const multisigKey2Entry = KeyStoreEntry(
+    signerName: '',
+    name: '',
+    publicKey: multisigKey2,
+    masterKey: multisigKey2,
+    accountId: 0,
+  );
+
+  const notMultisigKey = PublicKey(
+    publicKey:
+        'ad158ac64c5deff5abd4d5e86a81d954716445c45e31f17a9dfe780f9cef7602',
+  );
+  const notMultisigKeyEntry = KeyStoreEntry(
+    signerName: '',
+    name: '',
+    publicKey: notMultisigKey,
+    masterKey: notMultisigKey,
+    accountId: 0,
+  );
+
+  const notMultisigAddress = Address(
+    address:
+        '0:d92c91860621eb5397957ee3f426860e2c21d7d4410626885f35db88a46a87c2',
+  );
+
+  late MockBridge bridge;
+  late ArcTransportBoxTrait box;
+
   /// We must use this method except of thenThrow because it will broke
   /// awaiting of refresh method. THIS IS SOME BUG IDK HOW TO FIX IT
   Future<T> throwError<T>() async {
@@ -67,6 +117,10 @@ void main() {
     repository = TonWalletRepoTest(transport, keystore, storage);
     gql = MockGqlTransport();
     jrpc = MockJrpcTransport();
+
+    bridge = MockBridge();
+    box = ArcTransportBoxTrait.fromRaw(0, 0, bridge);
+    registerFallbackValue(box);
 
     messageSentStream = const Stream.empty();
     expiredStream = const Stream.empty();
@@ -723,6 +777,125 @@ void main() {
       expect(repository.walletsMap[address], isNotNull);
       expect(repository.walletSubscriptions[address], isNotNull);
       expect(repository.pollingQueues[address], isNull);
+    });
+  });
+
+  group('getLocalCustodians', () {
+    test('Get only one local custodian', () async {
+      when(() => wallet.onMessageExpiredStream)
+          .thenAnswer((_) => expiredStream);
+      when(() => wallet.onMessageSentStream)
+          .thenAnswer((_) => messageSentStream);
+      when(() => wallet.onTransactionsFoundStream)
+          .thenAnswer((_) => transactionsFoundStream);
+      when(() => wallet.onStateChangedStream).thenAnswer((_) => stateStream);
+
+      when(() => transport.transport).thenReturn(jrpc);
+      when(() => keystore.keys).thenReturn([multisigKey1Entry]);
+      when(() => wallet.custodians).thenReturn([multisigKey1, multisigKey2]);
+      when(() => wallet.address).thenReturn(multisigAddress);
+
+      repository.addWalletInst(wallet);
+      final local = repository.getLocalCustodians(multisigAddress);
+      expect(local, [multisigKey1]);
+    });
+
+    test('Get several local custodian', () async {
+      when(() => wallet.onMessageExpiredStream)
+          .thenAnswer((_) => expiredStream);
+      when(() => wallet.onMessageSentStream)
+          .thenAnswer((_) => messageSentStream);
+      when(() => wallet.onTransactionsFoundStream)
+          .thenAnswer((_) => transactionsFoundStream);
+      when(() => wallet.onStateChangedStream).thenAnswer((_) => stateStream);
+
+      when(() => transport.transport).thenReturn(jrpc);
+      when(() => keystore.keys)
+          .thenReturn([multisigKey1Entry, multisigKey2Entry]);
+      when(() => wallet.custodians).thenReturn([multisigKey1, multisigKey2]);
+      when(() => wallet.address).thenReturn(multisigAddress);
+
+      repository.addWalletInst(wallet);
+      final local = repository.getLocalCustodians(multisigAddress);
+      expect(local, [multisigKey1, multisigKey2]);
+    });
+
+    test('Return null custodians for not multisig ', () async {
+      when(() => wallet.onMessageExpiredStream)
+          .thenAnswer((_) => expiredStream);
+      when(() => wallet.onMessageSentStream)
+          .thenAnswer((_) => messageSentStream);
+      when(() => wallet.onTransactionsFoundStream)
+          .thenAnswer((_) => transactionsFoundStream);
+      when(() => wallet.onStateChangedStream).thenAnswer((_) => stateStream);
+
+      when(() => transport.transport).thenReturn(jrpc);
+      when(() => keystore.keys).thenReturn([notMultisigKeyEntry]);
+      when(() => wallet.custodians).thenReturn(null);
+      when(() => wallet.address).thenReturn(notMultisigAddress);
+
+      repository.addWalletInst(wallet);
+      final local = repository.getLocalCustodians(notMultisigAddress);
+      expect(local, isNull);
+    });
+  });
+
+  group('getLocalCustodiansAsync', () {
+    test('Get only one local custodian', () async {
+      mockWrapper(bridge);
+      when(() => jrpc.transportBox).thenReturn(box);
+      when(
+        () => bridge.getCustodiansStaticMethodTonWalletDartWrapper(
+          address: any(named: 'address'),
+          transport: any(named: 'transport'),
+        ),
+      ).thenAnswer(
+        (_) => Future.value([multisigKey1.publicKey, multisigKey2.publicKey]),
+      );
+
+      when(() => transport.transport).thenReturn(jrpc);
+      when(() => keystore.keys).thenReturn([multisigKey1Entry]);
+
+      final local = await repository.getLocalCustodiansAsync(multisigAddress);
+      expect(local, [multisigKey1]);
+    });
+
+    test('Get several local custodian', () async {
+      mockWrapper(bridge);
+      when(() => jrpc.transportBox).thenReturn(box);
+      when(
+        () => bridge.getCustodiansStaticMethodTonWalletDartWrapper(
+          address: any(named: 'address'),
+          transport: any(named: 'transport'),
+        ),
+      ).thenAnswer(
+        (_) => Future.value([multisigKey1.publicKey, multisigKey2.publicKey]),
+      );
+
+      when(() => transport.transport).thenReturn(jrpc);
+      when(() => keystore.keys)
+          .thenReturn([multisigKey1Entry, multisigKey2Entry]);
+
+      final local = await repository.getLocalCustodiansAsync(multisigAddress);
+      expect(local, [multisigKey1, multisigKey2]);
+    });
+
+    test('Return null custodians for not multisig ', () async {
+      mockWrapper(bridge);
+      when(() => jrpc.transportBox).thenReturn(box);
+      when(
+        () => bridge.getCustodiansStaticMethodTonWalletDartWrapper(
+          address: any(named: 'address'),
+          transport: any(named: 'transport'),
+        ),
+      ).thenAnswer((_) => Future.value([notMultisigKey.publicKey]));
+
+      when(() => transport.transport).thenReturn(jrpc);
+      when(() => keystore.keys).thenReturn([notMultisigKeyEntry]);
+
+      final local =
+          await repository.getLocalCustodiansAsync(notMultisigAddress);
+      expect(local, isNull);
     });
   });
 }
