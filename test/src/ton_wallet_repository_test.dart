@@ -240,7 +240,7 @@ void main() {
 
   group('TonWallet.send', () {
     // 1 ever
-    final amount = Fixed.parse('1000000000');
+    final amount = BigInt.parse('1000000000');
     const transactionExpiring = Duration(seconds: 10);
     final pendingTransaction = PendingTransaction(
       messageHash: 'messageHash',

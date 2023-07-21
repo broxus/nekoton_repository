@@ -22,12 +22,12 @@ mixin _$TonWalletMultisigPendingTransaction {
   List<PublicKey> get custodians => throw _privateConstructorUsedError;
   bool get isOutgoing => throw _privateConstructorUsedError;
   @amountJsonConverter
-  Fixed get value => throw _privateConstructorUsedError;
+  BigInt get value => throw _privateConstructorUsedError;
   Address get address => throw _privateConstructorUsedError;
   Address get walletAddress => throw _privateConstructorUsedError;
   DateTime get date => throw _privateConstructorUsedError;
   @amountJsonConverter
-  Fixed get fees => throw _privateConstructorUsedError;
+  BigInt get fees => throw _privateConstructorUsedError;
   String get hash => throw _privateConstructorUsedError;
   int get signsReceived => throw _privateConstructorUsedError;
   int get signsRequired => throw _privateConstructorUsedError;
@@ -66,11 +66,11 @@ abstract class $TonWalletMultisigPendingTransactionCopyWith<$Res> {
       List<PublicKey> confirmations,
       List<PublicKey> custodians,
       bool isOutgoing,
-      @amountJsonConverter Fixed value,
+      @amountJsonConverter BigInt value,
       Address address,
       Address walletAddress,
       DateTime date,
-      @amountJsonConverter Fixed fees,
+      @amountJsonConverter BigInt fees,
       String hash,
       int signsReceived,
       int signsRequired,
@@ -159,7 +159,7 @@ class _$TonWalletMultisigPendingTransactionCopyWithImpl<$Res,
       value: null == value
           ? _value.value
           : value // ignore: cast_nullable_to_non_nullable
-              as Fixed,
+              as BigInt,
       address: null == address
           ? _value.address
           : address // ignore: cast_nullable_to_non_nullable
@@ -175,7 +175,7 @@ class _$TonWalletMultisigPendingTransactionCopyWithImpl<$Res,
       fees: null == fees
           ? _value.fees
           : fees // ignore: cast_nullable_to_non_nullable
-              as Fixed,
+              as BigInt,
       hash: null == hash
           ? _value.hash
           : hash // ignore: cast_nullable_to_non_nullable
@@ -332,11 +332,11 @@ abstract class _$$_TonWalletMultisigPendingTransactionCopyWith<$Res>
       List<PublicKey> confirmations,
       List<PublicKey> custodians,
       bool isOutgoing,
-      @amountJsonConverter Fixed value,
+      @amountJsonConverter BigInt value,
       Address address,
       Address walletAddress,
       DateTime date,
-      @amountJsonConverter Fixed fees,
+      @amountJsonConverter BigInt fees,
       String hash,
       int signsReceived,
       int signsRequired,
@@ -431,7 +431,7 @@ class __$$_TonWalletMultisigPendingTransactionCopyWithImpl<$Res>
       value: null == value
           ? _value.value
           : value // ignore: cast_nullable_to_non_nullable
-              as Fixed,
+              as BigInt,
       address: null == address
           ? _value.address
           : address // ignore: cast_nullable_to_non_nullable
@@ -447,7 +447,7 @@ class __$$_TonWalletMultisigPendingTransactionCopyWithImpl<$Res>
       fees: null == fees
           ? _value.fees
           : fees // ignore: cast_nullable_to_non_nullable
-              as Fixed,
+              as BigInt,
       hash: null == hash
           ? _value.hash
           : hash // ignore: cast_nullable_to_non_nullable
@@ -563,7 +563,7 @@ class _$_TonWalletMultisigPendingTransaction
   final bool isOutgoing;
   @override
   @amountJsonConverter
-  final Fixed value;
+  final BigInt value;
   @override
   final Address address;
   @override
@@ -572,7 +572,7 @@ class _$_TonWalletMultisigPendingTransaction
   final DateTime date;
   @override
   @amountJsonConverter
-  final Fixed fees;
+  final BigInt fees;
   @override
   final String hash;
   @override
@@ -707,11 +707,11 @@ abstract class _TonWalletMultisigPendingTransaction
       required final List<PublicKey> confirmations,
       required final List<PublicKey> custodians,
       required final bool isOutgoing,
-      @amountJsonConverter required final Fixed value,
+      @amountJsonConverter required final BigInt value,
       required final Address address,
       required final Address walletAddress,
       required final DateTime date,
-      @amountJsonConverter required final Fixed fees,
+      @amountJsonConverter required final BigInt fees,
       required final String hash,
       required final int signsReceived,
       required final int signsRequired,
@@ -740,7 +740,7 @@ abstract class _TonWalletMultisigPendingTransaction
   bool get isOutgoing;
   @override
   @amountJsonConverter
-  Fixed get value;
+  BigInt get value;
   @override
   Address get address;
   @override
@@ -749,7 +749,7 @@ abstract class _TonWalletMultisigPendingTransaction
   DateTime get date;
   @override
   @amountJsonConverter
-  Fixed get fees;
+  BigInt get fees;
   @override
   String get hash;
   @override

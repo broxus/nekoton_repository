@@ -19,12 +19,12 @@ mixin _$TokenWalletOrdinaryTransaction {
   String get lt => throw _privateConstructorUsedError;
   bool get isOutgoing => throw _privateConstructorUsedError;
   @amountJsonConverter
-  Fixed get value => throw _privateConstructorUsedError;
+  BigInt get value => throw _privateConstructorUsedError;
   Address get address => throw _privateConstructorUsedError;
   @dateSecondsSinceEpochJsonConverter
   DateTime get date => throw _privateConstructorUsedError;
   @amountJsonConverter
-  Fixed get fees => throw _privateConstructorUsedError;
+  BigInt get fees => throw _privateConstructorUsedError;
   String get hash => throw _privateConstructorUsedError;
   String? get prevTransactionLt => throw _privateConstructorUsedError;
   TokenIncomingTransfer? get incomingTransfer =>
@@ -33,11 +33,11 @@ mixin _$TokenWalletOrdinaryTransaction {
       throw _privateConstructorUsedError;
   TokenSwapBack? get swapBack => throw _privateConstructorUsedError;
   @amountJsonConverter
-  Fixed? get accept => throw _privateConstructorUsedError;
+  BigInt? get accept => throw _privateConstructorUsedError;
   @amountJsonConverter
-  Fixed? get transferBounced => throw _privateConstructorUsedError;
+  BigInt? get transferBounced => throw _privateConstructorUsedError;
   @amountJsonConverter
-  Fixed? get swapBackBounced => throw _privateConstructorUsedError;
+  BigInt? get swapBackBounced => throw _privateConstructorUsedError;
 
   @JsonKey(ignore: true)
   $TokenWalletOrdinaryTransactionCopyWith<TokenWalletOrdinaryTransaction>
@@ -55,18 +55,18 @@ abstract class $TokenWalletOrdinaryTransactionCopyWith<$Res> {
   $Res call(
       {String lt,
       bool isOutgoing,
-      @amountJsonConverter Fixed value,
+      @amountJsonConverter BigInt value,
       Address address,
       @dateSecondsSinceEpochJsonConverter DateTime date,
-      @amountJsonConverter Fixed fees,
+      @amountJsonConverter BigInt fees,
       String hash,
       String? prevTransactionLt,
       TokenIncomingTransfer? incomingTransfer,
       TokenOutgoingTransfer? outgoingTransfer,
       TokenSwapBack? swapBack,
-      @amountJsonConverter Fixed? accept,
-      @amountJsonConverter Fixed? transferBounced,
-      @amountJsonConverter Fixed? swapBackBounced});
+      @amountJsonConverter BigInt? accept,
+      @amountJsonConverter BigInt? transferBounced,
+      @amountJsonConverter BigInt? swapBackBounced});
 
   $AddressCopyWith<$Res> get address;
   $TokenIncomingTransferCopyWith<$Res>? get incomingTransfer;
@@ -115,7 +115,7 @@ class _$TokenWalletOrdinaryTransactionCopyWithImpl<$Res,
       value: null == value
           ? _value.value
           : value // ignore: cast_nullable_to_non_nullable
-              as Fixed,
+              as BigInt,
       address: null == address
           ? _value.address
           : address // ignore: cast_nullable_to_non_nullable
@@ -127,7 +127,7 @@ class _$TokenWalletOrdinaryTransactionCopyWithImpl<$Res,
       fees: null == fees
           ? _value.fees
           : fees // ignore: cast_nullable_to_non_nullable
-              as Fixed,
+              as BigInt,
       hash: null == hash
           ? _value.hash
           : hash // ignore: cast_nullable_to_non_nullable
@@ -151,15 +151,15 @@ class _$TokenWalletOrdinaryTransactionCopyWithImpl<$Res,
       accept: freezed == accept
           ? _value.accept
           : accept // ignore: cast_nullable_to_non_nullable
-              as Fixed?,
+              as BigInt?,
       transferBounced: freezed == transferBounced
           ? _value.transferBounced
           : transferBounced // ignore: cast_nullable_to_non_nullable
-              as Fixed?,
+              as BigInt?,
       swapBackBounced: freezed == swapBackBounced
           ? _value.swapBackBounced
           : swapBackBounced // ignore: cast_nullable_to_non_nullable
-              as Fixed?,
+              as BigInt?,
     ) as $Val);
   }
 
@@ -222,18 +222,18 @@ abstract class _$$_TokenWalletOrdinaryTransactionCopyWith<$Res>
   $Res call(
       {String lt,
       bool isOutgoing,
-      @amountJsonConverter Fixed value,
+      @amountJsonConverter BigInt value,
       Address address,
       @dateSecondsSinceEpochJsonConverter DateTime date,
-      @amountJsonConverter Fixed fees,
+      @amountJsonConverter BigInt fees,
       String hash,
       String? prevTransactionLt,
       TokenIncomingTransfer? incomingTransfer,
       TokenOutgoingTransfer? outgoingTransfer,
       TokenSwapBack? swapBack,
-      @amountJsonConverter Fixed? accept,
-      @amountJsonConverter Fixed? transferBounced,
-      @amountJsonConverter Fixed? swapBackBounced});
+      @amountJsonConverter BigInt? accept,
+      @amountJsonConverter BigInt? transferBounced,
+      @amountJsonConverter BigInt? swapBackBounced});
 
   @override
   $AddressCopyWith<$Res> get address;
@@ -285,7 +285,7 @@ class __$$_TokenWalletOrdinaryTransactionCopyWithImpl<$Res>
       value: null == value
           ? _value.value
           : value // ignore: cast_nullable_to_non_nullable
-              as Fixed,
+              as BigInt,
       address: null == address
           ? _value.address
           : address // ignore: cast_nullable_to_non_nullable
@@ -297,7 +297,7 @@ class __$$_TokenWalletOrdinaryTransactionCopyWithImpl<$Res>
       fees: null == fees
           ? _value.fees
           : fees // ignore: cast_nullable_to_non_nullable
-              as Fixed,
+              as BigInt,
       hash: null == hash
           ? _value.hash
           : hash // ignore: cast_nullable_to_non_nullable
@@ -321,15 +321,15 @@ class __$$_TokenWalletOrdinaryTransactionCopyWithImpl<$Res>
       accept: freezed == accept
           ? _value.accept
           : accept // ignore: cast_nullable_to_non_nullable
-              as Fixed?,
+              as BigInt?,
       transferBounced: freezed == transferBounced
           ? _value.transferBounced
           : transferBounced // ignore: cast_nullable_to_non_nullable
-              as Fixed?,
+              as BigInt?,
       swapBackBounced: freezed == swapBackBounced
           ? _value.swapBackBounced
           : swapBackBounced // ignore: cast_nullable_to_non_nullable
-              as Fixed?,
+              as BigInt?,
     ));
   }
 }
@@ -360,7 +360,7 @@ class _$_TokenWalletOrdinaryTransaction
   final bool isOutgoing;
   @override
   @amountJsonConverter
-  final Fixed value;
+  final BigInt value;
   @override
   final Address address;
   @override
@@ -368,7 +368,7 @@ class _$_TokenWalletOrdinaryTransaction
   final DateTime date;
   @override
   @amountJsonConverter
-  final Fixed fees;
+  final BigInt fees;
   @override
   final String hash;
   @override
@@ -381,13 +381,13 @@ class _$_TokenWalletOrdinaryTransaction
   final TokenSwapBack? swapBack;
   @override
   @amountJsonConverter
-  final Fixed? accept;
+  final BigInt? accept;
   @override
   @amountJsonConverter
-  final Fixed? transferBounced;
+  final BigInt? transferBounced;
   @override
   @amountJsonConverter
-  final Fixed? swapBackBounced;
+  final BigInt? swapBackBounced;
 
   @override
   String toString() {
@@ -453,18 +453,18 @@ abstract class _TokenWalletOrdinaryTransaction
   const factory _TokenWalletOrdinaryTransaction(
           {required final String lt,
           required final bool isOutgoing,
-          @amountJsonConverter required final Fixed value,
+          @amountJsonConverter required final BigInt value,
           required final Address address,
           @dateSecondsSinceEpochJsonConverter required final DateTime date,
-          @amountJsonConverter required final Fixed fees,
+          @amountJsonConverter required final BigInt fees,
           required final String hash,
           final String? prevTransactionLt,
           final TokenIncomingTransfer? incomingTransfer,
           final TokenOutgoingTransfer? outgoingTransfer,
           final TokenSwapBack? swapBack,
-          @amountJsonConverter final Fixed? accept,
-          @amountJsonConverter final Fixed? transferBounced,
-          @amountJsonConverter final Fixed? swapBackBounced}) =
+          @amountJsonConverter final BigInt? accept,
+          @amountJsonConverter final BigInt? transferBounced,
+          @amountJsonConverter final BigInt? swapBackBounced}) =
       _$_TokenWalletOrdinaryTransaction;
 
   @override
@@ -473,7 +473,7 @@ abstract class _TokenWalletOrdinaryTransaction
   bool get isOutgoing;
   @override
   @amountJsonConverter
-  Fixed get value;
+  BigInt get value;
   @override
   Address get address;
   @override
@@ -481,7 +481,7 @@ abstract class _TokenWalletOrdinaryTransaction
   DateTime get date;
   @override
   @amountJsonConverter
-  Fixed get fees;
+  BigInt get fees;
   @override
   String get hash;
   @override
@@ -494,13 +494,13 @@ abstract class _TokenWalletOrdinaryTransaction
   TokenSwapBack? get swapBack;
   @override
   @amountJsonConverter
-  Fixed? get accept;
+  BigInt? get accept;
   @override
   @amountJsonConverter
-  Fixed? get transferBounced;
+  BigInt? get transferBounced;
   @override
   @amountJsonConverter
-  Fixed? get swapBackBounced;
+  BigInt? get swapBackBounced;
   @override
   @JsonKey(ignore: true)
   _$$_TokenWalletOrdinaryTransactionCopyWith<_$_TokenWalletOrdinaryTransaction>

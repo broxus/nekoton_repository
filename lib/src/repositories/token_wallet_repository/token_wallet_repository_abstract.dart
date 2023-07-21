@@ -87,9 +87,9 @@ abstract class TokenWalletRepository {
     required Address owner,
     required Address rootTokenContract,
     required Address destination,
-    required Fixed amount,
+    required BigInt amount,
     required bool notifyReceiver,
-    Fixed? attachedAmount,
+    BigInt? attachedAmount,
     String? payload,
   });
 

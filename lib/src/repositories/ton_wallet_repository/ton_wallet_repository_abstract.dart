@@ -118,7 +118,7 @@ abstract class TonWalletRepository {
   Future<UnsignedMessage> prepareTransfer({
     required Address address,
     required Address destination,
-    required Fixed amount,
+    required BigInt amount,
     required bool bounce,
     required Expiration expiration,
     PublicKey? publicKey,
@@ -136,7 +136,7 @@ abstract class TonWalletRepository {
   });
 
   /// Estimate fees of transaction with [message] and wallet with [address].
-  Future<Fixed> estimateFees({
+  Future<BigInt> estimateFees({
     required Address address,
     required UnsignedMessage message,
   });
@@ -152,7 +152,7 @@ abstract class TonWalletRepository {
     required Address address,
     required SignedMessage signedMessage,
     required Address destination,
-    required Fixed amount,
+    required BigInt amount,
   });
 
   /// Preload transaction for wallet

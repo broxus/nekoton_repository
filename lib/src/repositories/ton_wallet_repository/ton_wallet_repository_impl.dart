@@ -262,7 +262,7 @@ mixin TonWalletRepositoryImpl implements TonWalletRepository {
   Future<UnsignedMessage> prepareTransfer({
     required Address address,
     required Address destination,
-    required Fixed amount,
+    required BigInt amount,
     required bool bounce,
     required Expiration expiration,
     PublicKey? publicKey,
@@ -303,7 +303,7 @@ mixin TonWalletRepositoryImpl implements TonWalletRepository {
   }
 
   @override
-  Future<Fixed> estimateFees({
+  Future<BigInt> estimateFees({
     required Address address,
     required UnsignedMessage message,
   }) async {
@@ -321,7 +321,7 @@ mixin TonWalletRepositoryImpl implements TonWalletRepository {
     required Address address,
     required SignedMessage signedMessage,
     required Address destination,
-    required Fixed amount,
+    required BigInt amount,
   }) async {
     final tonWallet = getWallet(address);
 

@@ -19,7 +19,7 @@ abstract class TokenWalletTransactionsStorage {
     required Address rootTokenContract,
     required Symbol symbol,
     required TokenWalletVersion version,
-    required Fixed balance,
+    required BigInt balance,
     required ContractState contractState,
   });
 

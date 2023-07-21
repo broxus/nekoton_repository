@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:nekoton_repository/nekoton_repository.dart';
 
 /// Callbacks that allows handle events from [TokenWallet]
-typedef TokenWalletOnBalanceChanged = void Function(Fixed event);
+typedef TokenWalletOnBalanceChanged = void Function(BigInt event);
 typedef TokenWalletOnTransactionsFound = void Function(
   (
     List<TransactionWithData<TokenWalletTransaction?>>,

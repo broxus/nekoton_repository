@@ -19,12 +19,12 @@ mixin _$TonWalletOrdinaryTransaction {
   String get lt => throw _privateConstructorUsedError;
   bool get isOutgoing => throw _privateConstructorUsedError;
   @amountJsonConverter
-  Fixed get value => throw _privateConstructorUsedError;
+  BigInt get value => throw _privateConstructorUsedError;
   Address get address => throw _privateConstructorUsedError;
   @dateSecondsSinceEpochJsonConverter
   DateTime get date => throw _privateConstructorUsedError;
   @amountJsonConverter
-  Fixed get fees => throw _privateConstructorUsedError;
+  BigInt get fees => throw _privateConstructorUsedError;
   String get hash => throw _privateConstructorUsedError;
   String? get prevTransactionLt => throw _privateConstructorUsedError;
   String? get comment => throw _privateConstructorUsedError;
@@ -53,10 +53,10 @@ abstract class $TonWalletOrdinaryTransactionCopyWith<$Res> {
   $Res call(
       {String lt,
       bool isOutgoing,
-      @amountJsonConverter Fixed value,
+      @amountJsonConverter BigInt value,
       Address address,
       @dateSecondsSinceEpochJsonConverter DateTime date,
-      @amountJsonConverter Fixed fees,
+      @amountJsonConverter BigInt fees,
       String hash,
       String? prevTransactionLt,
       String? comment,
@@ -115,7 +115,7 @@ class _$TonWalletOrdinaryTransactionCopyWithImpl<$Res,
       value: null == value
           ? _value.value
           : value // ignore: cast_nullable_to_non_nullable
-              as Fixed,
+              as BigInt,
       address: null == address
           ? _value.address
           : address // ignore: cast_nullable_to_non_nullable
@@ -127,7 +127,7 @@ class _$TonWalletOrdinaryTransactionCopyWithImpl<$Res,
       fees: null == fees
           ? _value.fees
           : fees // ignore: cast_nullable_to_non_nullable
-              as Fixed,
+              as BigInt,
       hash: null == hash
           ? _value.hash
           : hash // ignore: cast_nullable_to_non_nullable
@@ -241,10 +241,10 @@ abstract class _$$_TonWalletOrdinaryTransactionCopyWith<$Res>
   $Res call(
       {String lt,
       bool isOutgoing,
-      @amountJsonConverter Fixed value,
+      @amountJsonConverter BigInt value,
       Address address,
       @dateSecondsSinceEpochJsonConverter DateTime date,
-      @amountJsonConverter Fixed fees,
+      @amountJsonConverter BigInt fees,
       String hash,
       String? prevTransactionLt,
       String? comment,
@@ -307,7 +307,7 @@ class __$$_TonWalletOrdinaryTransactionCopyWithImpl<$Res>
       value: null == value
           ? _value.value
           : value // ignore: cast_nullable_to_non_nullable
-              as Fixed,
+              as BigInt,
       address: null == address
           ? _value.address
           : address // ignore: cast_nullable_to_non_nullable
@@ -319,7 +319,7 @@ class __$$_TonWalletOrdinaryTransactionCopyWithImpl<$Res>
       fees: null == fees
           ? _value.fees
           : fees // ignore: cast_nullable_to_non_nullable
-              as Fixed,
+              as BigInt,
       hash: null == hash
           ? _value.hash
           : hash // ignore: cast_nullable_to_non_nullable
@@ -379,7 +379,7 @@ class _$_TonWalletOrdinaryTransaction implements _TonWalletOrdinaryTransaction {
   final bool isOutgoing;
   @override
   @amountJsonConverter
-  final Fixed value;
+  final BigInt value;
   @override
   final Address address;
   @override
@@ -387,7 +387,7 @@ class _$_TonWalletOrdinaryTransaction implements _TonWalletOrdinaryTransaction {
   final DateTime date;
   @override
   @amountJsonConverter
-  final Fixed fees;
+  final BigInt fees;
   @override
   final String hash;
   @override
@@ -470,10 +470,10 @@ abstract class _TonWalletOrdinaryTransaction
   const factory _TonWalletOrdinaryTransaction(
       {required final String lt,
       required final bool isOutgoing,
-      @amountJsonConverter required final Fixed value,
+      @amountJsonConverter required final BigInt value,
       required final Address address,
       @dateSecondsSinceEpochJsonConverter required final DateTime date,
-      @amountJsonConverter required final Fixed fees,
+      @amountJsonConverter required final BigInt fees,
       required final String hash,
       final String? prevTransactionLt,
       final String? comment,
@@ -490,7 +490,7 @@ abstract class _TonWalletOrdinaryTransaction
   bool get isOutgoing;
   @override
   @amountJsonConverter
-  Fixed get value;
+  BigInt get value;
   @override
   Address get address;
   @override
@@ -498,7 +498,7 @@ abstract class _TonWalletOrdinaryTransaction
   DateTime get date;
   @override
   @amountJsonConverter
-  Fixed get fees;
+  BigInt get fees;
   @override
   String get hash;
   @override
