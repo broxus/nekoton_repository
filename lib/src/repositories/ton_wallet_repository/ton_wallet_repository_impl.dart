@@ -457,6 +457,36 @@ mixin TonWalletRepositoryImpl implements TonWalletRepository {
     return wallet;
   }
 
+  @override
+  List<PublicKey>? getLocalCustodians(Address address) {
+    final wallet = getWallet(address);
+    final custodians = wallet.custodians;
+
+    // wallet is not multisig
+    if (custodians == null || custodians.length == 1) return null;
+
+    return keyStore.keys
+        .map((e) => e.publicKey)
+        .where(custodians.contains)
+        .toList();
+  }
+
+  @override
+  Future<List<PublicKey>?> getLocalCustodiansAsync(Address address) async {
+    final custodians = await TonWallet.getWalletCustodians(
+      transport: currentTransport.transport,
+      address: address,
+    );
+
+    // wallet is not multisig and public key of wallet was returned
+    if (custodians.length == 1) return null;
+
+    return keyStore.keys
+        .map((e) => e.publicKey)
+        .where(custodians.contains)
+        .toList();
+  }
+
   /// This is internal method to add wallet to cache.
   /// You must not call this method directly form app, use [subscribe],
   /// [subscribeByAddress] or [subscribeByExistingWallet].
