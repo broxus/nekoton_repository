@@ -203,7 +203,11 @@ mixin TonWalletRepositoryImpl implements TonWalletRepository {
 
     operation = CancelableOperation.fromFuture(() async {
       for (final asset in toSubscribe) {
-        await subscribe(asset);
+        try {
+          await subscribe(asset);
+        } catch (e, t) {
+          _logger.severe('updateSubscriptions', e, t);
+        }
 
         // Make this pseudo event to allow other operations in event loop
         // to be executed

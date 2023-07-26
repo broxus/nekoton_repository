@@ -1,6 +1,7 @@
 import 'package:async/async.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
+import 'package:logging/logging.dart';
 import 'package:nekoton_repository/nekoton_repository.dart';
 import 'package:rxdart/rxdart.dart';
 
@@ -8,6 +9,8 @@ import 'package:rxdart/rxdart.dart';
 const tokenWalletRefreshInterval = Duration(seconds: 15);
 
 mixin TokenWalletRepositoryImpl implements TokenWalletRepository {
+  final _logger = Logger('TokenWalletRepositoryImpl');
+
   TokenWalletTransactionsStorage get tokenWalletStorage;
 
   TransportStrategy get currentTransport;
@@ -208,11 +211,19 @@ mixin TokenWalletRepositoryImpl implements TokenWalletRepository {
     late CancelableOperation<void> operation;
     operation = CancelableOperation.fromFuture(() async {
       for (final wallet in toSubscribe) {
-        await subscribeToken(owner: wallet.$1, rootTokenContract: wallet.$2);
+        try {
+          await subscribeToken(owner: wallet.$1, rootTokenContract: wallet.$2);
+        } catch (e, t) {
+          _logger.severe('_updateTokenSubscriptionsPairs', e, t);
+        }
 
         // Make this pseudo event to allow other operations in event loop
         // to be executed
         await Future<void>.delayed(Duration.zero);
+
+        // If operation was stopped by changing transport/active accounts, then
+        // stop subscribing.
+        if (operation.isCanceled) return;
       }
     }());
     _lastOperation = operation;
