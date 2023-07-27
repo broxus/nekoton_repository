@@ -306,7 +306,7 @@ mixin TokenWalletRepositoryImpl implements TokenWalletRepository {
   @visibleForTesting
   TokenWallet addTokenWalletInst(TokenWallet wallet) {
     final wallets = tokenWalletsMap;
-    final pair = (wallet.owner, wallet.address);
+    final pair = (wallet.owner, wallet.rootTokenContract);
     wallets[pair] = wallet;
     tokenWalletSubscriptions[pair] = _createWalletSubscription(wallet);
     _tokenWalletsSubject.add(wallets);
@@ -333,7 +333,7 @@ mixin TokenWalletRepositoryImpl implements TokenWalletRepository {
       tokenWallet: wallet,
       onBalanceChanged: (event) => tokenWalletStorage.updateTokenWalletDetails(
         owner: wallet.owner,
-        rootTokenContract: wallet.address,
+        rootTokenContract: wallet.rootTokenContract,
         group: wallet.transport.group,
         networkId: wallet.transport.networkId,
         symbol: wallet.symbol,
@@ -343,7 +343,7 @@ mixin TokenWalletRepositoryImpl implements TokenWalletRepository {
       ),
       onTransactionsFound: (event) => tokenWalletStorage.addFoundTransactions(
         owner: wallet.owner,
-        rootTokenContract: wallet.address,
+        rootTokenContract: wallet.rootTokenContract,
         group: wallet.transport.group,
         networkId: wallet.transport.networkId,
         transaction: event.$1,
