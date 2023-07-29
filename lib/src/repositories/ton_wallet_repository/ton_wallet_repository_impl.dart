@@ -694,6 +694,10 @@ mixin TonWalletRepositoryImpl implements TonWalletRepository {
           return TonWalletPendingTransaction(
             expireAt: expireAt,
             address: walletAddress,
+            isIncoming: walletAddress == e.destination,
+            amount: e.amount,
+            destination: e.destination,
+            messageHash: e.transaction.messageHash,
             date: date,
           );
         },
@@ -715,6 +719,10 @@ mixin TonWalletRepositoryImpl implements TonWalletRepository {
           return TonWalletExpiredTransaction(
             expireAt: expireAt,
             address: address,
+            isIncoming: walletAddress == e.destination,
+            amount: e.amount,
+            destination: e.destination,
+            messageHash: e.transaction.messageHash,
             date: date,
           );
         },
@@ -1021,7 +1029,6 @@ mixin TonWalletRepositoryImpl implements TonWalletRepository {
             isOutgoing: isOutgoing,
             value: value,
             address: address,
-            walletAddress: tonWallet.address,
             date: date,
             fees: fees,
             hash: hash,
