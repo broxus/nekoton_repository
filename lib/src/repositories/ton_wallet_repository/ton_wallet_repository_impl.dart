@@ -171,7 +171,7 @@ mixin TonWalletRepositoryImpl implements TonWalletRepository {
   Future<void> updateSubscriptions(List<TonWalletAsset> assets) async {
     final last = lastUpdatedAssets;
     final toSubscribe = <TonWalletAsset>[];
-    final toUnsubscribe = <TonWalletAsset>[];
+    final toUnsubscribe = <TonWallet>[];
 
     // Stop last created operation if possible
     final oldOperation = _lastOperation;
@@ -183,11 +183,11 @@ mixin TonWalletRepositoryImpl implements TonWalletRepository {
     if (last != null) {
       toUnsubscribe.addAll(
         // pick all elements from old list, which is not contains in a new list
-        last.where((l) => !assets.any((a) => a.address == l.address)),
+        wallets.where((l) => !assets.any((a) => a.address == l.address)),
       );
       toSubscribe.addAll(
         // pick all elements from new list, which is not contains in old list
-        assets.where((a) => !last.any((l) => l.address == a.address)),
+        assets.where((a) => !wallets.any((l) => l.address == a.address)),
       );
     } else {
       toSubscribe.addAll(assets);
@@ -196,8 +196,6 @@ mixin TonWalletRepositoryImpl implements TonWalletRepository {
     for (final asset in toUnsubscribe) {
       unsubscribe(asset.address);
     }
-
-    lastUpdatedAssets = assets;
 
     late CancelableOperation<void> operation;
 
@@ -217,6 +215,7 @@ mixin TonWalletRepositoryImpl implements TonWalletRepository {
         // stop subscribing.
         if (operation.isCanceled) return;
       }
+      lastUpdatedAssets = assets;
     }());
     _lastOperation = operation;
 
