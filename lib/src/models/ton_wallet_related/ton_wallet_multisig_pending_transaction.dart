@@ -10,13 +10,17 @@ class TonWalletMultisigPendingTransaction
     with _$TonWalletMultisigPendingTransaction {
   const factory TonWalletMultisigPendingTransaction({
     required String lt,
+    // initiator of transactions
     required PublicKey creator,
+    // custodians who accepted this transaction
     required List<PublicKey> confirmations,
+    // list of possible custodians
     required List<PublicKey> custodians,
+    // if this transaction was sent from this wallet
     required bool isOutgoing,
     @amountJsonConverter required BigInt value,
+    // address of destination or source depends on isOutgoing
     required Address address,
-    required Address walletAddress,
     required DateTime date,
     @amountJsonConverter required BigInt fees,
     required String hash,

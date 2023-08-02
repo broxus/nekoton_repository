@@ -16,15 +16,19 @@ final _privateConstructorUsedError = UnsupportedError(
 
 /// @nodoc
 mixin _$TonWalletMultisigPendingTransaction {
-  String get lt => throw _privateConstructorUsedError;
-  PublicKey get creator => throw _privateConstructorUsedError;
-  List<PublicKey> get confirmations => throw _privateConstructorUsedError;
-  List<PublicKey> get custodians => throw _privateConstructorUsedError;
+  String get lt =>
+      throw _privateConstructorUsedError; // initiator of transactions
+  PublicKey get creator =>
+      throw _privateConstructorUsedError; // custodians who accepted this transaction
+  List<PublicKey> get confirmations =>
+      throw _privateConstructorUsedError; // list of possible custodians
+  List<PublicKey> get custodians =>
+      throw _privateConstructorUsedError; // if this transaction was sent from this wallet
   bool get isOutgoing => throw _privateConstructorUsedError;
   @amountJsonConverter
-  BigInt get value => throw _privateConstructorUsedError;
+  BigInt get value =>
+      throw _privateConstructorUsedError; // address of destination or source depends on isOutgoing
   Address get address => throw _privateConstructorUsedError;
-  Address get walletAddress => throw _privateConstructorUsedError;
   DateTime get date => throw _privateConstructorUsedError;
   @amountJsonConverter
   BigInt get fees => throw _privateConstructorUsedError;
@@ -68,7 +72,6 @@ abstract class $TonWalletMultisigPendingTransactionCopyWith<$Res> {
       bool isOutgoing,
       @amountJsonConverter BigInt value,
       Address address,
-      Address walletAddress,
       DateTime date,
       @amountJsonConverter BigInt fees,
       String hash,
@@ -87,7 +90,6 @@ abstract class $TonWalletMultisigPendingTransactionCopyWith<$Res> {
 
   $PublicKeyCopyWith<$Res> get creator;
   $AddressCopyWith<$Res> get address;
-  $AddressCopyWith<$Res> get walletAddress;
   $DePoolOnRoundCompleteNotificationCopyWith<$Res>?
       get dePoolOnRoundCompleteNotification;
   $DePoolReceiveAnswerNotificationCopyWith<$Res>?
@@ -118,7 +120,6 @@ class _$TonWalletMultisigPendingTransactionCopyWithImpl<$Res,
     Object? isOutgoing = null,
     Object? value = null,
     Object? address = null,
-    Object? walletAddress = null,
     Object? date = null,
     Object? fees = null,
     Object? hash = null,
@@ -163,10 +164,6 @@ class _$TonWalletMultisigPendingTransactionCopyWithImpl<$Res,
       address: null == address
           ? _value.address
           : address // ignore: cast_nullable_to_non_nullable
-              as Address,
-      walletAddress: null == walletAddress
-          ? _value.walletAddress
-          : walletAddress // ignore: cast_nullable_to_non_nullable
               as Address,
       date: null == date
           ? _value.date
@@ -252,14 +249,6 @@ class _$TonWalletMultisigPendingTransactionCopyWithImpl<$Res,
 
   @override
   @pragma('vm:prefer-inline')
-  $AddressCopyWith<$Res> get walletAddress {
-    return $AddressCopyWith<$Res>(_value.walletAddress, (value) {
-      return _then(_value.copyWith(walletAddress: value) as $Val);
-    });
-  }
-
-  @override
-  @pragma('vm:prefer-inline')
   $DePoolOnRoundCompleteNotificationCopyWith<$Res>?
       get dePoolOnRoundCompleteNotification {
     if (_value.dePoolOnRoundCompleteNotification == null) {
@@ -334,7 +323,6 @@ abstract class _$$_TonWalletMultisigPendingTransactionCopyWith<$Res>
       bool isOutgoing,
       @amountJsonConverter BigInt value,
       Address address,
-      Address walletAddress,
       DateTime date,
       @amountJsonConverter BigInt fees,
       String hash,
@@ -355,8 +343,6 @@ abstract class _$$_TonWalletMultisigPendingTransactionCopyWith<$Res>
   $PublicKeyCopyWith<$Res> get creator;
   @override
   $AddressCopyWith<$Res> get address;
-  @override
-  $AddressCopyWith<$Res> get walletAddress;
   @override
   $DePoolOnRoundCompleteNotificationCopyWith<$Res>?
       get dePoolOnRoundCompleteNotification;
@@ -390,7 +376,6 @@ class __$$_TonWalletMultisigPendingTransactionCopyWithImpl<$Res>
     Object? isOutgoing = null,
     Object? value = null,
     Object? address = null,
-    Object? walletAddress = null,
     Object? date = null,
     Object? fees = null,
     Object? hash = null,
@@ -435,10 +420,6 @@ class __$$_TonWalletMultisigPendingTransactionCopyWithImpl<$Res>
       address: null == address
           ? _value.address
           : address // ignore: cast_nullable_to_non_nullable
-              as Address,
-      walletAddress: null == walletAddress
-          ? _value.walletAddress
-          : walletAddress // ignore: cast_nullable_to_non_nullable
               as Address,
       date: null == date
           ? _value.date
@@ -519,7 +500,6 @@ class _$_TonWalletMultisigPendingTransaction
       required this.isOutgoing,
       @amountJsonConverter required this.value,
       required this.address,
-      required this.walletAddress,
       required this.date,
       @amountJsonConverter required this.fees,
       required this.hash,
@@ -541,9 +521,12 @@ class _$_TonWalletMultisigPendingTransaction
 
   @override
   final String lt;
+// initiator of transactions
   @override
   final PublicKey creator;
+// custodians who accepted this transaction
   final List<PublicKey> _confirmations;
+// custodians who accepted this transaction
   @override
   List<PublicKey> get confirmations {
     if (_confirmations is EqualUnmodifiableListView) return _confirmations;
@@ -551,7 +534,9 @@ class _$_TonWalletMultisigPendingTransaction
     return EqualUnmodifiableListView(_confirmations);
   }
 
+// list of possible custodians
   final List<PublicKey> _custodians;
+// list of possible custodians
   @override
   List<PublicKey> get custodians {
     if (_custodians is EqualUnmodifiableListView) return _custodians;
@@ -559,15 +544,15 @@ class _$_TonWalletMultisigPendingTransaction
     return EqualUnmodifiableListView(_custodians);
   }
 
+// if this transaction was sent from this wallet
   @override
   final bool isOutgoing;
   @override
   @amountJsonConverter
   final BigInt value;
+// address of destination or source depends on isOutgoing
   @override
   final Address address;
-  @override
-  final Address walletAddress;
   @override
   final DateTime date;
   @override
@@ -608,7 +593,7 @@ class _$_TonWalletMultisigPendingTransaction
 
   @override
   String toString() {
-    return 'TonWalletMultisigPendingTransaction(lt: $lt, creator: $creator, confirmations: $confirmations, custodians: $custodians, isOutgoing: $isOutgoing, value: $value, address: $address, walletAddress: $walletAddress, date: $date, fees: $fees, hash: $hash, signsReceived: $signsReceived, signsRequired: $signsRequired, transactionId: $transactionId, publicKeys: $publicKeys, canConfirm: $canConfirm, expireAt: $expireAt, comment: $comment, prevTransactionLt: $prevTransactionLt, dePoolOnRoundCompleteNotification: $dePoolOnRoundCompleteNotification, dePoolReceiveAnswerNotification: $dePoolReceiveAnswerNotification, tokenWalletDeployedNotification: $tokenWalletDeployedNotification, walletInteractionInfo: $walletInteractionInfo)';
+    return 'TonWalletMultisigPendingTransaction(lt: $lt, creator: $creator, confirmations: $confirmations, custodians: $custodians, isOutgoing: $isOutgoing, value: $value, address: $address, date: $date, fees: $fees, hash: $hash, signsReceived: $signsReceived, signsRequired: $signsRequired, transactionId: $transactionId, publicKeys: $publicKeys, canConfirm: $canConfirm, expireAt: $expireAt, comment: $comment, prevTransactionLt: $prevTransactionLt, dePoolOnRoundCompleteNotification: $dePoolOnRoundCompleteNotification, dePoolReceiveAnswerNotification: $dePoolReceiveAnswerNotification, tokenWalletDeployedNotification: $tokenWalletDeployedNotification, walletInteractionInfo: $walletInteractionInfo)';
   }
 
   @override
@@ -626,8 +611,6 @@ class _$_TonWalletMultisigPendingTransaction
                 other.isOutgoing == isOutgoing) &&
             (identical(other.value, value) || other.value == value) &&
             (identical(other.address, address) || other.address == address) &&
-            (identical(other.walletAddress, walletAddress) ||
-                other.walletAddress == walletAddress) &&
             (identical(other.date, date) || other.date == date) &&
             (identical(other.fees, fees) || other.fees == fees) &&
             (identical(other.hash, hash) || other.hash == hash) &&
@@ -672,7 +655,6 @@ class _$_TonWalletMultisigPendingTransaction
         isOutgoing,
         value,
         address,
-        walletAddress,
         date,
         fees,
         hash,
@@ -709,7 +691,6 @@ abstract class _TonWalletMultisigPendingTransaction
       required final bool isOutgoing,
       @amountJsonConverter required final BigInt value,
       required final Address address,
-      required final Address walletAddress,
       required final DateTime date,
       @amountJsonConverter required final BigInt fees,
       required final String hash,
@@ -730,21 +711,19 @@ abstract class _TonWalletMultisigPendingTransaction
 
   @override
   String get lt;
-  @override
+  @override // initiator of transactions
   PublicKey get creator;
-  @override
+  @override // custodians who accepted this transaction
   List<PublicKey> get confirmations;
-  @override
+  @override // list of possible custodians
   List<PublicKey> get custodians;
-  @override
+  @override // if this transaction was sent from this wallet
   bool get isOutgoing;
   @override
   @amountJsonConverter
   BigInt get value;
-  @override
+  @override // address of destination or source depends on isOutgoing
   Address get address;
-  @override
-  Address get walletAddress;
   @override
   DateTime get date;
   @override
