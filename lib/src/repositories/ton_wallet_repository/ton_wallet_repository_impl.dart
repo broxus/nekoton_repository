@@ -223,7 +223,7 @@ mixin TonWalletRepositoryImpl implements TonWalletRepository {
 
     closeAllSubscriptions();
 
-    if (wallets.isEmpty) return;
+    if (assets.isEmpty) return;
 
     return updateSubscriptions(assets);
   }
