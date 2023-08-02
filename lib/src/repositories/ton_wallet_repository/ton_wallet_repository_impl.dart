@@ -26,13 +26,6 @@ mixin TonWalletRepositoryImpl implements TonWalletRepository {
   /// Current transport of application
   TransportStrategy get currentTransport;
 
-  /// Last assets that were used for subscription.
-  /// This value is used during [updateSubscriptions] to detect which wallets
-  /// should be unsubscribed and which of them could be used.
-  @protected
-  @visibleForTesting
-  List<TonWalletAsset>? lastUpdatedAssets;
-
   /// Subject that allows listening for wallets subscribing/unsubscribing
   final _walletsSubject = BehaviorSubject<Map<Address, TonWallet>>.seeded({});
 
@@ -169,7 +162,6 @@ mixin TonWalletRepositoryImpl implements TonWalletRepository {
 
   @override
   Future<void> updateSubscriptions(List<TonWalletAsset> assets) async {
-    final last = lastUpdatedAssets;
     final toSubscribe = <TonWalletAsset>[];
     final toUnsubscribe = <TonWallet>[];
 
@@ -180,18 +172,14 @@ mixin TonWalletRepositoryImpl implements TonWalletRepository {
       await oldOperation.cancel();
     }
 
-    if (last != null) {
-      toUnsubscribe.addAll(
-        // pick all elements from old list, which is not contains in a new list
-        wallets.where((l) => !assets.any((a) => a.address == l.address)),
-      );
-      toSubscribe.addAll(
-        // pick all elements from new list, which is not contains in old list
-        assets.where((a) => !wallets.any((l) => l.address == a.address)),
-      );
-    } else {
-      toSubscribe.addAll(assets);
-    }
+    toUnsubscribe.addAll(
+      // pick all elements from old list, which is not contains in a new list
+      wallets.where((l) => assets.every((a) => a.address != l.address)),
+    );
+    toSubscribe.addAll(
+      // pick all elements from new list, which is not contains in old list
+      assets.where((a) => wallets.every((l) => l.address != a.address)),
+    );
 
     for (final asset in toUnsubscribe) {
       unsubscribe(asset.address);
@@ -215,7 +203,6 @@ mixin TonWalletRepositoryImpl implements TonWalletRepository {
         // stop subscribing.
         if (operation.isCanceled) return;
       }
-      lastUpdatedAssets = assets;
     }());
     _lastOperation = operation;
 
@@ -224,15 +211,21 @@ mixin TonWalletRepositoryImpl implements TonWalletRepository {
 
   @override
   Future<void> updateTransportSubscriptions() async {
+    final assets = wallets
+        .map(
+          (e) => TonWalletAsset(
+            address: e.address,
+            publicKey: e.publicKey,
+            contract: e.walletType,
+          ),
+        )
+        .toList();
+
     closeAllSubscriptions();
 
-    final last = lastUpdatedAssets;
-    if (last == null) return;
+    if (wallets.isEmpty) return;
 
-    // make null to avoid comparing for subscriptions
-    lastUpdatedAssets = null;
-
-    return updateSubscriptions(last);
+    return updateSubscriptions(assets);
   }
 
   @override
