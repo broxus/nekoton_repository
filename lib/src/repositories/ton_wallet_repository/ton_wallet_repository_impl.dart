@@ -466,13 +466,16 @@ mixin TonWalletRepositoryImpl implements TonWalletRepository {
     final wallet = getWallet(address);
     final custodians = wallet.custodians;
 
-    // wallet is not multisig
-    if (custodians == null || custodians.length == 1) return null;
+    if (custodians == null) return null;
 
-    return keyStore.keys
+    final found = keyStore.keys
         .map((e) => e.publicKey)
         .where(custodians.contains)
         .toList();
+
+    if (found.isEmpty) return null;
+
+    return found;
   }
 
   @override
@@ -482,13 +485,14 @@ mixin TonWalletRepositoryImpl implements TonWalletRepository {
       address: address,
     );
 
-    // wallet is not multisig and public key of wallet was returned
-    if (custodians.length == 1) return null;
-
-    return keyStore.keys
+    final found = keyStore.keys
         .map((e) => e.publicKey)
         .where(custodians.contains)
         .toList();
+
+    if (found.isEmpty) return null;
+
+    return found;
   }
 
   /// This is internal method to add wallet to cache.
