@@ -13,7 +13,7 @@ import 'package:nekoton_repository/src/nekoton_repository.dart' as _i3;
 import 'package:nekoton_repository/src/nekoton_repository_module.dart' as _i5;
 
 class NekotonRepositoryPackageModule extends _i1.MicroPackageModule {
-  // initializes the registration of main-scope dependencies inside of GetIt
+// initializes the registration of main-scope dependencies inside of GetIt
   @override
   _i2.FutureOr<void> init(_i1.GetItHelper gh) {
     final nekotonRepositoryModule = _$NekotonRepositoryModule();
