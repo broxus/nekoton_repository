@@ -820,7 +820,7 @@ void main() {
       expect(local, [multisigKey1, multisigKey2]);
     });
 
-    test('Return null custodians for not multisig ', () async {
+    test('Return single-item custodians for not multisig', () async {
       when(() => wallet.onMessageExpiredStream)
           .thenAnswer((_) => expiredStream);
       when(() => wallet.onMessageSentStream)
@@ -831,15 +831,15 @@ void main() {
 
       when(() => transport.transport).thenReturn(jrpc);
       when(() => keystore.keys).thenReturn([notMultisigKeyEntry]);
-      when(() => wallet.custodians).thenReturn(null);
+      when(() => wallet.custodians).thenReturn([notMultisigKey]);
       when(() => wallet.address).thenReturn(notMultisigAddress);
 
       repository.addWalletInst(wallet);
       final local = repository.getLocalCustodians(notMultisigAddress);
-      expect(local, isNull);
+      expect(local, [notMultisigKey]);
     });
 
-    test('Return null custodians for not multisig if it has custodians ', () {
+    test('Return null for not multisig if no local found', () {
       when(() => wallet.onMessageExpiredStream)
           .thenAnswer((_) => expiredStream);
       when(() => wallet.onMessageSentStream)
@@ -849,7 +849,7 @@ void main() {
       when(() => wallet.onStateChangedStream).thenAnswer((_) => stateStream);
 
       when(() => transport.transport).thenReturn(jrpc);
-      when(() => keystore.keys).thenReturn([notMultisigKeyEntry]);
+      when(() => keystore.keys).thenReturn([]);
       when(() => wallet.custodians).thenReturn([notMultisigKey]);
       when(() => wallet.address).thenReturn(notMultisigAddress);
 
@@ -899,7 +899,7 @@ void main() {
       expect(local, [multisigKey1, multisigKey2]);
     });
 
-    test('Return null custodians for not multisig ', () async {
+    test('Return single-item custodians for not multisig ', () async {
       mockWrapper(bridge);
       when(() => jrpc.transportBox).thenReturn(box);
       when(
@@ -911,6 +911,24 @@ void main() {
 
       when(() => transport.transport).thenReturn(jrpc);
       when(() => keystore.keys).thenReturn([notMultisigKeyEntry]);
+
+      final local =
+          await repository.getLocalCustodiansAsync(notMultisigAddress);
+      expect(local, [notMultisigKey]);
+    });
+
+    test('Return null for not multisig if no local found ', () async {
+      mockWrapper(bridge);
+      when(() => jrpc.transportBox).thenReturn(box);
+      when(
+        () => bridge.getCustodiansStaticMethodTonWalletDartWrapper(
+          address: any(named: 'address'),
+          transport: any(named: 'transport'),
+        ),
+      ).thenAnswer((_) => Future.value([notMultisigKey.publicKey]));
+
+      when(() => transport.transport).thenReturn(jrpc);
+      when(() => keystore.keys).thenReturn([]);
 
       final local =
           await repository.getLocalCustodiansAsync(notMultisigAddress);

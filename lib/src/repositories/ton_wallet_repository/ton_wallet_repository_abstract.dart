@@ -177,8 +177,10 @@ abstract class TonWalletRepository {
   /// This method will try to take subscribed wallet by [getWallet], to load
   /// local custodians without subscription, use [getLocalCustodiansAsync].
   ///
-  /// Returns list of custodians that were added to keystore if wallet is
-  /// multisig or return null if not multisig.
+  /// Returns list of custodians that were added to keystore. For not-multisig
+  /// wallets returns single-item list (if exists), for multisig returns as much
+  /// as found.
+  /// If local custodians were not found, returns null for any wallet.
   List<PublicKey>? getLocalCustodians(Address address);
 
   /// Get list of custodians for TonWallet with [address] that were added
@@ -187,8 +189,10 @@ abstract class TonWalletRepository {
   /// transport, so this is network-dependent operation, to use local version,
   /// use [getLocalCustodians].
   ///
-  /// Returns list of custodians that were added to keystore if wallet is
-  /// multisig or return null if not multisig.
+  /// Returns list of custodians that were added to keystore. For not-multisig
+  /// wallets returns single-item list (if exists), for multisig returns as much
+  /// as found.
+  /// If local custodians were not found, returns null for any wallet.
   Future<List<PublicKey>?> getLocalCustodiansAsync(Address address);
 
   /// Map list of transactions for TonWallet to list of completed transactions.

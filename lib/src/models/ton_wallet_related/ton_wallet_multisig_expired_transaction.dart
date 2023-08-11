@@ -10,11 +10,16 @@ class TonWalletMultisigExpiredTransaction
     with _$TonWalletMultisigExpiredTransaction {
   const factory TonWalletMultisigExpiredTransaction({
     required String lt,
+    // initiator of transactions
     required PublicKey creator,
+    // custodians who accepted this transaction
     required List<PublicKey> confirmations,
+    // list of possible custodians
     required List<PublicKey> custodians,
+    // if this transaction was sent from this wallet
     required bool isOutgoing,
     @amountJsonConverter required BigInt value,
+    // address of destination or source depends on isOutgoing
     required Address address,
     @dateSecondsSinceEpochJsonConverter required DateTime date,
     @amountJsonConverter required BigInt fees,

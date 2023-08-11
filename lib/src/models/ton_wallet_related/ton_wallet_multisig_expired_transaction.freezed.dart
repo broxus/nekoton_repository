@@ -16,13 +16,18 @@ final _privateConstructorUsedError = UnsupportedError(
 
 /// @nodoc
 mixin _$TonWalletMultisigExpiredTransaction {
-  String get lt => throw _privateConstructorUsedError;
-  PublicKey get creator => throw _privateConstructorUsedError;
-  List<PublicKey> get confirmations => throw _privateConstructorUsedError;
-  List<PublicKey> get custodians => throw _privateConstructorUsedError;
+  String get lt =>
+      throw _privateConstructorUsedError; // initiator of transactions
+  PublicKey get creator =>
+      throw _privateConstructorUsedError; // custodians who accepted this transaction
+  List<PublicKey> get confirmations =>
+      throw _privateConstructorUsedError; // list of possible custodians
+  List<PublicKey> get custodians =>
+      throw _privateConstructorUsedError; // if this transaction was sent from this wallet
   bool get isOutgoing => throw _privateConstructorUsedError;
   @amountJsonConverter
-  BigInt get value => throw _privateConstructorUsedError;
+  BigInt get value =>
+      throw _privateConstructorUsedError; // address of destination or source depends on isOutgoing
   Address get address => throw _privateConstructorUsedError;
   @dateSecondsSinceEpochJsonConverter
   DateTime get date => throw _privateConstructorUsedError;
@@ -432,9 +437,12 @@ class _$_TonWalletMultisigExpiredTransaction
 
   @override
   final String lt;
+// initiator of transactions
   @override
   final PublicKey creator;
+// custodians who accepted this transaction
   final List<PublicKey> _confirmations;
+// custodians who accepted this transaction
   @override
   List<PublicKey> get confirmations {
     if (_confirmations is EqualUnmodifiableListView) return _confirmations;
@@ -442,7 +450,9 @@ class _$_TonWalletMultisigExpiredTransaction
     return EqualUnmodifiableListView(_confirmations);
   }
 
+// list of possible custodians
   final List<PublicKey> _custodians;
+// list of possible custodians
   @override
   List<PublicKey> get custodians {
     if (_custodians is EqualUnmodifiableListView) return _custodians;
@@ -450,11 +460,13 @@ class _$_TonWalletMultisigExpiredTransaction
     return EqualUnmodifiableListView(_custodians);
   }
 
+// if this transaction was sent from this wallet
   @override
   final bool isOutgoing;
   @override
   @amountJsonConverter
   final BigInt value;
+// address of destination or source depends on isOutgoing
   @override
   final Address address;
   @override
@@ -573,18 +585,18 @@ abstract class _TonWalletMultisigExpiredTransaction
 
   @override
   String get lt;
-  @override
+  @override // initiator of transactions
   PublicKey get creator;
-  @override
+  @override // custodians who accepted this transaction
   List<PublicKey> get confirmations;
-  @override
+  @override // list of possible custodians
   List<PublicKey> get custodians;
-  @override
+  @override // if this transaction was sent from this wallet
   bool get isOutgoing;
   @override
   @amountJsonConverter
   BigInt get value;
-  @override
+  @override // address of destination or source depends on isOutgoing
   Address get address;
   @override
   @dateSecondsSinceEpochJsonConverter
