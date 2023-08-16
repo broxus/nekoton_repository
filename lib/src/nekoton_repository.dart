@@ -212,8 +212,6 @@ class NekotonRepository
     );
   }
 
-  // TODO(alex-a4): understand how transport affects loading existingWallets
-  //   like with adding key.
   /// This is a pure function that combine all accounts/keys sources into a
   /// single hierarchy structure.
   SeedList buildSeeds({

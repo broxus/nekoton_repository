@@ -113,6 +113,8 @@ mixin SeedKeyRepositoryImpl on TransportRepository
     return publicKey;
   }
 
+  // TODO(alex-a4): add calling this method after changing transport to load
+  //   different accounts in a new network. And what to do with multiple!!! keys
   /// Trigger adding accounts to [AccountRepository] by public keys.
   Future<void> triggerAddingAccounts(List<PublicKey> publicKeys) async {
     final foundAccounts = <ExistingWalletInfo>[];
