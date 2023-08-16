@@ -9,7 +9,7 @@ import 'package:nekoton_repository/nekoton_repository.dart';
 import 'package:nekoton_repository/src/repositories/ton_wallet_repository/ton_wallet_gql_block_poller.dart';
 import 'package:rxdart/rxdart.dart';
 
-/// Polling interval for ton wallet refresh
+/// Polling interval for [TonWallet.refresh]
 const tonWalletRefreshInterval = Duration(seconds: 10);
 
 /// This is an interval for active polling to check wallet state during send
@@ -64,8 +64,6 @@ mixin TonWalletRepositoryImpl implements TonWalletRepository {
   @protected
   @visibleForTesting
   final pollingQueues = <Address, RefreshPollingQueue>{};
-
-  // TODO(alex-a4): add closing subscriptions when transport or key changed
 
   @override
   Future<TonWallet> subscribe(TonWalletAsset asset) async {
@@ -438,17 +436,6 @@ mixin TonWalletRepositoryImpl implements TonWalletRepository {
     final wallet = getWallet(address);
 
     return wallet.preloadTransactions(fromLt: fromLt);
-  }
-
-  @override
-  List<PublicKey>? localCustodians(Address address) {
-    final custodians = walletsMap[address]?.custodians;
-    if (custodians == null) return null;
-
-    return keyStore.keys
-        .map((key) => key.publicKey)
-        .where(custodians.contains)
-        .toList();
   }
 
   @override

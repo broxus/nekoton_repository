@@ -67,7 +67,6 @@ abstract class TonWalletTransactionsStorage {
   /// data.
   ///
   /// To identify wallet, use [networkId], [group] and [address].
-  // TODO(alex-a4): check how many transactions comes here
   Future<void> addFoundTransactions({
     required int networkId,
     required String group,

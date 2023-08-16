@@ -29,7 +29,6 @@ abstract class TokenWalletTransactionsStorage {
   ///
   /// To identify wallet, use [networkId], [group], [owner] and
   /// [rootTokenContract].
-  // TODO(alex-a4): check how many transactions comes here
   Future<void> addFoundTransactions({
     required int networkId,
     required String group,
