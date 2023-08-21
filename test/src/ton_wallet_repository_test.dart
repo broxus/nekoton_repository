@@ -1,8 +1,14 @@
+import 'dart:async';
+import 'dart:convert';
+
 import 'package:flutter_test/flutter_test.dart';
+import 'package:get_it/get_it.dart';
 import 'package:mocktail/mocktail.dart';
-import 'package:nekoton_repository/nekoton_repository.dart';
+import 'package:nekoton_repository/nekoton_repository.dart' hide Symbol;
 import 'package:nekoton_repository/src/repositories/ton_wallet_repository/ton_wallet_gql_block_poller.dart';
 import 'package:tuple/tuple.dart';
+
+class MockTokenRepository extends Mock implements TokenWalletRepository {}
 
 class MockBridge extends Mock implements NekotonBridge {}
 
@@ -44,6 +50,7 @@ void main() {
   late MockJrpcTransport jrpc;
 
   late TonWalletRepoTest repository;
+  late MockTokenRepository tokenRepository;
 
   late Stream<Tuple2<PendingTransaction, Transaction?>> messageSentStream;
   late Stream<PendingTransaction> expiredStream;
@@ -100,6 +107,34 @@ void main() {
         '0:d92c91860621eb5397957ee3f426860e2c21d7d4410626885f35db88a46a87c2',
   );
 
+  const asset1 = TonWalletAsset(
+    address: notMultisigAddress,
+    publicKey: notMultisigKey,
+    contract: WalletType.everWallet(),
+  );
+  const asset2 = TonWalletAsset(
+    address: multisigAddress,
+    publicKey: notMultisigKey,
+    contract: WalletType.walletV3(),
+  );
+  final details = TonWalletDetails(
+    requiredConfirmations: null,
+    requiresSeparateDeploy: true,
+    minAmount: BigInt.zero,
+    expirationTime: 0,
+    supportsMultipleOwners: false,
+    supportsPayload: false,
+  );
+  final contract = ContractState(
+    balance: BigInt.zero,
+    genTimings: const GenTimings(genLt: '', genUtime: 0),
+    isDeployed: true,
+  );
+
+  late TonWalletDartWrapper tonWrapper1;
+  late TonWalletDartWrapper tonWrapper2;
+  late ArcTonWalletBoxTrait walletBoxTrait;
+
   late MockBridge bridge;
   late ArcTransportBoxTrait box;
 
@@ -121,6 +156,24 @@ void main() {
     bridge = MockBridge();
     box = ArcTransportBoxTrait.fromRaw(0, 0, bridge);
     registerFallbackValue(box);
+
+    walletBoxTrait = ArcTonWalletBoxTrait.fromRaw(0, 0, bridge);
+    tonWrapper1 = TonWalletDartWrapper(
+      bridge: bridge,
+      innerWallet: walletBoxTrait,
+    );
+    tonWrapper2 = TonWalletDartWrapper(
+      bridge: bridge,
+      innerWallet: walletBoxTrait,
+    );
+    registerFallbackValue(walletBoxTrait);
+    registerFallbackValue(tonWrapper1);
+    registerFallbackValue(tonWrapper2);
+
+    tokenRepository = MockTokenRepository();
+    if (!GetIt.instance.isRegistered<TokenWalletRepository>()) {
+      GetIt.instance.registerSingleton<TokenWalletRepository>(tokenRepository);
+    }
 
     messageSentStream = const Stream.empty();
     expiredStream = const Stream.empty();
@@ -292,7 +345,7 @@ void main() {
     });
   });
 
-  group('TonWallet.send', () {
+  group('TonWalletRepository.send', () {
     // 1 ever
     final amount = BigInt.parse('1000000000');
     const transactionExpiring = Duration(seconds: 10);
@@ -780,7 +833,7 @@ void main() {
     });
   });
 
-  group('getLocalCustodians', () {
+  group('TonWalletRepository.getLocalCustodians', () {
     test('Get only one local custodian', () async {
       when(() => wallet.onMessageExpiredStream)
           .thenAnswer((_) => expiredStream);
@@ -859,7 +912,7 @@ void main() {
     });
   });
 
-  group('getLocalCustodiansAsync', () {
+  group('TonWalletRepository.getLocalCustodiansAsync', () {
     test('Get only one local custodian', () async {
       mockWrapper(bridge);
       when(() => jrpc.transportBox).thenReturn(box);
@@ -933,6 +986,178 @@ void main() {
       final local =
           await repository.getLocalCustodiansAsync(notMultisigAddress);
       expect(local, isNull);
+    });
+  });
+
+  void mockTonWallet(TonWalletDartWrapper box, TonWalletAsset asset) {
+    when(() => box.walletType()).thenAnswer(
+      (_) => Future.value(jsonEncode(asset.contract.toJson())),
+    );
+    when(() => box.workchain()).thenAnswer((_) => Future.value(1));
+    when(() => box.publicKey()).thenAnswer(
+      (_) => Future.value(asset.publicKey.publicKey),
+    );
+    when(() => box.address()).thenAnswer(
+      (_) => Future.value(asset.address.address),
+    );
+    when(() => box.details()).thenAnswer(
+      (_) => Future.value(jsonEncode(details.toJson())),
+    );
+    when(() => box.contractState()).thenAnswer(
+      (_) => Future.value(jsonEncode(contract.toJson())),
+    );
+    when(() => box.pendingTransactions()).thenAnswer(
+      (_) => Future.value(jsonEncode([])),
+    );
+    when(() => box.unconfirmedTransactions()).thenAnswer(
+      (_) => Future.value(jsonEncode([])),
+    );
+    when(() => box.pollingMethod()).thenAnswer(
+      (_) => Future.value(PollingMethod.Manual),
+    );
+    when(() => box.custodians()).thenAnswer(
+      (_) => Future.value([asset.publicKey.publicKey]),
+    );
+  }
+
+  group('TonWalletRepository', () {
+    test('updateSubscriptions without side effects', () async {
+      mockWrapper(bridge);
+      when(() => wallet.onMessageExpiredStream)
+          .thenAnswer((_) => expiredStream);
+      when(() => wallet.onMessageSentStream)
+          .thenAnswer((_) => messageSentStream);
+      when(() => wallet.onTransactionsFoundStream)
+          .thenAnswer((_) => transactionsFoundStream);
+      when(() => wallet.onStateChangedStream).thenAnswer((_) => stateStream);
+
+      when(() => transport.transport).thenReturn(jrpc);
+      when(() => wallet.address).thenReturn(multisigAddress);
+      when(() => jrpc.transportBox).thenReturn(box);
+
+      when(
+        () => bridge.subscribeStaticMethodTonWalletDartWrapper(
+          publicKey: any(named: 'publicKey'),
+          instanceHash: any(named: 'instanceHash'),
+          transport: any(named: 'transport'),
+          walletType: any(named: 'walletType'),
+          workchainId: any(named: 'workchainId'),
+        ),
+      ).thenAnswer((call) {
+        if (call.namedArguments[const Symbol('walletType')] ==
+            jsonEncode(asset1.contract.toJson())) {
+          return Future.value(tonWrapper1);
+        }
+        return Future.value(tonWrapper2);
+      });
+      mockTonWallet(tonWrapper1, asset1);
+      mockTonWallet(tonWrapper2, asset2);
+
+      await repository.updateSubscriptions([asset1, asset2]);
+
+      expect(repository.wallets.length, 2);
+    });
+
+    test('updateSubscriptions with expanding assets list', () async {
+      mockWrapper(bridge);
+      when(() => wallet.onMessageExpiredStream)
+          .thenAnswer((_) => expiredStream);
+      when(() => wallet.onMessageSentStream)
+          .thenAnswer((_) => messageSentStream);
+      when(() => wallet.onTransactionsFoundStream)
+          .thenAnswer((_) => transactionsFoundStream);
+      when(() => wallet.onStateChangedStream).thenAnswer((_) => stateStream);
+
+      when(() => transport.transport).thenReturn(jrpc);
+      when(() => wallet.address).thenReturn(multisigAddress);
+      when(() => jrpc.transportBox).thenReturn(box);
+
+      when(
+        () => bridge.subscribeStaticMethodTonWalletDartWrapper(
+          publicKey: any(named: 'publicKey'),
+          instanceHash: any(named: 'instanceHash'),
+          transport: any(named: 'transport'),
+          walletType: any(named: 'walletType'),
+          workchainId: any(named: 'workchainId'),
+        ),
+      ).thenAnswer((call) {
+        if (call.namedArguments[const Symbol('walletType')] ==
+            jsonEncode(asset1.contract.toJson())) {
+          return Future.delayed(const Duration(seconds: 1), () => tonWrapper1);
+        }
+        return Future.value(tonWrapper2);
+      });
+      mockTonWallet(tonWrapper1, asset1);
+      mockTonWallet(tonWrapper2, asset2);
+
+      unawaited(repository.updateSubscriptions([asset1]));
+      await Future<void>.delayed(const Duration(milliseconds: 300));
+      await repository.updateSubscriptions([asset1, asset2]);
+
+      expect(repository.wallets.length, 2);
+      verify(
+        () => bridge.subscribeStaticMethodTonWalletDartWrapper(
+          publicKey: any(named: 'publicKey'),
+          instanceHash: any(named: 'instanceHash'),
+          transport: any(named: 'transport'),
+          walletType: jsonEncode(asset1.contract.toJson()),
+          workchainId: any(named: 'workchainId'),
+        ),
+      ).called(1);
+      verify(
+        () => bridge.subscribeStaticMethodTonWalletDartWrapper(
+          publicKey: any(named: 'publicKey'),
+          instanceHash: any(named: 'instanceHash'),
+          transport: any(named: 'transport'),
+          walletType: jsonEncode(asset2.contract.toJson()),
+          workchainId: any(named: 'workchainId'),
+        ),
+      ).called(1);
+    });
+
+    test('updateTransportSubscriptions without side effects', () async {
+      mockWrapper(bridge);
+      when(() => wallet.onMessageExpiredStream)
+          .thenAnswer((_) => expiredStream);
+      when(() => wallet.onMessageSentStream)
+          .thenAnswer((_) => messageSentStream);
+      when(() => wallet.onTransactionsFoundStream)
+          .thenAnswer((_) => transactionsFoundStream);
+      when(() => wallet.onStateChangedStream).thenAnswer((_) => stateStream);
+
+      when(() => transport.transport).thenReturn(jrpc);
+      when(() => wallet.address).thenReturn(multisigAddress);
+      when(() => jrpc.transportBox).thenReturn(box);
+      when(() => tokenRepository.closeAllTokenSubscriptions())
+          .thenAnswer((_) => Future<void>.value());
+
+      when(
+        () => bridge.subscribeStaticMethodTonWalletDartWrapper(
+          publicKey: any(named: 'publicKey'),
+          instanceHash: any(named: 'instanceHash'),
+          transport: any(named: 'transport'),
+          walletType: any(named: 'walletType'),
+          workchainId: any(named: 'workchainId'),
+        ),
+      ).thenAnswer((call) {
+        if (call.namedArguments[const Symbol('walletType')] ==
+            jsonEncode(asset1.contract.toJson())) {
+          return Future.value(tonWrapper1);
+        }
+        return Future.value(tonWrapper2);
+      });
+      mockTonWallet(tonWrapper1, asset1);
+      mockTonWallet(tonWrapper2, asset2);
+
+      repository.walletsMap[asset1.address] = wallet;
+      repository.walletsMap[asset2.address] = wallet;
+      repository.lastUpdatedAssets = [asset1, asset2];
+      await repository.updateTransportSubscriptions();
+
+      verify(wallet.dispose).called(2);
+      verify(() => tokenRepository.closeAllTokenSubscriptions());
+
+      expect(repository.wallets.length, 2);
     });
   });
 }

@@ -1,11 +1,11 @@
 import 'dart:async';
 
-import 'package:async/async.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
 import 'package:get_it/get_it.dart';
 import 'package:logging/logging.dart';
 import 'package:nekoton_repository/nekoton_repository.dart';
+import 'package:nekoton_repository/src/repositories/refresh_polling_queue/cancellable_operation_awaited.dart';
 import 'package:nekoton_repository/src/repositories/ton_wallet_repository/ton_wallet_gql_block_poller.dart';
 import 'package:rxdart/rxdart.dart';
 
@@ -27,8 +27,12 @@ mixin TonWalletRepositoryImpl implements TonWalletRepository {
   TransportStrategy get currentTransport;
 
   /// Last assets that were used for subscription.
-  /// This value is used during [updateSubscriptions] to detect which wallets
-  /// should be unsubscribed and which of them could be used.
+  /// This value is used during [updateTransportSubscriptions] to create
+  /// new subscriptions after transport was changed.
+  /// During pure subscription in [updateSubscriptions], already existed
+  /// subscriptions is used, to simplify changes detection, because
+  /// [updateSubscriptions] could be called before old call completed and old
+  /// assets could be reused.
   @protected
   @visibleForTesting
   List<TonWalletAsset>? lastUpdatedAssets;
@@ -163,13 +167,12 @@ mixin TonWalletRepositoryImpl implements TonWalletRepository {
   /// Last call of [updateSubscriptions] that will be stopped if needed.
   ///
   /// This allows interrupt updating if there was new request.
-  CancelableOperation<void>? _lastOperation;
+  CancelableOperationAwaited<void>? _lastOperation;
 
   @override
   Future<void> updateSubscriptions(List<TonWalletAsset> assets) async {
-    final last = lastUpdatedAssets;
     final toSubscribe = <TonWalletAsset>[];
-    final toUnsubscribe = <TonWalletAsset>[];
+    final toUnsubscribe = <TonWallet>[];
 
     // Stop last created operation if possible
     final oldOperation = _lastOperation;
@@ -178,18 +181,14 @@ mixin TonWalletRepositoryImpl implements TonWalletRepository {
       await oldOperation.cancel();
     }
 
-    if (last != null) {
-      toUnsubscribe.addAll(
-        // pick all elements from old list, which is not contains in a new list
-        last.where((l) => !assets.any((a) => a.address == l.address)),
-      );
-      toSubscribe.addAll(
-        // pick all elements from new list, which is not contains in old list
-        assets.where((a) => !last.any((l) => l.address == a.address)),
-      );
-    } else {
-      toSubscribe.addAll(assets);
-    }
+    toUnsubscribe.addAll(
+      // pick all elements from old list, which is not contains in a new list
+      wallets.where((w) => !assets.any((a) => a.address == w.address)),
+    );
+    toSubscribe.addAll(
+      // pick all elements from new list, which is not contains in old list
+      assets.where((a) => !wallets.any((w) => w.address == a.address)),
+    );
 
     for (final asset in toUnsubscribe) {
       unsubscribe(asset.address);
@@ -197,9 +196,9 @@ mixin TonWalletRepositoryImpl implements TonWalletRepository {
 
     lastUpdatedAssets = assets;
 
-    late CancelableOperation<void> operation;
+    late CancelableOperationAwaited<void> operation;
 
-    operation = CancelableOperation.fromFuture(() async {
+    operation = CancelableOperationAwaited.fromFuture(() async {
       for (final asset in toSubscribe) {
         try {
           await subscribe(asset);
@@ -223,6 +222,14 @@ mixin TonWalletRepositoryImpl implements TonWalletRepository {
 
   @override
   Future<void> updateTransportSubscriptions() async {
+    // Stop last created operation if possible
+    final oldOperation = _lastOperation;
+
+    if (oldOperation != null) {
+      await oldOperation.cancel();
+    }
+    _lastOperation = null;
+
     closeAllSubscriptions();
 
     final last = lastUpdatedAssets;
