@@ -171,9 +171,6 @@ void main() {
     registerFallbackValue(tonWrapper2);
 
     tokenRepository = MockTokenRepository();
-    if (!GetIt.instance.isRegistered<TokenWalletRepository>()) {
-      GetIt.instance.registerSingleton<TokenWalletRepository>(tokenRepository);
-    }
 
     messageSentStream = const Stream.empty();
     expiredStream = const Stream.empty();
@@ -1128,8 +1125,12 @@ void main() {
       when(() => transport.transport).thenReturn(jrpc);
       when(() => wallet.address).thenReturn(multisigAddress);
       when(() => jrpc.transportBox).thenReturn(box);
-      when(() => tokenRepository.closeAllTokenSubscriptions())
-          .thenAnswer((_) => Future<void>.value());
+      when(() => tokenRepository.closeAllTokenSubscriptions()).thenReturn(null);
+
+      if (GetIt.instance.isRegistered<TokenWalletRepository>()) {
+        GetIt.instance.unregister<TokenWalletRepository>();
+      }
+      GetIt.instance.registerSingleton<TokenWalletRepository>(tokenRepository);
 
       when(
         () => bridge.subscribeStaticMethodTonWalletDartWrapper(
@@ -1155,7 +1156,7 @@ void main() {
       await repository.updateTransportSubscriptions();
 
       verify(wallet.dispose).called(2);
-      verify(() => tokenRepository.closeAllTokenSubscriptions());
+      verify(() => tokenRepository.closeAllTokenSubscriptions()).called(1);
 
       expect(repository.wallets.length, 2);
     });
