@@ -1,8 +1,8 @@
-import 'package:async/async.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
 import 'package:logging/logging.dart';
 import 'package:nekoton_repository/nekoton_repository.dart';
+import 'package:nekoton_repository/src/repositories/refresh_polling_queue/cancellable_operation_awaited.dart';
 import 'package:rxdart/rxdart.dart';
 
 /// Polling interval for token wallet refresh
@@ -21,11 +21,12 @@ mixin TokenWalletRepositoryImpl implements TokenWalletRepository {
       BehaviorSubject<Map<(Address, Address), TokenWallet>>.seeded({});
 
   /// Last assets that were used for subscription.
-  /// This value is used during [updateTokenSubscriptions] to detect which
-  /// wallets should be unsubscribed and which of them could be used in scope
-  /// of networkGroup.
-  ///
-  /// 1-st item - owner, 2-nd rootTokenContract.
+  /// This value is used during [updateTokenTransportSubscriptions] to create
+  /// new subscriptions after transport was changed.
+  /// During pure subscription in [updateTokenSubscriptions], already existed
+  /// subscriptions is used, to simplify changes detection, because
+  /// [updateTokenSubscriptions] could be called before old call completed and
+  /// old assets could be reused.
   @protected
   @visibleForTesting
   List<AssetsList>? lastUpdatedTokenAssets;
@@ -150,39 +151,27 @@ mixin TokenWalletRepositoryImpl implements TokenWalletRepository {
         .expand((e) => e)
         .toList();
 
-    List<(Address, Address)>? last;
-    if (lastUpdatedTokenAssets != null && lastUpdatedNetworkGroup != null) {
-      last = lastUpdatedTokenAssets!
-          .map(
-            (e) => e.additionalAssets[lastUpdatedNetworkGroup!]?.tokenWallets
-                .map((el) => (e.tonWallet.address, el.rootTokenContract)),
-          )
-          .whereNotNull()
-          .expand((e) => e)
-          .toList();
-    }
-
     lastUpdatedTokenAssets = accounts;
     lastUpdatedNetworkGroup = networkGroup;
 
-    return _updateTokenSubscriptionsPairs(tokenWallets, last);
+    return _updateTokenSubscriptionsPairs(tokenWallets);
   }
 
   /// Last call of [updateTokenSubscriptions] that will be stopped if needed.
   ///
   /// This allows interrupt updating if there was new request.
-  CancelableOperation<void>? _lastOperation;
+  CancelableOperationAwaited<void>? _lastOperation;
 
   /// Update subscriptions for wallets for current transport.
   /// [tokenWallets] - wallets that should be used in scope of current transport
-  /// [last] - wallets that were used before update in scope of
-  ///   [lastUpdatedNetworkGroup].
+  ///
+  /// All old tokens, that is not related to new owner/contract will be
+  /// unsubscribed.
   Future<void> _updateTokenSubscriptionsPairs(
-    List<(Address, Address)> tokenWallets,
-    List<(Address, Address)>? last,
+    List<(Address, Address)> newWallets,
   ) async {
     final toSubscribe = <(Address, Address)>[];
-    final toUnsubscribe = <(Address, Address)>[];
+    final toUnsubscribe = <TokenWallet>[];
 
     // Stop last created operation if possible
     final oldOperation = _lastOperation;
@@ -191,25 +180,27 @@ mixin TokenWalletRepositoryImpl implements TokenWalletRepository {
       await oldOperation.cancel();
     }
 
-    if (last != null) {
-      toUnsubscribe.addAll(
-        // pick all elements from old list, which is not contains in a new list
-        last.where((asset) => !tokenWallets.any((a) => a == asset)),
-      );
-      toSubscribe.addAll(
-        // pick all elements from new list, which is not contains in old list
-        tokenWallets.where((a) => !last.any((asset) => asset == a)),
-      );
-    } else {
-      toSubscribe.addAll(tokenWallets);
-    }
+    toUnsubscribe.addAll(
+      // pick all elements from old list, which is not contains in a new list
+      tokenWallets.where(
+        (w) => !newWallets
+            .any((a) => a.$1 == w.owner && a.$2 == w.rootTokenContract),
+      ),
+    );
+    toSubscribe.addAll(
+      // pick all elements from new list, which is not contains in old list
+      newWallets.where(
+        (a) => !tokenWallets
+            .any((w) => w.owner == a.$1 && w.rootTokenContract == a.$2),
+      ),
+    );
 
     for (final asset in toUnsubscribe) {
-      unsubscribeToken(asset.$1, asset.$2);
+      unsubscribeToken(asset.owner, asset.rootTokenContract);
     }
 
-    late CancelableOperation<void> operation;
-    operation = CancelableOperation.fromFuture(() async {
+    late CancelableOperationAwaited<void> operation;
+    operation = CancelableOperationAwaited.fromFuture(() async {
       for (final wallet in toSubscribe) {
         try {
           await subscribeToken(owner: wallet.$1, rootTokenContract: wallet.$2);
@@ -233,6 +224,12 @@ mixin TokenWalletRepositoryImpl implements TokenWalletRepository {
 
   @override
   Future<void> updateTokenTransportSubscriptions() async {
+    // Stop last created operation if possible
+    final oldOperation = _lastOperation;
+
+    if (oldOperation != null) {
+      await oldOperation.cancel();
+    }
     closeAllTokenSubscriptions();
 
     final last = lastUpdatedTokenAssets;
@@ -244,7 +241,7 @@ mixin TokenWalletRepositoryImpl implements TokenWalletRepository {
 
     // assets in scope of new group, but from old list
     final networkGroup = lastUpdatedNetworkGroup!;
-    final tokenWallets = last
+    final newWallets = last
         .map(
           (e) => e.additionalAssets[networkGroup]?.tokenWallets
               .map((el) => (e.tonWallet.address, el.rootTokenContract)),
@@ -253,7 +250,7 @@ mixin TokenWalletRepositoryImpl implements TokenWalletRepository {
         .expand((e) => e)
         .toList();
 
-    return _updateTokenSubscriptionsPairs(tokenWallets, null);
+    return _updateTokenSubscriptionsPairs(newWallets);
   }
 
   @override
