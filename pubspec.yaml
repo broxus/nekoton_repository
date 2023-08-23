@@ -9,11 +9,11 @@ environment:
 dependencies:
   async: ^2.11.0
   collection: ^1.17.0
-  encrypted_storage: ^0.1.0+2
+  encrypted_storage: ^0.1.1
   equatable: ^2.0.5
   flutter:
     sdk: flutter
-  flutter_nekoton_bridge: ^1.18.0
+  flutter_nekoton_bridge: ^1.18.1
   freezed_annotation: ^2.2.0
   get_it: ^7.6.0
   injectable: ^2.1.0
