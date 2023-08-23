@@ -3,6 +3,71 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## 2023-08-23
+
+### Changes
+
+---
+
+Packages with breaking changes:
+
+ - [`nekoton_repository` - `v0.14.0`](#nekoton_repository---v0140)
+
+Packages with other changes:
+
+ - There are no other changes in this release.
+
+---
+
+#### `nekoton_repository` - `v0.14.0`
+
+ - **FIX**: deleting pending transaction (#28).
+ - **FIX**: change interface to pure class (#26).
+ - **FIX**: update props for seed (#12).
+ - **FEAT**: update subscriptions. Add TonWallet test. Add TokenWallet test (#53).
+ - **FEAT**: update transaction fields (#43).
+ - **FEAT**: update token wallet (#39).
+ - **FEAT**: add logging subscriptions (#37).
+ - **FEAT**: add local custodians getter (#35).
+ - **FEAT**: replace Fixed to BigInt (#34).
+ - **FEAT**: add cancellable operation (#32).
+ - **FEAT**: add registering currency after transport update (#30).
+ - **FEAT**: add transactions mapping (#24).
+ - **FEAT**: add TokenWalletRepository (#23).
+ - **FEAT**: add TonWalletRepository (#22).
+ - **FEAT**: use flutter templates repository (#21).
+ - **FEAT**: clear nekoton directly (#15).
+ - **FEAT**: add rename method to Seed (#10).
+ - **FEAT**: add seed names to Seed instance (#7).
+ - **FEAT**: seed detail (#4).
+ - **BREAKING** **REFACTOR**: add PublicKey and Address dataclasses (#14).
+
+## 0.14.0
+
+> Note: This release has breaking changes.
+
+ - **FIX**: deleting pending transaction (#28).
+ - **FIX**: change interface to pure class (#26).
+ - **FIX**: update props for seed (#12).
+ - **FEAT**: update subscriptions. Add TonWallet test. Add TokenWallet test (#53).
+ - **FEAT**: update transaction fields (#43).
+ - **FEAT**: update token wallet (#39).
+ - **FEAT**: add logging subscriptions (#37).
+ - **FEAT**: add local custodians getter (#35).
+ - **FEAT**: replace Fixed to BigInt (#34).
+ - **FEAT**: add cancellable operation (#32).
+ - **FEAT**: add registering currency after transport update (#30).
+ - **FEAT**: add transactions mapping (#24).
+ - **FEAT**: add TokenWalletRepository (#23).
+ - **FEAT**: add TonWalletRepository (#22).
+ - **FEAT**: use flutter templates repository (#21).
+ - **FEAT**: clear nekoton directly (#15).
+ - **FEAT**: add rename method to Seed (#10).
+ - **FEAT**: add seed names to Seed instance (#7).
+ - **FEAT**: seed detail (#4).
+ - **BREAKING** **REFACTOR**: add PublicKey and Address dataclasses (#14).
+
+
 ## 2023-08-16
 
 ### Changes
