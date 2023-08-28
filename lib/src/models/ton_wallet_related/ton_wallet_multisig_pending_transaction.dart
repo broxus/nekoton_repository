@@ -14,21 +14,26 @@ class TonWalletMultisigPendingTransaction
     required PublicKey creator,
     // custodians who accepted this transaction
     required List<PublicKey> confirmations,
-    // list of possible custodians
+    // list of possible custodians for account
     required List<PublicKey> custodians,
     // if this transaction was sent from this wallet
     required bool isOutgoing,
     @amountJsonConverter required BigInt value,
     // address of destination or source depends on isOutgoing
     required Address address,
+    // address of account for which this transaction was found
+    required Address walletAddress,
     required DateTime date,
     @amountJsonConverter required BigInt fees,
     required String hash,
     required int signsReceived,
     required int signsRequired,
     required String transactionId,
-    required List<PublicKey> publicKeys,
+    // local custodians that can confirm transaction
+    required List<PublicKey> nonConfirmedLocalCustodians,
+    // if user can confirm this transaction (not confirmed earlier)
     required bool canConfirm,
+    // date and time of transaction expiration
     required DateTime expireAt,
     String? comment,
     String? prevTransactionLt,

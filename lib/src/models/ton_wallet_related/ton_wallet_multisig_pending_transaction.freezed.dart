@@ -21,23 +21,28 @@ mixin _$TonWalletMultisigPendingTransaction {
   PublicKey get creator =>
       throw _privateConstructorUsedError; // custodians who accepted this transaction
   List<PublicKey> get confirmations =>
-      throw _privateConstructorUsedError; // list of possible custodians
+      throw _privateConstructorUsedError; // list of possible custodians for account
   List<PublicKey> get custodians =>
       throw _privateConstructorUsedError; // if this transaction was sent from this wallet
   bool get isOutgoing => throw _privateConstructorUsedError;
   @amountJsonConverter
   BigInt get value =>
       throw _privateConstructorUsedError; // address of destination or source depends on isOutgoing
-  Address get address => throw _privateConstructorUsedError;
+  Address get address =>
+      throw _privateConstructorUsedError; // address of account for which this transaction was found
+  Address get walletAddress => throw _privateConstructorUsedError;
   DateTime get date => throw _privateConstructorUsedError;
   @amountJsonConverter
   BigInt get fees => throw _privateConstructorUsedError;
   String get hash => throw _privateConstructorUsedError;
   int get signsReceived => throw _privateConstructorUsedError;
   int get signsRequired => throw _privateConstructorUsedError;
-  String get transactionId => throw _privateConstructorUsedError;
-  List<PublicKey> get publicKeys => throw _privateConstructorUsedError;
-  bool get canConfirm => throw _privateConstructorUsedError;
+  String get transactionId =>
+      throw _privateConstructorUsedError; // local custodians that can confirm transaction
+  List<PublicKey> get nonConfirmedLocalCustodians =>
+      throw _privateConstructorUsedError; // if user can confirm this transaction (not confirmed earlier)
+  bool get canConfirm =>
+      throw _privateConstructorUsedError; // date and time of transaction expiration
   DateTime get expireAt => throw _privateConstructorUsedError;
   String? get comment => throw _privateConstructorUsedError;
   String? get prevTransactionLt => throw _privateConstructorUsedError;
@@ -72,13 +77,14 @@ abstract class $TonWalletMultisigPendingTransactionCopyWith<$Res> {
       bool isOutgoing,
       @amountJsonConverter BigInt value,
       Address address,
+      Address walletAddress,
       DateTime date,
       @amountJsonConverter BigInt fees,
       String hash,
       int signsReceived,
       int signsRequired,
       String transactionId,
-      List<PublicKey> publicKeys,
+      List<PublicKey> nonConfirmedLocalCustodians,
       bool canConfirm,
       DateTime expireAt,
       String? comment,
@@ -90,6 +96,7 @@ abstract class $TonWalletMultisigPendingTransactionCopyWith<$Res> {
 
   $PublicKeyCopyWith<$Res> get creator;
   $AddressCopyWith<$Res> get address;
+  $AddressCopyWith<$Res> get walletAddress;
   $DePoolOnRoundCompleteNotificationCopyWith<$Res>?
       get dePoolOnRoundCompleteNotification;
   $DePoolReceiveAnswerNotificationCopyWith<$Res>?
@@ -120,13 +127,14 @@ class _$TonWalletMultisigPendingTransactionCopyWithImpl<$Res,
     Object? isOutgoing = null,
     Object? value = null,
     Object? address = null,
+    Object? walletAddress = null,
     Object? date = null,
     Object? fees = null,
     Object? hash = null,
     Object? signsReceived = null,
     Object? signsRequired = null,
     Object? transactionId = null,
-    Object? publicKeys = null,
+    Object? nonConfirmedLocalCustodians = null,
     Object? canConfirm = null,
     Object? expireAt = null,
     Object? comment = freezed,
@@ -165,6 +173,10 @@ class _$TonWalletMultisigPendingTransactionCopyWithImpl<$Res,
           ? _value.address
           : address // ignore: cast_nullable_to_non_nullable
               as Address,
+      walletAddress: null == walletAddress
+          ? _value.walletAddress
+          : walletAddress // ignore: cast_nullable_to_non_nullable
+              as Address,
       date: null == date
           ? _value.date
           : date // ignore: cast_nullable_to_non_nullable
@@ -189,9 +201,9 @@ class _$TonWalletMultisigPendingTransactionCopyWithImpl<$Res,
           ? _value.transactionId
           : transactionId // ignore: cast_nullable_to_non_nullable
               as String,
-      publicKeys: null == publicKeys
-          ? _value.publicKeys
-          : publicKeys // ignore: cast_nullable_to_non_nullable
+      nonConfirmedLocalCustodians: null == nonConfirmedLocalCustodians
+          ? _value.nonConfirmedLocalCustodians
+          : nonConfirmedLocalCustodians // ignore: cast_nullable_to_non_nullable
               as List<PublicKey>,
       canConfirm: null == canConfirm
           ? _value.canConfirm
@@ -244,6 +256,14 @@ class _$TonWalletMultisigPendingTransactionCopyWithImpl<$Res,
   $AddressCopyWith<$Res> get address {
     return $AddressCopyWith<$Res>(_value.address, (value) {
       return _then(_value.copyWith(address: value) as $Val);
+    });
+  }
+
+  @override
+  @pragma('vm:prefer-inline')
+  $AddressCopyWith<$Res> get walletAddress {
+    return $AddressCopyWith<$Res>(_value.walletAddress, (value) {
+      return _then(_value.copyWith(walletAddress: value) as $Val);
     });
   }
 
@@ -323,13 +343,14 @@ abstract class _$$_TonWalletMultisigPendingTransactionCopyWith<$Res>
       bool isOutgoing,
       @amountJsonConverter BigInt value,
       Address address,
+      Address walletAddress,
       DateTime date,
       @amountJsonConverter BigInt fees,
       String hash,
       int signsReceived,
       int signsRequired,
       String transactionId,
-      List<PublicKey> publicKeys,
+      List<PublicKey> nonConfirmedLocalCustodians,
       bool canConfirm,
       DateTime expireAt,
       String? comment,
@@ -343,6 +364,8 @@ abstract class _$$_TonWalletMultisigPendingTransactionCopyWith<$Res>
   $PublicKeyCopyWith<$Res> get creator;
   @override
   $AddressCopyWith<$Res> get address;
+  @override
+  $AddressCopyWith<$Res> get walletAddress;
   @override
   $DePoolOnRoundCompleteNotificationCopyWith<$Res>?
       get dePoolOnRoundCompleteNotification;
@@ -376,13 +399,14 @@ class __$$_TonWalletMultisigPendingTransactionCopyWithImpl<$Res>
     Object? isOutgoing = null,
     Object? value = null,
     Object? address = null,
+    Object? walletAddress = null,
     Object? date = null,
     Object? fees = null,
     Object? hash = null,
     Object? signsReceived = null,
     Object? signsRequired = null,
     Object? transactionId = null,
-    Object? publicKeys = null,
+    Object? nonConfirmedLocalCustodians = null,
     Object? canConfirm = null,
     Object? expireAt = null,
     Object? comment = freezed,
@@ -421,6 +445,10 @@ class __$$_TonWalletMultisigPendingTransactionCopyWithImpl<$Res>
           ? _value.address
           : address // ignore: cast_nullable_to_non_nullable
               as Address,
+      walletAddress: null == walletAddress
+          ? _value.walletAddress
+          : walletAddress // ignore: cast_nullable_to_non_nullable
+              as Address,
       date: null == date
           ? _value.date
           : date // ignore: cast_nullable_to_non_nullable
@@ -445,9 +473,9 @@ class __$$_TonWalletMultisigPendingTransactionCopyWithImpl<$Res>
           ? _value.transactionId
           : transactionId // ignore: cast_nullable_to_non_nullable
               as String,
-      publicKeys: null == publicKeys
-          ? _value._publicKeys
-          : publicKeys // ignore: cast_nullable_to_non_nullable
+      nonConfirmedLocalCustodians: null == nonConfirmedLocalCustodians
+          ? _value._nonConfirmedLocalCustodians
+          : nonConfirmedLocalCustodians // ignore: cast_nullable_to_non_nullable
               as List<PublicKey>,
       canConfirm: null == canConfirm
           ? _value.canConfirm
@@ -500,13 +528,14 @@ class _$_TonWalletMultisigPendingTransaction
       required this.isOutgoing,
       @amountJsonConverter required this.value,
       required this.address,
+      required this.walletAddress,
       required this.date,
       @amountJsonConverter required this.fees,
       required this.hash,
       required this.signsReceived,
       required this.signsRequired,
       required this.transactionId,
-      required final List<PublicKey> publicKeys,
+      required final List<PublicKey> nonConfirmedLocalCustodians,
       required this.canConfirm,
       required this.expireAt,
       this.comment,
@@ -517,7 +546,7 @@ class _$_TonWalletMultisigPendingTransaction
       this.walletInteractionInfo})
       : _confirmations = confirmations,
         _custodians = custodians,
-        _publicKeys = publicKeys;
+        _nonConfirmedLocalCustodians = nonConfirmedLocalCustodians;
 
   @override
   final String lt;
@@ -534,9 +563,9 @@ class _$_TonWalletMultisigPendingTransaction
     return EqualUnmodifiableListView(_confirmations);
   }
 
-// list of possible custodians
+// list of possible custodians for account
   final List<PublicKey> _custodians;
-// list of possible custodians
+// list of possible custodians for account
   @override
   List<PublicKey> get custodians {
     if (_custodians is EqualUnmodifiableListView) return _custodians;
@@ -553,6 +582,9 @@ class _$_TonWalletMultisigPendingTransaction
 // address of destination or source depends on isOutgoing
   @override
   final Address address;
+// address of account for which this transaction was found
+  @override
+  final Address walletAddress;
   @override
   final DateTime date;
   @override
@@ -566,16 +598,21 @@ class _$_TonWalletMultisigPendingTransaction
   final int signsRequired;
   @override
   final String transactionId;
-  final List<PublicKey> _publicKeys;
+// local custodians that can confirm transaction
+  final List<PublicKey> _nonConfirmedLocalCustodians;
+// local custodians that can confirm transaction
   @override
-  List<PublicKey> get publicKeys {
-    if (_publicKeys is EqualUnmodifiableListView) return _publicKeys;
+  List<PublicKey> get nonConfirmedLocalCustodians {
+    if (_nonConfirmedLocalCustodians is EqualUnmodifiableListView)
+      return _nonConfirmedLocalCustodians;
     // ignore: implicit_dynamic_type
-    return EqualUnmodifiableListView(_publicKeys);
+    return EqualUnmodifiableListView(_nonConfirmedLocalCustodians);
   }
 
+// if user can confirm this transaction (not confirmed earlier)
   @override
   final bool canConfirm;
+// date and time of transaction expiration
   @override
   final DateTime expireAt;
   @override
@@ -593,7 +630,7 @@ class _$_TonWalletMultisigPendingTransaction
 
   @override
   String toString() {
-    return 'TonWalletMultisigPendingTransaction(lt: $lt, creator: $creator, confirmations: $confirmations, custodians: $custodians, isOutgoing: $isOutgoing, value: $value, address: $address, date: $date, fees: $fees, hash: $hash, signsReceived: $signsReceived, signsRequired: $signsRequired, transactionId: $transactionId, publicKeys: $publicKeys, canConfirm: $canConfirm, expireAt: $expireAt, comment: $comment, prevTransactionLt: $prevTransactionLt, dePoolOnRoundCompleteNotification: $dePoolOnRoundCompleteNotification, dePoolReceiveAnswerNotification: $dePoolReceiveAnswerNotification, tokenWalletDeployedNotification: $tokenWalletDeployedNotification, walletInteractionInfo: $walletInteractionInfo)';
+    return 'TonWalletMultisigPendingTransaction(lt: $lt, creator: $creator, confirmations: $confirmations, custodians: $custodians, isOutgoing: $isOutgoing, value: $value, address: $address, walletAddress: $walletAddress, date: $date, fees: $fees, hash: $hash, signsReceived: $signsReceived, signsRequired: $signsRequired, transactionId: $transactionId, nonConfirmedLocalCustodians: $nonConfirmedLocalCustodians, canConfirm: $canConfirm, expireAt: $expireAt, comment: $comment, prevTransactionLt: $prevTransactionLt, dePoolOnRoundCompleteNotification: $dePoolOnRoundCompleteNotification, dePoolReceiveAnswerNotification: $dePoolReceiveAnswerNotification, tokenWalletDeployedNotification: $tokenWalletDeployedNotification, walletInteractionInfo: $walletInteractionInfo)';
   }
 
   @override
@@ -611,6 +648,8 @@ class _$_TonWalletMultisigPendingTransaction
                 other.isOutgoing == isOutgoing) &&
             (identical(other.value, value) || other.value == value) &&
             (identical(other.address, address) || other.address == address) &&
+            (identical(other.walletAddress, walletAddress) ||
+                other.walletAddress == walletAddress) &&
             (identical(other.date, date) || other.date == date) &&
             (identical(other.fees, fees) || other.fees == fees) &&
             (identical(other.hash, hash) || other.hash == hash) &&
@@ -620,8 +659,9 @@ class _$_TonWalletMultisigPendingTransaction
                 other.signsRequired == signsRequired) &&
             (identical(other.transactionId, transactionId) ||
                 other.transactionId == transactionId) &&
-            const DeepCollectionEquality()
-                .equals(other._publicKeys, _publicKeys) &&
+            const DeepCollectionEquality().equals(
+                other._nonConfirmedLocalCustodians,
+                _nonConfirmedLocalCustodians) &&
             (identical(other.canConfirm, canConfirm) ||
                 other.canConfirm == canConfirm) &&
             (identical(other.expireAt, expireAt) ||
@@ -655,13 +695,14 @@ class _$_TonWalletMultisigPendingTransaction
         isOutgoing,
         value,
         address,
+        walletAddress,
         date,
         fees,
         hash,
         signsReceived,
         signsRequired,
         transactionId,
-        const DeepCollectionEquality().hash(_publicKeys),
+        const DeepCollectionEquality().hash(_nonConfirmedLocalCustodians),
         canConfirm,
         expireAt,
         comment,
@@ -691,13 +732,14 @@ abstract class _TonWalletMultisigPendingTransaction
       required final bool isOutgoing,
       @amountJsonConverter required final BigInt value,
       required final Address address,
+      required final Address walletAddress,
       required final DateTime date,
       @amountJsonConverter required final BigInt fees,
       required final String hash,
       required final int signsReceived,
       required final int signsRequired,
       required final String transactionId,
-      required final List<PublicKey> publicKeys,
+      required final List<PublicKey> nonConfirmedLocalCustodians,
       required final bool canConfirm,
       required final DateTime expireAt,
       final String? comment,
@@ -715,7 +757,7 @@ abstract class _TonWalletMultisigPendingTransaction
   PublicKey get creator;
   @override // custodians who accepted this transaction
   List<PublicKey> get confirmations;
-  @override // list of possible custodians
+  @override // list of possible custodians for account
   List<PublicKey> get custodians;
   @override // if this transaction was sent from this wallet
   bool get isOutgoing;
@@ -724,6 +766,8 @@ abstract class _TonWalletMultisigPendingTransaction
   BigInt get value;
   @override // address of destination or source depends on isOutgoing
   Address get address;
+  @override // address of account for which this transaction was found
+  Address get walletAddress;
   @override
   DateTime get date;
   @override
@@ -737,11 +781,11 @@ abstract class _TonWalletMultisigPendingTransaction
   int get signsRequired;
   @override
   String get transactionId;
-  @override
-  List<PublicKey> get publicKeys;
-  @override
+  @override // local custodians that can confirm transaction
+  List<PublicKey> get nonConfirmedLocalCustodians;
+  @override // if user can confirm this transaction (not confirmed earlier)
   bool get canConfirm;
-  @override
+  @override // date and time of transaction expiration
   DateTime get expireAt;
   @override
   String? get comment;

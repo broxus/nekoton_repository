@@ -1008,10 +1008,10 @@ mixin TonWalletRepositoryImpl implements TonWalletRepository {
           final nonConfirmedLocalCustodians = listOfKeys
               .where((e) => confirmations.every((el) => el != e.publicKey));
 
-          final publicKeys =
+          final nonConfirmedLocalCustodiansKeys =
               nonConfirmedLocalCustodians.map((e) => e.publicKey).toList();
 
-          final canConfirm = publicKeys.isNotEmpty;
+          final canConfirm = nonConfirmedLocalCustodiansKeys.isNotEmpty;
 
           final timeForConfirmation =
               Duration(seconds: tonWallet.details.expirationTime);
@@ -1027,6 +1027,7 @@ mixin TonWalletRepositoryImpl implements TonWalletRepository {
             isOutgoing: isOutgoing,
             value: value,
             address: address,
+            walletAddress: tonWallet.address,
             date: date,
             fees: fees,
             hash: hash,
@@ -1039,7 +1040,7 @@ mixin TonWalletRepositoryImpl implements TonWalletRepository {
             signsReceived: signsReceived,
             signsRequired: signsRequired,
             transactionId: transactionId,
-            publicKeys: publicKeys,
+            nonConfirmedLocalCustodians: nonConfirmedLocalCustodiansKeys,
             canConfirm: canConfirm,
             expireAt: expireAt,
           );
