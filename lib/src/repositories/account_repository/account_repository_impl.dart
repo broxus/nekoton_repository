@@ -60,11 +60,12 @@ mixin AccountRepositoryImpl on TransportRepository
           explicitAddress: address,
         ),
       );
-      await storageRepository.addExternalAccount(
-        publicKey: publicKey,
-        address: address,
-      );
     }
+
+    await storageRepository.addExternalAccount(
+      publicKey: publicKey,
+      address: address,
+    );
   }
 
   @override

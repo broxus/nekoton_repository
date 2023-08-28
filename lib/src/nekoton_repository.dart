@@ -228,22 +228,32 @@ class NekotonRepository
     );
     final mapped = <PublicKey, List<KeyAccount>>{};
     for (final account in transportedAllAccounts) {
-      var key = account.publicKey;
+      final key = account.publicKey;
       final isHidden = hiddenAccounts.contains(account.address);
       final isExternal = planeExternalAccounts.contains(account.address);
-      if (isExternal) {
-        key = externalAccounts.keys.firstWhere(
-          (k) => externalAccounts[k]!.contains(account.address),
-        );
-      }
 
-      final keyAccount = KeyAccount(
-        account: account,
-        isHidden: isHidden,
-        isExternal: isExternal,
-        publicKey: key,
-      );
-      mapped[key] = [...?mapped[key], keyAccount];
+      // if account is external, then add it to all related publicKeys
+      if (isExternal) {
+        final allExternalKeys = externalAccounts.keys
+            .where((k) => externalAccounts[k]!.contains(account.address));
+        for (final externalKey in allExternalKeys) {
+          final keyAccount = KeyAccount(
+            account: account,
+            isHidden: isHidden,
+            isExternal: true,
+            publicKey: externalKey,
+          );
+          mapped[externalKey] = [...?mapped[externalKey], keyAccount];
+        }
+      } else {
+        final keyAccount = KeyAccount(
+          account: account,
+          isHidden: isHidden,
+          isExternal: false,
+          publicKey: key,
+        );
+        mapped[key] = [...?mapped[key], keyAccount];
+      }
     }
 
     return SeedList(
