@@ -22,7 +22,7 @@ class MockWallet extends Mock implements TonWallet {}
 
 class MockGqlTransport extends Mock implements GqlTransport {}
 
-class MockJrpcTransport extends Mock implements JrpcTransport {}
+class MockProtoTransport extends Mock implements ProtoTransport {}
 
 class TonWalletRepoTest with TonWalletRepositoryImpl {
   TonWalletRepoTest(
@@ -47,7 +47,7 @@ void main() {
   late MockWalletStorage storage;
   late MockWallet wallet;
   late MockGqlTransport gql;
-  late MockJrpcTransport jrpc;
+  late MockProtoTransport proto;
 
   late TonWalletRepoTest repository;
   late MockTokenRepository tokenRepository;
@@ -151,7 +151,7 @@ void main() {
     wallet = MockWallet();
     repository = TonWalletRepoTest(transport, keystore, storage);
     gql = MockGqlTransport();
-    jrpc = MockJrpcTransport();
+    proto = MockProtoTransport();
 
     bridge = MockBridge();
     box = ArcTransportBoxTrait.fromRaw(0, 0, bridge);
@@ -637,10 +637,10 @@ void main() {
     });
 
     ///--------------------------------------
-    ///                  JRPC
+    ///                  PROTO
     ///--------------------------------------
 
-    test('send JRPC success', () async {
+    test('send PROTO success', () async {
       // default settings for subscription
       when(() => wallet.onMessageExpiredStream)
           .thenAnswer((_) => expiredStream);
@@ -662,7 +662,7 @@ void main() {
           .thenAnswer((_) => Future<void>.delayed(sendDuration));
       when(() => wallet.refreshDescription).thenReturn('');
 
-      when(() => wallet.transport).thenReturn(jrpc);
+      when(() => wallet.transport).thenReturn(proto);
       when(
         () => wallet.send(
           signedMessage: any(named: 'signedMessage', that: isNotNull),
@@ -670,8 +670,8 @@ void main() {
       ).thenAnswer((_) => Future.value(pendingTransaction));
 
       // Transport flow
-      when(() => jrpc.networkId).thenReturn(networkId);
-      when(() => jrpc.group).thenReturn(group);
+      when(() => proto.networkId).thenReturn(networkId);
+      when(() => proto.group).thenReturn(group);
 
       // storage flow
       when(
@@ -736,7 +736,7 @@ void main() {
       expect(repository.pollingQueues[address], isNull);
     });
 
-    test('send JRPC failed', () async {
+    test('send PROTO failed', () async {
       // default settings for subscription
       when(() => wallet.onMessageExpiredStream)
           .thenAnswer((_) => expiredStream);
@@ -758,7 +758,7 @@ void main() {
       );
       when(() => wallet.refreshDescription).thenReturn('');
 
-      when(() => wallet.transport).thenReturn(jrpc);
+      when(() => wallet.transport).thenReturn(proto);
       when(
         () => wallet.send(
           signedMessage: any(named: 'signedMessage', that: isNotNull),
@@ -766,8 +766,8 @@ void main() {
       ).thenAnswer((_) => Future.value(pendingTransaction));
 
       // Transport flow
-      when(() => jrpc.networkId).thenReturn(networkId);
-      when(() => jrpc.group).thenReturn(group);
+      when(() => proto.networkId).thenReturn(networkId);
+      when(() => proto.group).thenReturn(group);
 
       // storage flow
       when(
@@ -840,7 +840,7 @@ void main() {
           .thenAnswer((_) => transactionsFoundStream);
       when(() => wallet.onStateChangedStream).thenAnswer((_) => stateStream);
 
-      when(() => transport.transport).thenReturn(jrpc);
+      when(() => transport.transport).thenReturn(proto);
       when(() => keystore.keys).thenReturn([multisigKey1Entry]);
       when(() => wallet.custodians).thenReturn([multisigKey1, multisigKey2]);
       when(() => wallet.address).thenReturn(multisigAddress);
@@ -859,7 +859,7 @@ void main() {
           .thenAnswer((_) => transactionsFoundStream);
       when(() => wallet.onStateChangedStream).thenAnswer((_) => stateStream);
 
-      when(() => transport.transport).thenReturn(jrpc);
+      when(() => transport.transport).thenReturn(proto);
       when(() => keystore.keys)
           .thenReturn([multisigKey1Entry, multisigKey2Entry]);
       when(() => wallet.custodians).thenReturn([multisigKey1, multisigKey2]);
@@ -879,7 +879,7 @@ void main() {
           .thenAnswer((_) => transactionsFoundStream);
       when(() => wallet.onStateChangedStream).thenAnswer((_) => stateStream);
 
-      when(() => transport.transport).thenReturn(jrpc);
+      when(() => transport.transport).thenReturn(proto);
       when(() => keystore.keys).thenReturn([notMultisigKeyEntry]);
       when(() => wallet.custodians).thenReturn([notMultisigKey]);
       when(() => wallet.address).thenReturn(notMultisigAddress);
@@ -898,7 +898,7 @@ void main() {
           .thenAnswer((_) => transactionsFoundStream);
       when(() => wallet.onStateChangedStream).thenAnswer((_) => stateStream);
 
-      when(() => transport.transport).thenReturn(jrpc);
+      when(() => transport.transport).thenReturn(proto);
       when(() => keystore.keys).thenReturn([]);
       when(() => wallet.custodians).thenReturn([notMultisigKey]);
       when(() => wallet.address).thenReturn(notMultisigAddress);
@@ -912,7 +912,7 @@ void main() {
   group('TonWalletRepository.getLocalCustodiansAsync', () {
     test('Get only one local custodian', () async {
       mockWrapper(bridge);
-      when(() => jrpc.transportBox).thenReturn(box);
+      when(() => proto.transportBox).thenReturn(box);
       when(
         () => bridge.getCustodiansStaticMethodTonWalletDartWrapper(
           address: any(named: 'address'),
@@ -922,7 +922,7 @@ void main() {
         (_) => Future.value([multisigKey1.publicKey, multisigKey2.publicKey]),
       );
 
-      when(() => transport.transport).thenReturn(jrpc);
+      when(() => transport.transport).thenReturn(proto);
       when(() => keystore.keys).thenReturn([multisigKey1Entry]);
 
       final local = await repository.getLocalCustodiansAsync(multisigAddress);
@@ -931,7 +931,7 @@ void main() {
 
     test('Get several local custodian', () async {
       mockWrapper(bridge);
-      when(() => jrpc.transportBox).thenReturn(box);
+      when(() => proto.transportBox).thenReturn(box);
       when(
         () => bridge.getCustodiansStaticMethodTonWalletDartWrapper(
           address: any(named: 'address'),
@@ -941,7 +941,7 @@ void main() {
         (_) => Future.value([multisigKey1.publicKey, multisigKey2.publicKey]),
       );
 
-      when(() => transport.transport).thenReturn(jrpc);
+      when(() => transport.transport).thenReturn(proto);
       when(() => keystore.keys)
           .thenReturn([multisigKey1Entry, multisigKey2Entry]);
 
@@ -951,7 +951,7 @@ void main() {
 
     test('Return single-item custodians for not multisig ', () async {
       mockWrapper(bridge);
-      when(() => jrpc.transportBox).thenReturn(box);
+      when(() => proto.transportBox).thenReturn(box);
       when(
         () => bridge.getCustodiansStaticMethodTonWalletDartWrapper(
           address: any(named: 'address'),
@@ -959,7 +959,7 @@ void main() {
         ),
       ).thenAnswer((_) => Future.value([notMultisigKey.publicKey]));
 
-      when(() => transport.transport).thenReturn(jrpc);
+      when(() => transport.transport).thenReturn(proto);
       when(() => keystore.keys).thenReturn([notMultisigKeyEntry]);
 
       final local =
@@ -969,7 +969,7 @@ void main() {
 
     test('Return null for not multisig if no local found ', () async {
       mockWrapper(bridge);
-      when(() => jrpc.transportBox).thenReturn(box);
+      when(() => proto.transportBox).thenReturn(box);
       when(
         () => bridge.getCustodiansStaticMethodTonWalletDartWrapper(
           address: any(named: 'address'),
@@ -977,7 +977,7 @@ void main() {
         ),
       ).thenAnswer((_) => Future.value([notMultisigKey.publicKey]));
 
-      when(() => transport.transport).thenReturn(jrpc);
+      when(() => transport.transport).thenReturn(proto);
       when(() => keystore.keys).thenReturn([]);
 
       final local =
@@ -1028,9 +1028,9 @@ void main() {
           .thenAnswer((_) => transactionsFoundStream);
       when(() => wallet.onStateChangedStream).thenAnswer((_) => stateStream);
 
-      when(() => transport.transport).thenReturn(jrpc);
+      when(() => transport.transport).thenReturn(proto);
       when(() => wallet.address).thenReturn(multisigAddress);
-      when(() => jrpc.transportBox).thenReturn(box);
+      when(() => proto.transportBox).thenReturn(box);
 
       when(
         () => bridge.subscribeStaticMethodTonWalletDartWrapper(
@@ -1065,9 +1065,9 @@ void main() {
           .thenAnswer((_) => transactionsFoundStream);
       when(() => wallet.onStateChangedStream).thenAnswer((_) => stateStream);
 
-      when(() => transport.transport).thenReturn(jrpc);
+      when(() => transport.transport).thenReturn(proto);
       when(() => wallet.address).thenReturn(multisigAddress);
-      when(() => jrpc.transportBox).thenReturn(box);
+      when(() => proto.transportBox).thenReturn(box);
 
       when(
         () => bridge.subscribeStaticMethodTonWalletDartWrapper(
@@ -1122,9 +1122,9 @@ void main() {
           .thenAnswer((_) => transactionsFoundStream);
       when(() => wallet.onStateChangedStream).thenAnswer((_) => stateStream);
 
-      when(() => transport.transport).thenReturn(jrpc);
+      when(() => transport.transport).thenReturn(proto);
       when(() => wallet.address).thenReturn(multisigAddress);
-      when(() => jrpc.transportBox).thenReturn(box);
+      when(() => proto.transportBox).thenReturn(box);
       when(() => tokenRepository.closeAllTokenSubscriptions()).thenReturn(null);
 
       if (GetIt.instance.isRegistered<TokenWalletRepository>()) {

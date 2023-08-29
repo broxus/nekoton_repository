@@ -16,7 +16,7 @@ class MockWalletStorage extends Mock
 
 class MockWallet extends Mock implements TokenWallet {}
 
-class MockJrpcTransport extends Mock implements JrpcTransport {}
+class MockProtoTransport extends Mock implements ProtoTransport {}
 
 class TokenWalletRepoTest with TokenWalletRepositoryImpl {
   TokenWalletRepoTest(
@@ -35,7 +35,7 @@ void main() {
   late MockTransport transport;
   late MockWalletStorage storage;
   late MockWallet wallet;
-  late MockJrpcTransport jrpc;
+  late MockProtoTransport proto;
 
   late TokenWalletRepoTest repository;
 
@@ -51,7 +51,7 @@ void main() {
 
   const tokenAddress = Address(address: '0:tokenAddress');
 
-  const transportGroup = 'jrpc';
+  const transportGroup = 'proto';
   const asset1 = TokenWalletAsset(rootTokenContract: root1);
   const asset2 = TokenWalletAsset(rootTokenContract: root2);
   const assetsSingle = AssetsList(
@@ -111,7 +111,7 @@ void main() {
     storage = MockWalletStorage();
     wallet = MockWallet();
     repository = TokenWalletRepoTest(transport, storage);
-    jrpc = MockJrpcTransport();
+    proto = MockProtoTransport();
 
     bridge = MockBridge();
     box = ArcTransportBoxTrait.fromRaw(0, 0, bridge);
@@ -315,9 +315,9 @@ void main() {
       when(() => wallet.owner).thenReturn(owner);
       when(() => wallet.rootTokenContract).thenReturn(root1);
 
-      when(() => transport.transport).thenReturn(jrpc);
-      when(() => jrpc.transportBox).thenReturn(box);
-      when(() => jrpc.group).thenReturn(transportGroup);
+      when(() => transport.transport).thenReturn(proto);
+      when(() => proto.transportBox).thenReturn(box);
+      when(() => proto.group).thenReturn(transportGroup);
 
       when(
         () => bridge.subscribeStaticMethodTokenWalletDartWrapper(
@@ -353,9 +353,9 @@ void main() {
       when(() => wallet.owner).thenReturn(owner);
       when(() => wallet.rootTokenContract).thenReturn(root1);
 
-      when(() => transport.transport).thenReturn(jrpc);
-      when(() => jrpc.transportBox).thenReturn(box);
-      when(() => jrpc.group).thenReturn(transportGroup);
+      when(() => transport.transport).thenReturn(proto);
+      when(() => proto.transportBox).thenReturn(box);
+      when(() => proto.group).thenReturn(transportGroup);
 
       when(
         () => bridge.subscribeStaticMethodTokenWalletDartWrapper(
@@ -408,9 +408,9 @@ void main() {
       when(() => wallet.owner).thenReturn(owner);
       when(() => wallet.rootTokenContract).thenReturn(root1);
 
-      when(() => transport.transport).thenReturn(jrpc);
-      when(() => jrpc.transportBox).thenReturn(box);
-      when(() => jrpc.group).thenReturn(transportGroup);
+      when(() => transport.transport).thenReturn(proto);
+      when(() => proto.transportBox).thenReturn(box);
+      when(() => proto.group).thenReturn(transportGroup);
 
       when(
         () => bridge.subscribeStaticMethodTokenWalletDartWrapper(
