@@ -14,6 +14,7 @@ class CancelableOperationAwaited<T> {
 
   Future<void> cancel() {
     _isCanceled = true;
+
     return _operation.valueOrCancellation();
   }
 
