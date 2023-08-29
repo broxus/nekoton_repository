@@ -67,16 +67,16 @@ mixin TransportRepositoryImpl implements TransportRepository {
   }
 
   @override
-  Future<JrpcTransport> createJrpcTransport({
-    required JrpcConnectionPost post,
+  Future<ProtoTransport> createProtoTransport({
+    required ProtoConnectionPost post,
     required String name,
     required int networkId,
     required String group,
     required String endpoint,
   }) async {
-    final settings = JrpcNetworkSettings(endpoint: endpoint);
+    final settings = ProtoNetworkSettings(endpoint: endpoint);
 
-    final connection = await JrpcConnection.create(
+    final connection = await ProtoConnection.create(
       post: post,
       name: name,
       networkId: networkId,
@@ -84,6 +84,6 @@ mixin TransportRepositoryImpl implements TransportRepository {
       settings: settings,
     );
 
-    return JrpcTransport.create(jrpcConnection: connection);
+    return ProtoTransport.create(protoConnection: connection);
   }
 }
