@@ -379,7 +379,7 @@ mixin TonWalletRepositoryImpl implements TonWalletRepository {
         refreshCompleteCallback: ([(Object, StackTrace)? err]) {
           if (err != null) {
             _logger.severe(
-              '${transport.runtimeType} Reliable polling error',
+              '${transport.runtimeType} TonWallet Reliable polling error',
               err.$1,
               err.$2,
             );
@@ -423,7 +423,7 @@ mixin TonWalletRepositoryImpl implements TonWalletRepository {
         completePolling();
       }).onError<Object>((err, st) {
         _logger.severe(
-          'Ton wallet send transaction ${transport.runtimeType}',
+          'TonWallet send transaction ${transport.runtimeType}',
           err,
           st,
         );

@@ -3,7 +3,7 @@ import 'package:nekoton_repository/nekoton_repository.dart';
 const nextBlockTimeout = Duration(seconds: 30);
 
 /// This is a wrapper above TonWallet that lets us using RefreshPollingQueue
-/// without crutches in TonWallet.refresh.
+/// without crutches in [TonWallet.refresh] for GQL.
 class TonWalletGqlBlockPoller implements RefreshingInterface {
   TonWalletGqlBlockPoller({
     required this.tonWallet,

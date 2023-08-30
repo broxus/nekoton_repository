@@ -1,5 +1,6 @@
 //GENERATED BARREL FILE
 export 'account_list.dart';
+export 'generic_contract/generic_contract.dart';
 export 'key_account.dart';
 export 'seed.dart';
 export 'seed_key.dart';
