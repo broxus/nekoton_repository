@@ -83,7 +83,6 @@ mixin SeedKeyRepositoryImpl on TransportRepository
 
     final createKeyInput = isLegacy
         ? EncryptedKeyCreateInput(
-            name: name,
             phrase: phraseStr,
             mnemonicType: mnemonicType,
             password: Password.explicit(
@@ -95,7 +94,6 @@ mixin SeedKeyRepositoryImpl on TransportRepository
           )
         : DerivedKeyCreateInput.import(
             DerivedKeyCreateInputImport(
-              keyName: name,
               phrase: phraseStr,
               password: Password.explicit(
                 PasswordExplicit(
@@ -107,6 +105,9 @@ mixin SeedKeyRepositoryImpl on TransportRepository
           );
 
     final publicKey = await keyStore.addKey(createKeyInput);
+    if (name != null) {
+      await storageRepository.updateSeedName(masterKey: publicKey, name: name);
+    }
 
     unawaited(triggerAddingAccounts([publicKey]));
 
