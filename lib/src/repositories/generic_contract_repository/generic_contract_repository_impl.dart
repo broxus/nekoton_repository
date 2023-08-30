@@ -15,21 +15,21 @@ mixin GenericContractRepositoryImpl implements GenericContractRepository {
 
   /// Stream of all contract that were created for any browser tab via
   /// [subscribe].
-  @protected
-  @visibleForTesting
-  final contractSubscriptions =
+  final _contractSubscriptions =
       BehaviorSubject<List<GenericContractSubscriptionItem>>.seeded([]);
+
+  List<GenericContractSubscriptionItem> get allContracts =>
+      _contractSubscriptions.value;
 
   @override
   Map<Address, ContractUpdatesSubscription>? tabSubscriptions(String tabId) => {
-        for (final item
-            in contractSubscriptions.value.where((c) => c.tabId == tabId))
+        for (final item in allContracts.where((c) => c.tabId == tabId))
           item.address: item.updateSubscriptionOptions,
       };
 
   @override
   Stream<ContractFoundTransactionEvent> tabTransactionsStream(String tabId) =>
-      contractSubscriptions
+      _contractSubscriptions
           .expand((list) => list)
           .where(
             (c) =>
@@ -48,7 +48,7 @@ mixin GenericContractRepositoryImpl implements GenericContractRepository {
 
   @override
   Stream<ContractStateChangedEvent> tabStateChangesStream(String tabId) =>
-      contractSubscriptions
+      _contractSubscriptions
           .expand((list) => list)
           .where(
             (c) =>
@@ -106,7 +106,10 @@ mixin GenericContractRepositoryImpl implements GenericContractRepository {
 
   @override
   void unsubscribeTab(String tabId) {
-    final possible = contractSubscriptions.value.where((c) => c.tabId == tabId);
+    // copy list to avoid concurrent modification
+    final possible = List<GenericContractSubscriptionItem>.from(
+      _contractSubscriptions.value.where((c) => c.tabId == tabId),
+    );
 
     for (final contract in possible) {
       removeContractInst(
@@ -218,7 +221,7 @@ mixin GenericContractRepositoryImpl implements GenericContractRepository {
 
   @override
   GenericContract getContractByAddress(Address address) =>
-      contractSubscriptions.value
+      _contractSubscriptions.value
           .firstWhere((c) => c.address == address)
           .contract;
 
@@ -227,9 +230,9 @@ mixin GenericContractRepositoryImpl implements GenericContractRepository {
   @protected
   @visibleForTesting
   void addContractInst(GenericContractSubscriptionItem item) {
-    final created = contractSubscriptions.value;
+    final created = allContracts;
     final updated = [...created, item];
-    contractSubscriptions.add(updated);
+    _contractSubscriptions.add(updated);
   }
 
   /// This is internal method to remove contract from cache.
@@ -241,7 +244,7 @@ mixin GenericContractRepositoryImpl implements GenericContractRepository {
     required Uri origin,
     required Address address,
   }) {
-    final contracts = contractSubscriptions.value;
+    final contracts = allContracts;
     final toRemoveIndex = contracts.indexWhere(
       (item) =>
           item.address == address &&

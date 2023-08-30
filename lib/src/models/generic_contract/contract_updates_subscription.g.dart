@@ -9,7 +9,7 @@ part of 'contract_updates_subscription.dart';
 _$_ContractUpdatesSubscription _$$_ContractUpdatesSubscriptionFromJson(
         Map<String, dynamic> json) =>
     _$_ContractUpdatesSubscription(
-      state: json['state'] as bool?,
+      contractState: json['state'] as bool?,
       transactions: json['transactions'] as bool?,
     );
 
@@ -23,7 +23,7 @@ Map<String, dynamic> _$$_ContractUpdatesSubscriptionToJson(
     }
   }
 
-  writeNotNull('state', instance.state);
+  writeNotNull('state', instance.contractState);
   writeNotNull('transactions', instance.transactions);
   return val;
 }
