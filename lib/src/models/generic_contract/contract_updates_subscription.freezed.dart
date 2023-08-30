@@ -21,8 +21,8 @@ ContractUpdatesSubscription _$ContractUpdatesSubscriptionFromJson(
 
 /// @nodoc
 mixin _$ContractUpdatesSubscription {
-  @JsonKey(includeIfNull: false)
-  bool? get state => throw _privateConstructorUsedError;
+  @JsonKey(includeIfNull: false, name: 'state')
+  bool? get contractState => throw _privateConstructorUsedError;
   @JsonKey(includeIfNull: false)
   bool? get transactions => throw _privateConstructorUsedError;
 
@@ -41,7 +41,7 @@ abstract class $ContractUpdatesSubscriptionCopyWith<$Res> {
           ContractUpdatesSubscription>;
   @useResult
   $Res call(
-      {@JsonKey(includeIfNull: false) bool? state,
+      {@JsonKey(includeIfNull: false, name: 'state') bool? contractState,
       @JsonKey(includeIfNull: false) bool? transactions});
 }
 
@@ -59,13 +59,13 @@ class _$ContractUpdatesSubscriptionCopyWithImpl<$Res,
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? state = freezed,
+    Object? contractState = freezed,
     Object? transactions = freezed,
   }) {
     return _then(_value.copyWith(
-      state: freezed == state
-          ? _value.state
-          : state // ignore: cast_nullable_to_non_nullable
+      contractState: freezed == contractState
+          ? _value.contractState
+          : contractState // ignore: cast_nullable_to_non_nullable
               as bool?,
       transactions: freezed == transactions
           ? _value.transactions
@@ -85,7 +85,7 @@ abstract class _$$_ContractUpdatesSubscriptionCopyWith<$Res>
   @override
   @useResult
   $Res call(
-      {@JsonKey(includeIfNull: false) bool? state,
+      {@JsonKey(includeIfNull: false, name: 'state') bool? contractState,
       @JsonKey(includeIfNull: false) bool? transactions});
 }
 
@@ -102,13 +102,13 @@ class __$$_ContractUpdatesSubscriptionCopyWithImpl<$Res>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? state = freezed,
+    Object? contractState = freezed,
     Object? transactions = freezed,
   }) {
     return _then(_$_ContractUpdatesSubscription(
-      state: freezed == state
-          ? _value.state
-          : state // ignore: cast_nullable_to_non_nullable
+      contractState: freezed == contractState
+          ? _value.contractState
+          : contractState // ignore: cast_nullable_to_non_nullable
               as bool?,
       transactions: freezed == transactions
           ? _value.transactions
@@ -122,22 +122,22 @@ class __$$_ContractUpdatesSubscriptionCopyWithImpl<$Res>
 @JsonSerializable()
 class _$_ContractUpdatesSubscription implements _ContractUpdatesSubscription {
   const _$_ContractUpdatesSubscription(
-      {@JsonKey(includeIfNull: false) this.state,
+      {@JsonKey(includeIfNull: false, name: 'state') this.contractState,
       @JsonKey(includeIfNull: false) this.transactions});
 
   factory _$_ContractUpdatesSubscription.fromJson(Map<String, dynamic> json) =>
       _$$_ContractUpdatesSubscriptionFromJson(json);
 
   @override
-  @JsonKey(includeIfNull: false)
-  final bool? state;
+  @JsonKey(includeIfNull: false, name: 'state')
+  final bool? contractState;
   @override
   @JsonKey(includeIfNull: false)
   final bool? transactions;
 
   @override
   String toString() {
-    return 'ContractUpdatesSubscription(state: $state, transactions: $transactions)';
+    return 'ContractUpdatesSubscription(contractState: $contractState, transactions: $transactions)';
   }
 
   @override
@@ -145,14 +145,15 @@ class _$_ContractUpdatesSubscription implements _ContractUpdatesSubscription {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$_ContractUpdatesSubscription &&
-            (identical(other.state, state) || other.state == state) &&
+            (identical(other.contractState, contractState) ||
+                other.contractState == contractState) &&
             (identical(other.transactions, transactions) ||
                 other.transactions == transactions));
   }
 
   @JsonKey(ignore: true)
   @override
-  int get hashCode => Object.hash(runtimeType, state, transactions);
+  int get hashCode => Object.hash(runtimeType, contractState, transactions);
 
   @JsonKey(ignore: true)
   @override
@@ -172,16 +173,16 @@ class _$_ContractUpdatesSubscription implements _ContractUpdatesSubscription {
 abstract class _ContractUpdatesSubscription
     implements ContractUpdatesSubscription {
   const factory _ContractUpdatesSubscription(
-          {@JsonKey(includeIfNull: false) final bool? state,
-          @JsonKey(includeIfNull: false) final bool? transactions}) =
-      _$_ContractUpdatesSubscription;
+      {@JsonKey(includeIfNull: false, name: 'state') final bool? contractState,
+      @JsonKey(includeIfNull: false)
+      final bool? transactions}) = _$_ContractUpdatesSubscription;
 
   factory _ContractUpdatesSubscription.fromJson(Map<String, dynamic> json) =
       _$_ContractUpdatesSubscription.fromJson;
 
   @override
-  @JsonKey(includeIfNull: false)
-  bool? get state;
+  @JsonKey(includeIfNull: false, name: 'state')
+  bool? get contractState;
   @override
   @JsonKey(includeIfNull: false)
   bool? get transactions;

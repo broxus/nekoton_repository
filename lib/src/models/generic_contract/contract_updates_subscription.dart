@@ -7,7 +7,7 @@ part 'contract_updates_subscription.g.dart';
 @freezed
 class ContractUpdatesSubscription with _$ContractUpdatesSubscription {
   const factory ContractUpdatesSubscription({
-    @JsonKey(includeIfNull: false) bool? state,
+    @JsonKey(includeIfNull: false, name: 'state') bool? contractState,
     @JsonKey(includeIfNull: false) bool? transactions,
   }) = _ContractUpdatesSubscription;
 
