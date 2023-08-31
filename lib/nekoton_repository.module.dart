@@ -28,6 +28,8 @@ class NekotonRepositoryPackageModule extends _i1.MicroPackageModule {
         nekotonRepositoryModule.registerTransport(gh<_i4.NekotonRepository>()));
     gh.singleton<_i4.AccountRepository>(
         nekotonRepositoryModule.registerAccounts(gh<_i4.NekotonRepository>()));
+    gh.singleton<_i4.GenericContractRepository>(nekotonRepositoryModule
+        .registerGenericContract(gh<_i4.NekotonRepository>()));
   }
 }
 

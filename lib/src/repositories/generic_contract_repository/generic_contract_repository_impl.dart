@@ -14,7 +14,7 @@ mixin GenericContractRepositoryImpl implements GenericContractRepository {
   TransportStrategy get currentTransport;
 
   /// Stream of all contract that were created for any browser tab via
-  /// [subscribe].
+  /// [subscribeContract].
   final _contractSubscriptions =
       BehaviorSubject<List<GenericContractSubscriptionItem>>.seeded([]);
 
@@ -65,7 +65,7 @@ mixin GenericContractRepositoryImpl implements GenericContractRepository {
           );
 
   @override
-  Future<GenericContract> subscribe({
+  Future<GenericContract> subscribeContract({
     required String tabId,
     required Uri origin,
     required Address address,
@@ -92,7 +92,7 @@ mixin GenericContractRepositoryImpl implements GenericContractRepository {
   }
 
   @override
-  void unsubscribe({
+  void unsubscribeContract({
     required String tabId,
     required Uri origin,
     required Address address,
@@ -105,7 +105,7 @@ mixin GenericContractRepositoryImpl implements GenericContractRepository {
   }
 
   @override
-  void unsubscribeTab(String tabId) {
+  void unsubscribeContractsTab(String tabId) {
     // copy list to avoid concurrent modification
     final possible = List<GenericContractSubscriptionItem>.from(
       _contractSubscriptions.value.where((c) => c.tabId == tabId),
@@ -136,7 +136,7 @@ mixin GenericContractRepositoryImpl implements GenericContractRepository {
 
   @override
   // ignore: long-method
-  Future<Transaction> send({
+  Future<Transaction> sendContract({
     required Address address,
     required SignedMessage signedMessage,
   }) async {
@@ -226,7 +226,7 @@ mixin GenericContractRepositoryImpl implements GenericContractRepository {
           .contract;
 
   /// This is internal method to add contract to cache.
-  /// You must not call this method directly form app, use [subscribe].
+  /// You must not call this method directly form app, use [subscribeContract].
   @protected
   @visibleForTesting
   void addContractInst(GenericContractSubscriptionItem item) {
@@ -236,7 +236,7 @@ mixin GenericContractRepositoryImpl implements GenericContractRepository {
   }
 
   /// This is internal method to remove contract from cache.
-  /// You must not call this method directly form app, use [unsubscribe].
+  /// You must not call this method directly form app, use [unsubscribeContract]
   @protected
   @visibleForTesting
   GenericContractSubscriptionItem? removeContractInst({
