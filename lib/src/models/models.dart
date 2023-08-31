@@ -3,6 +3,7 @@ export 'account_list.dart';
 export 'generic_contract/generic_contract.dart';
 export 'key_account.dart';
 export 'seed.dart';
+export 'seed_changes/seed_changes.dart';
 export 'seed_key.dart';
 export 'seed_list.dart';
 export 'seed_utils.dart';

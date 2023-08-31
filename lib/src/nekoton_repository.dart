@@ -24,7 +24,8 @@ class NekotonRepository
         SeedKeyRepositoryImpl,
         AccountRepositoryImpl,
         TonWalletRepositoryImpl,
-        TokenWalletRepositoryImpl {
+        TokenWalletRepositoryImpl,
+        GenericContractRepositoryImpl {
   /// {@macro nekoton_repository}
   NekotonRepository();
 
@@ -138,7 +139,6 @@ class NekotonRepository
     await _accountsStorage.clear();
   }
 
-  // TODO(alex-a4): add diff checking and hooks for outer usage
   /// List of all keys mapped into seeds
   final _seedsSubject = BehaviorSubject<SeedList>();
 
@@ -147,6 +147,18 @@ class NekotonRepository
   ValueStream<SeedList> get seedListStream => _seedsSubject.stream;
 
   SeedList get seedList => _seedsSubject.value;
+
+  /// Subject that allows track changes in [SeedList]
+  final _changesSubject = BehaviorSubject<SeedListDiffChange>();
+
+  /// Stream of changes in [SeedList], there is no any changes if nothing
+  /// happened.
+  Stream<SeedListDiffChange> get seedChangesStream => _changesSubject.stream;
+
+  /// Last difference of [SeedList] after any user action.
+  /// There is no any changes if nothing happened.
+  /// This is different only between 2 states, there is no long-time tracking.
+  SeedListDiffChange? get lastSeedChanges => _changesSubject.valueOrNull;
 
   /// Start listening list of keys and map them to [SeedList].
   ///
@@ -175,7 +187,7 @@ class NekotonRepository
         .skip(1)
         .listen((names) => _updateSeedList(seedNames: names));
 
-    _updateSeedList();
+    _updateSeedList(needTrackChanges: false);
   }
 
   /// Start listening for transport changing to update Ton/Token wallets
@@ -191,6 +203,8 @@ class NekotonRepository
 
   /// Helper method that allows update one of incoming param of [buildSeeds].
   /// Fields, that were not specified will be taken from its cache.
+  ///
+  /// [needTrackChanges] if true, then [findChanges] will be called.
   void _updateSeedList({
     List<KeyStoreEntry>? allKeys,
     List<AssetsList>? allAccounts,
@@ -198,18 +212,20 @@ class NekotonRepository
     Map<PublicKey, List<Address>>? externalAccounts,
     TransportStrategy? transport,
     Map<PublicKey, String>? seedNames,
+    bool needTrackChanges = true,
   }) {
-    _seedsSubject.add(
-      buildSeeds(
-        allKeys: allKeys ?? _keyStore.keys,
-        allAccounts: allAccounts ?? _accountsStorage.accounts,
-        hiddenAccounts: hiddenAccounts ?? _storageRepository.hiddenAccounts,
-        externalAccounts:
-            externalAccounts ?? _storageRepository.externalAccounts,
-        transport: transport ?? currentTransport,
-        seedNames: seedNames ?? _storageRepository.seedNames,
-      ),
+    final newList = buildSeeds(
+      allKeys: allKeys ?? _keyStore.keys,
+      allAccounts: allAccounts ?? _accountsStorage.accounts,
+      hiddenAccounts: hiddenAccounts ?? _storageRepository.hiddenAccounts,
+      externalAccounts: externalAccounts ?? _storageRepository.externalAccounts,
+      transport: transport ?? currentTransport,
+      seedNames: seedNames ?? _storageRepository.seedNames,
     );
+    if (needTrackChanges) {
+      _changesSubject.add(findChanges(seedList, newList));
+    }
+    _seedsSubject.add(newList);
   }
 
   /// This is a pure function that combine all accounts/keys sources into a
@@ -265,6 +281,17 @@ class NekotonRepository
           AccountList(publicKey: key, allAccounts: value),
         ),
       ),
+    );
+  }
+
+  SeedListDiffChange findChanges(SeedList oldList, SeedList newList) {
+    return const SeedListDiffChange(
+      deletedSeeds: [],
+      addedSeeds: [],
+      deletedKeys: [],
+      addedKeys: [],
+      deletedAccounts: [],
+      addedAccounts: [],
     );
   }
 
