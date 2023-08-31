@@ -24,7 +24,8 @@ class NekotonRepository
         SeedKeyRepositoryImpl,
         AccountRepositoryImpl,
         TonWalletRepositoryImpl,
-        TokenWalletRepositoryImpl {
+        TokenWalletRepositoryImpl,
+        GenericContractRepositoryImpl {
   /// {@macro nekoton_repository}
   NekotonRepository();
 

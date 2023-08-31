@@ -166,7 +166,7 @@ void main() {
       );
 
       repository.allContracts.add(sub);
-      repository.unsubscribe(
+      repository.unsubscribeContract(
         tabId: sub.tabId,
         origin: sub.origin,
         address: sub.address,
@@ -196,7 +196,7 @@ void main() {
       );
 
       repository.allContracts.addAll([sub1, sub2]);
-      repository.unsubscribeTab(tabId1);
+      repository.unsubscribeContractsTab(tabId1);
 
       verify(() => contract.dispose()).called(2);
       expect(repository.allContracts.isEmpty, isTrue);
@@ -434,7 +434,7 @@ void main() {
       /// Main flow
       ///----------------------------
 
-      final transactionFuture = repository.send(
+      final transactionFuture = repository.sendContract(
         address: address1,
         signedMessage: signedMessage,
       );
@@ -512,7 +512,7 @@ void main() {
       /// Main flow
       ///----------------------------
 
-      final transactionFuture = repository.send(
+      final transactionFuture = repository.sendContract(
         address: address1,
         signedMessage: signedMessage,
       );
@@ -595,7 +595,7 @@ void main() {
       /// Main flow
       ///----------------------------
 
-      final transactionFuture = repository.send(
+      final transactionFuture = repository.sendContract(
         address: address1,
         signedMessage: signedMessage,
       );
@@ -660,7 +660,7 @@ void main() {
       /// Main flow
       ///----------------------------
 
-      final transactionFuture = repository.send(
+      final transactionFuture = repository.sendContract(
         address: address1,
         signedMessage: signedMessage,
       );

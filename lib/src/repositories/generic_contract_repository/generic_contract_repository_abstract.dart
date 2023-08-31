@@ -15,7 +15,7 @@ abstract class GenericContractRepository {
   /// And [address] account and options for subscription.
   ///
   /// Typically, this method calls in `subscribe` method from InPageProvider.
-  Future<GenericContract> subscribe({
+  Future<GenericContract> subscribeContract({
     required String tabId,
     required Uri origin,
     required Address address,
@@ -24,7 +24,7 @@ abstract class GenericContractRepository {
 
   /// Close subscription for contract with specified wallet with [address].
   /// By browser's [tabId] and [origin] url.
-  void unsubscribe({
+  void unsubscribeContract({
     required String tabId,
     required Uri origin,
     required Address address,
@@ -33,7 +33,7 @@ abstract class GenericContractRepository {
   /// Close all contract's subscriptions specified for browser tab with [tabId]
   ///
   /// Typically, this method should be called when browser tab closes.
-  void unsubscribeTab(String tabId);
+  void unsubscribeContractsTab(String tabId);
 
   /// Call [GenericContract.executeTransactionLocally] for contract with
   /// subscription with [address].
@@ -44,7 +44,7 @@ abstract class GenericContractRepository {
   });
 
   /// Send funds from contract with subscription with [address].
-  Future<Transaction> send({
+  Future<Transaction> sendContract({
     required Address address,
     required SignedMessage signedMessage,
   });

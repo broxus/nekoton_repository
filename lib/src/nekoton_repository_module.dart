@@ -23,4 +23,10 @@ abstract class NekotonRepositoryModule {
   @singleton
   TokenWalletRepository registerTokenWallet(NekotonRepository repository) =>
       repository;
+
+  @singleton
+  GenericContractRepository registerGenericContract(
+    NekotonRepository repository,
+  ) =>
+      repository;
 }
