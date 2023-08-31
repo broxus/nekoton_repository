@@ -306,6 +306,7 @@ class NekotonRepository
   /// there cannot be SO many elements (typically < 50 at all, and hard case
   /// about couple of hundreds), we do not care about hard optimization, trying
   /// to make it easy-to-read.
+  // ignore: long-method
   SeedListDiffChange findChanges(SeedList oldList, SeedList newList) {
     var result = SeedListDiffChange.empty;
 
