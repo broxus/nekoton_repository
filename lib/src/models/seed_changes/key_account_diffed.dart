@@ -13,6 +13,14 @@ class KeyAccountDiffed extends Equatable {
     required this.isHidden,
   });
 
+  /// Create instance from real account
+  factory KeyAccountDiffed.fromAccount(KeyAccount account) => KeyAccountDiffed(
+        account: account.account,
+        publicKey: account.publicKey,
+        isExternal: account.isExternal,
+        isHidden: account.isHidden,
+      );
+
   /// Nekoton's account
   final AssetsList account;
 

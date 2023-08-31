@@ -10,6 +10,12 @@ class SeedDiffed extends Equatable {
     required this.name,
   });
 
+  /// Create instance from real seed
+  factory SeedDiffed.fromSeed(Seed seed) => SeedDiffed(
+        masterKey: seed.masterKey.publicKey,
+        name: seed.name,
+      );
+
   /// Master key of seed.
   /// This key is derived directly from seed phrase.
   final PublicKey masterKey;

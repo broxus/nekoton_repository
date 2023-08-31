@@ -8,6 +8,9 @@ import 'package:nekoton_repository/nekoton_repository.dart';
 class SeedKeyDiffed extends Equatable {
   const SeedKeyDiffed({required this.key});
 
+  /// Create instance from real key
+  factory SeedKeyDiffed.fromKey(SeedKey key) => SeedKeyDiffed(key: key.key);
+
   /// Real key from blockchain
   final KeyStoreEntry key;
 

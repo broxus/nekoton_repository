@@ -2,13 +2,10 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:nekoton_repository/nekoton_repository.dart';
 
 void main() {
-  const superMasterName = 'SUPER MASTER';
   const key1 = PublicKey(publicKey: '1111111111111111111');
-  final key1Ellipse = key1.toEllipseString();
   const key2 = PublicKey(publicKey: '2222222222222222222');
   const key3 = PublicKey(publicKey: '3333333333333333333');
   const key4 = PublicKey(publicKey: '4444444444444444444');
-  final key4Ellipse = key4.toEllipseString();
 
   final masterKey = KeyStoreEntry(
     name: 'MasterKey',
@@ -131,6 +128,136 @@ void main() {
     publicKey: subKey2.publicKey,
   );
 
+  group('SeedListDiffChange', () {
+    final seedKey1 = SeedKey(key: masterKey, accountList: accounts1);
+    final subSeedKey1 = SeedKey(key: subKey1, accountList: accountsSub1);
+    final subSeedKey2 = SeedKey(key: subKey2, accountList: accountsSub2);
+    final seedKey2 = SeedKey(key: masterKey2, accountList: accounts2);
+
+    final seed1 = Seed(
+      masterKey: seedKey1,
+      subKeys: [subSeedKey1, subSeedKey2],
+      name: null,
+    );
+    final seed2 = Seed(masterKey: seedKey2, subKeys: const [], name: null);
+
+    test('fromSeed', () {
+      final changesDeleted = SeedListDiffChange.fromSeed(
+        seed: seed1,
+        isDeleted: true,
+      );
+      expect(changesDeleted.deletedSeeds.length, 1);
+      expect(changesDeleted.addedSeeds.isEmpty, isTrue);
+
+      expect(changesDeleted.deletedKeys.length, 3);
+      expect(changesDeleted.addedKeys.isEmpty, isTrue);
+
+      expect(changesDeleted.deletedAccounts.length, 4);
+      expect(changesDeleted.addedAccounts.isEmpty, isTrue);
+
+      final changesAdded = SeedListDiffChange.fromSeed(
+        seed: seed1,
+        isDeleted: false,
+      );
+      expect(changesAdded.addedSeeds.length, 1);
+      expect(changesAdded.deletedSeeds.isEmpty, isTrue);
+
+      expect(changesAdded.addedKeys.length, 3);
+      expect(changesAdded.deletedKeys.isEmpty, isTrue);
+
+      expect(changesAdded.addedAccounts.length, 4);
+      expect(changesAdded.deletedAccounts.isEmpty, isTrue);
+    });
+
+    test('fromKey', () {
+      final changesDeleted = SeedListDiffChange.fromKey(
+        key: seedKey1,
+        isDeleted: true,
+      );
+      expect(changesDeleted.deletedSeeds.isEmpty, isTrue);
+      expect(changesDeleted.addedSeeds.isEmpty, isTrue);
+
+      expect(changesDeleted.deletedKeys.length, 1);
+      expect(changesDeleted.addedKeys.isEmpty, isTrue);
+
+      expect(changesDeleted.deletedAccounts.length, 2);
+      expect(changesDeleted.addedAccounts.isEmpty, isTrue);
+
+      final changesAdded = SeedListDiffChange.fromKey(
+        key: seedKey1,
+        isDeleted: false,
+      );
+      expect(changesAdded.addedSeeds.isEmpty, isTrue);
+      expect(changesAdded.deletedSeeds.isEmpty, isTrue);
+
+      expect(changesAdded.addedKeys.length, 1);
+      expect(changesAdded.deletedKeys.isEmpty, isTrue);
+
+      expect(changesAdded.addedAccounts.length, 2);
+      expect(changesAdded.deletedAccounts.isEmpty, isTrue);
+    });
+
+    test('fromAccount', () {
+      final changesDeleted = SeedListDiffChange.fromAccount(
+        account: account1Pure,
+        isDeleted: true,
+      );
+      expect(changesDeleted.deletedSeeds.isEmpty, isTrue);
+      expect(changesDeleted.addedSeeds.isEmpty, isTrue);
+
+      expect(changesDeleted.deletedKeys.isEmpty, isTrue);
+      expect(changesDeleted.addedKeys.isEmpty, isTrue);
+
+      expect(changesDeleted.deletedAccounts.length, 1);
+      expect(changesDeleted.addedAccounts.isEmpty, isTrue);
+
+      final changesAdded = SeedListDiffChange.fromAccount(
+        account: account1Pure,
+        isDeleted: false,
+      );
+      expect(changesAdded.addedSeeds.isEmpty, isTrue);
+      expect(changesAdded.deletedSeeds.isEmpty, isTrue);
+
+      expect(changesAdded.addedKeys.isEmpty, isTrue);
+      expect(changesAdded.deletedKeys.isEmpty, isTrue);
+
+      expect(changesAdded.addedAccounts.length, 1);
+      expect(changesAdded.deletedAccounts.isEmpty, isTrue);
+    });
+
+    test('expand', () {
+      final first = SeedListDiffChange.fromSeed(seed: seed1, isDeleted: true);
+      final second = SeedListDiffChange.fromSeed(seed: seed2, isDeleted: false);
+
+      final expanded = first.expand(second);
+
+      expect(expanded.addedSeeds.length, 1);
+      expect(expanded.deletedSeeds.length, 1);
+
+      expect(expanded.addedKeys.length, 1);
+      expect(expanded.deletedKeys.length, 3);
+
+      expect(expanded.addedAccounts.length, 1);
+      expect(expanded.deletedAccounts.length, 4);
+    });
+
+    test('expandList', () {
+      final first = SeedListDiffChange.fromSeed(seed: seed1, isDeleted: true);
+      final second = SeedListDiffChange.fromSeed(seed: seed2, isDeleted: false);
+
+      final expanded = SeedListDiffChange.empty.expandList([first, second]);
+
+      expect(expanded.addedSeeds.length, 1);
+      expect(expanded.deletedSeeds.length, 1);
+
+      expect(expanded.addedKeys.length, 1);
+      expect(expanded.deletedKeys.length, 3);
+
+      expect(expanded.addedAccounts.length, 1);
+      expect(expanded.deletedAccounts.length, 4);
+    });
+  });
+
   group('NekotonRepository.findChanges', () {
     test('Finds adding new seed with keys and accounts', () {
       final oldList = SeedList(
@@ -187,12 +314,6 @@ void main() {
               publicKey: account1ExternalHidden.publicKey,
               isExternal: account1ExternalHidden.isExternal,
               isHidden: account1ExternalHidden.isHidden,
-            ),
-            KeyAccountDiffed(
-              account: account2External.account,
-              publicKey: account2External.publicKey,
-              isExternal: account2External.isExternal,
-              isHidden: account2External.isHidden,
             ),
             KeyAccountDiffed(
               account: accountSub1Pure.account,
@@ -267,12 +388,6 @@ void main() {
               publicKey: account1ExternalHidden.publicKey,
               isExternal: account1ExternalHidden.isExternal,
               isHidden: account1ExternalHidden.isHidden,
-            ),
-            KeyAccountDiffed(
-              account: account2External.account,
-              publicKey: account2External.publicKey,
-              isExternal: account2External.isExternal,
-              isHidden: account2External.isHidden,
             ),
             KeyAccountDiffed(
               account: accountSub1Pure.account,
@@ -478,6 +593,96 @@ void main() {
         ),
       );
       expect(changes.addedAccounts.isEmpty, isTrue);
+    });
+
+    test('Finds adding and deleting seeds with keys and accounts at time', () {
+      final oldList = SeedList(
+        seedNames: const {},
+        allKeys: [masterKey2],
+        mappedAccounts: {masterKey2.publicKey: accounts2},
+      );
+      final newList = SeedList(
+        seedNames: const {},
+        allKeys: [masterKey, subKey1, subKey2],
+        mappedAccounts: {
+          masterKey.publicKey: accounts1,
+          subKey1.publicKey: accountsSub1,
+          subKey2.publicKey: accountsSub2,
+        },
+      );
+
+      final changes = NekotonRepository().findChanges(oldList, newList);
+
+      expect(
+        changes.addedSeeds,
+        [
+          SeedDiffed(
+            name: masterKey.publicKey.toEllipseString(),
+            masterKey: masterKey.publicKey,
+          ),
+        ],
+      );
+      expect(
+        changes.deletedSeeds,
+        [
+          SeedDiffed(
+            name: masterKey2.publicKey.toEllipseString(),
+            masterKey: masterKey2.publicKey,
+          ),
+        ],
+      );
+      expect(
+        changes.addedKeys,
+        unorderedEquals([
+          SeedKeyDiffed(key: masterKey),
+          SeedKeyDiffed(key: subKey1),
+          SeedKeyDiffed(key: subKey2),
+        ]),
+      );
+      expect(changes.deletedKeys, [SeedKeyDiffed(key: masterKey2)]);
+
+      expect(
+        changes.addedAccounts,
+        unorderedEquals(
+          [
+            KeyAccountDiffed(
+              account: account1Pure.account,
+              publicKey: account1Pure.publicKey,
+              isExternal: account1Pure.isExternal,
+              isHidden: account1Pure.isHidden,
+            ),
+            KeyAccountDiffed(
+              account: account1ExternalHidden.account,
+              publicKey: account1ExternalHidden.publicKey,
+              isExternal: account1ExternalHidden.isExternal,
+              isHidden: account1ExternalHidden.isHidden,
+            ),
+            KeyAccountDiffed(
+              account: accountSub1Pure.account,
+              publicKey: accountSub1Pure.publicKey,
+              isExternal: accountSub1Pure.isExternal,
+              isHidden: accountSub1Pure.isHidden,
+            ),
+            KeyAccountDiffed(
+              account: accountSub2Hidden.account,
+              publicKey: accountSub2Hidden.publicKey,
+              isExternal: accountSub2Hidden.isExternal,
+              isHidden: accountSub2Hidden.isHidden,
+            ),
+          ],
+        ),
+      );
+      expect(
+        changes.deletedAccounts,
+        [
+          KeyAccountDiffed(
+            account: account2External.account,
+            publicKey: account2External.publicKey,
+            isExternal: account2External.isExternal,
+            isHidden: account2External.isHidden,
+          ),
+        ],
+      );
     });
   });
 }

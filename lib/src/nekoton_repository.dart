@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:collection/collection.dart';
 import 'package:flutter_nekoton_bridge/flutter_nekoton_bridge.dart' as fnb;
 import 'package:injectable/injectable.dart';
 import 'package:logging/logging.dart';
@@ -149,15 +150,18 @@ class NekotonRepository
   SeedList get seedList => _seedsSubject.value;
 
   /// Subject that allows track changes in [SeedList]
-  final _changesSubject = BehaviorSubject<SeedListDiffChange>();
+  final _changesSubject =
+      BehaviorSubject<SeedListDiffChange>.seeded(SeedListDiffChange.empty);
 
   /// Stream of changes in [SeedList], there is no any changes if nothing
   /// happened.
+  /// Every item is difference only between 2 states, there is no long-time
+  /// tracking.
   Stream<SeedListDiffChange> get seedChangesStream => _changesSubject.stream;
 
   /// Last difference of [SeedList] after any user action.
   /// There is no any changes if nothing happened.
-  /// This is different only between 2 states, there is no long-time tracking.
+  /// This is difference only between 2 states, there is no long-time tracking.
   SeedListDiffChange? get lastSeedChanges => _changesSubject.valueOrNull;
 
   /// Start listening list of keys and map them to [SeedList].
@@ -284,15 +288,143 @@ class NekotonRepository
     );
   }
 
+  /// Trying to find difference between [oldList] and [newList] on all levels
+  /// of hierarchy.
+  /// There are 3 steps:
+  /// 1) Find difference on seed level
+  /// 2) Find difference on key level
+  /// 3) Find difference on account level
+  ///
+  /// This is not so difficult logic as you can see by its size :)
+  ///
+  /// All 3 levels has common behaviour searching for:
+  /// 1) deleted items (old contains, new dont)
+  /// 2) added items (new contains, old dont)
+  /// 3) intersected items (both new and old contains) (except of accounts)
+  ///
+  /// This logic contains a lot of list-search behavior, but if we know, that
+  /// there cannot be SO many elements (typically < 50 at all, and hard case
+  /// about couple of hundreds), we do not care about hard optimization, trying
+  /// to make it easy-to-read.
   SeedListDiffChange findChanges(SeedList oldList, SeedList newList) {
-    return const SeedListDiffChange(
-      deletedSeeds: [],
-      addedSeeds: [],
-      deletedKeys: [],
-      addedKeys: [],
-      deletedAccounts: [],
-      addedAccounts: [],
+    var result = SeedListDiffChange.empty;
+
+    final oldSeeds = oldList.seeds;
+    final newSeeds = newList.seeds;
+
+    // trying to find difference on seed level, comparing PublicKey because
+    // name could be different
+    final deletedSeeds = oldSeeds
+        // old seeds contains items, that new doesn't
+        .where(
+      (seed) => newSeeds
+          .none((s) => s.masterKey.publicKey == seed.masterKey.publicKey),
     );
+    final addedSeeds = newSeeds
+        // new seeds contains items, that old doesn't
+        .where(
+      (seed) => oldSeeds
+          .none((s) => s.masterKey.publicKey == seed.masterKey.publicKey),
+    );
+    final intersectedSeedsFromOld = oldSeeds
+        // items from both lists
+        .where(
+      (seed) => newSeeds
+          .any((s) => s.masterKey.publicKey == seed.masterKey.publicKey),
+    );
+    final intersectedSeedsFromNew = newSeeds
+        // items from both lists
+        .where(
+      (seed) => oldSeeds
+          .any((s) => s.masterKey.publicKey == seed.masterKey.publicKey),
+    );
+
+    /// Add seed-level difference to result
+    result = result.expandList(
+      deletedSeeds.map(
+        (e) => SeedListDiffChange.fromSeed(seed: e, isDeleted: true),
+      ),
+    );
+    result = result.expandList(
+      addedSeeds.map(
+        (e) => SeedListDiffChange.fromSeed(seed: e, isDeleted: false),
+      ),
+    );
+
+    for (final oldSeed in intersectedSeedsFromOld) {
+      // trying to find difference on key level
+      final newSeed = intersectedSeedsFromNew.firstWhere(
+        // compare PublicKey because names could be different
+        (k) => k.masterKey.publicKey == oldSeed.masterKey.publicKey,
+      );
+
+      final deletedKeys = oldSeed.allKeys
+          // old keys contains items, that new doesn't
+          .where(
+        (key) => newSeed.allKeys.none((k) => k.publicKey == key.publicKey),
+      );
+      final addedKeys = newSeed.allKeys
+          // new keys contains items, that old doesn't
+          .where(
+        (key) => oldSeed.allKeys.none((k) => k.publicKey == key.publicKey),
+      );
+      final intersectedKeysFromOld = oldSeed.allKeys
+          // items from both lists
+          .where(
+        (key) => newSeed.allKeys.any((k) => k.publicKey == key.publicKey),
+      );
+      final intersectedKeysFromNew = newSeed.allKeys
+          // items from both lists
+          .where(
+        (key) => oldSeed.allKeys.any((k) => k.publicKey == key.publicKey),
+      );
+
+      /// Add key-level difference to result
+      result = result.expandList(
+        deletedKeys.map(
+          (e) => SeedListDiffChange.fromKey(key: e, isDeleted: true),
+        ),
+      );
+      result = result.expandList(
+        addedKeys.map(
+          (e) => SeedListDiffChange.fromKey(key: e, isDeleted: false),
+        ),
+      );
+
+      for (final oldKey in intersectedKeysFromOld) {
+        // trying to find difference on account level
+        final newKey = intersectedKeysFromNew.firstWhere(
+          (s) => s.publicKey == oldKey.publicKey,
+        );
+
+        final deletedAccounts = oldKey.accountList.allAccounts
+            // old accounts contains items, that new doesn't
+            .where(
+          (acc) => newKey.accountList.allAccounts
+              .none((a) => a.address == acc.address),
+        );
+        final addedAccounts = newKey.accountList.allAccounts
+            // new accounts contains items, that old doesn't
+            .where(
+          (acc) => oldKey.accountList.allAccounts
+              .none((a) => a.address == acc.address),
+        );
+
+        /// Add account-level difference to result
+        result = result.expandList(
+          deletedAccounts.map(
+            (e) => SeedListDiffChange.fromAccount(account: e, isDeleted: true),
+          ),
+        );
+        result = result.expandList(
+          addedAccounts.map(
+            (e) => SeedListDiffChange.fromAccount(account: e, isDeleted: false),
+          ),
+        );
+      }
+    }
+
+    return result;
   }
 
   /// Subject that allows subscribe to seeds existing. This is used by
