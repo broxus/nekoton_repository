@@ -2,11 +2,11 @@ import 'package:equatable/equatable.dart';
 
 import 'package:nekoton_repository/nekoton_repository.dart';
 
-/// [KeyAccountDiffed] is [KeyAccount] but without any actions.
+/// [KeyAccountBase] is [KeyAccount] but without any actions.
 /// This model allows tracking KeyAccount adding/removing from [SeedList],
 /// see [SeedListDiffChange].
-class KeyAccountDiffed extends Equatable {
-  const KeyAccountDiffed({
+class KeyAccountBase extends Equatable {
+  const KeyAccountBase({
     required this.account,
     required this.publicKey,
     required this.isExternal,
@@ -14,7 +14,7 @@ class KeyAccountDiffed extends Equatable {
   });
 
   /// Create instance from real account
-  factory KeyAccountDiffed.fromAccount(KeyAccount account) => KeyAccountDiffed(
+  factory KeyAccountBase.fromAccount(KeyAccount account) => KeyAccountBase(
         account: account.account,
         publicKey: account.publicKey,
         isExternal: account.isExternal,

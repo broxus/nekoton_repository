@@ -2,14 +2,14 @@ import 'package:equatable/equatable.dart';
 
 import 'package:nekoton_repository/nekoton_repository.dart';
 
-/// [SeedKeyDiffed] is [SeedKey] (even master key=seed).
+/// [SeedKeyBase] is [SeedKey] (even master key=seed).
 /// This model allows tracking SeedKey adding/removing from [SeedList],
 /// see [SeedListDiffChange].
-class SeedKeyDiffed extends Equatable {
-  const SeedKeyDiffed({required this.key});
+class SeedKeyBase extends Equatable {
+  const SeedKeyBase({required this.key});
 
   /// Create instance from real key
-  factory SeedKeyDiffed.fromKey(SeedKey key) => SeedKeyDiffed(key: key.key);
+  factory SeedKeyBase.fromKey(SeedKey key) => SeedKeyBase(key: key.key);
 
   /// Real key from blockchain
   final KeyStoreEntry key;

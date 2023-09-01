@@ -10,8 +10,8 @@ import 'package:nekoton_repository/nekoton_repository.dart';
 ///
 /// You also cannot call any action for instances of this diff.
 ///
-/// !!! There is no hierarchy between [SeedDiffed], [SeedKeyDiffed] and
-/// [KeyAccountDiffed]. This is just a pure data-copy of original models.
+/// !!! There is no hierarchy between [SeedBase], [SeedKeyBase] and
+/// [KeyAccountBase]. This is just a pure data-copy of original models.
 ///
 /// !!! This is different only between 2 states, there is no long-time tracking.
 @immutable
@@ -30,13 +30,13 @@ class SeedListDiffChange extends Equatable {
     required Seed seed,
     required bool isDeleted,
   }) {
-    final seedDiff = SeedDiffed.fromSeed(seed);
-    final accounts = <KeyAccountDiffed>[];
-    final keys = <SeedKeyDiffed>[];
+    final seedDiff = SeedBase.fromSeed(seed);
+    final accounts = <KeyAccountBase>[];
+    final keys = <SeedKeyBase>[];
     for (final key in seed.allKeys) {
-      keys.add(SeedKeyDiffed.fromKey(key));
+      keys.add(SeedKeyBase.fromKey(key));
       accounts.addAll(
-        key.accountList.allAccounts.map(KeyAccountDiffed.fromAccount),
+        key.accountList.allAccounts.map(KeyAccountBase.fromAccount),
       );
     }
 
@@ -55,9 +55,9 @@ class SeedListDiffChange extends Equatable {
     required SeedKey key,
     required bool isDeleted,
   }) {
-    final keyDiff = SeedKeyDiffed.fromKey(key);
+    final keyDiff = SeedKeyBase.fromKey(key);
     final accounts =
-        key.accountList.allAccounts.map(KeyAccountDiffed.fromAccount).toList();
+        key.accountList.allAccounts.map(KeyAccountBase.fromAccount).toList();
 
     return SeedListDiffChange(
       deletedSeeds: const [],
@@ -74,7 +74,7 @@ class SeedListDiffChange extends Equatable {
     required KeyAccount account,
     required bool isDeleted,
   }) {
-    final accountDiff = KeyAccountDiffed.fromAccount(account);
+    final accountDiff = KeyAccountBase.fromAccount(account);
 
     return SeedListDiffChange(
       deletedSeeds: const [],
@@ -97,43 +97,43 @@ class SeedListDiffChange extends Equatable {
   );
 
   /// Added and deleted seeds.
-  /// [SeedDiffed] is just [Seed] where publicKey=masterKey and nothing more.
+  /// [SeedBase] is just [Seed] where publicKey=masterKey and nothing more.
   /// Seed have have difference only in 1 way:
   /// 1) added/removed itself
-  final List<SeedDiffed> deletedSeeds;
-  final List<SeedDiffed> addedSeeds;
+  final List<SeedBase> deletedSeeds;
+  final List<SeedBase> addedSeeds;
 
   /// Added and deleted public keys.
-  /// [SeedKeyDiffed] is [SeedKey] (even master key=seed)
+  /// [SeedKeyBase] is [SeedKey] (even master key=seed)
   /// Key may have difference in 2 ways:
   /// 1) added/removed itself
   /// 2) added/removed if parent seed added/removed
-  final List<SeedKeyDiffed> deletedKeys;
-  final List<SeedKeyDiffed> addedKeys;
+  final List<SeedKeyBase> deletedKeys;
+  final List<SeedKeyBase> addedKeys;
 
   /// Added and deleted accounts.
-  /// [KeyAccountDiffed] is [KeyAccount] but without any actions.
+  /// [KeyAccountBase] is [KeyAccount] but without any actions.
   /// Account may have difference in 3 ways:
   /// 1) added/removed itself
   /// 2) added/removed if its parent key added/removed
   /// 3) added/removed if its seed added/removed
-  final List<KeyAccountDiffed> deletedAccounts;
-  final List<KeyAccountDiffed> addedAccounts;
+  final List<KeyAccountBase> deletedAccounts;
+  final List<KeyAccountBase> addedAccounts;
 
   /// Expand this diff by adding unique elements from [other].
   SeedListDiffChange expand(SeedListDiffChange other) {
     return SeedListDiffChange(
       deletedSeeds:
-          <SeedDiffed>{...other.deletedSeeds, ...deletedSeeds}.toList(),
-      addedSeeds: <SeedDiffed>{...other.addedSeeds, ...addedSeeds}.toList(),
+          <SeedBase>{...other.deletedSeeds, ...deletedSeeds}.toList(),
+      addedSeeds: <SeedBase>{...other.addedSeeds, ...addedSeeds}.toList(),
       deletedKeys:
-          <SeedKeyDiffed>{...other.deletedKeys, ...deletedKeys}.toList(),
-      addedKeys: <SeedKeyDiffed>{...other.addedKeys, ...addedKeys}.toList(),
-      deletedAccounts: <KeyAccountDiffed>{
+          <SeedKeyBase>{...other.deletedKeys, ...deletedKeys}.toList(),
+      addedKeys: <SeedKeyBase>{...other.addedKeys, ...addedKeys}.toList(),
+      deletedAccounts: <KeyAccountBase>{
         ...other.deletedAccounts,
         ...deletedAccounts,
       }.toList(),
-      addedAccounts: <KeyAccountDiffed>{
+      addedAccounts: <KeyAccountBase>{
         ...other.addedAccounts,
         ...addedAccounts,
       }.toList(),
@@ -143,27 +143,27 @@ class SeedListDiffChange extends Equatable {
   /// Expand this diff by adding all unique elements from [others].
   SeedListDiffChange expandList(Iterable<SeedListDiffChange> others) {
     return SeedListDiffChange(
-      deletedSeeds: <SeedDiffed>{
+      deletedSeeds: <SeedBase>{
         ...others.map((e) => e.deletedSeeds).expand((e) => e),
         ...deletedSeeds,
       }.toList(),
-      addedSeeds: <SeedDiffed>{
+      addedSeeds: <SeedBase>{
         ...others.map((e) => e.addedSeeds).expand((e) => e),
         ...addedSeeds,
       }.toList(),
-      deletedKeys: <SeedKeyDiffed>{
+      deletedKeys: <SeedKeyBase>{
         ...others.map((e) => e.deletedKeys).expand((e) => e),
         ...deletedKeys,
       }.toList(),
-      addedKeys: <SeedKeyDiffed>{
+      addedKeys: <SeedKeyBase>{
         ...others.map((e) => e.addedKeys).expand((e) => e),
         ...addedKeys,
       }.toList(),
-      deletedAccounts: <KeyAccountDiffed>{
+      deletedAccounts: <KeyAccountBase>{
         ...others.map((e) => e.deletedAccounts).expand((e) => e),
         ...deletedAccounts,
       }.toList(),
-      addedAccounts: <KeyAccountDiffed>{
+      addedAccounts: <KeyAccountBase>{
         ...others.map((e) => e.addedAccounts).expand((e) => e),
         ...addedAccounts,
       }.toList(),
