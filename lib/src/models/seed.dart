@@ -1,22 +1,25 @@
 import 'package:collection/collection.dart';
-import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
 import 'package:get_it/get_it.dart';
 import 'package:nekoton_repository/nekoton_repository.dart';
 
-/// Any seed of application, that contains [masterKey] and [subKeys].
-/// [masterKey] is a main key that derives directly from seed phrase.
-/// [subKeys] is a list of keys that derives from [masterKey].
+/// Any seed of application, that contains [masterPublicKey] and [subKeys].
+/// [masterPublicKey] is a main key that derives directly from seed phrase.
+/// [subKeys] is a list of keys that derives from [masterPublicKey].
 ///
 /// This instance is immutable and it can't change its state.
 /// To listen SeedList changes, use [NekotonRepository.seedListStream]
 @immutable
-class Seed extends Equatable {
-  const Seed({
+class Seed extends SeedBase {
+  Seed({
     required this.masterKey,
     required this.subKeys,
     required String? name,
-  }) : _name = name;
+  })  : _name = name,
+        super(
+          name: name ?? masterKey.key.masterKey.toEllipseString(),
+          masterPublicKey: masterKey.publicKey,
+        );
 
   /// Master key of seed.
   /// This key is derived directly from seed phrase.
@@ -27,6 +30,7 @@ class Seed extends Equatable {
 
   /// If seed has name, it will be returned, otherwise master publick key with
   /// ellipsis.
+  @override
   String get name => _name ?? masterKey.key.masterKey.toEllipseString();
 
   /// Proxy getter of public key of master key
