@@ -123,10 +123,22 @@ class SeedListDiffChange extends Equatable {
   /// Expand this diff by adding unique elements from [other].
   SeedListDiffChange expand(SeedListDiffChange other) {
     return SeedListDiffChange(
-      deletedSeeds: <SeedBase>{...other.deletedSeeds, ...deletedSeeds}.toList(),
-      addedSeeds: <SeedBase>{...other.addedSeeds, ...addedSeeds}.toList(),
-      deletedKeys: <SeedKeyBase>{...other.deletedKeys, ...deletedKeys}.toList(),
-      addedKeys: <SeedKeyBase>{...other.addedKeys, ...addedKeys}.toList(),
+      deletedSeeds: <SeedBase>{
+        ...other.deletedSeeds,
+        ...deletedSeeds,
+      }.toList(),
+      addedSeeds: <SeedBase>{
+        ...other.addedSeeds,
+        ...addedSeeds,
+      }.toList(),
+      deletedKeys: <SeedKeyBase>{
+        ...other.deletedKeys,
+        ...deletedKeys,
+      }.toList(),
+      addedKeys: <SeedKeyBase>{
+        ...other.addedKeys,
+        ...addedKeys,
+      }.toList(),
       deletedAccounts: <KeyAccountBase>{
         ...other.deletedAccounts,
         ...deletedAccounts,
