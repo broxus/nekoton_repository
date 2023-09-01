@@ -318,26 +318,30 @@ class NekotonRepository
     final deletedSeeds = oldSeeds
         // old seeds contains items, that new doesn't
         .where(
-      (seed) => newSeeds
-          .none((s) => s.masterKey.publicKey == seed.masterKey.publicKey),
+      (seed) => newSeeds.none(
+        (s) => s.masterPublicKey.publicKey == seed.masterPublicKey.publicKey,
+      ),
     );
     final addedSeeds = newSeeds
         // new seeds contains items, that old doesn't
         .where(
-      (seed) => oldSeeds
-          .none((s) => s.masterKey.publicKey == seed.masterKey.publicKey),
+      (seed) => oldSeeds.none(
+        (s) => s.masterPublicKey.publicKey == seed.masterPublicKey.publicKey,
+      ),
     );
     final intersectedSeedsFromOld = oldSeeds
         // items from both lists
         .where(
-      (seed) => newSeeds
-          .any((s) => s.masterKey.publicKey == seed.masterKey.publicKey),
+      (seed) => newSeeds.any(
+        (s) => s.masterPublicKey.publicKey == seed.masterPublicKey.publicKey,
+      ),
     );
     final intersectedSeedsFromNew = newSeeds
         // items from both lists
         .where(
-      (seed) => oldSeeds
-          .any((s) => s.masterKey.publicKey == seed.masterKey.publicKey),
+      (seed) => oldSeeds.any(
+        (s) => s.masterPublicKey.publicKey == seed.masterPublicKey.publicKey,
+      ),
     );
 
     /// Add seed-level difference to result
@@ -356,7 +360,7 @@ class NekotonRepository
       // trying to find difference on key level
       final newSeed = intersectedSeedsFromNew.firstWhere(
         // compare PublicKey because names could be different
-        (k) => k.masterKey.publicKey == oldSeed.masterKey.publicKey,
+        (k) => k.masterPublicKey.publicKey == oldSeed.masterPublicKey.publicKey,
       );
 
       final deletedKeys = oldSeed.allKeys

@@ -1,45 +1,17 @@
-import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
 import 'package:get_it/get_it.dart';
 
 import 'package:nekoton_repository/nekoton_repository.dart';
 
-/// Wrapper class around nekoton's account with additional logic.
+/// Wrapper class around [KeyAccountBase] account with additional logic.
 @immutable
-class KeyAccount extends Equatable {
+class KeyAccount extends KeyAccountBase {
   const KeyAccount({
-    required this.account,
-    required this.isExternal,
-    required this.isHidden,
-    required this.publicKey,
+    required super.account,
+    required super.isExternal,
+    required super.isHidden,
+    required super.publicKey,
   });
-
-  /// Nekoton's account
-  final AssetsList account;
-
-  /// Key for which this account specified.
-  /// For external accounts this value can be different from account.publicKey
-  /// but for internal usages this key is same as for key this account stores in
-  final PublicKey publicKey;
-
-  /// Flag that allows identify if this account is external.
-  final bool isExternal;
-
-  /// Flag that allows identify if this account is hidden.
-  final bool isHidden;
-
-  /// Proxy getter of name of account
-  String get name => account.name;
-
-  /// Proxy getter of address of account
-  Address get address => account.address;
-
-  /// Proxy getter of workchain of account
-  int get workchain => account.workchain;
-
-  /// Proxy getter of additional assets of account
-  Map<String, AdditionalAssets> get additionalAssets =>
-      account.additionalAssets;
 
   /// Show this account in wallet page.
   Future<void> show() => GetIt.instance<NekotonRepository>()
@@ -74,7 +46,4 @@ class KeyAccount extends Equatable {
   /// This works fine for local and external accounts.
   Future<void> remove() =>
       GetIt.instance<AccountRepository>().removeAccounts([this]);
-
-  @override
-  List<Object?> get props => [account, isExternal, isHidden];
 }

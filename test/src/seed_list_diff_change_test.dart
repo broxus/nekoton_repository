@@ -281,9 +281,9 @@ void main() {
       expect(
         changes.addedSeeds,
         [
-          SeedDiffed(
+          SeedBase(
             name: masterKey.publicKey.toEllipseString(),
-            masterKey: masterKey.publicKey,
+            masterPublicKey: masterKey.publicKey,
           ),
         ],
       );
@@ -292,9 +292,9 @@ void main() {
       expect(
         changes.addedKeys,
         unorderedEquals([
-          SeedKeyDiffed(key: masterKey),
-          SeedKeyDiffed(key: subKey1),
-          SeedKeyDiffed(key: subKey2),
+          SeedKeyBase(key: masterKey),
+          SeedKeyBase(key: subKey1),
+          SeedKeyBase(key: subKey2),
         ]),
       );
       expect(changes.deletedKeys.isEmpty, isTrue);
@@ -303,25 +303,25 @@ void main() {
         changes.addedAccounts,
         unorderedEquals(
           [
-            KeyAccountDiffed(
+            KeyAccountBase(
               account: account1Pure.account,
               publicKey: account1Pure.publicKey,
               isExternal: account1Pure.isExternal,
               isHidden: account1Pure.isHidden,
             ),
-            KeyAccountDiffed(
+            KeyAccountBase(
               account: account1ExternalHidden.account,
               publicKey: account1ExternalHidden.publicKey,
               isExternal: account1ExternalHidden.isExternal,
               isHidden: account1ExternalHidden.isHidden,
             ),
-            KeyAccountDiffed(
+            KeyAccountBase(
               account: accountSub1Pure.account,
               publicKey: accountSub1Pure.publicKey,
               isExternal: accountSub1Pure.isExternal,
               isHidden: accountSub1Pure.isHidden,
             ),
-            KeyAccountDiffed(
+            KeyAccountBase(
               account: accountSub2Hidden.account,
               publicKey: accountSub2Hidden.publicKey,
               isExternal: accountSub2Hidden.isExternal,
@@ -355,9 +355,9 @@ void main() {
       expect(
         changes.deletedSeeds,
         [
-          SeedDiffed(
+          SeedBase(
             name: masterKey.publicKey.toEllipseString(),
-            masterKey: masterKey.publicKey,
+            masterPublicKey: masterKey.publicKey,
           ),
         ],
       );
@@ -366,9 +366,9 @@ void main() {
       expect(
         changes.deletedKeys,
         unorderedEquals([
-          SeedKeyDiffed(key: masterKey),
-          SeedKeyDiffed(key: subKey1),
-          SeedKeyDiffed(key: subKey2),
+          SeedKeyBase(key: masterKey),
+          SeedKeyBase(key: subKey1),
+          SeedKeyBase(key: subKey2),
         ]),
       );
       expect(changes.addedKeys.isEmpty, isTrue);
@@ -377,25 +377,25 @@ void main() {
         changes.deletedAccounts,
         unorderedEquals(
           [
-            KeyAccountDiffed(
+            KeyAccountBase(
               account: account1Pure.account,
               publicKey: account1Pure.publicKey,
               isExternal: account1Pure.isExternal,
               isHidden: account1Pure.isHidden,
             ),
-            KeyAccountDiffed(
+            KeyAccountBase(
               account: account1ExternalHidden.account,
               publicKey: account1ExternalHidden.publicKey,
               isExternal: account1ExternalHidden.isExternal,
               isHidden: account1ExternalHidden.isHidden,
             ),
-            KeyAccountDiffed(
+            KeyAccountBase(
               account: accountSub1Pure.account,
               publicKey: accountSub1Pure.publicKey,
               isExternal: accountSub1Pure.isExternal,
               isHidden: accountSub1Pure.isHidden,
             ),
-            KeyAccountDiffed(
+            KeyAccountBase(
               account: accountSub2Hidden.account,
               publicKey: accountSub2Hidden.publicKey,
               isExternal: accountSub2Hidden.isExternal,
@@ -433,13 +433,13 @@ void main() {
       expect(changes.deletedSeeds.isEmpty, isTrue);
       expect(changes.addedSeeds.isEmpty, isTrue);
 
-      expect(changes.addedKeys, [SeedKeyDiffed(key: subKey2)]);
+      expect(changes.addedKeys, [SeedKeyBase(key: subKey2)]);
       expect(changes.deletedKeys.isEmpty, isTrue);
 
       expect(
         changes.addedAccounts,
         [
-          KeyAccountDiffed(
+          KeyAccountBase(
             account: accountSub2Hidden.account,
             publicKey: accountSub2Hidden.publicKey,
             isExternal: accountSub2Hidden.isExternal,
@@ -476,13 +476,13 @@ void main() {
       expect(changes.deletedSeeds.isEmpty, isTrue);
       expect(changes.addedSeeds.isEmpty, isTrue);
 
-      expect(changes.deletedKeys, [SeedKeyDiffed(key: subKey2)]);
+      expect(changes.deletedKeys, [SeedKeyBase(key: subKey2)]);
       expect(changes.addedKeys.isEmpty, isTrue);
 
       expect(
         changes.deletedAccounts,
         [
-          KeyAccountDiffed(
+          KeyAccountBase(
             account: accountSub2Hidden.account,
             publicKey: accountSub2Hidden.publicKey,
             isExternal: accountSub2Hidden.isExternal,
@@ -526,13 +526,13 @@ void main() {
         changes.addedAccounts,
         unorderedEquals(
           [
-            KeyAccountDiffed(
+            KeyAccountBase(
               account: account1Pure.account,
               publicKey: account1Pure.publicKey,
               isExternal: account1Pure.isExternal,
               isHidden: account1Pure.isHidden,
             ),
-            KeyAccountDiffed(
+            KeyAccountBase(
               account: account1ExternalHidden.account,
               publicKey: account1ExternalHidden.publicKey,
               isExternal: account1ExternalHidden.isExternal,
@@ -577,13 +577,13 @@ void main() {
         changes.deletedAccounts,
         unorderedEquals(
           [
-            KeyAccountDiffed(
+            KeyAccountBase(
               account: account1Pure.account,
               publicKey: account1Pure.publicKey,
               isExternal: account1Pure.isExternal,
               isHidden: account1Pure.isHidden,
             ),
-            KeyAccountDiffed(
+            KeyAccountBase(
               account: account1ExternalHidden.account,
               publicKey: account1ExternalHidden.publicKey,
               isExternal: account1ExternalHidden.isExternal,
@@ -616,54 +616,54 @@ void main() {
       expect(
         changes.addedSeeds,
         [
-          SeedDiffed(
+          SeedBase(
             name: masterKey.publicKey.toEllipseString(),
-            masterKey: masterKey.publicKey,
+            masterPublicKey: masterKey.publicKey,
           ),
         ],
       );
       expect(
         changes.deletedSeeds,
         [
-          SeedDiffed(
+          SeedBase(
             name: masterKey2.publicKey.toEllipseString(),
-            masterKey: masterKey2.publicKey,
+            masterPublicKey: masterKey2.publicKey,
           ),
         ],
       );
       expect(
         changes.addedKeys,
         unorderedEquals([
-          SeedKeyDiffed(key: masterKey),
-          SeedKeyDiffed(key: subKey1),
-          SeedKeyDiffed(key: subKey2),
+          SeedKeyBase(key: masterKey),
+          SeedKeyBase(key: subKey1),
+          SeedKeyBase(key: subKey2),
         ]),
       );
-      expect(changes.deletedKeys, [SeedKeyDiffed(key: masterKey2)]);
+      expect(changes.deletedKeys, [SeedKeyBase(key: masterKey2)]);
 
       expect(
         changes.addedAccounts,
         unorderedEquals(
           [
-            KeyAccountDiffed(
+            KeyAccountBase(
               account: account1Pure.account,
               publicKey: account1Pure.publicKey,
               isExternal: account1Pure.isExternal,
               isHidden: account1Pure.isHidden,
             ),
-            KeyAccountDiffed(
+            KeyAccountBase(
               account: account1ExternalHidden.account,
               publicKey: account1ExternalHidden.publicKey,
               isExternal: account1ExternalHidden.isExternal,
               isHidden: account1ExternalHidden.isHidden,
             ),
-            KeyAccountDiffed(
+            KeyAccountBase(
               account: accountSub1Pure.account,
               publicKey: accountSub1Pure.publicKey,
               isExternal: accountSub1Pure.isExternal,
               isHidden: accountSub1Pure.isHidden,
             ),
-            KeyAccountDiffed(
+            KeyAccountBase(
               account: accountSub2Hidden.account,
               publicKey: accountSub2Hidden.publicKey,
               isExternal: accountSub2Hidden.isExternal,
@@ -675,7 +675,7 @@ void main() {
       expect(
         changes.deletedAccounts,
         [
-          KeyAccountDiffed(
+          KeyAccountBase(
             account: account2External.account,
             publicKey: account2External.publicKey,
             isExternal: account2External.isExternal,

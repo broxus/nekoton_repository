@@ -1,4 +1,3 @@
-import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
 import 'package:get_it/get_it.dart';
 import 'package:nekoton_repository/nekoton_repository.dart';
@@ -6,29 +5,14 @@ import 'package:nekoton_repository/nekoton_repository.dart';
 /// Wrapper class for [KeyStoreEntry] that helps storing accounts and interact
 /// with key.
 @immutable
-class SeedKey extends Equatable {
+class SeedKey extends SeedKeyBase {
   const SeedKey({
-    required this.key,
+    required super.key,
     required this.accountList,
   });
 
-  /// Real key from blockchain
-  final KeyStoreEntry key;
-
   /// List of accounts that specified for this [key]
   final AccountList accountList;
-
-  /// Proxy getter of name of key
-  String get name => key.name;
-
-  /// Proxy getter of public key of key
-  PublicKey get publicKey => key.publicKey;
-
-  /// Proxy getter of master flag of key
-  bool get isMaster => key.isMaster;
-
-  /// Proxy getter of legacy flag of key
-  bool get isLegacy => key.isLegacy;
 
   /// Get account instance by it's address.
   /// This is a heavy operation and must not be called during build.
