@@ -35,6 +35,9 @@ abstract class GenericContractRepository {
   /// Typically, this method should be called when browser tab closes.
   void unsubscribeContractsTab(String tabId);
 
+  /// Close all previously created subscriptions because transport had changed
+  void updateContractTransportSubscriptions();
+
   /// Call [GenericContract.executeTransactionLocally] for contract with
   /// subscription with [address].
   Future<Transaction> executeTransactionLocally({

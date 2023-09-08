@@ -202,6 +202,7 @@ class NekotonRepository
     currentTransportStream.skip(1).listen((_) async {
       await updateTransportSubscriptions();
       await updateTokenTransportSubscriptions();
+      updateContractTransportSubscriptions();
     });
   }
 

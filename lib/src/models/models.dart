@@ -8,6 +8,7 @@ export 'seed_key.dart';
 export 'seed_list.dart';
 export 'seed_list_diff_changes.dart';
 export 'seed_utils.dart';
+export 'staking_information.dart';
 export 'token_wallet_related/token_wallet_related.dart';
 export 'ton_wallet_related/ton_wallet_related.dart';
 export 'transport_strategy.dart';
