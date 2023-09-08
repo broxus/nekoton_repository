@@ -121,6 +121,17 @@ mixin GenericContractRepositoryImpl implements GenericContractRepository {
   }
 
   @override
+  void updateContractTransportSubscriptions() {
+    for (final contract in allContracts) {
+      unsubscribeContract(
+        tabId: contract.tabId,
+        origin: contract.origin,
+        address: contract.address,
+      );
+    }
+  }
+
+  @override
   Future<Transaction> executeTransactionLocally({
     required Address address,
     required SignedMessage signedMessage,

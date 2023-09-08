@@ -63,4 +63,7 @@ abstract class TransportStrategy {
   /// Number of numbers after decimal point for native token.
   /// For ever and venom it's 9.
   int get defaultNativeCurrencyDecimal;
+
+  /// If staking is enabled for transport, then it must return information.
+  StakingInformation? get stakeInformation;
 }
