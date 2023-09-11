@@ -169,6 +169,14 @@ abstract class TonWalletRepository {
     required BigInt amount,
   });
 
+  /// Wait sending transaction after calling [sendUnawaited], this can be
+  /// helpful when you need to wait transaction completion and call callbacks
+  /// from InpageProvider.
+  Future<Transaction> waitSending({
+    required PendingTransaction pending,
+    required Address address,
+  });
+
   /// Preload transaction for wallet
   Future<void> preloadTransactions({
     required Address address,

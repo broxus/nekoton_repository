@@ -146,25 +146,13 @@ mixin GenericContractRepositoryImpl implements GenericContractRepository {
   }
 
   @override
-  Future<PendingTransaction> sendContractUnawaited({
+// ignore: long-method
+  Future<Transaction> waitContractSending({
     required Address address,
-    required SignedMessage signedMessage,
-  }) async {
-    final contract = getContractByAddress(address);
-
-    return contract.send(signedMessage: signedMessage);
-  }
-
-  @override
-  // ignore: long-method
-  Future<Transaction> sendContract({
-    required Address address,
-    required SignedMessage signedMessage,
+    required PendingTransaction pending,
   }) async {
     final contract = getContractByAddress(address);
     final transport = contract.transport;
-    final pendingTransaction =
-        await contract.send(signedMessage: signedMessage);
 
     final completer = Completer<Transaction>();
 
@@ -217,12 +205,12 @@ mixin GenericContractRepositoryImpl implements GenericContractRepository {
       // ignore: prefer-async-await
       contract.onMessageSentStream
           .firstWhere(
-            (e) => e.item1 == pendingTransaction && e.item2 != null,
+            (e) => e.item1 == pending && e.item2 != null,
             orElse: () => throw Exception(
               'onMessageSent is empty during TonWalletRepository.send',
             ),
           )
-          .timeout(pendingTransaction.expireAt.toTimeout())
+          .timeout(pending.expireAt.toTimeout())
           .then((v) {
         if (!completer.isCompleted) completer.complete(v.item2);
         completePolling();
@@ -238,6 +226,32 @@ mixin GenericContractRepositoryImpl implements GenericContractRepository {
     );
 
     return completer.future;
+  }
+
+  @override
+  Future<PendingTransaction> sendContractUnawaited({
+    required Address address,
+    required SignedMessage signedMessage,
+  }) async {
+    final contract = getContractByAddress(address);
+
+    return contract.send(signedMessage: signedMessage);
+  }
+
+  @override
+  Future<Transaction> sendContract({
+    required Address address,
+    required SignedMessage signedMessage,
+  }) async {
+    final pendingTransaction = await sendContractUnawaited(
+      address: address,
+      signedMessage: signedMessage,
+    );
+
+    return waitContractSending(
+      address: address,
+      pending: pendingTransaction,
+    );
   }
 
   @override

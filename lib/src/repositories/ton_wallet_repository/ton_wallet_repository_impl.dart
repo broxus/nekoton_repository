@@ -348,35 +348,18 @@ mixin TonWalletRepositoryImpl implements TonWalletRepository {
         createdAt: DateTime.now(),
       ),
     );
+
     return pendingTransaction;
   }
 
   @override
   // ignore: long-method
-  Future<Transaction> send({
+  Future<Transaction> waitSending({
+    required PendingTransaction pending,
     required Address address,
-    required SignedMessage signedMessage,
-    required Address destination,
-    required BigInt amount,
-  }) async {
+  }) {
     final tonWallet = getWallet(address);
-
     final transport = tonWallet.transport;
-    final pendingTransaction =
-        await tonWallet.send(signedMessage: signedMessage);
-
-    await tonWalletStorage.addPendingTransaction(
-      networkId: transport.networkId,
-      group: transport.group,
-      address: address,
-      transaction: PendingTransactionWithData(
-        transaction: pendingTransaction,
-        amount: amount,
-        destination: destination,
-        createdAt: DateTime.now(),
-      ),
-    );
-
     final completer = Completer<Transaction>();
 
     // stop polling existed poller for this wallet to avoid multiple duplicate
@@ -439,12 +422,12 @@ mixin TonWalletRepositoryImpl implements TonWalletRepository {
       // ignore: prefer-async-await
       tonWallet.onMessageSentStream
           .firstWhere(
-            (e) => e.item1 == pendingTransaction && e.item2 != null,
+            (e) => e.item1 == pending && e.item2 != null,
             orElse: () => throw Exception(
               'onMessageSent is empty during TonWalletRepository.send',
             ),
           )
-          .timeout(pendingTransaction.expireAt.toTimeout())
+          .timeout(pending.expireAt.toTimeout())
           .then((v) {
         if (!completer.isCompleted) completer.complete(v.item2);
         completePolling();
@@ -460,6 +443,26 @@ mixin TonWalletRepositoryImpl implements TonWalletRepository {
     );
 
     return completer.future;
+  }
+
+  @override
+  Future<Transaction> send({
+    required Address address,
+    required SignedMessage signedMessage,
+    required Address destination,
+    required BigInt amount,
+  }) async {
+    final pendingTransaction = await sendUnawaited(
+      address: address,
+      signedMessage: signedMessage,
+      destination: destination,
+      amount: amount,
+    );
+
+    return waitSending(
+      pending: pendingTransaction,
+      address: address,
+    );
   }
 
   @override

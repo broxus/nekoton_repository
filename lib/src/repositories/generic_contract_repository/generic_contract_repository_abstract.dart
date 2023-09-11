@@ -60,6 +60,14 @@ abstract class GenericContractRepository {
     required SignedMessage signedMessage,
   });
 
+  /// Wait for sending funds from contract. This can be helpful when you used
+  /// [sendContractUnawaited] and you need to wait sending in async way to call
+  /// methods from InPageProvider
+  Future<Transaction> waitContractSending({
+    required Address address,
+    required PendingTransaction pending,
+  });
+
   /// Get map of subscription options for every contract in scope of browser
   /// tab with [tabId].
   Map<Address, ContractUpdatesSubscription>? tabSubscriptions(String tabId);
