@@ -146,6 +146,16 @@ mixin GenericContractRepositoryImpl implements GenericContractRepository {
   }
 
   @override
+  Future<PendingTransaction> sendContractUnawaited({
+    required Address address,
+    required SignedMessage signedMessage,
+  }) async {
+    final contract = getContractByAddress(address);
+
+    return contract.send(signedMessage: signedMessage);
+  }
+
+  @override
   // ignore: long-method
   Future<Transaction> sendContract({
     required Address address,

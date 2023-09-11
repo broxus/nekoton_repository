@@ -155,6 +155,20 @@ abstract class TonWalletRepository {
     required BigInt amount,
   });
 
+  /// Send message to blockchain but do not listen for completion.
+  /// [address] - is wallet from which funds will be sent.
+  /// [signedMessage] - message to blockchain that user had signed
+  /// [destination] - address of wallet to which funds will be sent
+  /// [amount] - amount of funds to sent.
+  ///
+  /// !!! This method will trigger adding new pending transaction.
+  Future<PendingTransaction> sendUnawaited({
+    required Address address,
+    required SignedMessage signedMessage,
+    required Address destination,
+    required BigInt amount,
+  });
+
   /// Preload transaction for wallet
   Future<void> preloadTransactions({
     required Address address,

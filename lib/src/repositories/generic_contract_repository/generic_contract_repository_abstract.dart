@@ -46,8 +46,16 @@ abstract class GenericContractRepository {
     required TransactionExecutionOptions options,
   });
 
-  /// Send funds from contract with subscription with [address].
+  /// Send funds from contract with subscription with [address], starting
+  /// listening for result.
   Future<Transaction> sendContract({
+    required Address address,
+    required SignedMessage signedMessage,
+  });
+
+  /// Send funds from contract with subscription with [address] but do not
+  /// listen for result.
+  Future<PendingTransaction> sendContractUnawaited({
     required Address address,
     required SignedMessage signedMessage,
   });

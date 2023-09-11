@@ -325,6 +325,33 @@ mixin TonWalletRepositoryImpl implements TonWalletRepository {
   }
 
   @override
+  Future<PendingTransaction> sendUnawaited({
+    required Address address,
+    required SignedMessage signedMessage,
+    required Address destination,
+    required BigInt amount,
+  }) async {
+    final tonWallet = getWallet(address);
+
+    final transport = tonWallet.transport;
+    final pendingTransaction =
+        await tonWallet.send(signedMessage: signedMessage);
+
+    await tonWalletStorage.addPendingTransaction(
+      networkId: transport.networkId,
+      group: transport.group,
+      address: address,
+      transaction: PendingTransactionWithData(
+        transaction: pendingTransaction,
+        amount: amount,
+        destination: destination,
+        createdAt: DateTime.now(),
+      ),
+    );
+    return pendingTransaction;
+  }
+
+  @override
   // ignore: long-method
   Future<Transaction> send({
     required Address address,
