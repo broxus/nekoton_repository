@@ -46,10 +46,26 @@ abstract class GenericContractRepository {
     required TransactionExecutionOptions options,
   });
 
-  /// Send funds from contract with subscription with [address].
+  /// Send funds from contract with subscription with [address], starting
+  /// listening for result.
   Future<Transaction> sendContract({
     required Address address,
     required SignedMessage signedMessage,
+  });
+
+  /// Send funds from contract with subscription with [address] but do not
+  /// listen for result.
+  Future<PendingTransaction> sendContractUnawaited({
+    required Address address,
+    required SignedMessage signedMessage,
+  });
+
+  /// Wait for sending funds from contract. This can be helpful when you used
+  /// [sendContractUnawaited] and you need to wait sending in async way to call
+  /// methods from InPageProvider
+  Future<Transaction> waitContractSending({
+    required Address address,
+    required PendingTransaction pending,
   });
 
   /// Get map of subscription options for every contract in scope of browser
