@@ -336,7 +336,7 @@ void main() {
   group('GenericContractRepository.send', () {
     // 1 ever
     final amount = BigInt.parse('1000000000');
-    const transactionExpiring = Duration(seconds: 10);
+    const transactionExpiring = Duration(seconds: 20);
     final pendingTransaction = PendingTransaction(
       messageHash: 'messageHash',
       expireAt: DateTime.now().add(transactionExpiring),
