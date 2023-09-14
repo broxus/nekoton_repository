@@ -53,7 +53,7 @@ mixin GenericContractRepositoryImpl implements GenericContractRepository {
           .where(
             (c) =>
                 c.tabId == tabId &&
-                (c.updateSubscriptionOptions.transactions ?? false),
+                (c.updateSubscriptionOptions.contractState ?? false),
           )
           .flatMap(
             (c) => c.contract.onStateChangedStream.map(
