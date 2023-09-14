@@ -86,4 +86,25 @@ mixin TransportRepositoryImpl implements TransportRepository {
 
     return ProtoTransport.create(protoConnection: connection);
   }
+
+  @override
+  Future<JrpcTransport> createJrpcTransport({
+    required JrpcConnectionPost post,
+    required String name,
+    required int networkId,
+    required String group,
+    required String endpoint,
+  }) async {
+    final settings = JrpcNetworkSettings(endpoint: endpoint);
+
+    final connection = await JrpcConnection.create(
+      post: post,
+      name: name,
+      networkId: networkId,
+      group: group,
+      settings: settings,
+    );
+
+    return JrpcTransport.create(jrpcConnection: connection);
+  }
 }
