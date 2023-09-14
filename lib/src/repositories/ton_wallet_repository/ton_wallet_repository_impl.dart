@@ -409,7 +409,7 @@ mixin TonWalletRepositoryImpl implements TonWalletRepository {
       createPoller(
         TonWalletGqlBlockPoller(tonWallet: tonWallet, transport: transport),
       );
-    } else if (transport is ProtoTransport) {
+    } else if (transport is ProtoTransport || transport is JrpcTransport) {
       createPoller(tonWallet);
     } else {
       completer.completeError(Exception('Invalid transport'));

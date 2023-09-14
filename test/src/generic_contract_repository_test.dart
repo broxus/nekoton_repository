@@ -15,6 +15,8 @@ class MockGqlTransport extends Mock implements GqlTransport {}
 
 class MockProtoTransport extends Mock implements ProtoTransport {}
 
+class MockJrpcTransport extends Mock implements ProtoTransport {}
+
 class GenericContractRepoTest with GenericContractRepositoryImpl {
   GenericContractRepoTest(
     this.currentTransport,
@@ -29,6 +31,7 @@ void main() {
   late MockContract contract;
   late MockGqlTransport gql;
   late MockProtoTransport proto;
+  late MockJrpcTransport jrpc;
   late GenericContractRepoTest repository;
 
   late Stream<Tuple2<PendingTransaction, Transaction?>> messageSentStream;
@@ -85,6 +88,7 @@ void main() {
     repository = GenericContractRepoTest(transport);
     gql = MockGqlTransport();
     proto = MockProtoTransport();
+    jrpc = MockJrpcTransport();
 
     bridge = MockBridge();
     box = ArcTransportBoxTrait.fromRaw(0, 0, bridge);
@@ -332,7 +336,7 @@ void main() {
   group('GenericContractRepository.send', () {
     // 1 ever
     final amount = BigInt.parse('1000000000');
-    const transactionExpiring = Duration(seconds: 10);
+    const transactionExpiring = Duration(seconds: 20);
     final pendingTransaction = PendingTransaction(
       messageHash: 'messageHash',
       expireAt: DateTime.now().add(transactionExpiring),
@@ -646,6 +650,144 @@ void main() {
       // Transport flow
       when(() => proto.networkId).thenReturn(networkId);
       when(() => proto.group).thenReturn(group);
+
+      final sub = GenericContractSubscriptionItem(
+        tabId: tabId1,
+        address: address1,
+        contract: contract,
+        origin: origin1,
+        updateSubscriptionOptions: updateSubsAll,
+      );
+      repository.addContractInst(sub);
+
+      ///----------------------------
+      /// Main flow
+      ///----------------------------
+
+      final transactionFuture = repository.sendContract(
+        address: address1,
+        signedMessage: signedMessage,
+      );
+
+      /// wait for preparation completed
+      await Future<void>.delayed(const Duration(milliseconds: 500));
+
+      /// Wait for method completion
+      try {
+        await transactionFuture;
+        expect(true, false);
+      } catch (_) {
+        expect(true, true);
+      }
+
+      verify(() => contract.send(signedMessage: signedMessage)).called(1);
+
+      // refresh flow
+      verify(() => contract.refresh()).called(1);
+      expect(repository.allContracts.contains(sub), isTrue);
+    });
+
+    ///--------------------------------------
+    ///                  JRPC
+    ///--------------------------------------
+
+    test('send JRPC success', () async {
+      // default settings for subscription
+      when(() => contract.onMessageExpiredStream)
+          .thenAnswer((_) => expiredStream);
+      when(() => contract.onMessageSentStream).thenAnswer(
+        (_) => Stream.fromFuture(
+          Future.delayed(sendDuration, () {
+            return Tuple2<PendingTransaction, Transaction?>(
+              pendingTransaction,
+              transaction,
+            );
+          }),
+        ),
+      );
+      when(() => contract.onTransactionsFoundStream)
+          .thenAnswer((_) => transactionsFoundStream);
+      when(() => contract.onStateChangedStream).thenAnswer((_) => stateStream);
+      when(() => contract.address).thenReturn(address1);
+      when(() => contract.refresh())
+          .thenAnswer((_) => Future<void>.delayed(sendDuration));
+      when(() => contract.refreshDescription).thenReturn('');
+
+      when(() => contract.transport).thenReturn(jrpc);
+      when(
+        () => contract.send(
+          signedMessage: any(named: 'signedMessage', that: isNotNull),
+        ),
+      ).thenAnswer((_) => Future.value(pendingTransaction));
+
+      // Transport flow
+      when(() => jrpc.networkId).thenReturn(networkId);
+      when(() => jrpc.group).thenReturn(group);
+
+      final sub = GenericContractSubscriptionItem(
+        tabId: tabId1,
+        address: address1,
+        contract: contract,
+        origin: origin1,
+        updateSubscriptionOptions: updateSubsAll,
+      );
+      repository.addContractInst(sub);
+
+      ///----------------------------
+      /// Main flow
+      ///----------------------------
+
+      final transactionFuture = repository.sendContract(
+        address: address1,
+        signedMessage: signedMessage,
+      );
+
+      /// wait for preparation completed
+      await Future<void>.delayed(const Duration(seconds: 1));
+
+      /// Wait for method completion
+      final transactionResult = await transactionFuture;
+
+      verify(() => contract.send(signedMessage: signedMessage)).called(1);
+
+      verify(() => contract.refresh()).called(1);
+
+      expect(transactionResult, transaction);
+      expect(repository.allContracts.contains(sub), isTrue);
+    });
+
+    test('send JRPC failed', () async {
+      // default settings for subscription
+      when(() => contract.onMessageExpiredStream)
+          .thenAnswer((_) => expiredStream);
+      // this should be avoided
+      when(() => contract.onMessageSentStream).thenAnswer(
+        (_) => Stream.fromFuture(
+          Future.delayed(transactionExpiring, throwError),
+        ),
+      );
+      when(() => contract.onTransactionsFoundStream)
+          .thenAnswer((_) => transactionsFoundStream);
+      when(() => contract.onStateChangedStream).thenAnswer((_) => stateStream);
+      when(() => contract.address).thenReturn(address1);
+      when(() => contract.refresh()).thenAnswer(
+        (_) => Future<LatestBlock>.delayed(
+          const Duration(seconds: 1),
+          throwError,
+        ),
+      );
+      when(() => contract.refreshDescription).thenReturn('');
+
+      when(() => contract.transport).thenReturn(jrpc);
+      when(
+        () => contract.send(
+          signedMessage: any(named: 'signedMessage', that: isNotNull),
+        ),
+      ).thenAnswer((_) => Future.value(pendingTransaction));
+
+      // Transport flow
+      when(() => jrpc.networkId).thenReturn(networkId);
+      when(() => jrpc.group).thenReturn(group);
 
       final sub = GenericContractSubscriptionItem(
         tabId: tabId1,
