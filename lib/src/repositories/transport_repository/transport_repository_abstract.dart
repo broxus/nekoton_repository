@@ -26,8 +26,9 @@ abstract class TransportRepository {
   /// transport first time
   /// !!!
   ///
-  /// To create [Transport] instances, use [createGqlTransport] or
-  /// [createProtoTransport] and wrap it in suitable strategy based on its type.
+  /// To create [Transport] instances, use [createGqlTransport],
+  /// [createJrpcTransport] or [createProtoTransport] and wrap it in suitable
+  /// strategy based on its type.
   Future<void> updateTransport(TransportStrategy transport);
 
   /// This allows create GQL based transport from application.
@@ -50,6 +51,18 @@ abstract class TransportRepository {
   /// [updateTransport].
   Future<ProtoTransport> createProtoTransport({
     required ProtoConnectionPost post,
+    required String name,
+    required int networkId,
+    required String group,
+    required String endpoint,
+  });
+
+  /// This allows create JRPC based transport from application.
+  ///
+  /// !!! This method do not modify [currentTransport]. To do it, use
+  /// [updateTransport].
+  Future<JrpcTransport> createJrpcTransport({
+    required JrpcConnectionPost post,
     required String name,
     required int networkId,
     required String group,

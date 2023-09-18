@@ -24,6 +24,8 @@ class MockGqlTransport extends Mock implements GqlTransport {}
 
 class MockProtoTransport extends Mock implements ProtoTransport {}
 
+class MockJrpcTransport extends Mock implements ProtoTransport {}
+
 class TonWalletRepoTest with TonWalletRepositoryImpl {
   TonWalletRepoTest(
     this.currentTransport,
@@ -48,6 +50,7 @@ void main() {
   late MockWallet wallet;
   late MockGqlTransport gql;
   late MockProtoTransport proto;
+  late MockJrpcTransport jrpc;
 
   late TonWalletRepoTest repository;
   late MockTokenRepository tokenRepository;
@@ -152,6 +155,7 @@ void main() {
     repository = TonWalletRepoTest(transport, keystore, storage);
     gql = MockGqlTransport();
     proto = MockProtoTransport();
+    jrpc = MockJrpcTransport();
 
     bridge = MockBridge();
     box = ArcTransportBoxTrait.fromRaw(0, 0, bridge);
@@ -345,7 +349,7 @@ void main() {
   group('TonWalletRepository.send', () {
     // 1 ever
     final amount = BigInt.parse('1000000000');
-    const transactionExpiring = Duration(seconds: 10);
+    const transactionExpiring = Duration(seconds: 20);
     final pendingTransaction = PendingTransaction(
       messageHash: 'messageHash',
       expireAt: DateTime.now().add(transactionExpiring),
@@ -768,6 +772,199 @@ void main() {
       // Transport flow
       when(() => proto.networkId).thenReturn(networkId);
       when(() => proto.group).thenReturn(group);
+
+      // storage flow
+      when(
+        () => storage.addPendingTransaction(
+          networkId: any(named: 'networkId'),
+          group: any(named: 'group'),
+          address: any(named: 'address'),
+          transaction: any(named: 'transaction'),
+        ),
+      ).thenAnswer((_) => Future<void>.value());
+
+      repository.addWalletInst(wallet);
+
+      ///----------------------------
+      /// Main flow
+      ///----------------------------
+
+      final transactionFuture = repository.send(
+        address: address,
+        signedMessage: signedMessage,
+        destination: duplicateAddress,
+        amount: amount,
+      );
+
+      /// wait for preparation completed
+      await Future<void>.delayed(const Duration(milliseconds: 500));
+
+      /// Wait for method completion
+      try {
+        await transactionFuture;
+        expect(true, false);
+      } catch (_) {
+        expect(true, true);
+      }
+
+      verify(() => wallet.send(signedMessage: signedMessage)).called(1);
+      verify(
+        () => storage.addPendingTransaction(
+          networkId: networkId,
+          group: group,
+          address: address,
+          transaction: any(named: 'transaction', that: isNotNull),
+        ),
+      ).called(1);
+      verifyNever(
+        () => storage.deletePendingTransaction(
+          networkId: any(named: 'networkId'),
+          group: any(named: 'group'),
+          address: any(named: 'address'),
+          messageHash: pendingTransaction.messageHash,
+        ),
+      );
+
+      // refresh flow
+      verify(() => wallet.refresh()).called(1);
+
+      expect(repository.walletsMap[address], isNotNull);
+      expect(repository.walletSubscriptions[address], isNotNull);
+      expect(repository.pollingQueues[address], isNull);
+    });
+
+    ///--------------------------------------
+    ///                  JRPC
+    ///--------------------------------------
+
+    test('send JRPC success', () async {
+      // default settings for subscription
+      when(() => wallet.onMessageExpiredStream)
+          .thenAnswer((_) => expiredStream);
+      when(() => wallet.onMessageSentStream).thenAnswer(
+        (_) => Stream.fromFuture(
+          Future.delayed(sendDuration, () {
+            return Tuple2<PendingTransaction, Transaction?>(
+              pendingTransaction,
+              transaction,
+            );
+          }),
+        ),
+      );
+      when(() => wallet.onTransactionsFoundStream)
+          .thenAnswer((_) => transactionsFoundStream);
+      when(() => wallet.onStateChangedStream).thenAnswer((_) => stateStream);
+      when(() => wallet.address).thenReturn(address);
+      when(() => wallet.refresh())
+          .thenAnswer((_) => Future<void>.delayed(sendDuration));
+      when(() => wallet.refreshDescription).thenReturn('');
+
+      when(() => wallet.transport).thenReturn(jrpc);
+      when(
+        () => wallet.send(
+          signedMessage: any(named: 'signedMessage', that: isNotNull),
+        ),
+      ).thenAnswer((_) => Future.value(pendingTransaction));
+
+      // Transport flow
+      when(() => jrpc.networkId).thenReturn(networkId);
+      when(() => jrpc.group).thenReturn(group);
+
+      // storage flow
+      when(
+        () => storage.addPendingTransaction(
+          networkId: any(named: 'networkId'),
+          group: any(named: 'group'),
+          address: any(named: 'address'),
+          transaction: any(named: 'transaction'),
+        ),
+      ).thenAnswer((_) => Future<void>.value());
+      when(
+        () => storage.deletePendingTransaction(
+          networkId: any(named: 'networkId'),
+          group: any(named: 'group'),
+          address: any(named: 'address'),
+          messageHash: any(named: 'messageHash'),
+        ),
+      ).thenAnswer((_) => Future.value(pendingWithData));
+
+      repository.addWalletInst(wallet);
+
+      ///----------------------------
+      /// Main flow
+      ///----------------------------
+
+      final transactionFuture = repository.send(
+        address: address,
+        signedMessage: signedMessage,
+        destination: duplicateAddress,
+        amount: amount,
+      );
+
+      /// wait for preparation completed
+      await Future<void>.delayed(const Duration(seconds: 1));
+
+      /// Wait for method completion
+      final transactionResult = await transactionFuture;
+
+      verify(() => wallet.send(signedMessage: signedMessage)).called(1);
+      verify(
+        () => storage.addPendingTransaction(
+          networkId: networkId,
+          group: group,
+          address: address,
+          transaction: any(named: 'transaction', that: isNotNull),
+        ),
+      ).called(1);
+      verify(
+        () => storage.deletePendingTransaction(
+          networkId: any(named: 'networkId'),
+          group: any(named: 'group'),
+          address: any(named: 'address'),
+          messageHash: pendingTransaction.messageHash,
+        ),
+      ).called(1);
+
+      verify(() => wallet.refresh()).called(1);
+
+      expect(transactionResult, transaction);
+      expect(repository.walletsMap[address], isNotNull);
+      expect(repository.walletSubscriptions[address], isNotNull);
+      expect(repository.pollingQueues[address], isNull);
+    });
+
+    test('send JRPC failed', () async {
+      // default settings for subscription
+      when(() => wallet.onMessageExpiredStream)
+          .thenAnswer((_) => expiredStream);
+      // this should be avoided
+      when(() => wallet.onMessageSentStream).thenAnswer(
+        (_) => Stream.fromFuture(
+          Future.delayed(transactionExpiring, throwError),
+        ),
+      );
+      when(() => wallet.onTransactionsFoundStream)
+          .thenAnswer((_) => transactionsFoundStream);
+      when(() => wallet.onStateChangedStream).thenAnswer((_) => stateStream);
+      when(() => wallet.address).thenReturn(address);
+      when(() => wallet.refresh()).thenAnswer(
+        (_) => Future<LatestBlock>.delayed(
+          const Duration(seconds: 1),
+          throwError,
+        ),
+      );
+      when(() => wallet.refreshDescription).thenReturn('');
+
+      when(() => wallet.transport).thenReturn(jrpc);
+      when(
+        () => wallet.send(
+          signedMessage: any(named: 'signedMessage', that: isNotNull),
+        ),
+      ).thenAnswer((_) => Future.value(pendingTransaction));
+
+      // Transport flow
+      when(() => jrpc.networkId).thenReturn(networkId);
+      when(() => jrpc.group).thenReturn(group);
 
       // storage flow
       when(

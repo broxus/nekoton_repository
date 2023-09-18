@@ -192,7 +192,7 @@ mixin GenericContractRepositoryImpl implements GenericContractRepository {
       createPoller(
         GenericContractGqlBlockPoller(contract: contract, transport: transport),
       );
-    } else if (transport is ProtoTransport) {
+    } else if (transport is ProtoTransport || transport is JrpcTransport) {
       createPoller(contract);
     } else {
       completer.completeError(Exception('Invalid transport'));
