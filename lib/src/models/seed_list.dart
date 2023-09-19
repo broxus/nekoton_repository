@@ -47,6 +47,10 @@ class SeedList extends Equatable {
   /// This can be useful sometimes.
   late final List<SeedKey> _allKeys;
 
+  /// Get all public keys from all seeds
+  List<PublicKey> get allPublicKeys =>
+      _allKeys.map((k) => k.publicKey).toList();
+
   /// Get [SeedKey] instance by it's publicKey.
   /// This is a heavy operation and must not be called during build.
   /// This method can be helpful in browser.
