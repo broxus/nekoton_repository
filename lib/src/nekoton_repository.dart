@@ -194,16 +194,37 @@ class NekotonRepository
     _updateSeedList(needTrackChanges: false);
   }
 
+  late TransportStrategy prevTransport;
+
   /// Start listening for transport changing to update Ton/Token wallets
   /// subscriptions.
   void setupWalletsSubscriptions() {
+    prevTransport = currentTransport;
+
     // skip 1 to avoid duplicate init because first init should be called
     // from app side via [updateSubscriptions].
-    currentTransportStream.skip(1).listen((_) async {
+    currentTransportStream.skip(1).listen((transport) async {
       await updateTransportSubscriptions();
       await updateTokenTransportSubscriptions();
       updateContractTransportSubscriptions();
+
+      loadAccountsIfTransportChanged(prevTransport, transport);
+
+      prevTransport = transport;
     });
+  }
+
+  /// If transport group was changed, try to load existed accounts.
+  /// If account will be loaded for current key, then subscription must be
+  /// created in [updateSubscriptions] on app side.
+  void loadAccountsIfTransportChanged(
+    TransportStrategy prevTransport,
+    TransportStrategy newTransport,
+  ) {
+    if (prevTransport.transport.group != newTransport.transport.group) {
+      final keys = seedList.allPublicKeys;
+      triggerAddingAccounts(keys);
+    }
   }
 
   /// Helper method that allows update one of incoming param of [buildSeeds].
