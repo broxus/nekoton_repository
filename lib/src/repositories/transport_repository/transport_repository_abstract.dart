@@ -39,7 +39,6 @@ abstract class TransportRepository {
     required GqlConnectionPost post,
     required GqlConnectionGet get,
     required String name,
-    required int networkId,
     required String group,
     required List<String> endpoints,
     required bool local,
@@ -52,7 +51,6 @@ abstract class TransportRepository {
   Future<ProtoTransport> createProtoTransport({
     required ProtoConnectionPost post,
     required String name,
-    required int networkId,
     required String group,
     required String endpoint,
   });
@@ -64,7 +62,6 @@ abstract class TransportRepository {
   Future<JrpcTransport> createJrpcTransport({
     required JrpcConnectionPost post,
     required String name,
-    required int networkId,
     required String group,
     required String endpoint,
   });
