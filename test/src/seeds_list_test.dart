@@ -149,7 +149,12 @@ void main() {
     test('SeedList only keys creation', () {
       final seedsList = SeedList(
         seedNames: {masterKey.publicKey: superMasterName},
-        allKeys: [masterKey, subKey1, subKey2, masterKey2],
+        allKeys: [
+          subKey2,
+          subKey1,
+          masterKey,
+          masterKey2,
+        ],
         mappedAccounts: const {},
       );
 
@@ -175,6 +180,10 @@ void main() {
             accountList: AccountList.empty(subKey2.publicKey),
           ),
         ]),
+      );
+      expect(
+        seed1.allKeys.map((e) => e.key.accountId).toList(),
+        orderedEquals([0, 1, 2]),
       );
       final seed2 = seedsList.findSeed(masterKey2.masterKey)!;
       expect(seed2.name, key4Ellipse);
@@ -227,6 +236,11 @@ void main() {
           SeedKey(key: subKey2, accountList: accountsSub2),
         ]),
       );
+      expect(
+        seed1.allKeys.map((e) => e.key.accountId).toList(),
+        orderedEquals([0, 1, 2]),
+      );
+
       final seed2 = seedsList.findSeed(key4)!;
       expect(seed2.name, key4Ellipse);
       expect(

@@ -243,7 +243,10 @@ class SeedList extends Equatable {
                       AccountList.empty(key.publicKey),
                 ),
               )
-              .toList(),
+              .toList()
+            ..sort(
+              (a, b) => a.key.accountId.compareTo(b.key.accountId),
+            ),
         ),
       ),
     );
