@@ -323,9 +323,9 @@ void main() {
         seedNames: {masterKey.publicKey: superMasterName},
         allKeys: [masterKey, subKey1, subKey2, masterKey2],
         allAccounts: [
-          account1Pure.account,
           account1ExternalHidden.account,
           accountSub1Pure.account,
+          account1Pure.account,
           accountSub2Hidden.account,
           account2External.account,
         ],
@@ -347,7 +347,12 @@ void main() {
         seed1.masterKey,
         SeedKey(key: masterKey, accountList: accounts1),
       );
-      expect(seed1.masterKey.accountList.allAccounts.length, 2);
+      final masterAccounts = seed1.masterKey.accountList.allAccounts;
+      expect(masterAccounts.length, 2);
+      expect(
+        masterAccounts.map((e) => e.name),
+        orderedEquals([account1Pure.name, account1ExternalHidden.name]),
+      );
       expect(
         seed1.masterKey.accountList.externalAccounts,
         [account1ExternalHidden],
