@@ -304,7 +304,10 @@ class NekotonRepository
       mappedAccounts: mapped.map(
         (key, value) => MapEntry(
           key,
-          AccountList(publicKey: key, allAccounts: value),
+          AccountList(
+            publicKey: key,
+            allAccounts: value..sort((a, b) => a.name.compareTo(b.name)),
+          ),
         ),
       ),
     );
