@@ -101,8 +101,12 @@ class Seed extends SeedBase {
       );
 
   /// This method allows remove full seed and all related keys (master and sub)
-  Future<void> remove() =>
-      GetIt.instance<SeedKeyRepository>().removeKeys(allKeys);
+  Future<void> remove() {
+    GetIt.instance<NekotonRepository>()
+        .storageRepository
+        .removeSeedName(publicKey);
+    return GetIt.instance<SeedKeyRepository>().removeKeys(allKeys);
+  }
 
   @override
   List<Object?> get props => [allKeys, _name];
