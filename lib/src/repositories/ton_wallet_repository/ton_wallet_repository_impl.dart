@@ -7,6 +7,7 @@ import 'package:logging/logging.dart';
 import 'package:nekoton_repository/nekoton_repository.dart';
 import 'package:nekoton_repository/src/repositories/refresh_polling_queue/cancellable_operation_awaited.dart';
 import 'package:nekoton_repository/src/repositories/ton_wallet_repository/ton_wallet_gql_block_poller.dart';
+import 'package:nekoton_repository/src/utils/utils.dart';
 import 'package:rxdart/rxdart.dart';
 
 /// Polling interval for [TonWallet.refresh]
@@ -345,7 +346,7 @@ mixin TonWalletRepositoryImpl implements TonWalletRepository {
         transaction: pendingTransaction,
         amount: amount,
         destination: destination,
-        createdAt: DateTime.now(),
+        createdAt: NtpTime.now(),
       ),
     );
 
@@ -1341,7 +1342,7 @@ extension TonWalletTransactionExtension
   bool isExpiredByTime(TonWalletDetails details) {
     return transaction.createdAt
         .add(Duration(seconds: details.expirationTime))
-        .isBefore(DateTime.now());
+        .isBefore(NtpTime.now());
   }
 
   MultisigSubmitTransaction get multisigSubmitTransaction => data!.maybeWhen(
