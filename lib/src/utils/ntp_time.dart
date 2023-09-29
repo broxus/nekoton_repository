@@ -1,6 +1,7 @@
 class NtpTime {
   NtpTime._();
 
+  // ignore: avoid-global-state
   static Duration offset = Duration.zero;
 
   /// Returns current time of the system clock with offset from the NTP server

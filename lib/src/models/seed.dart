@@ -105,6 +105,7 @@ class Seed extends SeedBase {
     GetIt.instance<NekotonRepository>()
         .storageRepository
         .removeSeedName(publicKey);
+
     return GetIt.instance<SeedKeyRepository>().removeKeys(allKeys);
   }
 
