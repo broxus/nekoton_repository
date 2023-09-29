@@ -5,6 +5,7 @@ import 'package:flutter_nekoton_bridge/flutter_nekoton_bridge.dart' as fnb;
 import 'package:injectable/injectable.dart';
 import 'package:logging/logging.dart';
 import 'package:nekoton_repository/nekoton_repository.dart';
+import 'package:nekoton_repository/src/utils/utils.dart';
 import 'package:rxdart/rxdart.dart';
 
 /// {@template nekoton_repository}
@@ -124,6 +125,11 @@ class NekotonRepository
     _accountsStorage = await AccountsStorage.create(storage: _nekotonStorage);
 
     _initHasAnySeeds();
+  }
+
+  void updateClockOffset(Duration offset) {
+    NtpTime.offset = offset;
+    fnb.updateClockOffset(offset.inMilliseconds);
   }
 
   /// Clear used memory

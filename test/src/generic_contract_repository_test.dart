@@ -2,6 +2,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:nekoton_repository/nekoton_repository.dart';
 import 'package:nekoton_repository/src/repositories/ton_wallet_repository/ton_wallet_gql_block_poller.dart';
+import 'package:nekoton_repository/src/utils/utils.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:tuple/tuple.dart';
 
@@ -339,12 +340,12 @@ void main() {
     const transactionExpiring = Duration(seconds: 20);
     final pendingTransaction = PendingTransaction(
       messageHash: 'messageHash',
-      expireAt: DateTime.now().add(transactionExpiring),
+      expireAt: NtpTime.now().add(transactionExpiring),
     );
     const sendDuration = Duration(seconds: 3);
     final signedMessage = SignedMessage(
       hash: 'hash',
-      expireAt: DateTime.now(),
+      expireAt: NtpTime.now(),
       boc: 'boc',
     );
     const latestBlock = LatestBlock(
@@ -358,7 +359,7 @@ void main() {
     const group = 'group';
     final transaction = Transaction(
       id: const TransactionId(hash: 'hash', lt: 'lt'),
-      createdAt: DateTime.now(),
+      createdAt: NtpTime.now(),
       aborted: false,
       origStatus: AccountStatus.active,
       endStatus: AccountStatus.active,

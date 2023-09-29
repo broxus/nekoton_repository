@@ -1,6 +1,7 @@
 import 'package:async/async.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
+import 'package:nekoton_repository/src/utils/utils.dart';
 
 class FutureOperation {
   Future<void> call() async {}
@@ -16,11 +17,11 @@ void main() {
         (_) => Future.delayed(const Duration(seconds: 1)),
       );
 
-      final start = DateTime.now();
+      final start = NtpTime.now();
       final operation = CancelableOperation<void>.fromFuture(function.call());
 
       await operation.valueOrCancellation();
-      final end = DateTime.now();
+      final end = NtpTime.now();
 
       expect(end.difference(start).inSeconds, 1);
       verify(function.call).called(1);
