@@ -129,7 +129,7 @@ class NekotonRepository
 
   void updateClockOffset(Duration offset) {
     NtpTime.offset = offset;
-    fnb.updateClockOffset(offset.inMilliseconds);
+    fnb.updateClockOffset(offset);
   }
 
   /// Clear used memory
