@@ -8,15 +8,6 @@ import 'package:rxdart/rxdart.dart';
 /// Polling interval for token wallet refresh
 const tokenWalletRefreshInterval = Duration(seconds: 15);
 
-/// How many tokens can be subscribed at time for one cycle in
-/// [TokenWalletRepositoryImpl._updateTokenSubscriptionsPairs].
-/// This variable can be changed if you need expand/reduce amount of subscribed
-/// token for one cycle. This means, that if you often calls methods to update
-/// subscriptions such as [TokenWalletRepositoryImpl.updateTokenSubscriptions]
-/// or [TokenWalletRepositoryImpl.updateTokenTransportSubscriptions] it may
-/// takes more time while the cycle will be completed.
-int tokenSubscribeAtTimeAmount = 8;
-
 mixin TokenWalletRepositoryImpl implements TokenWalletRepository {
   final _logger = Logger('TokenWalletRepositoryImpl');
 
@@ -28,6 +19,15 @@ mixin TokenWalletRepositoryImpl implements TokenWalletRepository {
   /// Key - pair where first item is owner address, second is rootTokenContract
   final _tokenWalletsSubject =
       BehaviorSubject<Map<(Address, Address), TokenWallet>>.seeded({});
+
+  /// How many tokens can be subscribed at time for one cycle in
+  /// [TokenWalletRepositoryImpl._updateTokenSubscriptionsPairs].
+  /// This variable can be changed if you need expand/reduce amount of subscribed
+  /// token for one cycle. This means, that if you often calls methods to update
+  /// subscriptions such as [TokenWalletRepositoryImpl.updateTokenSubscriptions]
+  /// or [TokenWalletRepositoryImpl.updateTokenTransportSubscriptions] it may
+  /// takes more time while the cycle will be completed.
+  int tokenSubscribeAtTimeAmount = 8;
 
   /// Last assets that were used for subscription.
   /// This value is used during [updateTokenTransportSubscriptions] to create

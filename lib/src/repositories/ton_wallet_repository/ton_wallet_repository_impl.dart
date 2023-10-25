@@ -17,15 +17,6 @@ const tonWalletRefreshInterval = Duration(seconds: 10);
 /// method.
 const intensivePollingInterval = Duration(seconds: 2);
 
-/// How many tokens can be subscribed at time for one cycle in
-/// [TonWalletRepositoryImpl.updateSubscriptions].
-/// This variable can be changed if you need expand/reduce amount of subscribed
-/// token for one cycle. This means, that if you often calls methods to update
-/// subscriptions such as [TonWalletRepositoryImpl.updateSubscriptions]
-/// or [TonWalletRepositoryImpl.updateTransportSubscriptions] it may
-/// takes more time while the cycle will be completed.
-int tonSubscribeAtTimeAmount = 5;
-
 mixin TonWalletRepositoryImpl implements TonWalletRepository {
   final _logger = Logger('TonWalletRepositoryImpl');
 
@@ -35,6 +26,15 @@ mixin TonWalletRepositoryImpl implements TonWalletRepository {
 
   /// Current transport of application
   TransportStrategy get currentTransport;
+
+  /// How many tokens can be subscribed at time for one cycle in
+  /// [TonWalletRepositoryImpl.updateSubscriptions].
+  /// This variable can be changed if you need expand/reduce amount of subscribed
+  /// token for one cycle. This means, that if you often calls methods to update
+  /// subscriptions such as [TonWalletRepositoryImpl.updateSubscriptions]
+  /// or [TonWalletRepositoryImpl.updateTransportSubscriptions] it may
+  /// takes more time while the cycle will be completed.
+  int tonSubscribeAtTimeAmount = 5;
 
   /// Last assets that were used for subscription.
   /// This value is used during [updateTransportSubscriptions] to create
