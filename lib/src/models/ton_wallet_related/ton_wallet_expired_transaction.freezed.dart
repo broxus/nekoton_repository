@@ -126,12 +126,12 @@ class _$TonWalletExpiredTransactionCopyWithImpl<$Res,
 }
 
 /// @nodoc
-abstract class _$$_TonWalletExpiredTransactionCopyWith<$Res>
+abstract class _$$TonWalletExpiredTransactionImplCopyWith<$Res>
     implements $TonWalletExpiredTransactionCopyWith<$Res> {
-  factory _$$_TonWalletExpiredTransactionCopyWith(
-          _$_TonWalletExpiredTransaction value,
-          $Res Function(_$_TonWalletExpiredTransaction) then) =
-      __$$_TonWalletExpiredTransactionCopyWithImpl<$Res>;
+  factory _$$TonWalletExpiredTransactionImplCopyWith(
+          _$TonWalletExpiredTransactionImpl value,
+          $Res Function(_$TonWalletExpiredTransactionImpl) then) =
+      __$$TonWalletExpiredTransactionImplCopyWithImpl<$Res>;
   @override
   @useResult
   $Res call(
@@ -150,13 +150,13 @@ abstract class _$$_TonWalletExpiredTransactionCopyWith<$Res>
 }
 
 /// @nodoc
-class __$$_TonWalletExpiredTransactionCopyWithImpl<$Res>
+class __$$TonWalletExpiredTransactionImplCopyWithImpl<$Res>
     extends _$TonWalletExpiredTransactionCopyWithImpl<$Res,
-        _$_TonWalletExpiredTransaction>
-    implements _$$_TonWalletExpiredTransactionCopyWith<$Res> {
-  __$$_TonWalletExpiredTransactionCopyWithImpl(
-      _$_TonWalletExpiredTransaction _value,
-      $Res Function(_$_TonWalletExpiredTransaction) _then)
+        _$TonWalletExpiredTransactionImpl>
+    implements _$$TonWalletExpiredTransactionImplCopyWith<$Res> {
+  __$$TonWalletExpiredTransactionImplCopyWithImpl(
+      _$TonWalletExpiredTransactionImpl _value,
+      $Res Function(_$TonWalletExpiredTransactionImpl) _then)
       : super(_value, _then);
 
   @pragma('vm:prefer-inline')
@@ -170,7 +170,7 @@ class __$$_TonWalletExpiredTransactionCopyWithImpl<$Res>
     Object? messageHash = null,
     Object? isIncoming = null,
   }) {
-    return _then(_$_TonWalletExpiredTransaction(
+    return _then(_$TonWalletExpiredTransactionImpl(
       address: null == address
           ? _value.address
           : address // ignore: cast_nullable_to_non_nullable
@@ -205,8 +205,9 @@ class __$$_TonWalletExpiredTransactionCopyWithImpl<$Res>
 
 /// @nodoc
 
-class _$_TonWalletExpiredTransaction implements _TonWalletExpiredTransaction {
-  const _$_TonWalletExpiredTransaction(
+class _$TonWalletExpiredTransactionImpl
+    implements _TonWalletExpiredTransaction {
+  const _$TonWalletExpiredTransactionImpl(
       {required this.address,
       required this.date,
       required this.expireAt,
@@ -244,7 +245,7 @@ class _$_TonWalletExpiredTransaction implements _TonWalletExpiredTransaction {
   bool operator ==(dynamic other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$_TonWalletExpiredTransaction &&
+            other is _$TonWalletExpiredTransactionImpl &&
             (identical(other.address, address) || other.address == address) &&
             (identical(other.date, date) || other.date == date) &&
             (identical(other.expireAt, expireAt) ||
@@ -265,9 +266,9 @@ class _$_TonWalletExpiredTransaction implements _TonWalletExpiredTransaction {
   @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')
-  _$$_TonWalletExpiredTransactionCopyWith<_$_TonWalletExpiredTransaction>
-      get copyWith => __$$_TonWalletExpiredTransactionCopyWithImpl<
-          _$_TonWalletExpiredTransaction>(this, _$identity);
+  _$$TonWalletExpiredTransactionImplCopyWith<_$TonWalletExpiredTransactionImpl>
+      get copyWith => __$$TonWalletExpiredTransactionImplCopyWithImpl<
+          _$TonWalletExpiredTransactionImpl>(this, _$identity);
 }
 
 abstract class _TonWalletExpiredTransaction
@@ -279,7 +280,7 @@ abstract class _TonWalletExpiredTransaction
       required final Address destination,
       @amountJsonConverter required final BigInt amount,
       required final String messageHash,
-      required final bool isIncoming}) = _$_TonWalletExpiredTransaction;
+      required final bool isIncoming}) = _$TonWalletExpiredTransactionImpl;
 
   @override // address of wallet for which this transaction found
   Address get address;
@@ -298,6 +299,6 @@ abstract class _TonWalletExpiredTransaction
   bool get isIncoming;
   @override
   @JsonKey(ignore: true)
-  _$$_TonWalletExpiredTransactionCopyWith<_$_TonWalletExpiredTransaction>
+  _$$TonWalletExpiredTransactionImplCopyWith<_$TonWalletExpiredTransactionImpl>
       get copyWith => throw _privateConstructorUsedError;
 }

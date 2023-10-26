@@ -211,12 +211,12 @@ class _$TokenWalletOrdinaryTransactionCopyWithImpl<$Res,
 }
 
 /// @nodoc
-abstract class _$$_TokenWalletOrdinaryTransactionCopyWith<$Res>
+abstract class _$$TokenWalletOrdinaryTransactionImplCopyWith<$Res>
     implements $TokenWalletOrdinaryTransactionCopyWith<$Res> {
-  factory _$$_TokenWalletOrdinaryTransactionCopyWith(
-          _$_TokenWalletOrdinaryTransaction value,
-          $Res Function(_$_TokenWalletOrdinaryTransaction) then) =
-      __$$_TokenWalletOrdinaryTransactionCopyWithImpl<$Res>;
+  factory _$$TokenWalletOrdinaryTransactionImplCopyWith(
+          _$TokenWalletOrdinaryTransactionImpl value,
+          $Res Function(_$TokenWalletOrdinaryTransactionImpl) then) =
+      __$$TokenWalletOrdinaryTransactionImplCopyWithImpl<$Res>;
   @override
   @useResult
   $Res call(
@@ -246,13 +246,13 @@ abstract class _$$_TokenWalletOrdinaryTransactionCopyWith<$Res>
 }
 
 /// @nodoc
-class __$$_TokenWalletOrdinaryTransactionCopyWithImpl<$Res>
+class __$$TokenWalletOrdinaryTransactionImplCopyWithImpl<$Res>
     extends _$TokenWalletOrdinaryTransactionCopyWithImpl<$Res,
-        _$_TokenWalletOrdinaryTransaction>
-    implements _$$_TokenWalletOrdinaryTransactionCopyWith<$Res> {
-  __$$_TokenWalletOrdinaryTransactionCopyWithImpl(
-      _$_TokenWalletOrdinaryTransaction _value,
-      $Res Function(_$_TokenWalletOrdinaryTransaction) _then)
+        _$TokenWalletOrdinaryTransactionImpl>
+    implements _$$TokenWalletOrdinaryTransactionImplCopyWith<$Res> {
+  __$$TokenWalletOrdinaryTransactionImplCopyWithImpl(
+      _$TokenWalletOrdinaryTransactionImpl _value,
+      $Res Function(_$TokenWalletOrdinaryTransactionImpl) _then)
       : super(_value, _then);
 
   @pragma('vm:prefer-inline')
@@ -273,7 +273,7 @@ class __$$_TokenWalletOrdinaryTransactionCopyWithImpl<$Res>
     Object? transferBounced = freezed,
     Object? swapBackBounced = freezed,
   }) {
-    return _then(_$_TokenWalletOrdinaryTransaction(
+    return _then(_$TokenWalletOrdinaryTransactionImpl(
       lt: null == lt
           ? _value.lt
           : lt // ignore: cast_nullable_to_non_nullable
@@ -336,9 +336,9 @@ class __$$_TokenWalletOrdinaryTransactionCopyWithImpl<$Res>
 
 /// @nodoc
 
-class _$_TokenWalletOrdinaryTransaction
+class _$TokenWalletOrdinaryTransactionImpl
     implements _TokenWalletOrdinaryTransaction {
-  const _$_TokenWalletOrdinaryTransaction(
+  const _$TokenWalletOrdinaryTransactionImpl(
       {required this.lt,
       required this.isOutgoing,
       @amountJsonConverter required this.value,
@@ -398,7 +398,7 @@ class _$_TokenWalletOrdinaryTransaction
   bool operator ==(dynamic other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$_TokenWalletOrdinaryTransaction &&
+            other is _$TokenWalletOrdinaryTransactionImpl &&
             (identical(other.lt, lt) || other.lt == lt) &&
             (identical(other.isOutgoing, isOutgoing) ||
                 other.isOutgoing == isOutgoing) &&
@@ -443,9 +443,10 @@ class _$_TokenWalletOrdinaryTransaction
   @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')
-  _$$_TokenWalletOrdinaryTransactionCopyWith<_$_TokenWalletOrdinaryTransaction>
-      get copyWith => __$$_TokenWalletOrdinaryTransactionCopyWithImpl<
-          _$_TokenWalletOrdinaryTransaction>(this, _$identity);
+  _$$TokenWalletOrdinaryTransactionImplCopyWith<
+          _$TokenWalletOrdinaryTransactionImpl>
+      get copyWith => __$$TokenWalletOrdinaryTransactionImplCopyWithImpl<
+          _$TokenWalletOrdinaryTransactionImpl>(this, _$identity);
 }
 
 abstract class _TokenWalletOrdinaryTransaction
@@ -465,7 +466,7 @@ abstract class _TokenWalletOrdinaryTransaction
           @amountJsonConverter final BigInt? accept,
           @amountJsonConverter final BigInt? transferBounced,
           @amountJsonConverter final BigInt? swapBackBounced}) =
-      _$_TokenWalletOrdinaryTransaction;
+      _$TokenWalletOrdinaryTransactionImpl;
 
   @override
   String get lt;
@@ -503,6 +504,7 @@ abstract class _TokenWalletOrdinaryTransaction
   BigInt? get swapBackBounced;
   @override
   @JsonKey(ignore: true)
-  _$$_TokenWalletOrdinaryTransactionCopyWith<_$_TokenWalletOrdinaryTransaction>
+  _$$TokenWalletOrdinaryTransactionImplCopyWith<
+          _$TokenWalletOrdinaryTransactionImpl>
       get copyWith => throw _privateConstructorUsedError;
 }

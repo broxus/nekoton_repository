@@ -76,12 +76,12 @@ class _$ContractUpdatesSubscriptionCopyWithImpl<$Res,
 }
 
 /// @nodoc
-abstract class _$$_ContractUpdatesSubscriptionCopyWith<$Res>
+abstract class _$$ContractUpdatesSubscriptionImplCopyWith<$Res>
     implements $ContractUpdatesSubscriptionCopyWith<$Res> {
-  factory _$$_ContractUpdatesSubscriptionCopyWith(
-          _$_ContractUpdatesSubscription value,
-          $Res Function(_$_ContractUpdatesSubscription) then) =
-      __$$_ContractUpdatesSubscriptionCopyWithImpl<$Res>;
+  factory _$$ContractUpdatesSubscriptionImplCopyWith(
+          _$ContractUpdatesSubscriptionImpl value,
+          $Res Function(_$ContractUpdatesSubscriptionImpl) then) =
+      __$$ContractUpdatesSubscriptionImplCopyWithImpl<$Res>;
   @override
   @useResult
   $Res call(
@@ -90,13 +90,13 @@ abstract class _$$_ContractUpdatesSubscriptionCopyWith<$Res>
 }
 
 /// @nodoc
-class __$$_ContractUpdatesSubscriptionCopyWithImpl<$Res>
+class __$$ContractUpdatesSubscriptionImplCopyWithImpl<$Res>
     extends _$ContractUpdatesSubscriptionCopyWithImpl<$Res,
-        _$_ContractUpdatesSubscription>
-    implements _$$_ContractUpdatesSubscriptionCopyWith<$Res> {
-  __$$_ContractUpdatesSubscriptionCopyWithImpl(
-      _$_ContractUpdatesSubscription _value,
-      $Res Function(_$_ContractUpdatesSubscription) _then)
+        _$ContractUpdatesSubscriptionImpl>
+    implements _$$ContractUpdatesSubscriptionImplCopyWith<$Res> {
+  __$$ContractUpdatesSubscriptionImplCopyWithImpl(
+      _$ContractUpdatesSubscriptionImpl _value,
+      $Res Function(_$ContractUpdatesSubscriptionImpl) _then)
       : super(_value, _then);
 
   @pragma('vm:prefer-inline')
@@ -105,7 +105,7 @@ class __$$_ContractUpdatesSubscriptionCopyWithImpl<$Res>
     Object? contractState = freezed,
     Object? transactions = freezed,
   }) {
-    return _then(_$_ContractUpdatesSubscription(
+    return _then(_$ContractUpdatesSubscriptionImpl(
       contractState: freezed == contractState
           ? _value.contractState
           : contractState // ignore: cast_nullable_to_non_nullable
@@ -120,13 +120,15 @@ class __$$_ContractUpdatesSubscriptionCopyWithImpl<$Res>
 
 /// @nodoc
 @JsonSerializable()
-class _$_ContractUpdatesSubscription implements _ContractUpdatesSubscription {
-  const _$_ContractUpdatesSubscription(
+class _$ContractUpdatesSubscriptionImpl
+    implements _ContractUpdatesSubscription {
+  const _$ContractUpdatesSubscriptionImpl(
       {@JsonKey(includeIfNull: false, name: 'state') this.contractState,
       @JsonKey(includeIfNull: false) this.transactions});
 
-  factory _$_ContractUpdatesSubscription.fromJson(Map<String, dynamic> json) =>
-      _$$_ContractUpdatesSubscriptionFromJson(json);
+  factory _$ContractUpdatesSubscriptionImpl.fromJson(
+          Map<String, dynamic> json) =>
+      _$$ContractUpdatesSubscriptionImplFromJson(json);
 
   @override
   @JsonKey(includeIfNull: false, name: 'state')
@@ -144,7 +146,7 @@ class _$_ContractUpdatesSubscription implements _ContractUpdatesSubscription {
   bool operator ==(dynamic other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$_ContractUpdatesSubscription &&
+            other is _$ContractUpdatesSubscriptionImpl &&
             (identical(other.contractState, contractState) ||
                 other.contractState == contractState) &&
             (identical(other.transactions, transactions) ||
@@ -158,13 +160,13 @@ class _$_ContractUpdatesSubscription implements _ContractUpdatesSubscription {
   @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')
-  _$$_ContractUpdatesSubscriptionCopyWith<_$_ContractUpdatesSubscription>
-      get copyWith => __$$_ContractUpdatesSubscriptionCopyWithImpl<
-          _$_ContractUpdatesSubscription>(this, _$identity);
+  _$$ContractUpdatesSubscriptionImplCopyWith<_$ContractUpdatesSubscriptionImpl>
+      get copyWith => __$$ContractUpdatesSubscriptionImplCopyWithImpl<
+          _$ContractUpdatesSubscriptionImpl>(this, _$identity);
 
   @override
   Map<String, dynamic> toJson() {
-    return _$$_ContractUpdatesSubscriptionToJson(
+    return _$$ContractUpdatesSubscriptionImplToJson(
       this,
     );
   }
@@ -175,10 +177,10 @@ abstract class _ContractUpdatesSubscription
   const factory _ContractUpdatesSubscription(
       {@JsonKey(includeIfNull: false, name: 'state') final bool? contractState,
       @JsonKey(includeIfNull: false)
-      final bool? transactions}) = _$_ContractUpdatesSubscription;
+      final bool? transactions}) = _$ContractUpdatesSubscriptionImpl;
 
   factory _ContractUpdatesSubscription.fromJson(Map<String, dynamic> json) =
-      _$_ContractUpdatesSubscription.fromJson;
+      _$ContractUpdatesSubscriptionImpl.fromJson;
 
   @override
   @JsonKey(includeIfNull: false, name: 'state')
@@ -188,6 +190,6 @@ abstract class _ContractUpdatesSubscription
   bool? get transactions;
   @override
   @JsonKey(ignore: true)
-  _$$_ContractUpdatesSubscriptionCopyWith<_$_ContractUpdatesSubscription>
+  _$$ContractUpdatesSubscriptionImplCopyWith<_$ContractUpdatesSubscriptionImpl>
       get copyWith => throw _privateConstructorUsedError;
 }

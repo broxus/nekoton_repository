@@ -327,12 +327,12 @@ class _$TonWalletMultisigPendingTransactionCopyWithImpl<$Res,
 }
 
 /// @nodoc
-abstract class _$$_TonWalletMultisigPendingTransactionCopyWith<$Res>
+abstract class _$$TonWalletMultisigPendingTransactionImplCopyWith<$Res>
     implements $TonWalletMultisigPendingTransactionCopyWith<$Res> {
-  factory _$$_TonWalletMultisigPendingTransactionCopyWith(
-          _$_TonWalletMultisigPendingTransaction value,
-          $Res Function(_$_TonWalletMultisigPendingTransaction) then) =
-      __$$_TonWalletMultisigPendingTransactionCopyWithImpl<$Res>;
+  factory _$$TonWalletMultisigPendingTransactionImplCopyWith(
+          _$TonWalletMultisigPendingTransactionImpl value,
+          $Res Function(_$TonWalletMultisigPendingTransactionImpl) then) =
+      __$$TonWalletMultisigPendingTransactionImplCopyWithImpl<$Res>;
   @override
   @useResult
   $Res call(
@@ -380,13 +380,13 @@ abstract class _$$_TonWalletMultisigPendingTransactionCopyWith<$Res>
 }
 
 /// @nodoc
-class __$$_TonWalletMultisigPendingTransactionCopyWithImpl<$Res>
+class __$$TonWalletMultisigPendingTransactionImplCopyWithImpl<$Res>
     extends _$TonWalletMultisigPendingTransactionCopyWithImpl<$Res,
-        _$_TonWalletMultisigPendingTransaction>
-    implements _$$_TonWalletMultisigPendingTransactionCopyWith<$Res> {
-  __$$_TonWalletMultisigPendingTransactionCopyWithImpl(
-      _$_TonWalletMultisigPendingTransaction _value,
-      $Res Function(_$_TonWalletMultisigPendingTransaction) _then)
+        _$TonWalletMultisigPendingTransactionImpl>
+    implements _$$TonWalletMultisigPendingTransactionImplCopyWith<$Res> {
+  __$$TonWalletMultisigPendingTransactionImplCopyWithImpl(
+      _$TonWalletMultisigPendingTransactionImpl _value,
+      $Res Function(_$TonWalletMultisigPendingTransactionImpl) _then)
       : super(_value, _then);
 
   @pragma('vm:prefer-inline')
@@ -416,7 +416,7 @@ class __$$_TonWalletMultisigPendingTransactionCopyWithImpl<$Res>
     Object? tokenWalletDeployedNotification = freezed,
     Object? walletInteractionInfo = freezed,
   }) {
-    return _then(_$_TonWalletMultisigPendingTransaction(
+    return _then(_$TonWalletMultisigPendingTransactionImpl(
       lt: null == lt
           ? _value.lt
           : lt // ignore: cast_nullable_to_non_nullable
@@ -518,9 +518,9 @@ class __$$_TonWalletMultisigPendingTransactionCopyWithImpl<$Res>
 
 /// @nodoc
 
-class _$_TonWalletMultisigPendingTransaction
+class _$TonWalletMultisigPendingTransactionImpl
     implements _TonWalletMultisigPendingTransaction {
-  const _$_TonWalletMultisigPendingTransaction(
+  const _$TonWalletMultisigPendingTransactionImpl(
       {required this.lt,
       required this.creator,
       required final List<PublicKey> confirmations,
@@ -637,7 +637,7 @@ class _$_TonWalletMultisigPendingTransaction
   bool operator ==(dynamic other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$_TonWalletMultisigPendingTransaction &&
+            other is _$TonWalletMultisigPendingTransactionImpl &&
             (identical(other.lt, lt) || other.lt == lt) &&
             (identical(other.creator, creator) || other.creator == creator) &&
             const DeepCollectionEquality()
@@ -716,10 +716,10 @@ class _$_TonWalletMultisigPendingTransaction
   @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')
-  _$$_TonWalletMultisigPendingTransactionCopyWith<
-          _$_TonWalletMultisigPendingTransaction>
-      get copyWith => __$$_TonWalletMultisigPendingTransactionCopyWithImpl<
-          _$_TonWalletMultisigPendingTransaction>(this, _$identity);
+  _$$TonWalletMultisigPendingTransactionImplCopyWith<
+          _$TonWalletMultisigPendingTransactionImpl>
+      get copyWith => __$$TonWalletMultisigPendingTransactionImplCopyWithImpl<
+          _$TonWalletMultisigPendingTransactionImpl>(this, _$identity);
 }
 
 abstract class _TonWalletMultisigPendingTransaction
@@ -749,7 +749,7 @@ abstract class _TonWalletMultisigPendingTransaction
       final DePoolReceiveAnswerNotification? dePoolReceiveAnswerNotification,
       final TokenWalletDeployedNotification? tokenWalletDeployedNotification,
       final WalletInteractionInfo?
-          walletInteractionInfo}) = _$_TonWalletMultisigPendingTransaction;
+          walletInteractionInfo}) = _$TonWalletMultisigPendingTransactionImpl;
 
   @override
   String get lt;
@@ -801,7 +801,7 @@ abstract class _TonWalletMultisigPendingTransaction
   WalletInteractionInfo? get walletInteractionInfo;
   @override
   @JsonKey(ignore: true)
-  _$$_TonWalletMultisigPendingTransactionCopyWith<
-          _$_TonWalletMultisigPendingTransaction>
+  _$$TonWalletMultisigPendingTransactionImplCopyWith<
+          _$TonWalletMultisigPendingTransactionImpl>
       get copyWith => throw _privateConstructorUsedError;
 }

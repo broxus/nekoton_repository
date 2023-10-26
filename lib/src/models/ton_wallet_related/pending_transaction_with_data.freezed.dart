@@ -107,12 +107,12 @@ class _$PendingTransactionWithDataCopyWithImpl<$Res,
 }
 
 /// @nodoc
-abstract class _$$_PendingTransactionWithAdditionalInfoCopyWith<$Res>
+abstract class _$$PendingTransactionWithAdditionalInfoImplCopyWith<$Res>
     implements $PendingTransactionWithDataCopyWith<$Res> {
-  factory _$$_PendingTransactionWithAdditionalInfoCopyWith(
-          _$_PendingTransactionWithAdditionalInfo value,
-          $Res Function(_$_PendingTransactionWithAdditionalInfo) then) =
-      __$$_PendingTransactionWithAdditionalInfoCopyWithImpl<$Res>;
+  factory _$$PendingTransactionWithAdditionalInfoImplCopyWith(
+          _$PendingTransactionWithAdditionalInfoImpl value,
+          $Res Function(_$PendingTransactionWithAdditionalInfoImpl) then) =
+      __$$PendingTransactionWithAdditionalInfoImplCopyWithImpl<$Res>;
   @override
   @useResult
   $Res call(
@@ -128,13 +128,13 @@ abstract class _$$_PendingTransactionWithAdditionalInfoCopyWith<$Res>
 }
 
 /// @nodoc
-class __$$_PendingTransactionWithAdditionalInfoCopyWithImpl<$Res>
+class __$$PendingTransactionWithAdditionalInfoImplCopyWithImpl<$Res>
     extends _$PendingTransactionWithDataCopyWithImpl<$Res,
-        _$_PendingTransactionWithAdditionalInfo>
-    implements _$$_PendingTransactionWithAdditionalInfoCopyWith<$Res> {
-  __$$_PendingTransactionWithAdditionalInfoCopyWithImpl(
-      _$_PendingTransactionWithAdditionalInfo _value,
-      $Res Function(_$_PendingTransactionWithAdditionalInfo) _then)
+        _$PendingTransactionWithAdditionalInfoImpl>
+    implements _$$PendingTransactionWithAdditionalInfoImplCopyWith<$Res> {
+  __$$PendingTransactionWithAdditionalInfoImplCopyWithImpl(
+      _$PendingTransactionWithAdditionalInfoImpl _value,
+      $Res Function(_$PendingTransactionWithAdditionalInfoImpl) _then)
       : super(_value, _then);
 
   @pragma('vm:prefer-inline')
@@ -145,7 +145,7 @@ class __$$_PendingTransactionWithAdditionalInfoCopyWithImpl<$Res>
     Object? amount = null,
     Object? createdAt = null,
   }) {
-    return _then(_$_PendingTransactionWithAdditionalInfo(
+    return _then(_$PendingTransactionWithAdditionalInfoImpl(
       transaction: null == transaction
           ? _value.transaction
           : transaction // ignore: cast_nullable_to_non_nullable
@@ -168,18 +168,18 @@ class __$$_PendingTransactionWithAdditionalInfoCopyWithImpl<$Res>
 
 /// @nodoc
 @JsonSerializable()
-class _$_PendingTransactionWithAdditionalInfo
+class _$PendingTransactionWithAdditionalInfoImpl
     extends _PendingTransactionWithAdditionalInfo {
-  const _$_PendingTransactionWithAdditionalInfo(
+  const _$PendingTransactionWithAdditionalInfoImpl(
       {required this.transaction,
       required this.destination,
       @amountJsonConverter required this.amount,
       required this.createdAt})
       : super._();
 
-  factory _$_PendingTransactionWithAdditionalInfo.fromJson(
+  factory _$PendingTransactionWithAdditionalInfoImpl.fromJson(
           Map<String, dynamic> json) =>
-      _$$_PendingTransactionWithAdditionalInfoFromJson(json);
+      _$$PendingTransactionWithAdditionalInfoImplFromJson(json);
 
   @override
   final PendingTransaction transaction;
@@ -200,7 +200,7 @@ class _$_PendingTransactionWithAdditionalInfo
   bool operator ==(dynamic other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$_PendingTransactionWithAdditionalInfo &&
+            other is _$PendingTransactionWithAdditionalInfoImpl &&
             (identical(other.transaction, transaction) ||
                 other.transaction == transaction) &&
             (identical(other.destination, destination) ||
@@ -218,14 +218,14 @@ class _$_PendingTransactionWithAdditionalInfo
   @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')
-  _$$_PendingTransactionWithAdditionalInfoCopyWith<
-          _$_PendingTransactionWithAdditionalInfo>
-      get copyWith => __$$_PendingTransactionWithAdditionalInfoCopyWithImpl<
-          _$_PendingTransactionWithAdditionalInfo>(this, _$identity);
+  _$$PendingTransactionWithAdditionalInfoImplCopyWith<
+          _$PendingTransactionWithAdditionalInfoImpl>
+      get copyWith => __$$PendingTransactionWithAdditionalInfoImplCopyWithImpl<
+          _$PendingTransactionWithAdditionalInfoImpl>(this, _$identity);
 
   @override
   Map<String, dynamic> toJson() {
-    return _$$_PendingTransactionWithAdditionalInfoToJson(
+    return _$$PendingTransactionWithAdditionalInfoImplToJson(
       this,
     );
   }
@@ -238,12 +238,12 @@ abstract class _PendingTransactionWithAdditionalInfo
           required final Address destination,
           @amountJsonConverter required final BigInt amount,
           required final DateTime createdAt}) =
-      _$_PendingTransactionWithAdditionalInfo;
+      _$PendingTransactionWithAdditionalInfoImpl;
   const _PendingTransactionWithAdditionalInfo._() : super._();
 
   factory _PendingTransactionWithAdditionalInfo.fromJson(
           Map<String, dynamic> json) =
-      _$_PendingTransactionWithAdditionalInfo.fromJson;
+      _$PendingTransactionWithAdditionalInfoImpl.fromJson;
 
   @override
   PendingTransaction get transaction;
@@ -256,7 +256,7 @@ abstract class _PendingTransactionWithAdditionalInfo
   DateTime get createdAt;
   @override
   @JsonKey(ignore: true)
-  _$$_PendingTransactionWithAdditionalInfoCopyWith<
-          _$_PendingTransactionWithAdditionalInfo>
+  _$$PendingTransactionWithAdditionalInfoImplCopyWith<
+          _$PendingTransactionWithAdditionalInfoImpl>
       get copyWith => throw _privateConstructorUsedError;
 }

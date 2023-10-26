@@ -266,12 +266,12 @@ class _$TonWalletMultisigOrdinaryTransactionCopyWithImpl<$Res,
 }
 
 /// @nodoc
-abstract class _$$_TonWalletMultisigOrdinaryTransactionCopyWith<$Res>
+abstract class _$$TonWalletMultisigOrdinaryTransactionImplCopyWith<$Res>
     implements $TonWalletMultisigOrdinaryTransactionCopyWith<$Res> {
-  factory _$$_TonWalletMultisigOrdinaryTransactionCopyWith(
-          _$_TonWalletMultisigOrdinaryTransaction value,
-          $Res Function(_$_TonWalletMultisigOrdinaryTransaction) then) =
-      __$$_TonWalletMultisigOrdinaryTransactionCopyWithImpl<$Res>;
+  factory _$$TonWalletMultisigOrdinaryTransactionImplCopyWith(
+          _$TonWalletMultisigOrdinaryTransactionImpl value,
+          $Res Function(_$TonWalletMultisigOrdinaryTransactionImpl) then) =
+      __$$TonWalletMultisigOrdinaryTransactionImplCopyWithImpl<$Res>;
   @override
   @useResult
   $Res call(
@@ -310,13 +310,13 @@ abstract class _$$_TonWalletMultisigOrdinaryTransactionCopyWith<$Res>
 }
 
 /// @nodoc
-class __$$_TonWalletMultisigOrdinaryTransactionCopyWithImpl<$Res>
+class __$$TonWalletMultisigOrdinaryTransactionImplCopyWithImpl<$Res>
     extends _$TonWalletMultisigOrdinaryTransactionCopyWithImpl<$Res,
-        _$_TonWalletMultisigOrdinaryTransaction>
-    implements _$$_TonWalletMultisigOrdinaryTransactionCopyWith<$Res> {
-  __$$_TonWalletMultisigOrdinaryTransactionCopyWithImpl(
-      _$_TonWalletMultisigOrdinaryTransaction _value,
-      $Res Function(_$_TonWalletMultisigOrdinaryTransaction) _then)
+        _$TonWalletMultisigOrdinaryTransactionImpl>
+    implements _$$TonWalletMultisigOrdinaryTransactionImplCopyWith<$Res> {
+  __$$TonWalletMultisigOrdinaryTransactionImplCopyWithImpl(
+      _$TonWalletMultisigOrdinaryTransactionImpl _value,
+      $Res Function(_$TonWalletMultisigOrdinaryTransactionImpl) _then)
       : super(_value, _then);
 
   @pragma('vm:prefer-inline')
@@ -339,7 +339,7 @@ class __$$_TonWalletMultisigOrdinaryTransactionCopyWithImpl<$Res>
     Object? tokenWalletDeployedNotification = freezed,
     Object? walletInteractionInfo = freezed,
   }) {
-    return _then(_$_TonWalletMultisigOrdinaryTransaction(
+    return _then(_$TonWalletMultisigOrdinaryTransactionImpl(
       lt: null == lt
           ? _value.lt
           : lt // ignore: cast_nullable_to_non_nullable
@@ -413,9 +413,9 @@ class __$$_TonWalletMultisigOrdinaryTransactionCopyWithImpl<$Res>
 
 /// @nodoc
 
-class _$_TonWalletMultisigOrdinaryTransaction
+class _$TonWalletMultisigOrdinaryTransactionImpl
     implements _TonWalletMultisigOrdinaryTransaction {
-  const _$_TonWalletMultisigOrdinaryTransaction(
+  const _$TonWalletMultisigOrdinaryTransactionImpl(
       {required this.lt,
       required this.creator,
       required final List<PublicKey> confirmations,
@@ -499,7 +499,7 @@ class _$_TonWalletMultisigOrdinaryTransaction
   bool operator ==(dynamic other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$_TonWalletMultisigOrdinaryTransaction &&
+            other is _$TonWalletMultisigOrdinaryTransactionImpl &&
             (identical(other.lt, lt) || other.lt == lt) &&
             (identical(other.creator, creator) || other.creator == creator) &&
             const DeepCollectionEquality()
@@ -555,10 +555,10 @@ class _$_TonWalletMultisigOrdinaryTransaction
   @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')
-  _$$_TonWalletMultisigOrdinaryTransactionCopyWith<
-          _$_TonWalletMultisigOrdinaryTransaction>
-      get copyWith => __$$_TonWalletMultisigOrdinaryTransactionCopyWithImpl<
-          _$_TonWalletMultisigOrdinaryTransaction>(this, _$identity);
+  _$$TonWalletMultisigOrdinaryTransactionImplCopyWith<
+          _$TonWalletMultisigOrdinaryTransactionImpl>
+      get copyWith => __$$TonWalletMultisigOrdinaryTransactionImplCopyWithImpl<
+          _$TonWalletMultisigOrdinaryTransactionImpl>(this, _$identity);
 }
 
 abstract class _TonWalletMultisigOrdinaryTransaction
@@ -581,7 +581,7 @@ abstract class _TonWalletMultisigOrdinaryTransaction
       final DePoolReceiveAnswerNotification? dePoolReceiveAnswerNotification,
       final TokenWalletDeployedNotification? tokenWalletDeployedNotification,
       final WalletInteractionInfo?
-          walletInteractionInfo}) = _$_TonWalletMultisigOrdinaryTransaction;
+          walletInteractionInfo}) = _$TonWalletMultisigOrdinaryTransactionImpl;
 
   @override
   String get lt;
@@ -620,7 +620,7 @@ abstract class _TonWalletMultisigOrdinaryTransaction
   WalletInteractionInfo? get walletInteractionInfo;
   @override
   @JsonKey(ignore: true)
-  _$$_TonWalletMultisigOrdinaryTransactionCopyWith<
-          _$_TonWalletMultisigOrdinaryTransaction>
+  _$$TonWalletMultisigOrdinaryTransactionImplCopyWith<
+          _$TonWalletMultisigOrdinaryTransactionImpl>
       get copyWith => throw _privateConstructorUsedError;
 }

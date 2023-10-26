@@ -6,15 +6,15 @@ part of 'contract_state_changed_event.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-_$_ContractStateChangedEvent _$$_ContractStateChangedEventFromJson(
+_$ContractStateChangedEventImpl _$$ContractStateChangedEventImplFromJson(
         Map<String, dynamic> json) =>
-    _$_ContractStateChangedEvent(
+    _$ContractStateChangedEventImpl(
       address: Address.fromJson(json['address'] as String),
       state: ContractState.fromJson(json['state'] as Map<String, dynamic>),
     );
 
-Map<String, dynamic> _$$_ContractStateChangedEventToJson(
-        _$_ContractStateChangedEvent instance) =>
+Map<String, dynamic> _$$ContractStateChangedEventImplToJson(
+        _$ContractStateChangedEventImpl instance) =>
     <String, dynamic>{
       'address': instance.address.toJson(),
       'state': instance.state.toJson(),
