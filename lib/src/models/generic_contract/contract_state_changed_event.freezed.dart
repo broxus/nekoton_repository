@@ -89,12 +89,12 @@ class _$ContractStateChangedEventCopyWithImpl<$Res,
 }
 
 /// @nodoc
-abstract class _$$_ContractStateChangedEventCopyWith<$Res>
+abstract class _$$ContractStateChangedEventImplCopyWith<$Res>
     implements $ContractStateChangedEventCopyWith<$Res> {
-  factory _$$_ContractStateChangedEventCopyWith(
-          _$_ContractStateChangedEvent value,
-          $Res Function(_$_ContractStateChangedEvent) then) =
-      __$$_ContractStateChangedEventCopyWithImpl<$Res>;
+  factory _$$ContractStateChangedEventImplCopyWith(
+          _$ContractStateChangedEventImpl value,
+          $Res Function(_$ContractStateChangedEventImpl) then) =
+      __$$ContractStateChangedEventImplCopyWithImpl<$Res>;
   @override
   @useResult
   $Res call({Address address, ContractState state});
@@ -106,13 +106,13 @@ abstract class _$$_ContractStateChangedEventCopyWith<$Res>
 }
 
 /// @nodoc
-class __$$_ContractStateChangedEventCopyWithImpl<$Res>
+class __$$ContractStateChangedEventImplCopyWithImpl<$Res>
     extends _$ContractStateChangedEventCopyWithImpl<$Res,
-        _$_ContractStateChangedEvent>
-    implements _$$_ContractStateChangedEventCopyWith<$Res> {
-  __$$_ContractStateChangedEventCopyWithImpl(
-      _$_ContractStateChangedEvent _value,
-      $Res Function(_$_ContractStateChangedEvent) _then)
+        _$ContractStateChangedEventImpl>
+    implements _$$ContractStateChangedEventImplCopyWith<$Res> {
+  __$$ContractStateChangedEventImplCopyWithImpl(
+      _$ContractStateChangedEventImpl _value,
+      $Res Function(_$ContractStateChangedEventImpl) _then)
       : super(_value, _then);
 
   @pragma('vm:prefer-inline')
@@ -121,7 +121,7 @@ class __$$_ContractStateChangedEventCopyWithImpl<$Res>
     Object? address = null,
     Object? state = null,
   }) {
-    return _then(_$_ContractStateChangedEvent(
+    return _then(_$ContractStateChangedEventImpl(
       address: null == address
           ? _value.address
           : address // ignore: cast_nullable_to_non_nullable
@@ -136,12 +136,12 @@ class __$$_ContractStateChangedEventCopyWithImpl<$Res>
 
 /// @nodoc
 @JsonSerializable()
-class _$_ContractStateChangedEvent implements _ContractStateChangedEvent {
-  const _$_ContractStateChangedEvent(
+class _$ContractStateChangedEventImpl implements _ContractStateChangedEvent {
+  const _$ContractStateChangedEventImpl(
       {required this.address, required this.state});
 
-  factory _$_ContractStateChangedEvent.fromJson(Map<String, dynamic> json) =>
-      _$$_ContractStateChangedEventFromJson(json);
+  factory _$ContractStateChangedEventImpl.fromJson(Map<String, dynamic> json) =>
+      _$$ContractStateChangedEventImplFromJson(json);
 
   @override
   final Address address;
@@ -157,7 +157,7 @@ class _$_ContractStateChangedEvent implements _ContractStateChangedEvent {
   bool operator ==(dynamic other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$_ContractStateChangedEvent &&
+            other is _$ContractStateChangedEventImpl &&
             (identical(other.address, address) || other.address == address) &&
             (identical(other.state, state) || other.state == state));
   }
@@ -169,13 +169,13 @@ class _$_ContractStateChangedEvent implements _ContractStateChangedEvent {
   @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')
-  _$$_ContractStateChangedEventCopyWith<_$_ContractStateChangedEvent>
-      get copyWith => __$$_ContractStateChangedEventCopyWithImpl<
-          _$_ContractStateChangedEvent>(this, _$identity);
+  _$$ContractStateChangedEventImplCopyWith<_$ContractStateChangedEventImpl>
+      get copyWith => __$$ContractStateChangedEventImplCopyWithImpl<
+          _$ContractStateChangedEventImpl>(this, _$identity);
 
   @override
   Map<String, dynamic> toJson() {
-    return _$$_ContractStateChangedEventToJson(
+    return _$$ContractStateChangedEventImplToJson(
       this,
     );
   }
@@ -184,10 +184,10 @@ class _$_ContractStateChangedEvent implements _ContractStateChangedEvent {
 abstract class _ContractStateChangedEvent implements ContractStateChangedEvent {
   const factory _ContractStateChangedEvent(
       {required final Address address,
-      required final ContractState state}) = _$_ContractStateChangedEvent;
+      required final ContractState state}) = _$ContractStateChangedEventImpl;
 
   factory _ContractStateChangedEvent.fromJson(Map<String, dynamic> json) =
-      _$_ContractStateChangedEvent.fromJson;
+      _$ContractStateChangedEventImpl.fromJson;
 
   @override
   Address get address;
@@ -195,6 +195,6 @@ abstract class _ContractStateChangedEvent implements ContractStateChangedEvent {
   ContractState get state;
   @override
   @JsonKey(ignore: true)
-  _$$_ContractStateChangedEventCopyWith<_$_ContractStateChangedEvent>
+  _$$ContractStateChangedEventImplCopyWith<_$ContractStateChangedEventImpl>
       get copyWith => throw _privateConstructorUsedError;
 }

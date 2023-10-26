@@ -2,7 +2,7 @@ import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
 import 'package:logging/logging.dart';
 import 'package:nekoton_repository/nekoton_repository.dart';
-import 'package:nekoton_repository/src/repositories/refresh_polling_queue/cancellable_operation_awaited.dart';
+import 'package:quiver/iterables.dart';
 import 'package:rxdart/rxdart.dart';
 
 /// Polling interval for token wallet refresh
@@ -19,6 +19,15 @@ mixin TokenWalletRepositoryImpl implements TokenWalletRepository {
   /// Key - pair where first item is owner address, second is rootTokenContract
   final _tokenWalletsSubject =
       BehaviorSubject<Map<(Address, Address), TokenWallet>>.seeded({});
+
+  /// How many tokens can be subscribed at time for one cycle in
+  /// [TokenWalletRepositoryImpl._updateTokenSubscriptionsPairs].
+  /// This variable can be changed if you need expand/reduce amount of subscribed
+  /// token for one cycle. This means, that if you often calls methods to update
+  /// subscriptions such as [TokenWalletRepositoryImpl.updateTokenSubscriptions]
+  /// or [TokenWalletRepositoryImpl.updateTokenTransportSubscriptions] it may
+  /// takes more time while the cycle will be completed.
+  int tokenSubscribeAtTimeAmount = 8;
 
   /// Last assets that were used for subscription.
   /// This value is used during [updateTokenTransportSubscriptions] to create
@@ -201,12 +210,23 @@ mixin TokenWalletRepositoryImpl implements TokenWalletRepository {
 
     late CancelableOperationAwaited<void> operation;
     operation = CancelableOperationAwaited.fromFuture(() async {
-      for (final wallet in toSubscribe) {
-        try {
-          await subscribeToken(owner: wallet.$1, rootTokenContract: wallet.$2);
-        } catch (e, t) {
-          _logger.severe('_updateTokenSubscriptionsPairs', e, t);
-        }
+      // Split all tokens to sublists to allow loading multiple tokens
+      // simultaneously.
+      final parts = partition(toSubscribe, tokenSubscribeAtTimeAmount);
+
+      for (final part in parts) {
+        await Future.wait(
+          part.map((wallet) async {
+            try {
+              await subscribeToken(
+                owner: wallet.$1,
+                rootTokenContract: wallet.$2,
+              );
+            } catch (e, t) {
+              _logger.severe('_updateTokenSubscriptionsPairs', e, t);
+            }
+          }),
+        );
 
         // Make this pseudo event to allow other operations in event loop
         // to be executed

@@ -126,12 +126,12 @@ class _$TonWalletPendingTransactionCopyWithImpl<$Res,
 }
 
 /// @nodoc
-abstract class _$$_TonWalletPendingTransactionCopyWith<$Res>
+abstract class _$$TonWalletPendingTransactionImplCopyWith<$Res>
     implements $TonWalletPendingTransactionCopyWith<$Res> {
-  factory _$$_TonWalletPendingTransactionCopyWith(
-          _$_TonWalletPendingTransaction value,
-          $Res Function(_$_TonWalletPendingTransaction) then) =
-      __$$_TonWalletPendingTransactionCopyWithImpl<$Res>;
+  factory _$$TonWalletPendingTransactionImplCopyWith(
+          _$TonWalletPendingTransactionImpl value,
+          $Res Function(_$TonWalletPendingTransactionImpl) then) =
+      __$$TonWalletPendingTransactionImplCopyWithImpl<$Res>;
   @override
   @useResult
   $Res call(
@@ -150,13 +150,13 @@ abstract class _$$_TonWalletPendingTransactionCopyWith<$Res>
 }
 
 /// @nodoc
-class __$$_TonWalletPendingTransactionCopyWithImpl<$Res>
+class __$$TonWalletPendingTransactionImplCopyWithImpl<$Res>
     extends _$TonWalletPendingTransactionCopyWithImpl<$Res,
-        _$_TonWalletPendingTransaction>
-    implements _$$_TonWalletPendingTransactionCopyWith<$Res> {
-  __$$_TonWalletPendingTransactionCopyWithImpl(
-      _$_TonWalletPendingTransaction _value,
-      $Res Function(_$_TonWalletPendingTransaction) _then)
+        _$TonWalletPendingTransactionImpl>
+    implements _$$TonWalletPendingTransactionImplCopyWith<$Res> {
+  __$$TonWalletPendingTransactionImplCopyWithImpl(
+      _$TonWalletPendingTransactionImpl _value,
+      $Res Function(_$TonWalletPendingTransactionImpl) _then)
       : super(_value, _then);
 
   @pragma('vm:prefer-inline')
@@ -170,7 +170,7 @@ class __$$_TonWalletPendingTransactionCopyWithImpl<$Res>
     Object? messageHash = null,
     Object? isIncoming = null,
   }) {
-    return _then(_$_TonWalletPendingTransaction(
+    return _then(_$TonWalletPendingTransactionImpl(
       address: null == address
           ? _value.address
           : address // ignore: cast_nullable_to_non_nullable
@@ -205,8 +205,9 @@ class __$$_TonWalletPendingTransactionCopyWithImpl<$Res>
 
 /// @nodoc
 
-class _$_TonWalletPendingTransaction implements _TonWalletPendingTransaction {
-  const _$_TonWalletPendingTransaction(
+class _$TonWalletPendingTransactionImpl
+    implements _TonWalletPendingTransaction {
+  const _$TonWalletPendingTransactionImpl(
       {required this.address,
       required this.date,
       required this.expireAt,
@@ -244,7 +245,7 @@ class _$_TonWalletPendingTransaction implements _TonWalletPendingTransaction {
   bool operator ==(dynamic other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$_TonWalletPendingTransaction &&
+            other is _$TonWalletPendingTransactionImpl &&
             (identical(other.address, address) || other.address == address) &&
             (identical(other.date, date) || other.date == date) &&
             (identical(other.expireAt, expireAt) ||
@@ -265,9 +266,9 @@ class _$_TonWalletPendingTransaction implements _TonWalletPendingTransaction {
   @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')
-  _$$_TonWalletPendingTransactionCopyWith<_$_TonWalletPendingTransaction>
-      get copyWith => __$$_TonWalletPendingTransactionCopyWithImpl<
-          _$_TonWalletPendingTransaction>(this, _$identity);
+  _$$TonWalletPendingTransactionImplCopyWith<_$TonWalletPendingTransactionImpl>
+      get copyWith => __$$TonWalletPendingTransactionImplCopyWithImpl<
+          _$TonWalletPendingTransactionImpl>(this, _$identity);
 }
 
 abstract class _TonWalletPendingTransaction
@@ -279,7 +280,7 @@ abstract class _TonWalletPendingTransaction
       required final Address destination,
       @amountJsonConverter required final BigInt amount,
       required final String messageHash,
-      required final bool isIncoming}) = _$_TonWalletPendingTransaction;
+      required final bool isIncoming}) = _$TonWalletPendingTransactionImpl;
 
   @override // address of wallet for which this transaction found
   Address get address;
@@ -298,6 +299,6 @@ abstract class _TonWalletPendingTransaction
   bool get isIncoming;
   @override
   @JsonKey(ignore: true)
-  _$$_TonWalletPendingTransactionCopyWith<_$_TonWalletPendingTransaction>
+  _$$TonWalletPendingTransactionImplCopyWith<_$TonWalletPendingTransactionImpl>
       get copyWith => throw _privateConstructorUsedError;
 }

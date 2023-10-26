@@ -5,9 +5,9 @@ import 'package:flutter/foundation.dart';
 import 'package:get_it/get_it.dart';
 import 'package:logging/logging.dart';
 import 'package:nekoton_repository/nekoton_repository.dart';
-import 'package:nekoton_repository/src/repositories/refresh_polling_queue/cancellable_operation_awaited.dart';
 import 'package:nekoton_repository/src/repositories/ton_wallet_repository/ton_wallet_gql_block_poller.dart';
 import 'package:nekoton_repository/src/utils/utils.dart';
+import 'package:quiver/iterables.dart';
 import 'package:rxdart/rxdart.dart';
 
 /// Polling interval for [TonWallet.refresh]
@@ -26,6 +26,15 @@ mixin TonWalletRepositoryImpl implements TonWalletRepository {
 
   /// Current transport of application
   TransportStrategy get currentTransport;
+
+  /// How many tokens can be subscribed at time for one cycle in
+  /// [TonWalletRepositoryImpl.updateSubscriptions].
+  /// This variable can be changed if you need expand/reduce amount of subscribed
+  /// token for one cycle. This means, that if you often calls methods to update
+  /// subscriptions such as [TonWalletRepositoryImpl.updateSubscriptions]
+  /// or [TonWalletRepositoryImpl.updateTransportSubscriptions] it may
+  /// takes more time while the cycle will be completed.
+  int tonSubscribeAtTimeAmount = 5;
 
   /// Last assets that were used for subscription.
   /// This value is used during [updateTransportSubscriptions] to create
@@ -200,12 +209,20 @@ mixin TonWalletRepositoryImpl implements TonWalletRepository {
     late CancelableOperationAwaited<void> operation;
 
     operation = CancelableOperationAwaited.fromFuture(() async {
-      for (final asset in toSubscribe) {
-        try {
-          await subscribe(asset);
-        } catch (e, t) {
-          _logger.severe('updateSubscriptions', e, t);
-        }
+      // Split all tokens to sublists to allow loading multiple tokens
+      // simultaneously.
+      final parts = partition(toSubscribe, tonSubscribeAtTimeAmount);
+
+      for (final part in parts) {
+        await Future.wait(
+          part.map((asset) async {
+            try {
+              await subscribe(asset);
+            } catch (e, t) {
+              _logger.severe('updateSubscriptions', e, t);
+            }
+          }),
+        );
 
         // Make this pseudo event to allow other operations in event loop
         // to be executed

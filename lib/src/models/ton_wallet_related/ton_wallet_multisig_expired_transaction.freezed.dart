@@ -266,12 +266,12 @@ class _$TonWalletMultisigExpiredTransactionCopyWithImpl<$Res,
 }
 
 /// @nodoc
-abstract class _$$_TonWalletMultisigExpiredTransactionCopyWith<$Res>
+abstract class _$$TonWalletMultisigExpiredTransactionImplCopyWith<$Res>
     implements $TonWalletMultisigExpiredTransactionCopyWith<$Res> {
-  factory _$$_TonWalletMultisigExpiredTransactionCopyWith(
-          _$_TonWalletMultisigExpiredTransaction value,
-          $Res Function(_$_TonWalletMultisigExpiredTransaction) then) =
-      __$$_TonWalletMultisigExpiredTransactionCopyWithImpl<$Res>;
+  factory _$$TonWalletMultisigExpiredTransactionImplCopyWith(
+          _$TonWalletMultisigExpiredTransactionImpl value,
+          $Res Function(_$TonWalletMultisigExpiredTransactionImpl) then) =
+      __$$TonWalletMultisigExpiredTransactionImplCopyWithImpl<$Res>;
   @override
   @useResult
   $Res call(
@@ -310,13 +310,13 @@ abstract class _$$_TonWalletMultisigExpiredTransactionCopyWith<$Res>
 }
 
 /// @nodoc
-class __$$_TonWalletMultisigExpiredTransactionCopyWithImpl<$Res>
+class __$$TonWalletMultisigExpiredTransactionImplCopyWithImpl<$Res>
     extends _$TonWalletMultisigExpiredTransactionCopyWithImpl<$Res,
-        _$_TonWalletMultisigExpiredTransaction>
-    implements _$$_TonWalletMultisigExpiredTransactionCopyWith<$Res> {
-  __$$_TonWalletMultisigExpiredTransactionCopyWithImpl(
-      _$_TonWalletMultisigExpiredTransaction _value,
-      $Res Function(_$_TonWalletMultisigExpiredTransaction) _then)
+        _$TonWalletMultisigExpiredTransactionImpl>
+    implements _$$TonWalletMultisigExpiredTransactionImplCopyWith<$Res> {
+  __$$TonWalletMultisigExpiredTransactionImplCopyWithImpl(
+      _$TonWalletMultisigExpiredTransactionImpl _value,
+      $Res Function(_$TonWalletMultisigExpiredTransactionImpl) _then)
       : super(_value, _then);
 
   @pragma('vm:prefer-inline')
@@ -339,7 +339,7 @@ class __$$_TonWalletMultisigExpiredTransactionCopyWithImpl<$Res>
     Object? tokenWalletDeployedNotification = freezed,
     Object? walletInteractionInfo = freezed,
   }) {
-    return _then(_$_TonWalletMultisigExpiredTransaction(
+    return _then(_$TonWalletMultisigExpiredTransactionImpl(
       lt: null == lt
           ? _value.lt
           : lt // ignore: cast_nullable_to_non_nullable
@@ -413,9 +413,9 @@ class __$$_TonWalletMultisigExpiredTransactionCopyWithImpl<$Res>
 
 /// @nodoc
 
-class _$_TonWalletMultisigExpiredTransaction
+class _$TonWalletMultisigExpiredTransactionImpl
     implements _TonWalletMultisigExpiredTransaction {
-  const _$_TonWalletMultisigExpiredTransaction(
+  const _$TonWalletMultisigExpiredTransactionImpl(
       {required this.lt,
       required this.creator,
       required final List<PublicKey> confirmations,
@@ -499,7 +499,7 @@ class _$_TonWalletMultisigExpiredTransaction
   bool operator ==(dynamic other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$_TonWalletMultisigExpiredTransaction &&
+            other is _$TonWalletMultisigExpiredTransactionImpl &&
             (identical(other.lt, lt) || other.lt == lt) &&
             (identical(other.creator, creator) || other.creator == creator) &&
             const DeepCollectionEquality()
@@ -555,10 +555,10 @@ class _$_TonWalletMultisigExpiredTransaction
   @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')
-  _$$_TonWalletMultisigExpiredTransactionCopyWith<
-          _$_TonWalletMultisigExpiredTransaction>
-      get copyWith => __$$_TonWalletMultisigExpiredTransactionCopyWithImpl<
-          _$_TonWalletMultisigExpiredTransaction>(this, _$identity);
+  _$$TonWalletMultisigExpiredTransactionImplCopyWith<
+          _$TonWalletMultisigExpiredTransactionImpl>
+      get copyWith => __$$TonWalletMultisigExpiredTransactionImplCopyWithImpl<
+          _$TonWalletMultisigExpiredTransactionImpl>(this, _$identity);
 }
 
 abstract class _TonWalletMultisigExpiredTransaction
@@ -581,7 +581,7 @@ abstract class _TonWalletMultisigExpiredTransaction
       final DePoolReceiveAnswerNotification? dePoolReceiveAnswerNotification,
       final TokenWalletDeployedNotification? tokenWalletDeployedNotification,
       final WalletInteractionInfo?
-          walletInteractionInfo}) = _$_TonWalletMultisigExpiredTransaction;
+          walletInteractionInfo}) = _$TonWalletMultisigExpiredTransactionImpl;
 
   @override
   String get lt;
@@ -620,7 +620,7 @@ abstract class _TonWalletMultisigExpiredTransaction
   WalletInteractionInfo? get walletInteractionInfo;
   @override
   @JsonKey(ignore: true)
-  _$$_TonWalletMultisigExpiredTransactionCopyWith<
-          _$_TonWalletMultisigExpiredTransaction>
+  _$$TonWalletMultisigExpiredTransactionImplCopyWith<
+          _$TonWalletMultisigExpiredTransactionImpl>
       get copyWith => throw _privateConstructorUsedError;
 }
