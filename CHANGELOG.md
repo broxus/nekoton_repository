@@ -3,6 +3,107 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## 2023-10-26
+
+### Changes
+
+---
+
+Packages with breaking changes:
+
+ - [`nekoton_repository` - `v0.27.0`](#nekoton_repository---v0270)
+
+Packages with other changes:
+
+ - There are no other changes in this release.
+
+---
+
+#### `nekoton_repository` - `v0.27.0`
+
+ - **REFACTOR**: updateClockOffset takes Duration instead of int (#86).
+ - **FIX**: add GenericContract to NekotonRepository (#65).
+ - **FIX**: removing seed name (#82).
+ - **FIX**: add keys sorting by accound id (#80).
+ - **FIX**: contract state changed stream (#74).
+ - **FIX**: added loading accounts after transport changed (#77).
+ - **FIX**: update props for seed (#12).
+ - **FIX**: change interface to pure class (#26).
+ - **FIX**: deleting pending transaction (#28).
+ - **FIX**: update adding seed with name (#64).
+ - **FIX**: allow subscribing multiple tokens at time (#90).
+ - **FEAT**: add seed list change hooks (#66).
+ - **FEAT**: update bridge, add staking info, add updating contracts after transport changed (#68).
+ - **FEAT**: add send unawaited version (#70).
+ - **FEAT**: implement GenericContractRepository (#61).
+ - **FEAT**: update bridge and replace jrpc transport (#59).
+ - **FEAT**: update mapping external accounts (#58).
+ - **FEAT**: update TonWalletMultisigPendingTransaction (#56).
+ - **FEAT**: update subscriptions. Add TonWallet test. Add TokenWallet test (#53).
+ - **FEAT**: update transaction fields (#43).
+ - **FEAT**: update token wallet (#39).
+ - **FEAT**: add logging subscriptions (#37).
+ - **FEAT**: add local custodians getter (#35).
+ - **FEAT**: replace Fixed to BigInt (#34).
+ - **FEAT**: seed detail (#4).
+ - **FEAT**: add registering currency after transport update (#30).
+ - **FEAT**: bump bridge version (#72).
+ - **FEAT**: revert JRPC (#75).
+ - **FEAT**: add transactions mapping (#24).
+ - **FEAT**: add TokenWalletRepository (#23).
+ - **FEAT**: add TonWalletRepository (#22).
+ - **FEAT**: use flutter templates repository (#21).
+ - **FEAT**: add seed names to Seed instance (#7).
+ - **FEAT**: clear nekoton directly (#15).
+ - **FEAT**: ntp time (#84).
+ - **FEAT**: add rename method to Seed (#10).
+ - **FEAT**: add cancellable operation (#32).
+ - **BREAKING** **REFACTOR**: add PublicKey and Address dataclasses (#14).
+
+## 0.27.0
+
+> Note: This release has breaking changes.
+
+ - **REFACTOR**: updateClockOffset takes Duration instead of int (#86).
+ - **FIX**: add GenericContract to NekotonRepository (#65).
+ - **FIX**: removing seed name (#82).
+ - **FIX**: add keys sorting by accound id (#80).
+ - **FIX**: contract state changed stream (#74).
+ - **FIX**: added loading accounts after transport changed (#77).
+ - **FIX**: update props for seed (#12).
+ - **FIX**: change interface to pure class (#26).
+ - **FIX**: deleting pending transaction (#28).
+ - **FIX**: update adding seed with name (#64).
+ - **FIX**: allow subscribing multiple tokens at time (#90).
+ - **FEAT**: add seed list change hooks (#66).
+ - **FEAT**: update bridge, add staking info, add updating contracts after transport changed (#68).
+ - **FEAT**: add send unawaited version (#70).
+ - **FEAT**: implement GenericContractRepository (#61).
+ - **FEAT**: update bridge and replace jrpc transport (#59).
+ - **FEAT**: update mapping external accounts (#58).
+ - **FEAT**: update TonWalletMultisigPendingTransaction (#56).
+ - **FEAT**: update subscriptions. Add TonWallet test. Add TokenWallet test (#53).
+ - **FEAT**: update transaction fields (#43).
+ - **FEAT**: update token wallet (#39).
+ - **FEAT**: add logging subscriptions (#37).
+ - **FEAT**: add local custodians getter (#35).
+ - **FEAT**: replace Fixed to BigInt (#34).
+ - **FEAT**: seed detail (#4).
+ - **FEAT**: add registering currency after transport update (#30).
+ - **FEAT**: bump bridge version (#72).
+ - **FEAT**: revert JRPC (#75).
+ - **FEAT**: add transactions mapping (#24).
+ - **FEAT**: add TokenWalletRepository (#23).
+ - **FEAT**: add TonWalletRepository (#22).
+ - **FEAT**: use flutter templates repository (#21).
+ - **FEAT**: add seed names to Seed instance (#7).
+ - **FEAT**: clear nekoton directly (#15).
+ - **FEAT**: ntp time (#84).
+ - **FEAT**: add rename method to Seed (#10).
+ - **FEAT**: add cancellable operation (#32).
+ - **BREAKING** **REFACTOR**: add PublicKey and Address dataclasses (#14).
+
+
 ## 2023-10-06
 
 ### Changes
