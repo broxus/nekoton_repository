@@ -16,23 +16,32 @@ abstract class TonWalletRepository {
   ///
   /// !!! You do not need to refresh wallet directly after subscribing, because
   /// it will load its state during creation.
-  Future<TonWallet> subscribe(TonWalletAsset asset);
+  Future<TonWalletState> subscribe(TonWalletAsset asset);
 
   /// Subscribe to TonWallet by its address and return its instance.
   /// This calls [TonWallet.subscribeByAddress].
   ///
   /// !!! You do not need to refresh wallet directly after subscribing, because
   /// it will load its state during creation.
-  Future<TonWallet> subscribeByAddress(Address address);
+  Future<TonWalletState> subscribeByAddress(Address address);
 
   /// Subscribe to TonWallet by its info and return its instance.
   /// This calls [TonWallet.subscribeByExistingWallet].
   ///
   /// !!! You do not need to refresh wallet directly after subscribing, because
   /// it will load its state during creation.
-  Future<TonWallet> subscribeByExistingWallet(
+  Future<TonWalletState> subscribeByExistingWallet(
     ExistingWalletInfo existingWallet,
   );
+
+  /// If creating of subscription was failed and [TonWalletState] contains
+  /// error, then you can call this method to try to update this subscription.
+  ///
+  /// If subscription creates successfully, then it will update cache & stream.
+  ///
+  /// If the asset with [address] won't be found, then method provides
+  /// error state to stream.
+  Future<void> retrySubscriptions(Address address);
 
   /// Start polling for wallet state updates by its address.
   ///
@@ -41,6 +50,9 @@ abstract class TonWalletRepository {
   ///
   /// If you really need update wallet's state, you can call [TonWallet.refresh]
   /// directly, but for real polling, you must use this method.
+  ///
+  /// If [TonWalletState.wallet] was null (wallet was not created), polling
+  /// will be ignored.
   ///
   /// [refreshInterval] - time to poll requests, default
   ///   [tonWalletRefreshInterval].
@@ -187,7 +199,7 @@ abstract class TonWalletRepository {
   /// or [subscribeByExistingWallet].
   /// This method will throw error if there is no wallet that had been added
   /// before.
-  TonWallet getWallet(Address address);
+  TonWalletState getWallet(Address address);
 
   /// Get list of custodians for TonWallet with [address] that were added
   /// to application before.
