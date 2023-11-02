@@ -13,10 +13,19 @@ abstract class TokenWalletRepository {
   ///
   /// !!! You do not need to refresh wallet directly after subscribing, because
   /// it will load its state during creation.
-  Future<TokenWallet> subscribeToken({
+  Future<TokenWalletState> subscribeToken({
     required Address owner,
     required Address rootTokenContract,
   });
+
+  /// If creating of subscription was failed and [TokenWalletState] contains
+  /// error, then you can call this method to try to update this subscription.
+  ///
+  /// If subscription creates successfully, then it will update cache & stream.
+  ///
+  /// If the asset with [owner] and [rootTokenContract] won't be found, then
+  /// method provides error state to stream.
+  Future<void> retryTokenSubscription(Address owner, Address rootTokenContract);
 
   /// Start polling for wallet state updates by its address.
   ///
@@ -26,6 +35,9 @@ abstract class TokenWalletRepository {
   /// If you really need update wallet's state, you can call
   /// [TokenWallet.refresh].
   /// directly, but for real polling, you must use this method.
+  ///
+  /// If [TokenWalletState.wallet] was null (wallet was not created), polling
+  /// will be ignored.
   ///
   /// [refreshInterval] - time to poll requests, default
   ///   [tonWalletRefreshInterval].
@@ -103,7 +115,7 @@ abstract class TokenWalletRepository {
   /// Get instance of wallet that was added by [subscribeToken].
   /// This method will throw error if there is no wallet that had been added
   /// before.
-  TokenWallet getTokenWallet(Address owner, Address rootTokenContract);
+  TokenWalletState getTokenWallet(Address owner, Address rootTokenContract);
 
   /// Map list of transactions for TokenWallet to list of
   /// [TokenWalletOrdinaryTransaction].

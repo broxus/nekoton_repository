@@ -18,7 +18,7 @@ mixin TokenWalletRepositoryImpl implements TokenWalletRepository {
   /// Subject that allows listening for wallets subscribing/unsubscribing
   /// Key - pair where first item is owner address, second is rootTokenContract
   final _tokenWalletsSubject =
-      BehaviorSubject<Map<(Address, Address), TokenWallet>>.seeded({});
+      BehaviorSubject<Map<(Address, Address), TokenWalletState>>.seeded({});
 
   /// How many tokens can be subscribed at time for one cycle in
   /// [TokenWalletRepositoryImpl._updateTokenSubscriptionsPairs].
@@ -60,15 +60,15 @@ mixin TokenWalletRepositoryImpl implements TokenWalletRepository {
       <(Address, Address), TokenWalletSubscription>{};
 
   /// Listen for wallets subscribing/unsubscribing
-  Stream<List<TokenWallet>> get tokenWalletsStream =>
+  Stream<List<TokenWalletState>> get tokenWalletsStream =>
       _tokenWalletsSubject.stream.map((e) => e.values.toList());
 
   /// Get current available subscriptions for wallets
-  List<TokenWallet> get tokenWallets =>
+  List<TokenWalletState> get tokenWallets =>
       _tokenWalletsSubject.value.values.toList();
 
   /// Get current available subscriptions for wallets as map
-  Map<(Address, Address), TokenWallet> get tokenWalletsMap =>
+  Map<(Address, Address), TokenWalletState> get tokenWalletsMap =>
       _tokenWalletsSubject.value;
 
   /// Queues for polling active wallets.
@@ -80,7 +80,7 @@ mixin TokenWalletRepositoryImpl implements TokenWalletRepository {
   final tokenPollingQueues = <(Address, Address), RefreshPollingQueue>{};
 
   @override
-  Future<TokenWallet> subscribeToken({
+  Future<TokenWalletState> subscribeToken({
     required Address owner,
     required Address rootTokenContract,
   }) async {
@@ -93,6 +93,34 @@ mixin TokenWalletRepositoryImpl implements TokenWalletRepository {
     );
 
     return addTokenWalletInst(wallet);
+  }
+
+  @override
+  Future<void> retryTokenSubscription(
+    Address owner,
+    Address rootTokenContract,
+  ) async {
+    final asset = lastUpdatedTokenAssets
+        ?.map(
+          (e) => e.additionalAssets[lastUpdatedNetworkGroup]?.tokenWallets
+              .map((el) => (e.tonWallet.address, el.rootTokenContract)),
+        )
+        .whereNotNull()
+        .expand((e) => e)
+        .firstWhereOrNull((e) => e.$1 == owner && e.$2 == rootTokenContract);
+
+    if (asset == null) {
+      tokenWalletsMap[(owner, rootTokenContract)] = TokenWalletState.error(
+        err: TokenWalletRetrySubscriptionMissedAsset(),
+        owner: owner,
+        rootTokenContract: rootTokenContract,
+      );
+      _tokenWalletsSubject.add(tokenWalletsMap);
+
+      return;
+    }
+
+    return _subscribeTokenAsset(asset);
   }
 
   @override
@@ -115,7 +143,9 @@ mixin TokenWalletRepositoryImpl implements TokenWalletRepository {
       stopPollingToken();
     }
 
-    final wallet = getTokenWallet(owner, rootTokenContract);
+    final wallet = getTokenWallet(owner, rootTokenContract).wallet;
+    if (wallet == null) return;
+
     tokenPollingQueues[pair] = RefreshPollingQueue(
       refreshInterval: refreshInterval,
       refresher: wallet,
@@ -134,7 +164,7 @@ mixin TokenWalletRepositoryImpl implements TokenWalletRepository {
   void unsubscribeToken(Address owner, Address rootTokenContract) {
     final wallet = removeTokenWalletInst(owner, rootTokenContract);
     tokenPollingQueues.remove((owner, rootTokenContract))?.stopPolling();
-    wallet?.dispose();
+    wallet?.wallet?.dispose();
   }
 
   @override
@@ -142,7 +172,7 @@ mixin TokenWalletRepositoryImpl implements TokenWalletRepository {
     stopPollingToken();
 
     for (final wallet in tokenWallets) {
-      wallet.dispose();
+      wallet.wallet?.dispose();
     }
 
     _tokenWalletsSubject.add({});
@@ -180,7 +210,7 @@ mixin TokenWalletRepositoryImpl implements TokenWalletRepository {
     List<(Address, Address)> newWallets,
   ) async {
     final toSubscribe = <(Address, Address)>[];
-    final toUnsubscribe = <TokenWallet>[];
+    final toUnsubscribe = <TokenWalletState>[];
 
     // Stop last created operation if possible
     final oldOperation = _lastOperation;
@@ -215,18 +245,7 @@ mixin TokenWalletRepositoryImpl implements TokenWalletRepository {
       final parts = partition(toSubscribe, tokenSubscribeAtTimeAmount);
 
       for (final part in parts) {
-        await Future.wait(
-          part.map((wallet) async {
-            try {
-              await subscribeToken(
-                owner: wallet.$1,
-                rootTokenContract: wallet.$2,
-              );
-            } catch (e, t) {
-              _logger.severe('_updateTokenSubscriptionsPairs', e, t);
-            }
-          }),
-        );
+        await Future.wait(part.map(_subscribeTokenAsset));
 
         // Make this pseudo event to allow other operations in event loop
         // to be executed
@@ -240,6 +259,26 @@ mixin TokenWalletRepositoryImpl implements TokenWalletRepository {
     _lastOperation = operation;
 
     await operation.valueOrCancellation();
+  }
+
+  Future<void> _subscribeTokenAsset((Address, Address) wallet) async {
+    try {
+      await subscribeToken(
+        owner: wallet.$1,
+        rootTokenContract: wallet.$2,
+      );
+    } catch (e, t) {
+      _logger.severe('_subscribeTokenAsset', e, t);
+
+      // Save error state of wallet
+      final res = TokenWalletState.error(
+        err: e,
+        owner: wallet.$1,
+        rootTokenContract: wallet.$2,
+      );
+      tokenWalletsMap[wallet] = res;
+      _tokenWalletsSubject.add(tokenWalletsMap);
+    }
   }
 
   @override
@@ -283,7 +322,9 @@ mixin TokenWalletRepositoryImpl implements TokenWalletRepository {
     BigInt? attachedAmount,
     String? payload,
   }) async {
-    final tokenWallet = getTokenWallet(owner, rootTokenContract);
+    final tokenWallet = getTokenWallet(owner, rootTokenContract).wallet;
+
+    if (tokenWallet == null) throw TokenWalletStateNotInitializedException();
 
     return tokenWallet.prepareTransfer(
       destination: destination,
@@ -300,17 +341,19 @@ mixin TokenWalletRepositoryImpl implements TokenWalletRepository {
     required Address rootTokenContract,
     required String fromLt,
   }) {
-    final tokenWallet = getTokenWallet(owner, rootTokenContract);
+    final tokenWallet = getTokenWallet(owner, rootTokenContract).wallet;
+
+    if (tokenWallet == null) throw TokenWalletStateNotInitializedException();
 
     return tokenWallet.preloadTransactions(fromLt: fromLt);
   }
 
   @override
-  TokenWallet getTokenWallet(Address owner, Address rootTokenContract) {
+  TokenWalletState getTokenWallet(Address owner, Address rootTokenContract) {
     final wallet = tokenWalletsMap[(owner, rootTokenContract)];
     if (wallet == null) {
       throw Exception(
-        'TokenWallet ($owner, $rootTokenContract) not found',
+        'TokenWalletState ($owner, $rootTokenContract) not found',
       );
     }
 
@@ -321,21 +364,25 @@ mixin TokenWalletRepositoryImpl implements TokenWalletRepository {
   /// You must not call this method directly form app, use [subscribeToken].
   @protected
   @visibleForTesting
-  TokenWallet addTokenWalletInst(TokenWallet wallet) {
+  TokenWalletState addTokenWalletInst(TokenWallet wallet) {
     final wallets = tokenWalletsMap;
     final pair = (wallet.owner, wallet.rootTokenContract);
-    wallets[pair] = wallet;
+    final res = TokenWalletState.wallet(wallet);
+    wallets[pair] = res;
     tokenWalletSubscriptions[pair] = _createWalletSubscription(wallet);
     _tokenWalletsSubject.add(wallets);
 
-    return wallet;
+    return res;
   }
 
   /// This is internal method to remove wallet from cache.
   /// You must not call this method directly form app, use [unsubscribeToken].
   @protected
   @visibleForTesting
-  TokenWallet? removeTokenWalletInst(Address owner, Address rootTokenContract) {
+  TokenWalletState? removeTokenWalletInst(
+    Address owner,
+    Address rootTokenContract,
+  ) {
     final wallets = tokenWalletsMap;
     final pair = (owner, rootTokenContract);
     final wallet = wallets.remove(pair);

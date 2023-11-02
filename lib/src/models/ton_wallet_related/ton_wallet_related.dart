@@ -5,4 +5,5 @@ export 'ton_wallet_multisig_ordinary_transaction.dart';
 export 'ton_wallet_multisig_pending_transaction.dart';
 export 'ton_wallet_ordinary_transaction.dart';
 export 'ton_wallet_pending_transaction.dart';
+export 'ton_wallet_state.dart';
 export 'ton_wallet_subscription.dart';

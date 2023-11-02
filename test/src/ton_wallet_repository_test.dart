@@ -196,7 +196,7 @@ void main() {
 
       repository.addWalletInst(wallet);
 
-      expect(repository.walletsMap[address], wallet);
+      expect(repository.walletsMap[address]?.wallet, wallet);
       expect(repository.walletSubscriptions[address], isNotNull);
 
       verify(() => wallet.onMessageExpiredStream).called(1);
@@ -219,7 +219,7 @@ void main() {
         ..addWalletInst(wallet)
         ..removeWalletInst(address);
 
-      expect(repository.walletsMap[address], isNull);
+      expect(repository.walletsMap[address]?.wallet, isNull);
       expect(repository.walletSubscriptions[address], isNull);
     });
 
@@ -247,7 +247,7 @@ void main() {
         ..addWalletInst(wallet)
         ..unsubscribe(address);
 
-      expect(repository.walletsMap[address], isNull);
+      expect(repository.walletsMap[address]?.wallet, isNull);
       expect(repository.walletSubscriptions[address], isNull);
       expect(repository.pollingQueues[address], isNull);
       expect(poller.isPolling, isFalse);
@@ -522,7 +522,7 @@ void main() {
       verify(() => wallet.handleBlock(block: block)).called(1);
 
       expect(transactionResult, transaction);
-      expect(repository.walletsMap[address], isNotNull);
+      expect(repository.walletsMap[address]?.wallet, isNotNull);
       expect(repository.walletSubscriptions[address], isNotNull);
       expect(repository.pollingQueues[address], isNotNull);
       expect(oldPoller.isPolling, isTrue);
@@ -635,7 +635,7 @@ void main() {
       verifyNever(() => gql.getBlock(id: nextBlockId));
       verifyNever(() => wallet.handleBlock(block: block));
 
-      expect(repository.walletsMap[address], isNotNull);
+      expect(repository.walletsMap[address]?.wallet, isNotNull);
       expect(repository.walletSubscriptions[address], isNotNull);
       expect(repository.pollingQueues[address], isNotNull);
       expect(oldPoller.isPolling, isTrue);
@@ -736,7 +736,7 @@ void main() {
       verify(() => wallet.refresh()).called(1);
 
       expect(transactionResult, transaction);
-      expect(repository.walletsMap[address], isNotNull);
+      expect(repository.walletsMap[address]?.wallet, isNotNull);
       expect(repository.walletSubscriptions[address], isNotNull);
       expect(repository.pollingQueues[address], isNull);
     });
@@ -829,7 +829,7 @@ void main() {
       // refresh flow
       verify(() => wallet.refresh()).called(1);
 
-      expect(repository.walletsMap[address], isNotNull);
+      expect(repository.walletsMap[address]?.wallet, isNotNull);
       expect(repository.walletSubscriptions[address], isNotNull);
       expect(repository.pollingQueues[address], isNull);
     });
@@ -929,7 +929,7 @@ void main() {
       verify(() => wallet.refresh()).called(1);
 
       expect(transactionResult, transaction);
-      expect(repository.walletsMap[address], isNotNull);
+      expect(repository.walletsMap[address]?.wallet, isNotNull);
       expect(repository.walletSubscriptions[address], isNotNull);
       expect(repository.pollingQueues[address], isNull);
     });
@@ -1022,7 +1022,7 @@ void main() {
       // refresh flow
       verify(() => wallet.refresh()).called(1);
 
-      expect(repository.walletsMap[address], isNotNull);
+      expect(repository.walletsMap[address]?.wallet, isNotNull);
       expect(repository.walletSubscriptions[address], isNotNull);
       expect(repository.pollingQueues[address], isNull);
     });
@@ -1253,6 +1253,134 @@ void main() {
       expect(repository.wallets.length, 2);
     });
 
+    test('updateSubscriptions with failed subscribe of one wallet', () async {
+      mockWrapper(bridge);
+      when(() => wallet.onMessageExpiredStream)
+          .thenAnswer((_) => expiredStream);
+      when(() => wallet.onMessageSentStream)
+          .thenAnswer((_) => messageSentStream);
+      when(() => wallet.onTransactionsFoundStream)
+          .thenAnswer((_) => transactionsFoundStream);
+      when(() => wallet.onStateChangedStream).thenAnswer((_) => stateStream);
+
+      when(() => transport.transport).thenReturn(proto);
+      when(() => wallet.address).thenReturn(multisigAddress);
+      when(() => proto.transportBox).thenReturn(box);
+
+      when(
+        () => bridge.subscribeStaticMethodTonWalletDartWrapper(
+          publicKey: any(named: 'publicKey'),
+          instanceHash: any(named: 'instanceHash'),
+          transport: any(named: 'transport'),
+          walletType: any(named: 'walletType'),
+          workchainId: any(named: 'workchainId'),
+        ),
+      ).thenAnswer((call) {
+        if (call.namedArguments[const Symbol('walletType')] ==
+            jsonEncode(asset1.contract.toJson())) {
+          return Future.value(tonWrapper1);
+        }
+        return throwError();
+      });
+      mockTonWallet(tonWrapper1, asset1);
+      mockTonWallet(tonWrapper2, asset2);
+
+      await repository.updateSubscriptions([asset1, asset2]);
+
+      final wallets = repository.wallets;
+
+      expect(wallets.length, 2);
+      expect(wallets.where((e) => e.hasError).length, 1);
+      expect(wallets.where((e) => e.hasWallet).length, 1);
+    });
+
+    test('retrySubscriptions successfully', () async {
+      mockWrapper(bridge);
+      when(() => wallet.onMessageExpiredStream)
+          .thenAnswer((_) => expiredStream);
+      when(() => wallet.onMessageSentStream)
+          .thenAnswer((_) => messageSentStream);
+      when(() => wallet.onTransactionsFoundStream)
+          .thenAnswer((_) => transactionsFoundStream);
+      when(() => wallet.onStateChangedStream).thenAnswer((_) => stateStream);
+
+      when(() => transport.transport).thenReturn(proto);
+      when(() => wallet.address).thenReturn(multisigAddress);
+      when(() => proto.transportBox).thenReturn(box);
+
+      when(
+        () => bridge.subscribeStaticMethodTonWalletDartWrapper(
+          publicKey: any(named: 'publicKey'),
+          instanceHash: any(named: 'instanceHash'),
+          transport: any(named: 'transport'),
+          walletType: any(named: 'walletType'),
+          workchainId: any(named: 'workchainId'),
+        ),
+      ).thenAnswer((_) => throwError());
+      mockTonWallet(tonWrapper1, asset1);
+
+      await repository.updateSubscriptions([asset1]);
+
+      var wallets = repository.wallets;
+
+      expect(wallets.length, 1);
+      expect(wallets.where((e) => e.hasError).length, 1);
+
+      when(
+        () => bridge.subscribeStaticMethodTonWalletDartWrapper(
+          publicKey: any(named: 'publicKey'),
+          instanceHash: any(named: 'instanceHash'),
+          transport: any(named: 'transport'),
+          walletType: any(named: 'walletType'),
+          workchainId: any(named: 'workchainId'),
+        ),
+      ).thenAnswer((_) => Future.value(tonWrapper1));
+
+      await repository.retrySubscriptions(asset1.address);
+
+      wallets = repository.wallets;
+
+      expect(wallets.length, 1);
+      expect(wallets.where((e) => e.hasWallet).length, 1);
+    });
+
+    test('retrySubscriptions no cached asset', () async {
+      mockWrapper(bridge);
+      when(() => wallet.onMessageExpiredStream)
+          .thenAnswer((_) => expiredStream);
+      when(() => wallet.onMessageSentStream)
+          .thenAnswer((_) => messageSentStream);
+      when(() => wallet.onTransactionsFoundStream)
+          .thenAnswer((_) => transactionsFoundStream);
+      when(() => wallet.onStateChangedStream).thenAnswer((_) => stateStream);
+
+      when(() => transport.transport).thenReturn(proto);
+      when(() => wallet.address).thenReturn(multisigAddress);
+      when(() => proto.transportBox).thenReturn(box);
+
+      when(
+        () => bridge.subscribeStaticMethodTonWalletDartWrapper(
+          publicKey: any(named: 'publicKey'),
+          instanceHash: any(named: 'instanceHash'),
+          transport: any(named: 'transport'),
+          walletType: any(named: 'walletType'),
+          workchainId: any(named: 'workchainId'),
+        ),
+      ).thenAnswer((_) => throwError());
+      mockTonWallet(tonWrapper1, asset1);
+
+      await repository.retrySubscriptions(asset1.address);
+
+      final wallets = repository.wallets;
+
+      expect(wallets.length, 1);
+      expect(wallets.where((e) => e.hasError).length, 1);
+      expect(
+        wallets.first.error is TonWalletRetrySubscriptionMissedAsset,
+        isTrue,
+      );
+    });
+
     test('updateSubscriptions with expanding assets list', () async {
       mockWrapper(bridge);
       when(() => wallet.onMessageExpiredStream)
@@ -1348,8 +1476,10 @@ void main() {
       mockTonWallet(tonWrapper1, asset1);
       mockTonWallet(tonWrapper2, asset2);
 
-      repository.walletsMap[asset1.address] = wallet;
-      repository.walletsMap[asset2.address] = wallet;
+      final state = TonWalletState.wallet(wallet);
+
+      repository.walletsMap[asset1.address] = state;
+      repository.walletsMap[asset2.address] = state;
       repository.lastUpdatedAssets = [asset1, asset2];
       await repository.updateTransportSubscriptions();
 

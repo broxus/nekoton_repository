@@ -134,6 +134,12 @@ void main() {
     transactionsFoundStream = const Stream.empty();
   });
 
+  /// We must use this method except of thenThrow because it will broke
+  /// awaiting of refresh method. THIS IS SOME BUG IDK HOW TO FIX IT
+  Future<T> throwError<T>() async {
+    throw Exception('ERROR');
+  }
+
   group('TonWalletRepository', () {
     test('addWallet', () {
       when(() => wallet.onBalanceChangedStream)
@@ -145,7 +151,7 @@ void main() {
 
       repository.addTokenWalletInst(wallet);
 
-      expect(repository.tokenWalletsMap[(owner, root1)], wallet);
+      expect(repository.tokenWalletsMap[(owner, root1)]!.wallet, wallet);
       expect(repository.tokenWalletSubscriptions[(owner, root1)], isNotNull);
 
       verify(() => wallet.onBalanceChangedStream).called(1);
@@ -164,7 +170,7 @@ void main() {
         ..addTokenWalletInst(wallet)
         ..removeTokenWalletInst(owner, root1);
 
-      expect(repository.tokenWalletsMap[(owner, root1)], isNull);
+      expect(repository.tokenWalletsMap[(owner, root1)]?.wallet, isNull);
       expect(repository.tokenWalletSubscriptions[(owner, root1)], isNull);
     });
 
@@ -344,6 +350,126 @@ void main() {
       expect(Currencies()[symbol2.name], isNotNull);
     });
 
+    test('updateTokenSubscriptions with failed subscribe of one token',
+        () async {
+      mockWrapper(bridge);
+      when(() => wallet.onBalanceChangedStream)
+          .thenAnswer((_) => balanceStream);
+      when(() => wallet.onTransactionsFoundStream)
+          .thenAnswer((_) => transactionsFoundStream);
+      when(() => wallet.owner).thenReturn(owner);
+      when(() => wallet.rootTokenContract).thenReturn(root1);
+
+      when(() => transport.transport).thenReturn(proto);
+      when(() => proto.transportBox).thenReturn(box);
+      when(() => proto.group).thenReturn(transportGroup);
+
+      when(
+        () => bridge.subscribeStaticMethodTokenWalletDartWrapper(
+          instanceHash: any(named: 'instanceHash'),
+          transport: any(named: 'transport'),
+          rootTokenContract: any(named: 'rootTokenContract'),
+          owner: any(named: 'owner'),
+        ),
+      ).thenAnswer((call) {
+        if (call.namedArguments[const Symbol('rootTokenContract')] ==
+            root1.address) {
+          return Future.value(tokenWrapper1);
+        }
+        return throwError();
+      });
+      mockTokenWallet(tokenWrapper1, asset1, symbol1);
+      mockTokenWallet(tokenWrapper2, asset2, symbol2);
+
+      await repository.updateTokenSubscriptions([assetsBoth]);
+
+      final wallets = repository.tokenWallets;
+
+      expect(wallets.length, 2);
+      expect(wallets.where((e) => e.hasError).length, 1);
+      expect(wallets.where((e) => e.hasWallet).length, 1);
+    });
+
+    test('retrySubscriptions successfully', () async {
+      mockWrapper(bridge);
+      when(() => wallet.onBalanceChangedStream)
+          .thenAnswer((_) => balanceStream);
+      when(() => wallet.onTransactionsFoundStream)
+          .thenAnswer((_) => transactionsFoundStream);
+      when(() => wallet.owner).thenReturn(owner);
+      when(() => wallet.rootTokenContract).thenReturn(root1);
+
+      when(() => transport.transport).thenReturn(proto);
+      when(() => proto.transportBox).thenReturn(box);
+      when(() => proto.group).thenReturn(transportGroup);
+
+      when(
+        () => bridge.subscribeStaticMethodTokenWalletDartWrapper(
+          instanceHash: any(named: 'instanceHash'),
+          transport: any(named: 'transport'),
+          rootTokenContract: any(named: 'rootTokenContract'),
+          owner: any(named: 'owner'),
+        ),
+      ).thenAnswer((_) => throwError());
+      mockTokenWallet(tokenWrapper1, asset1, symbol1);
+
+      await repository.updateTokenSubscriptions([assetsSingle]);
+
+      expect(repository.tokenWallets.length, 1);
+
+      when(
+        () => bridge.subscribeStaticMethodTokenWalletDartWrapper(
+          instanceHash: any(named: 'instanceHash'),
+          transport: any(named: 'transport'),
+          rootTokenContract: any(named: 'rootTokenContract'),
+          owner: any(named: 'owner'),
+        ),
+      ).thenAnswer((_) => Future.value(tokenWrapper1));
+
+      await repository.retryTokenSubscription(owner, asset1.rootTokenContract);
+
+      final wallets = repository.tokenWallets;
+
+      expect(wallets.length, 1);
+      expect(wallets.where((e) => e.hasWallet).length, 1);
+      expect(Currencies()[symbol1.name], isNotNull);
+    });
+
+    test('retrySubscriptions no cached asset', () async {
+      mockWrapper(bridge);
+      when(() => wallet.onBalanceChangedStream)
+          .thenAnswer((_) => balanceStream);
+      when(() => wallet.onTransactionsFoundStream)
+          .thenAnswer((_) => transactionsFoundStream);
+      when(() => wallet.owner).thenReturn(owner);
+      when(() => wallet.rootTokenContract).thenReturn(root1);
+
+      when(() => transport.transport).thenReturn(proto);
+      when(() => proto.transportBox).thenReturn(box);
+      when(() => proto.group).thenReturn(transportGroup);
+
+      when(
+        () => bridge.subscribeStaticMethodTokenWalletDartWrapper(
+          instanceHash: any(named: 'instanceHash'),
+          transport: any(named: 'transport'),
+          rootTokenContract: any(named: 'rootTokenContract'),
+          owner: any(named: 'owner'),
+        ),
+      ).thenAnswer((_) => throwError());
+      mockTokenWallet(tokenWrapper1, asset1, symbol1);
+
+      await repository.retryTokenSubscription(owner, asset1.rootTokenContract);
+
+      final wallets = repository.tokenWallets;
+
+      expect(wallets.length, 1);
+      expect(wallets.where((e) => e.hasError).length, 1);
+      expect(
+        wallets.first.error is TokenWalletRetrySubscriptionMissedAsset,
+        isTrue,
+      );
+    });
+
     test('updateTokenSubscriptions with expanding assets list', () async {
       mockWrapper(bridge);
       when(() => wallet.onBalanceChangedStream)
@@ -429,8 +555,10 @@ void main() {
       mockTokenWallet(tokenWrapper1, asset1, symbol1);
       mockTokenWallet(tokenWrapper2, asset2, symbol2);
 
-      repository.tokenWalletsMap[(owner, root1)] = wallet;
-      repository.tokenWalletsMap[(owner, root2)] = wallet;
+      final state = TokenWalletState.wallet(wallet);
+
+      repository.tokenWalletsMap[(owner, root1)] = state;
+      repository.tokenWalletsMap[(owner, root2)] = state;
       repository
         ..lastUpdatedNetworkGroup = transportGroup
         ..lastUpdatedTokenAssets = [assetsBoth];
