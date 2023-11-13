@@ -377,6 +377,7 @@ void main() {
       origStatus: AccountStatus.active,
       endStatus: AccountStatus.active,
       totalFees: amount,
+      boc: '',
       inMessage: Message(
         hash: 'messageHash',
         value: amount,

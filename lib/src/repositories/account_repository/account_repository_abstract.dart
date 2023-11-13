@@ -41,9 +41,21 @@ abstract class AccountRepository {
     required Address rootTokenContract,
   });
 
+  /// Add list of tokens to [address] with [rootTokenContracts].
+  Future<void> addTokenWallets({
+    required Address address,
+    required List<Address> rootTokenContracts,
+  });
+
   /// Remove token with [rootTokenContract] from [address].
   Future<void> removeTokenWallet({
     required Address address,
     required Address rootTokenContract,
+  });
+
+  /// Remove list of tokens with [rootTokenContracts] from [address].
+  Future<void> removeTokenWallets({
+    required Address address,
+    required List<Address> rootTokenContracts,
   });
 }
