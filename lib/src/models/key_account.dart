@@ -31,11 +31,25 @@ class KeyAccount extends KeyAccountBase {
         rootTokenContract: rootTokenContract,
       );
 
+  /// Add list of tokens to account
+  Future<void> addTokenWallets(List<Address> rootTokenContracts) =>
+      GetIt.instance<AccountRepository>().addTokenWallets(
+        address: account.address,
+        rootTokenContracts: rootTokenContracts,
+      );
+
   /// Remove token from this account
   Future<void> removeTokenWallet(Address rootTokenContract) =>
       GetIt.instance<AccountRepository>().removeTokenWallet(
         address: account.address,
         rootTokenContract: rootTokenContract,
+      );
+
+  /// Remove list of tokens from account
+  Future<void> removeTokenWallets(List<Address> rootTokenContracts) =>
+      GetIt.instance<AccountRepository>().removeTokenWallets(
+        address: account.address,
+        rootTokenContracts: rootTokenContracts,
       );
 
   /// Change name of this account to [newName].
