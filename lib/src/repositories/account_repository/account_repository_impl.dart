@@ -165,6 +165,17 @@ mixin AccountRepositoryImpl on TransportRepository
       );
 
   @override
+  Future<void> addTokenWallets({
+    required Address address,
+    required List<Address> rootTokenContracts,
+  }) =>
+      accountsStorage.addTokenWallets(
+        address: address,
+        rootTokenContracts: rootTokenContracts,
+        networkGroup: currentTransport.transport.group,
+      );
+
+  @override
   Future<void> removeTokenWallet({
     required Address address,
     required Address rootTokenContract,
@@ -172,6 +183,16 @@ mixin AccountRepositoryImpl on TransportRepository
       accountsStorage.removeTokenWallet(
         address: address,
         rootTokenContract: rootTokenContract,
+        networkGroup: currentTransport.transport.group,
+      );
+  @override
+  Future<void> removeTokenWallets({
+    required Address address,
+    required List<Address> rootTokenContracts,
+  }) =>
+      accountsStorage.removeTokenWallets(
+        address: address,
+        rootTokenContracts: rootTokenContracts,
         networkGroup: currentTransport.transport.group,
       );
 }
