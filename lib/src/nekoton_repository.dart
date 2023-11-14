@@ -479,7 +479,7 @@ class NekotonRepository
   void _logHandler(fnb.LogEntry logEntry) {
     final logLevel = _toLogLevel(logEntry.level);
 
-    _log.log(logLevel, '${logEntry.tag}: ${logEntry.msg}');
+    _log.log(logLevel, '${logEntry.tag}: ${logEntry.msg}', logEntry.stack);
   }
 
   /// The main log level map
