@@ -30,6 +30,8 @@ mixin AccountRepositoryImpl on TransportRepository
     required Address address,
     String? name,
   }) async {
+    if (currentTransport.transport.disposed) return;
+
     final custodians = await TonWallet.getWalletCustodians(
       transport: currentTransport.transport,
       address: address,

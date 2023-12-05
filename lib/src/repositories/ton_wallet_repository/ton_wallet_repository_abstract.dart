@@ -16,6 +16,9 @@ abstract class TonWalletRepository {
   ///
   /// !!! You do not need to refresh wallet directly after subscribing, because
   /// it will load its state during creation.
+  ///
+  /// !!! If you call this method manually, be sure that transport is valid
+  /// checking it via [Transport.disposed].
   Future<TonWalletState> subscribe(TonWalletAsset asset);
 
   /// Subscribe to TonWallet by its address and return its instance.
@@ -23,6 +26,9 @@ abstract class TonWalletRepository {
   ///
   /// !!! You do not need to refresh wallet directly after subscribing, because
   /// it will load its state during creation.
+  ///
+  /// !!! If you call this method manually, be sure that transport is valid
+  /// checking it via [Transport.disposed].
   Future<TonWalletState> subscribeByAddress(Address address);
 
   /// Subscribe to TonWallet by its info and return its instance.
@@ -30,6 +36,9 @@ abstract class TonWalletRepository {
   ///
   /// !!! You do not need to refresh wallet directly after subscribing, because
   /// it will load its state during creation.
+  ///
+  /// !!! If you call this method manually, be sure that transport is valid
+  /// checking it via [Transport.disposed].
   Future<TonWalletState> subscribeByExistingWallet(
     ExistingWalletInfo existingWallet,
   );

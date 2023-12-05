@@ -262,6 +262,8 @@ mixin TokenWalletRepositoryImpl implements TokenWalletRepository {
   }
 
   Future<void> _subscribeTokenAsset((Address, Address) wallet) async {
+    if (currentTransport.transport.disposed) return;
+
     try {
       await subscribeToken(
         owner: wallet.$1,

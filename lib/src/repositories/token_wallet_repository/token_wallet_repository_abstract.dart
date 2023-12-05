@@ -13,6 +13,9 @@ abstract class TokenWalletRepository {
   ///
   /// !!! You do not need to refresh wallet directly after subscribing, because
   /// it will load its state during creation.
+  ///
+  /// !!! If you call this method manually, be sure that transport is valid
+  /// checking it via [Transport.disposed].
   Future<TokenWalletState> subscribeToken({
     required Address owner,
     required Address rootTokenContract,
