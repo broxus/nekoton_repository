@@ -322,6 +322,7 @@ void main() {
       when(() => wallet.rootTokenContract).thenReturn(root1);
 
       when(() => transport.transport).thenReturn(proto);
+      when(() => proto.disposed).thenReturn(false);
       when(() => proto.transportBox).thenReturn(box);
       when(() => proto.group).thenReturn(transportGroup);
 
@@ -361,6 +362,7 @@ void main() {
       when(() => wallet.rootTokenContract).thenReturn(root1);
 
       when(() => transport.transport).thenReturn(proto);
+      when(() => proto.disposed).thenReturn(false);
       when(() => proto.transportBox).thenReturn(box);
       when(() => proto.group).thenReturn(transportGroup);
 
@@ -400,6 +402,7 @@ void main() {
       when(() => wallet.rootTokenContract).thenReturn(root1);
 
       when(() => transport.transport).thenReturn(proto);
+      when(() => proto.disposed).thenReturn(false);
       when(() => proto.transportBox).thenReturn(box);
       when(() => proto.group).thenReturn(transportGroup);
 
@@ -480,6 +483,7 @@ void main() {
       when(() => wallet.rootTokenContract).thenReturn(root1);
 
       when(() => transport.transport).thenReturn(proto);
+      when(() => proto.disposed).thenReturn(false);
       when(() => proto.transportBox).thenReturn(box);
       when(() => proto.group).thenReturn(transportGroup);
 
@@ -535,6 +539,7 @@ void main() {
       when(() => wallet.rootTokenContract).thenReturn(root1);
 
       when(() => transport.transport).thenReturn(proto);
+      when(() => proto.disposed).thenReturn(false);
       when(() => proto.transportBox).thenReturn(box);
       when(() => proto.group).thenReturn(transportGroup);
 

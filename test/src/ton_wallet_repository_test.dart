@@ -1122,6 +1122,7 @@ void main() {
       );
 
       when(() => transport.transport).thenReturn(proto);
+      when(() => proto.disposed).thenReturn(false);
       when(() => keystore.keys).thenReturn([multisigKey1Entry]);
 
       final local = await repository.getLocalCustodiansAsync(multisigAddress);
@@ -1141,6 +1142,7 @@ void main() {
       );
 
       when(() => transport.transport).thenReturn(proto);
+      when(() => proto.disposed).thenReturn(false);
       when(() => keystore.keys)
           .thenReturn([multisigKey1Entry, multisigKey2Entry]);
 
@@ -1159,6 +1161,7 @@ void main() {
       ).thenAnswer((_) => Future.value([notMultisigKey.publicKey]));
 
       when(() => transport.transport).thenReturn(proto);
+      when(() => proto.disposed).thenReturn(false);
       when(() => keystore.keys).thenReturn([notMultisigKeyEntry]);
 
       final local =
@@ -1177,6 +1180,7 @@ void main() {
       ).thenAnswer((_) => Future.value([notMultisigKey.publicKey]));
 
       when(() => transport.transport).thenReturn(proto);
+      when(() => proto.disposed).thenReturn(false);
       when(() => keystore.keys).thenReturn([]);
 
       final local =
@@ -1228,6 +1232,7 @@ void main() {
       when(() => wallet.onStateChangedStream).thenAnswer((_) => stateStream);
 
       when(() => transport.transport).thenReturn(proto);
+      when(() => proto.disposed).thenReturn(false);
       when(() => wallet.address).thenReturn(multisigAddress);
       when(() => proto.transportBox).thenReturn(box);
 
@@ -1265,6 +1270,7 @@ void main() {
       when(() => wallet.onStateChangedStream).thenAnswer((_) => stateStream);
 
       when(() => transport.transport).thenReturn(proto);
+      when(() => proto.disposed).thenReturn(false);
       when(() => wallet.address).thenReturn(multisigAddress);
       when(() => proto.transportBox).thenReturn(box);
 
@@ -1306,6 +1312,7 @@ void main() {
       when(() => wallet.onStateChangedStream).thenAnswer((_) => stateStream);
 
       when(() => transport.transport).thenReturn(proto);
+      when(() => proto.disposed).thenReturn(false);
       when(() => wallet.address).thenReturn(multisigAddress);
       when(() => proto.transportBox).thenReturn(box);
 
@@ -1393,6 +1400,7 @@ void main() {
       when(() => wallet.onStateChangedStream).thenAnswer((_) => stateStream);
 
       when(() => transport.transport).thenReturn(proto);
+      when(() => proto.disposed).thenReturn(false);
       when(() => wallet.address).thenReturn(multisigAddress);
       when(() => proto.transportBox).thenReturn(box);
 
@@ -1450,6 +1458,7 @@ void main() {
       when(() => wallet.onStateChangedStream).thenAnswer((_) => stateStream);
 
       when(() => transport.transport).thenReturn(proto);
+      when(() => proto.disposed).thenReturn(false);
       when(() => wallet.address).thenReturn(multisigAddress);
       when(() => proto.transportBox).thenReturn(box);
       when(() => tokenRepository.closeAllTokenSubscriptions()).thenReturn(null);
