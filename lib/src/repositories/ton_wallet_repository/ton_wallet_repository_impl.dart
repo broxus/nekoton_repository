@@ -252,6 +252,8 @@ mixin TonWalletRepositoryImpl implements TonWalletRepository {
   }
 
   Future<void> _subscribeAsset(TonWalletAsset asset) async {
+    if (currentTransport.transport.disposed) return;
+
     try {
       await subscribe(asset);
     } catch (e, t) {
@@ -568,6 +570,8 @@ mixin TonWalletRepositoryImpl implements TonWalletRepository {
 
   @override
   Future<List<PublicKey>?> getLocalCustodiansAsync(Address address) async {
+    if (currentTransport.transport.disposed) return null;
+
     final custodians = await TonWallet.getWalletCustodians(
       transport: currentTransport.transport,
       address: address,

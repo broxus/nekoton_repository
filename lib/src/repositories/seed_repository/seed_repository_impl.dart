@@ -125,6 +125,8 @@ mixin SeedKeyRepositoryImpl on TransportRepository
     final transport = currentTransport;
 
     for (final key in publicKeys) {
+      if (transport.transport.disposed) return;
+
       final found = await TonWallet.findExistingWallets(
         transport: transport.transport,
         workchainId: defaultWorkchainId,

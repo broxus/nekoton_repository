@@ -15,6 +15,9 @@ abstract class GenericContractRepository {
   /// And [address] account and options for subscription.
   ///
   /// Typically, this method calls in `subscribe` method from InPageProvider.
+  ///
+  /// !!! If you call this method manually, be sure that transport is valid
+  /// checking it via [Transport.disposed].
   Future<GenericContract> subscribeContract({
     required String tabId,
     required Uri origin,
