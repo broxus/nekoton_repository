@@ -94,12 +94,15 @@ abstract class TonWalletRepository {
   /// To update subscriptions after transport changed,
   /// use [updateTransportSubscriptions].
   ///
+  /// The second value is [KeyAccount.isExternal] that allows to identify if
+  /// we should use [subscribe] or [subscribeByAddress].
+  ///
   /// This is a heavy operation that interacts with network, so this method
   /// should not be called often.
   ///
   /// !!! This method must be called from app side because repository does not
   /// track current active accounts.
-  Future<void> updateSubscriptions(List<TonWalletAsset> assets);
+  Future<void> updateSubscriptions(List<(TonWalletAsset, bool)> assets);
 
   /// Update subscriptions when transport changed.
   /// To get new transport, [TransportRepository.currentTransport] should be
