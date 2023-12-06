@@ -1254,7 +1254,46 @@ void main() {
       mockTonWallet(tonWrapper1, asset1);
       mockTonWallet(tonWrapper2, asset2);
 
-      await repository.updateSubscriptions([asset1, asset2]);
+      await repository.updateSubscriptions([(asset1, false), (asset2, false)]);
+
+      expect(repository.wallets.length, 2);
+    });
+
+    test('updateSubscriptions without side effects by address metod', () async {
+      mockWrapper(bridge);
+      when(() => wallet.onMessageExpiredStream)
+          .thenAnswer((_) => expiredStream);
+      when(() => wallet.onMessageSentStream)
+          .thenAnswer((_) => messageSentStream);
+      when(() => wallet.onTransactionsFoundStream)
+          .thenAnswer((_) => transactionsFoundStream);
+      when(() => wallet.onStateChangedStream).thenAnswer((_) => stateStream);
+
+      when(() => transport.transport).thenReturn(proto);
+      when(() => proto.disposed).thenReturn(false);
+      when(() => wallet.address).thenReturn(multisigAddress);
+      when(() => proto.transportBox).thenReturn(box);
+
+      when(
+        () => bridge.subscribeStaticMethodTonWalletDartWrapper(
+          publicKey: any(named: 'publicKey'),
+          instanceHash: any(named: 'instanceHash'),
+          transport: any(named: 'transport'),
+          walletType: any(named: 'walletType'),
+          workchainId: any(named: 'workchainId'),
+        ),
+      ).thenAnswer((_) => Future.value(tonWrapper2));
+      when(
+        () => bridge.subscribeByAddressStaticMethodTonWalletDartWrapper(
+          address: any(named: 'address'),
+          instanceHash: any(named: 'instanceHash'),
+          transport: any(named: 'transport'),
+        ),
+      ).thenAnswer((_) => Future.value(tonWrapper1));
+      mockTonWallet(tonWrapper1, asset1);
+      mockTonWallet(tonWrapper2, asset2);
+
+      await repository.updateSubscriptions([(asset1, true), (asset2, false)]);
 
       expect(repository.wallets.length, 2);
     });
@@ -1292,7 +1331,7 @@ void main() {
       mockTonWallet(tonWrapper1, asset1);
       mockTonWallet(tonWrapper2, asset2);
 
-      await repository.updateSubscriptions([asset1, asset2]);
+      await repository.updateSubscriptions([(asset1, false), (asset2, false)]);
 
       final wallets = repository.wallets;
 
@@ -1327,7 +1366,7 @@ void main() {
       ).thenAnswer((_) => throwError());
       mockTonWallet(tonWrapper1, asset1);
 
-      await repository.updateSubscriptions([asset1]);
+      await repository.updateSubscriptions([(asset1, false)]);
 
       var wallets = repository.wallets;
 
@@ -1422,9 +1461,9 @@ void main() {
       mockTonWallet(tonWrapper1, asset1);
       mockTonWallet(tonWrapper2, asset2);
 
-      unawaited(repository.updateSubscriptions([asset1]));
+      unawaited(repository.updateSubscriptions([(asset1, false)]));
       await Future<void>.delayed(const Duration(milliseconds: 300));
-      await repository.updateSubscriptions([asset1, asset2]);
+      await repository.updateSubscriptions([(asset1, false), (asset2, false)]);
 
       expect(repository.wallets.length, 2);
       verify(
@@ -1490,7 +1529,7 @@ void main() {
 
       repository.walletsMap[asset1.address] = state;
       repository.walletsMap[asset2.address] = state;
-      repository.lastUpdatedAssets = [asset1, asset2];
+      repository.lastUpdatedAssets = [(asset1, false), (asset2, false)];
       await repository.updateTransportSubscriptions();
 
       verify(wallet.dispose).called(2);

@@ -45,7 +45,7 @@ mixin TonWalletRepositoryImpl implements TonWalletRepository {
   /// assets could be reused.
   @protected
   @visibleForTesting
-  List<TonWalletAsset>? lastUpdatedAssets;
+  List<(TonWalletAsset, bool)>? lastUpdatedAssets;
 
   /// Subject that allows listening for wallets subscribing/unsubscribing
   final _walletsSubject =
@@ -127,7 +127,7 @@ mixin TonWalletRepositoryImpl implements TonWalletRepository {
   @override
   Future<void> retrySubscriptions(Address address) async {
     final asset =
-        lastUpdatedAssets?.firstWhereOrNull((e) => e.address == address);
+        lastUpdatedAssets?.firstWhereOrNull((e) => e.$1.address == address);
 
     if (asset == null) {
       walletsMap[address] = TonWalletState.error(
@@ -201,8 +201,8 @@ mixin TonWalletRepositoryImpl implements TonWalletRepository {
   CancelableOperationAwaited<void>? _lastOperation;
 
   @override
-  Future<void> updateSubscriptions(List<TonWalletAsset> assets) async {
-    final toSubscribe = <TonWalletAsset>[];
+  Future<void> updateSubscriptions(List<(TonWalletAsset, bool)> assets) async {
+    final toSubscribe = <(TonWalletAsset, bool)>[];
     final toUnsubscribe = <TonWalletState>[];
 
     // Stop last created operation if possible
@@ -214,11 +214,11 @@ mixin TonWalletRepositoryImpl implements TonWalletRepository {
 
     toUnsubscribe.addAll(
       // pick all elements from old list, which is not contains in a new list
-      wallets.where((w) => !assets.any((a) => a.address == w.address)),
+      wallets.where((w) => !assets.any((a) => a.$1.address == w.address)),
     );
     toSubscribe.addAll(
       // pick all elements from new list, which is not contains in old list
-      assets.where((a) => !wallets.any((w) => w.address == a.address)),
+      assets.where((a) => !wallets.any((w) => w.address == a.$1.address)),
     );
 
     for (final asset in toUnsubscribe) {
@@ -251,16 +251,18 @@ mixin TonWalletRepositoryImpl implements TonWalletRepository {
     await operation.valueOrCancellation();
   }
 
-  Future<void> _subscribeAsset(TonWalletAsset asset) async {
+  Future<void> _subscribeAsset((TonWalletAsset, bool) asset) async {
     if (currentTransport.transport.disposed) return;
 
     try {
-      await subscribe(asset);
+      asset.$2
+          ? await subscribeByAddress(asset.$1.address)
+          : await subscribe(asset.$1);
     } catch (e, t) {
       _logger.severe('_subscribeAsset', e, t);
 
       // Save error state of wallet
-      final address = asset.address;
+      final address = asset.$1.address;
       final res = TonWalletState.error(err: e, address: address);
       walletsMap[address] = res;
       _walletsSubject.add(walletsMap);
