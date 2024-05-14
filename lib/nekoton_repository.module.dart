@@ -16,18 +16,18 @@ class NekotonRepositoryPackageModule extends _i1.MicroPackageModule {
   @override
   _i2.FutureOr<void> init(_i1.GetItHelper gh) {
     final nekotonRepositoryModule = _$NekotonRepositoryModule();
-    gh.singleton<_i3.NekotonRepository>(_i3.NekotonRepository());
-    gh.singleton<_i4.SeedKeyRepository>(
-        nekotonRepositoryModule.registerSeedKey(gh<_i4.NekotonRepository>()));
-    gh.singleton<_i4.TokenWalletRepository>(nekotonRepositoryModule
-        .registerTokenWallet(gh<_i4.NekotonRepository>()));
-    gh.singleton<_i4.TonWalletRepository>(
-        nekotonRepositoryModule.registerTonWallet(gh<_i4.NekotonRepository>()));
-    gh.singleton<_i4.TransportRepository>(
+    gh.singleton<_i3.NekotonRepository>(() => _i3.NekotonRepository());
+    gh.singleton<_i4.TransportRepository>(() =>
         nekotonRepositoryModule.registerTransport(gh<_i4.NekotonRepository>()));
-    gh.singleton<_i4.AccountRepository>(
+    gh.singleton<_i4.SeedKeyRepository>(() =>
+        nekotonRepositoryModule.registerSeedKey(gh<_i4.NekotonRepository>()));
+    gh.singleton<_i4.AccountRepository>(() =>
         nekotonRepositoryModule.registerAccounts(gh<_i4.NekotonRepository>()));
-    gh.singleton<_i4.GenericContractRepository>(nekotonRepositoryModule
+    gh.singleton<_i4.TonWalletRepository>(() =>
+        nekotonRepositoryModule.registerTonWallet(gh<_i4.NekotonRepository>()));
+    gh.singleton<_i4.TokenWalletRepository>(() => nekotonRepositoryModule
+        .registerTokenWallet(gh<_i4.NekotonRepository>()));
+    gh.singleton<_i4.GenericContractRepository>(() => nekotonRepositoryModule
         .registerGenericContract(gh<_i4.NekotonRepository>()));
   }
 }
