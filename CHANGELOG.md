@@ -3,6 +3,33 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## 2024-05-14
+
+### Changes
+
+---
+
+Packages with breaking changes:
+
+- [`nekoton_repository` - `v0.35.1`](#nekoton_repository---v0351)
+
+Packages with other changes:
+
+- There are no other changes in this release.
+
+---
+
+#### `nekoton_repository` - `v0.35.1`
+
+- **REFACTOR**: updating dependency package versions.
+
+## 0.35.1
+
+> Note: This release has breaking changes.
+
+- **REFACTOR**: updating dependency package versions.
+
+
 ## 2023-12-06
 
 ### Changes
