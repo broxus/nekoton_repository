@@ -9,9 +9,9 @@ on:
   push:
     branches:
       - main
-  schedule:
+  # schedule:
     # runs the CI everyday at 6AM
-    - cron: "0 6 * * *"
+    # - cron: "0 6 * * *"
 
 jobs:
   semantic_pull_request:
