@@ -1297,6 +1297,25 @@ mixin TonWalletRepositoryImpl implements TonWalletRepository {
       },
     ).toList();
   }
+
+  @override
+  Future<List<TxTreeSimulationErrorItem>> simulateTransactionTree({
+    required Address address,
+    required UnsignedMessage message,
+  }) async {
+    final tonWallet = getWallet(address).wallet;
+
+    if (tonWallet == null) throw TonWalletStateNotInitializedException();
+
+    await message.refreshTimeout();
+    final signedMessage = await message.signFake();
+
+    return tonWallet.transport.simulateTransactionTree(
+      signedMessage: signedMessage,
+      ignoredComputePhaseCodes: Int32List.fromList([0, 1, 60, 100]),
+      ignoredActionPhaseCodes: Int32List.fromList([0, 1]),
+    );
+  }
 }
 
 extension TonWalletTransactionExtension

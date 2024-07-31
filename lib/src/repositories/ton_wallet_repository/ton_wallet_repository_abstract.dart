@@ -301,4 +301,9 @@ abstract class TonWalletRepository {
     required List<TransactionWithData<TransactionAdditionalInfo?>> transactions,
     required List<MultisigPendingTransaction> multisigPendingTransactions,
   });
+
+  Future<List<TxTreeSimulationErrorItem>> simulateTransactionTree({
+    required Address address,
+    required UnsignedMessage message,
+  });
 }
