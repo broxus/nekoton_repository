@@ -45,7 +45,9 @@ mixin _$TonWalletMultisigOrdinaryTransaction {
   WalletInteractionInfo? get walletInteractionInfo =>
       throw _privateConstructorUsedError;
 
-  @JsonKey(ignore: true)
+  /// Create a copy of TonWalletMultisigOrdinaryTransaction
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   $TonWalletMultisigOrdinaryTransactionCopyWith<
           TonWalletMultisigOrdinaryTransaction>
       get copyWith => throw _privateConstructorUsedError;
@@ -99,6 +101,8 @@ class _$TonWalletMultisigOrdinaryTransactionCopyWithImpl<$Res,
   // ignore: unused_field
   final $Res Function($Val) _then;
 
+  /// Create a copy of TonWalletMultisigOrdinaryTransaction
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -190,6 +194,8 @@ class _$TonWalletMultisigOrdinaryTransactionCopyWithImpl<$Res,
     ) as $Val);
   }
 
+  /// Create a copy of TonWalletMultisigOrdinaryTransaction
+  /// with the given fields replaced by the non-null parameter values.
   @override
   @pragma('vm:prefer-inline')
   $PublicKeyCopyWith<$Res> get creator {
@@ -198,6 +204,8 @@ class _$TonWalletMultisigOrdinaryTransactionCopyWithImpl<$Res,
     });
   }
 
+  /// Create a copy of TonWalletMultisigOrdinaryTransaction
+  /// with the given fields replaced by the non-null parameter values.
   @override
   @pragma('vm:prefer-inline')
   $AddressCopyWith<$Res> get address {
@@ -206,6 +214,8 @@ class _$TonWalletMultisigOrdinaryTransactionCopyWithImpl<$Res,
     });
   }
 
+  /// Create a copy of TonWalletMultisigOrdinaryTransaction
+  /// with the given fields replaced by the non-null parameter values.
   @override
   @pragma('vm:prefer-inline')
   $DePoolOnRoundCompleteNotificationCopyWith<$Res>?
@@ -221,6 +231,8 @@ class _$TonWalletMultisigOrdinaryTransactionCopyWithImpl<$Res,
     });
   }
 
+  /// Create a copy of TonWalletMultisigOrdinaryTransaction
+  /// with the given fields replaced by the non-null parameter values.
   @override
   @pragma('vm:prefer-inline')
   $DePoolReceiveAnswerNotificationCopyWith<$Res>?
@@ -236,6 +248,8 @@ class _$TonWalletMultisigOrdinaryTransactionCopyWithImpl<$Res,
     });
   }
 
+  /// Create a copy of TonWalletMultisigOrdinaryTransaction
+  /// with the given fields replaced by the non-null parameter values.
   @override
   @pragma('vm:prefer-inline')
   $TokenWalletDeployedNotificationCopyWith<$Res>?
@@ -251,6 +265,8 @@ class _$TonWalletMultisigOrdinaryTransactionCopyWithImpl<$Res,
     });
   }
 
+  /// Create a copy of TonWalletMultisigOrdinaryTransaction
+  /// with the given fields replaced by the non-null parameter values.
   @override
   @pragma('vm:prefer-inline')
   $WalletInteractionInfoCopyWith<$Res>? get walletInteractionInfo {
@@ -319,6 +335,8 @@ class __$$TonWalletMultisigOrdinaryTransactionImplCopyWithImpl<$Res>
       $Res Function(_$TonWalletMultisigOrdinaryTransactionImpl) _then)
       : super(_value, _then);
 
+  /// Create a copy of TonWalletMultisigOrdinaryTransaction
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -552,7 +570,9 @@ class _$TonWalletMultisigOrdinaryTransactionImpl
       tokenWalletDeployedNotification,
       walletInteractionInfo);
 
-  @JsonKey(ignore: true)
+  /// Create a copy of TonWalletMultisigOrdinaryTransaction
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   @pragma('vm:prefer-inline')
   _$$TonWalletMultisigOrdinaryTransactionImplCopyWith<
@@ -584,19 +604,20 @@ abstract class _TonWalletMultisigOrdinaryTransaction
           walletInteractionInfo}) = _$TonWalletMultisigOrdinaryTransactionImpl;
 
   @override
-  String get lt;
-  @override // initiator of transactions
-  PublicKey get creator;
-  @override // custodians who accepted this transaction
-  List<PublicKey> get confirmations;
-  @override // list of possible custodians
-  List<PublicKey> get custodians;
-  @override // if this transaction was sent from this wallet
+  String get lt; // initiator of transactions
+  @override
+  PublicKey get creator; // custodians who accepted this transaction
+  @override
+  List<PublicKey> get confirmations; // list of possible custodians
+  @override
+  List<PublicKey>
+      get custodians; // if this transaction was sent from this wallet
+  @override
   bool get isOutgoing;
   @override
   @amountJsonConverter
-  BigInt get value;
-  @override // address of destination or source depends on isOutgoing
+  BigInt get value; // address of destination or source depends on isOutgoing
+  @override
   Address get address;
   @override
   @dateSecondsSinceEpochJsonConverter
@@ -618,8 +639,11 @@ abstract class _TonWalletMultisigOrdinaryTransaction
   TokenWalletDeployedNotification? get tokenWalletDeployedNotification;
   @override
   WalletInteractionInfo? get walletInteractionInfo;
+
+  /// Create a copy of TonWalletMultisigOrdinaryTransaction
+  /// with the given fields replaced by the non-null parameter values.
   @override
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   _$$TonWalletMultisigOrdinaryTransactionImplCopyWith<
           _$TonWalletMultisigOrdinaryTransactionImpl>
       get copyWith => throw _privateConstructorUsedError;

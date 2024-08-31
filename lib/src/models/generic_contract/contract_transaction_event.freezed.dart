@@ -25,8 +25,12 @@ mixin _$ContractFoundTransactionEvent {
   List<Transaction> get transactions => throw _privateConstructorUsedError;
   TransactionsBatchInfo get info => throw _privateConstructorUsedError;
 
+  /// Serializes this ContractFoundTransactionEvent to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
-  @JsonKey(ignore: true)
+
+  /// Create a copy of ContractFoundTransactionEvent
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   $ContractFoundTransactionEventCopyWith<ContractFoundTransactionEvent>
       get copyWith => throw _privateConstructorUsedError;
 }
@@ -59,6 +63,8 @@ class _$ContractFoundTransactionEventCopyWithImpl<$Res,
   // ignore: unused_field
   final $Res Function($Val) _then;
 
+  /// Create a copy of ContractFoundTransactionEvent
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -82,6 +88,8 @@ class _$ContractFoundTransactionEventCopyWithImpl<$Res,
     ) as $Val);
   }
 
+  /// Create a copy of ContractFoundTransactionEvent
+  /// with the given fields replaced by the non-null parameter values.
   @override
   @pragma('vm:prefer-inline')
   $AddressCopyWith<$Res> get address {
@@ -90,6 +98,8 @@ class _$ContractFoundTransactionEventCopyWithImpl<$Res,
     });
   }
 
+  /// Create a copy of ContractFoundTransactionEvent
+  /// with the given fields replaced by the non-null parameter values.
   @override
   @pragma('vm:prefer-inline')
   $TransactionsBatchInfoCopyWith<$Res> get info {
@@ -129,6 +139,8 @@ class __$$ContractFoundTransactionEventImplCopyWithImpl<$Res>
       $Res Function(_$ContractFoundTransactionEventImpl) _then)
       : super(_value, _then);
 
+  /// Create a copy of ContractFoundTransactionEvent
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -196,12 +208,14 @@ class _$ContractFoundTransactionEventImpl
             (identical(other.info, info) || other.info == info));
   }
 
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   int get hashCode => Object.hash(runtimeType, address,
       const DeepCollectionEquality().hash(_transactions), info);
 
-  @JsonKey(ignore: true)
+  /// Create a copy of ContractFoundTransactionEvent
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   @pragma('vm:prefer-inline')
   _$$ContractFoundTransactionEventImplCopyWith<
@@ -234,8 +248,11 @@ abstract class _ContractFoundTransactionEvent
   List<Transaction> get transactions;
   @override
   TransactionsBatchInfo get info;
+
+  /// Create a copy of ContractFoundTransactionEvent
+  /// with the given fields replaced by the non-null parameter values.
   @override
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   _$$ContractFoundTransactionEventImplCopyWith<
           _$ContractFoundTransactionEventImpl>
       get copyWith => throw _privateConstructorUsedError;

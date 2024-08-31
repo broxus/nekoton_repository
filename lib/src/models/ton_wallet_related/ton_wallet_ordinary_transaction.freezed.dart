@@ -37,7 +37,9 @@ mixin _$TonWalletOrdinaryTransaction {
   WalletInteractionInfo? get walletInteractionInfo =>
       throw _privateConstructorUsedError;
 
-  @JsonKey(ignore: true)
+  /// Create a copy of TonWalletOrdinaryTransaction
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   $TonWalletOrdinaryTransactionCopyWith<TonWalletOrdinaryTransaction>
       get copyWith => throw _privateConstructorUsedError;
 }
@@ -86,6 +88,8 @@ class _$TonWalletOrdinaryTransactionCopyWithImpl<$Res,
   // ignore: unused_field
   final $Res Function($Val) _then;
 
+  /// Create a copy of TonWalletOrdinaryTransaction
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -162,6 +166,8 @@ class _$TonWalletOrdinaryTransactionCopyWithImpl<$Res,
     ) as $Val);
   }
 
+  /// Create a copy of TonWalletOrdinaryTransaction
+  /// with the given fields replaced by the non-null parameter values.
   @override
   @pragma('vm:prefer-inline')
   $AddressCopyWith<$Res> get address {
@@ -170,6 +176,8 @@ class _$TonWalletOrdinaryTransactionCopyWithImpl<$Res,
     });
   }
 
+  /// Create a copy of TonWalletOrdinaryTransaction
+  /// with the given fields replaced by the non-null parameter values.
   @override
   @pragma('vm:prefer-inline')
   $DePoolOnRoundCompleteNotificationCopyWith<$Res>?
@@ -185,6 +193,8 @@ class _$TonWalletOrdinaryTransactionCopyWithImpl<$Res,
     });
   }
 
+  /// Create a copy of TonWalletOrdinaryTransaction
+  /// with the given fields replaced by the non-null parameter values.
   @override
   @pragma('vm:prefer-inline')
   $DePoolReceiveAnswerNotificationCopyWith<$Res>?
@@ -200,6 +210,8 @@ class _$TonWalletOrdinaryTransactionCopyWithImpl<$Res,
     });
   }
 
+  /// Create a copy of TonWalletOrdinaryTransaction
+  /// with the given fields replaced by the non-null parameter values.
   @override
   @pragma('vm:prefer-inline')
   $TokenWalletDeployedNotificationCopyWith<$Res>?
@@ -215,6 +227,8 @@ class _$TonWalletOrdinaryTransactionCopyWithImpl<$Res,
     });
   }
 
+  /// Create a copy of TonWalletOrdinaryTransaction
+  /// with the given fields replaced by the non-null parameter values.
   @override
   @pragma('vm:prefer-inline')
   $WalletInteractionInfoCopyWith<$Res>? get walletInteractionInfo {
@@ -278,6 +292,8 @@ class __$$TonWalletOrdinaryTransactionImplCopyWithImpl<$Res>
       $Res Function(_$TonWalletOrdinaryTransactionImpl) _then)
       : super(_value, _then);
 
+  /// Create a copy of TonWalletOrdinaryTransaction
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -458,7 +474,9 @@ class _$TonWalletOrdinaryTransactionImpl
       tokenWalletDeployedNotification,
       walletInteractionInfo);
 
-  @JsonKey(ignore: true)
+  /// Create a copy of TonWalletOrdinaryTransaction
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   @pragma('vm:prefer-inline')
   _$$TonWalletOrdinaryTransactionImplCopyWith<
@@ -515,8 +533,11 @@ abstract class _TonWalletOrdinaryTransaction
   TokenWalletDeployedNotification? get tokenWalletDeployedNotification;
   @override
   WalletInteractionInfo? get walletInteractionInfo;
+
+  /// Create a copy of TonWalletOrdinaryTransaction
+  /// with the given fields replaced by the non-null parameter values.
   @override
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   _$$TonWalletOrdinaryTransactionImplCopyWith<
           _$TonWalletOrdinaryTransactionImpl>
       get copyWith => throw _privateConstructorUsedError;

@@ -29,7 +29,7 @@ void main() {
       expect(cur, isNotNull);
       expect(cur!.symbol, ticker);
       expect(cur.isoCode, ticker);
-      expect(cur.isoCode, decimals);
+      expect(cur.decimalDigits, decimals);
       expect(cur.pattern, '0.${'#' * decimals}');
     });
   });
