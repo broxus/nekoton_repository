@@ -42,7 +42,7 @@ class AccountList extends Equatable {
   /// Add account to key with [publicKey] and [walletType].
   /// [workchain] specify Transport network that should be used for this account
   /// [name] is optional and if not specified, auto-generated name will be used.
-  Future<void> addAccount({
+  Future<Address> addAccount({
     required WalletType walletType,
     required int workchain,
     String? name,

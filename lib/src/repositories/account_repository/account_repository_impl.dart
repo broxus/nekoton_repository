@@ -17,11 +17,11 @@ mixin AccountRepositoryImpl on TransportRepository
   NekotonStorageRepository get storageRepository;
 
   @override
-  Future<void> addAccount(AccountToAdd account) =>
+  Future<Address> addAccount(AccountToAdd account) =>
       accountsStorage.addAccount(account);
 
   @override
-  Future<void> addAccounts(List<AccountToAdd> accounts) =>
+  Future<List<Address>> addAccounts(List<AccountToAdd> accounts) =>
       accountsStorage.addAccounts(accounts);
 
   @override
