@@ -23,6 +23,15 @@ abstract class SeedKeyRepository {
     required PublicKey masterKey,
   });
 
+  /// Derive key from [masterKey] which is key of seed.
+  /// !!! This method won't work for legacy keys.
+  /// This method do not triggers accounts adding
+  Future<PublicKey> deriveKey({
+    required int accountId,
+    required String password,
+    required PublicKey masterKey,
+  });
+
   /// Add new seed to application.
   /// Returns publicKey of masterKey of added seed.
   Future<PublicKey> addSeed({

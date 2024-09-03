@@ -71,6 +71,19 @@ class Seed extends SeedBase {
         masterKey: masterKey.publicKey,
       );
 
+  /// Derive key from [masterKey] this call adds list of sub keys to
+  /// [subKeys].
+  /// This method do not triggers accounts adding
+  Future<PublicKey> deriveKey({
+    required int accountId,
+    required String password,
+  }) =>
+      GetIt.instance<SeedKeyRepository>().deriveKey(
+        accountId: accountId,
+        password: password,
+        masterKey: masterKey.publicKey,
+      );
+
   /// Change password of seed phrase.
   Future<void> changePassword({
     required String oldPassword,
