@@ -193,9 +193,9 @@ class NekotonRepository
     currentTransportStream
         .skip(1)
         .listen((transport) => _updateSeedList(transport: transport));
-    _storageRepository.seedNamesStream
+    _storageRepository.seedMetaStream
         .skip(1)
-        .listen((names) => _updateSeedList(seedNames: names));
+        .listen((seedMeta) => _updateSeedList(seedMeta: seedMeta));
 
     _updateSeedList(needTrackChanges: false);
   }
@@ -243,7 +243,7 @@ class NekotonRepository
     List<Address>? hiddenAccounts,
     Map<PublicKey, List<Address>>? externalAccounts,
     TransportStrategy? transport,
-    Map<PublicKey, String>? seedNames,
+    Map<PublicKey, SeedMetadata>? seedMeta,
     bool needTrackChanges = true,
   }) {
     final newList = buildSeeds(
@@ -252,7 +252,7 @@ class NekotonRepository
       hiddenAccounts: hiddenAccounts ?? _storageRepository.hiddenAccounts,
       externalAccounts: externalAccounts ?? _storageRepository.externalAccounts,
       transport: transport ?? currentTransport,
-      seedNames: seedNames ?? _storageRepository.seedNames,
+      seedMeta: seedMeta ?? _storageRepository.seedMeta,
     );
     if (needTrackChanges) {
       _changesSubject.add(findChanges(seedList, newList));
@@ -268,7 +268,7 @@ class NekotonRepository
     required List<Address> hiddenAccounts,
     required Map<PublicKey, List<Address>> externalAccounts,
     required TransportStrategy transport,
-    required Map<PublicKey, String> seedNames,
+    required Map<PublicKey, SeedMetadata> seedMeta,
   }) {
     final planeExternalAccounts = externalAccounts.values.expand((e) => e);
     final transportedAllAccounts = allAccounts.where(
@@ -305,7 +305,7 @@ class NekotonRepository
     }
 
     return SeedList(
-      seedNames: seedNames,
+      seedMeta: seedMeta,
       allKeys: allKeys,
       mappedAccounts: mapped.map(
         (key, value) => MapEntry(

@@ -95,6 +95,7 @@ mixin SeedKeyRepositoryImpl on TransportRepository
     required List<String> phrase,
     required String password,
     String? name,
+    SeedAddType addType = SeedAddType.create,
   }) async {
     final isLegacy = phrase.length == 24;
     final mnemonicType =
@@ -130,6 +131,14 @@ mixin SeedKeyRepositoryImpl on TransportRepository
     if (name != null) {
       await storageRepository.updateSeedName(masterKey: publicKey, name: name);
     }
+    await storageRepository.updateSeedMetadata(
+      masterKey: publicKey,
+      meta: SeedMetadata(
+        name: name,
+        addType: addType,
+        addedAt: DateTime.now().millisecondsSinceEpoch,
+      ),
+    );
 
     unawaited(triggerAddingAccounts([publicKey]));
 

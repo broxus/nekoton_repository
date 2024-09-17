@@ -14,6 +14,8 @@ class Seed extends SeedBase {
   Seed({
     required this.masterKey,
     required this.subKeys,
+    required this.addType,
+    required this.addedAt,
     required String? name,
   })  : _name = name,
         super(
@@ -24,6 +26,12 @@ class Seed extends SeedBase {
   /// Master key of seed.
   /// This key is derived directly from seed phrase.
   final SeedKey masterKey;
+
+  /// How seed was added (create/import)
+  final SeedAddType addType;
+
+  /// When seed was added
+  final int addedAt;
 
   /// Name of seed itself, this name stores in app's storage, not in keystore
   final String? _name;
@@ -117,7 +125,7 @@ class Seed extends SeedBase {
   Future<void> remove() {
     GetIt.instance<NekotonRepository>()
         .storageRepository
-        .removeSeedName(publicKey);
+        .removeSeedMetadata(publicKey);
 
     return GetIt.instance<SeedKeyRepository>().removeKeys(allKeys);
   }

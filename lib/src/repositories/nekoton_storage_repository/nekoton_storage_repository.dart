@@ -5,7 +5,7 @@ import 'package:nekoton_repository/nekoton_repository.dart';
 import 'package:rxdart/rxdart.dart';
 
 const _hiddenAccountsKey = 'hidden_accounts_key';
-const _seedsKey = 'seeds_key';
+const _seedsMetaKey = 'seeds_meta_key';
 const _nekotonBridgeKey = 'nekoton_bridge_key';
 const _externalAccountsKey = 'external_accounts_key';
 
@@ -20,7 +20,7 @@ class NekotonStorageRepository {
   final EncryptedStorage _storage;
 
   Future<void> init() => Future.wait([
-        _streamedSeedNames(),
+        _streamedSeedMeta(),
         _streamedHiddenAccounts(),
         _streamedExternalAccounts(),
       ]);
@@ -52,24 +52,24 @@ class NekotonStorageRepository {
   Future<void> clearStorageData() => _storage.clearDomain(_nekotonBridgeKey);
 
   /// Subject of public keys names
-  final _seedNamesSubject = BehaviorSubject<Map<PublicKey, String>>();
+  final _seedMetaSubject = BehaviorSubject<Map<PublicKey, SeedMetadata>>();
 
   /// Stream of seed names
-  Stream<Map<PublicKey, String>> get seedNamesStream => _seedNamesSubject;
+  Stream<Map<PublicKey, SeedMetadata>> get seedMetaStream => _seedMetaSubject;
 
   /// Get previously cached seeds names
-  Map<PublicKey, String> get seedNames => _seedNamesSubject.value;
+  Map<PublicKey, SeedMetadata> get seedMeta => _seedMetaSubject.value;
 
-  /// Put seed names to stream
-  Future<void> _streamedSeedNames() async =>
-      _seedNamesSubject.add(await readSeedNames());
+  /// Put seed metadata to stream
+  Future<void> _streamedSeedMeta() async =>
+      _seedMetaSubject.add(await readSeedMeta());
 
   /// Get all names of seeds from storage
-  Future<Map<PublicKey, String>> readSeedNames() async =>
-      (await _storage.getDomain(domain: _seedsKey)).map(
+  Future<Map<PublicKey, SeedMetadata>> readSeedMeta() async =>
+      (await _storage.getDomain(domain: _seedsMetaKey)).map(
         (key, value) => MapEntry(
           PublicKey(publicKey: key),
-          value,
+          SeedMetadata.fromJson(jsonDecode(value) as Map<String, dynamic>),
         ),
       );
 
@@ -80,23 +80,44 @@ class NekotonStorageRepository {
     required PublicKey masterKey,
     required String name,
   }) async {
-    await _storage.set(masterKey.publicKey, name, domain: _seedsKey);
+    final meta = (await readSeedMeta())[masterKey]?.copyWith(name: name) ??
+        SeedMetadata(name: name);
 
-    return _streamedSeedNames();
+    await _storage.set(
+      masterKey.publicKey,
+      jsonEncode(meta),
+      domain: _seedsMetaKey,
+    );
+
+    return _streamedSeedMeta();
   }
 
-  /// Remove name of seed
-  Future<void> removeSeedName(PublicKey masterKey) async {
-    await _storage.delete(masterKey.publicKey, domain: _seedsKey);
+  /// Add new or change seed metadata.
+  Future<void> updateSeedMetadata({
+    required PublicKey masterKey,
+    required SeedMetadata meta,
+  }) async {
+    await _storage.set(
+      masterKey.publicKey,
+      jsonEncode(meta),
+      domain: _seedsMetaKey,
+    );
 
-    return _streamedSeedNames();
+    return _streamedSeedMeta();
   }
 
-  /// Clear information about all names of public keys
+  /// Remove metadata of seed
+  Future<void> removeSeedMetadata(PublicKey masterKey) async {
+    await _storage.delete(masterKey.publicKey, domain: _seedsMetaKey);
+
+    return _streamedSeedMeta();
+  }
+
+  /// Clear information about all seeds metadata
   Future<void> clearSeeds() async {
-    await _storage.clearDomain(_seedsKey);
+    await _storage.clearDomain(_seedsMetaKey);
 
-    return _seedNamesSubject.add({});
+    return _seedMetaSubject.add({});
   }
 
   /// Subject of hidden accounts
