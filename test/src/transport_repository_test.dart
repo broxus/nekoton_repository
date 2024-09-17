@@ -28,8 +28,8 @@ void main() {
       final cur = Currencies()[ticker];
       expect(cur, isNotNull);
       expect(cur!.symbol, ticker);
-      expect(cur.code, ticker);
-      expect(cur.scale, decimals);
+      expect(cur.isoCode, ticker);
+      expect(cur.decimalDigits, decimals);
       expect(cur.pattern, '0.${'#' * decimals}');
     });
   });

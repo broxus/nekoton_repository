@@ -26,8 +26,12 @@ mixin _$ContractUpdatesSubscription {
   @JsonKey(includeIfNull: false)
   bool? get transactions => throw _privateConstructorUsedError;
 
+  /// Serializes this ContractUpdatesSubscription to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
-  @JsonKey(ignore: true)
+
+  /// Create a copy of ContractUpdatesSubscription
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   $ContractUpdatesSubscriptionCopyWith<ContractUpdatesSubscription>
       get copyWith => throw _privateConstructorUsedError;
 }
@@ -56,6 +60,8 @@ class _$ContractUpdatesSubscriptionCopyWithImpl<$Res,
   // ignore: unused_field
   final $Res Function($Val) _then;
 
+  /// Create a copy of ContractUpdatesSubscription
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -99,6 +105,8 @@ class __$$ContractUpdatesSubscriptionImplCopyWithImpl<$Res>
       $Res Function(_$ContractUpdatesSubscriptionImpl) _then)
       : super(_value, _then);
 
+  /// Create a copy of ContractUpdatesSubscription
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -153,11 +161,13 @@ class _$ContractUpdatesSubscriptionImpl
                 other.transactions == transactions));
   }
 
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   int get hashCode => Object.hash(runtimeType, contractState, transactions);
 
-  @JsonKey(ignore: true)
+  /// Create a copy of ContractUpdatesSubscription
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   @pragma('vm:prefer-inline')
   _$$ContractUpdatesSubscriptionImplCopyWith<_$ContractUpdatesSubscriptionImpl>
@@ -188,8 +198,11 @@ abstract class _ContractUpdatesSubscription
   @override
   @JsonKey(includeIfNull: false)
   bool? get transactions;
+
+  /// Create a copy of ContractUpdatesSubscription
+  /// with the given fields replaced by the non-null parameter values.
   @override
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   _$$ContractUpdatesSubscriptionImplCopyWith<_$ContractUpdatesSubscriptionImpl>
       get copyWith => throw _privateConstructorUsedError;
 }

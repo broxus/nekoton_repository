@@ -5,11 +5,11 @@ import 'package:nekoton_repository/nekoton_repository.dart';
 /// custom logic.
 abstract class AccountRepository {
   /// Add account to storage.
-  Future<void> addAccount(AccountToAdd account);
+  Future<Address> addAccount(AccountToAdd account);
 
   /// Add list of accounts to storage.
   /// Same as [addAccount] but for multiple accounts.
-  Future<void> addAccounts(List<AccountToAdd> accounts);
+  Future<List<Address>> addAccounts(List<AccountToAdd> accounts);
 
   /// Add external account with [address] where [publicKey] is custodian.
   /// [name] is optional.

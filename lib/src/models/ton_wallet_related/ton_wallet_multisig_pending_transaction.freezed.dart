@@ -55,7 +55,9 @@ mixin _$TonWalletMultisigPendingTransaction {
   WalletInteractionInfo? get walletInteractionInfo =>
       throw _privateConstructorUsedError;
 
-  @JsonKey(ignore: true)
+  /// Create a copy of TonWalletMultisigPendingTransaction
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   $TonWalletMultisigPendingTransactionCopyWith<
           TonWalletMultisigPendingTransaction>
       get copyWith => throw _privateConstructorUsedError;
@@ -117,6 +119,8 @@ class _$TonWalletMultisigPendingTransactionCopyWithImpl<$Res,
   // ignore: unused_field
   final $Res Function($Val) _then;
 
+  /// Create a copy of TonWalletMultisigPendingTransaction
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -243,6 +247,8 @@ class _$TonWalletMultisigPendingTransactionCopyWithImpl<$Res,
     ) as $Val);
   }
 
+  /// Create a copy of TonWalletMultisigPendingTransaction
+  /// with the given fields replaced by the non-null parameter values.
   @override
   @pragma('vm:prefer-inline')
   $PublicKeyCopyWith<$Res> get creator {
@@ -251,6 +257,8 @@ class _$TonWalletMultisigPendingTransactionCopyWithImpl<$Res,
     });
   }
 
+  /// Create a copy of TonWalletMultisigPendingTransaction
+  /// with the given fields replaced by the non-null parameter values.
   @override
   @pragma('vm:prefer-inline')
   $AddressCopyWith<$Res> get address {
@@ -259,6 +267,8 @@ class _$TonWalletMultisigPendingTransactionCopyWithImpl<$Res,
     });
   }
 
+  /// Create a copy of TonWalletMultisigPendingTransaction
+  /// with the given fields replaced by the non-null parameter values.
   @override
   @pragma('vm:prefer-inline')
   $AddressCopyWith<$Res> get walletAddress {
@@ -267,6 +277,8 @@ class _$TonWalletMultisigPendingTransactionCopyWithImpl<$Res,
     });
   }
 
+  /// Create a copy of TonWalletMultisigPendingTransaction
+  /// with the given fields replaced by the non-null parameter values.
   @override
   @pragma('vm:prefer-inline')
   $DePoolOnRoundCompleteNotificationCopyWith<$Res>?
@@ -282,6 +294,8 @@ class _$TonWalletMultisigPendingTransactionCopyWithImpl<$Res,
     });
   }
 
+  /// Create a copy of TonWalletMultisigPendingTransaction
+  /// with the given fields replaced by the non-null parameter values.
   @override
   @pragma('vm:prefer-inline')
   $DePoolReceiveAnswerNotificationCopyWith<$Res>?
@@ -297,6 +311,8 @@ class _$TonWalletMultisigPendingTransactionCopyWithImpl<$Res,
     });
   }
 
+  /// Create a copy of TonWalletMultisigPendingTransaction
+  /// with the given fields replaced by the non-null parameter values.
   @override
   @pragma('vm:prefer-inline')
   $TokenWalletDeployedNotificationCopyWith<$Res>?
@@ -312,6 +328,8 @@ class _$TonWalletMultisigPendingTransactionCopyWithImpl<$Res,
     });
   }
 
+  /// Create a copy of TonWalletMultisigPendingTransaction
+  /// with the given fields replaced by the non-null parameter values.
   @override
   @pragma('vm:prefer-inline')
   $WalletInteractionInfoCopyWith<$Res>? get walletInteractionInfo {
@@ -389,6 +407,8 @@ class __$$TonWalletMultisigPendingTransactionImplCopyWithImpl<$Res>
       $Res Function(_$TonWalletMultisigPendingTransactionImpl) _then)
       : super(_value, _then);
 
+  /// Create a copy of TonWalletMultisigPendingTransaction
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -713,7 +733,9 @@ class _$TonWalletMultisigPendingTransactionImpl
         walletInteractionInfo
       ]);
 
-  @JsonKey(ignore: true)
+  /// Create a copy of TonWalletMultisigPendingTransaction
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   @pragma('vm:prefer-inline')
   _$$TonWalletMultisigPendingTransactionImplCopyWith<
@@ -752,21 +774,23 @@ abstract class _TonWalletMultisigPendingTransaction
           walletInteractionInfo}) = _$TonWalletMultisigPendingTransactionImpl;
 
   @override
-  String get lt;
-  @override // initiator of transactions
-  PublicKey get creator;
-  @override // custodians who accepted this transaction
-  List<PublicKey> get confirmations;
-  @override // list of possible custodians for account
-  List<PublicKey> get custodians;
-  @override // if this transaction was sent from this wallet
+  String get lt; // initiator of transactions
+  @override
+  PublicKey get creator; // custodians who accepted this transaction
+  @override
+  List<PublicKey> get confirmations; // list of possible custodians for account
+  @override
+  List<PublicKey>
+      get custodians; // if this transaction was sent from this wallet
+  @override
   bool get isOutgoing;
   @override
   @amountJsonConverter
-  BigInt get value;
-  @override // address of destination or source depends on isOutgoing
-  Address get address;
-  @override // address of account for which this transaction was found
+  BigInt get value; // address of destination or source depends on isOutgoing
+  @override
+  Address
+      get address; // address of account for which this transaction was found
+  @override
   Address get walletAddress;
   @override
   DateTime get date;
@@ -780,12 +804,13 @@ abstract class _TonWalletMultisigPendingTransaction
   @override
   int get signsRequired;
   @override
-  String get transactionId;
-  @override // local custodians that can confirm transaction
-  List<PublicKey> get nonConfirmedLocalCustodians;
-  @override // if user can confirm this transaction (not confirmed earlier)
-  bool get canConfirm;
-  @override // date and time of transaction expiration
+  String get transactionId; // local custodians that can confirm transaction
+  @override
+  List<PublicKey>
+      get nonConfirmedLocalCustodians; // if user can confirm this transaction (not confirmed earlier)
+  @override
+  bool get canConfirm; // date and time of transaction expiration
+  @override
   DateTime get expireAt;
   @override
   String? get comment;
@@ -799,8 +824,11 @@ abstract class _TonWalletMultisigPendingTransaction
   TokenWalletDeployedNotification? get tokenWalletDeployedNotification;
   @override
   WalletInteractionInfo? get walletInteractionInfo;
+
+  /// Create a copy of TonWalletMultisigPendingTransaction
+  /// with the given fields replaced by the non-null parameter values.
   @override
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   _$$TonWalletMultisigPendingTransactionImplCopyWith<
           _$TonWalletMultisigPendingTransactionImpl>
       get copyWith => throw _privateConstructorUsedError;

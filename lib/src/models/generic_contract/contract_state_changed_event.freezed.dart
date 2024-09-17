@@ -24,8 +24,12 @@ mixin _$ContractStateChangedEvent {
   Address get address => throw _privateConstructorUsedError;
   ContractState get state => throw _privateConstructorUsedError;
 
+  /// Serializes this ContractStateChangedEvent to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
-  @JsonKey(ignore: true)
+
+  /// Create a copy of ContractStateChangedEvent
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   $ContractStateChangedEventCopyWith<ContractStateChangedEvent> get copyWith =>
       throw _privateConstructorUsedError;
 }
@@ -53,6 +57,8 @@ class _$ContractStateChangedEventCopyWithImpl<$Res,
   // ignore: unused_field
   final $Res Function($Val) _then;
 
+  /// Create a copy of ContractStateChangedEvent
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -71,6 +77,8 @@ class _$ContractStateChangedEventCopyWithImpl<$Res,
     ) as $Val);
   }
 
+  /// Create a copy of ContractStateChangedEvent
+  /// with the given fields replaced by the non-null parameter values.
   @override
   @pragma('vm:prefer-inline')
   $AddressCopyWith<$Res> get address {
@@ -79,6 +87,8 @@ class _$ContractStateChangedEventCopyWithImpl<$Res,
     });
   }
 
+  /// Create a copy of ContractStateChangedEvent
+  /// with the given fields replaced by the non-null parameter values.
   @override
   @pragma('vm:prefer-inline')
   $ContractStateCopyWith<$Res> get state {
@@ -115,6 +125,8 @@ class __$$ContractStateChangedEventImplCopyWithImpl<$Res>
       $Res Function(_$ContractStateChangedEventImpl) _then)
       : super(_value, _then);
 
+  /// Create a copy of ContractStateChangedEvent
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -162,11 +174,13 @@ class _$ContractStateChangedEventImpl implements _ContractStateChangedEvent {
             (identical(other.state, state) || other.state == state));
   }
 
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   int get hashCode => Object.hash(runtimeType, address, state);
 
-  @JsonKey(ignore: true)
+  /// Create a copy of ContractStateChangedEvent
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   @pragma('vm:prefer-inline')
   _$$ContractStateChangedEventImplCopyWith<_$ContractStateChangedEventImpl>
@@ -193,8 +207,11 @@ abstract class _ContractStateChangedEvent implements ContractStateChangedEvent {
   Address get address;
   @override
   ContractState get state;
+
+  /// Create a copy of ContractStateChangedEvent
+  /// with the given fields replaced by the non-null parameter values.
   @override
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   _$$ContractStateChangedEventImplCopyWith<_$ContractStateChangedEventImpl>
       get copyWith => throw _privateConstructorUsedError;
 }

@@ -69,6 +69,28 @@ mixin SeedKeyRepositoryImpl on TransportRepository
   }
 
   @override
+  Future<PublicKey> deriveKey({
+    required int accountId,
+    required String password,
+    required PublicKey masterKey,
+  }) {
+    return keyStore.addKey(
+      DerivedKeyCreateInput.derive(
+        DerivedKeyCreateInputDerive(
+          masterKey: masterKey,
+          accountId: accountId,
+          password: Password.explicit(
+            PasswordExplicit(
+              password: password,
+              cacheBehavior: const PasswordCacheBehavior.nop(),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  @override
   Future<PublicKey> addSeed({
     required List<String> phrase,
     required String password,

@@ -28,7 +28,9 @@ mixin _$TonWalletExpiredTransaction {
       throw _privateConstructorUsedError; // flag if this transaction was sent to this wallet
   bool get isIncoming => throw _privateConstructorUsedError;
 
-  @JsonKey(ignore: true)
+  /// Create a copy of TonWalletExpiredTransaction
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   $TonWalletExpiredTransactionCopyWith<TonWalletExpiredTransaction>
       get copyWith => throw _privateConstructorUsedError;
 }
@@ -65,6 +67,8 @@ class _$TonWalletExpiredTransactionCopyWithImpl<$Res,
   // ignore: unused_field
   final $Res Function($Val) _then;
 
+  /// Create a copy of TonWalletExpiredTransaction
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -108,6 +112,8 @@ class _$TonWalletExpiredTransactionCopyWithImpl<$Res,
     ) as $Val);
   }
 
+  /// Create a copy of TonWalletExpiredTransaction
+  /// with the given fields replaced by the non-null parameter values.
   @override
   @pragma('vm:prefer-inline')
   $AddressCopyWith<$Res> get address {
@@ -116,6 +122,8 @@ class _$TonWalletExpiredTransactionCopyWithImpl<$Res,
     });
   }
 
+  /// Create a copy of TonWalletExpiredTransaction
+  /// with the given fields replaced by the non-null parameter values.
   @override
   @pragma('vm:prefer-inline')
   $AddressCopyWith<$Res> get destination {
@@ -159,6 +167,8 @@ class __$$TonWalletExpiredTransactionImplCopyWithImpl<$Res>
       $Res Function(_$TonWalletExpiredTransactionImpl) _then)
       : super(_value, _then);
 
+  /// Create a copy of TonWalletExpiredTransaction
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -263,7 +273,9 @@ class _$TonWalletExpiredTransactionImpl
   int get hashCode => Object.hash(runtimeType, address, date, expireAt,
       destination, amount, messageHash, isIncoming);
 
-  @JsonKey(ignore: true)
+  /// Create a copy of TonWalletExpiredTransaction
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   @pragma('vm:prefer-inline')
   _$$TonWalletExpiredTransactionImplCopyWith<_$TonWalletExpiredTransactionImpl>
@@ -282,23 +294,27 @@ abstract class _TonWalletExpiredTransaction
       required final String messageHash,
       required final bool isIncoming}) = _$TonWalletExpiredTransactionImpl;
 
-  @override // address of wallet for which this transaction found
-  Address get address;
-  @override // creation date
+// address of wallet for which this transaction found
+  @override
+  Address get address; // creation date
+  @override
   DateTime get date;
   @override
-  DateTime get expireAt;
-  @override // address for which tokens was sent
+  DateTime get expireAt; // address for which tokens was sent
+  @override
   Address get destination;
   @override
   @amountJsonConverter
   BigInt get amount;
   @override
-  String get messageHash;
-  @override // flag if this transaction was sent to this wallet
-  bool get isIncoming;
+  String get messageHash; // flag if this transaction was sent to this wallet
   @override
-  @JsonKey(ignore: true)
+  bool get isIncoming;
+
+  /// Create a copy of TonWalletExpiredTransaction
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @JsonKey(includeFromJson: false, includeToJson: false)
   _$$TonWalletExpiredTransactionImplCopyWith<_$TonWalletExpiredTransactionImpl>
       get copyWith => throw _privateConstructorUsedError;
 }
