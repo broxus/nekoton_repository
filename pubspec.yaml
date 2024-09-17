@@ -23,12 +23,10 @@ dependencies:
   rxdart: ^0.27.7
 
 dev_dependencies:
-#  broxus_flutter_analysis:
-#    git:
-#      url: https://github.com/broxus/flutter_templates.git
-#      ref: broxus_flutter_analysis-v1.0.0
   broxus_flutter_analysis:
-    path: ../flutter_templates
+   git:
+     url: https://github.com/broxus/flutter_templates.git
+     ref: main
   build_runner: ^2.4.12
   flutter_test:
     sdk: flutter
