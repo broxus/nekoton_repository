@@ -17,6 +17,9 @@ class OnlyV3WalletTypeSupports extends Fake implements TransportStrategy {
 
 void main() {
   const superMasterName = 'SUPER MASTER';
+  const superMasterMeta = SeedMetadata(
+    name: superMasterName,
+  );
   const key1 = PublicKey(publicKey: '1111111111111111111');
   final key1Ellipse = key1.toEllipseString();
   const key2 = PublicKey(publicKey: '2222222222222222222');
@@ -148,7 +151,7 @@ void main() {
   group('SeedList test', () {
     test('SeedList only keys creation', () {
       final seedsList = SeedList(
-        seedNames: {masterKey.publicKey: superMasterName},
+        seedMeta: {masterKey.publicKey: superMasterMeta},
         allKeys: [
           subKey2,
           subKey1,
@@ -199,7 +202,7 @@ void main() {
 
     test('SeedsList creation keys with accounts', () {
       final seedsList = SeedList(
-        seedNames: const {},
+        seedMeta: const {},
         allKeys: [masterKey, subKey1, subKey2, masterKey2],
         mappedAccounts: {
           masterKey.publicKey: accounts1,
@@ -252,7 +255,7 @@ void main() {
 
     test('SeedsList.findSeedKey', () {
       final seedsList = SeedList(
-        seedNames: const {},
+        seedMeta: const {},
         allKeys: [masterKey, subKey1, subKey2, masterKey2],
         mappedAccounts: {
           masterKey.publicKey: accounts1,
@@ -274,7 +277,7 @@ void main() {
 
     test('SeedsList.findSeedByAnyPublicKey', () {
       final seedsList = SeedList(
-        seedNames: const {},
+        seedMeta: const {},
         allKeys: [masterKey, subKey1, subKey2, masterKey2],
         mappedAccounts: {
           masterKey.publicKey: accounts1,
@@ -296,7 +299,7 @@ void main() {
 
     test('SeedsList.findAccountByAddress', () {
       final seedsList = SeedList(
-        seedNames: const {},
+        seedMeta: const {},
         allKeys: [masterKey, subKey1, subKey2, masterKey2],
         mappedAccounts: {
           masterKey.publicKey: accounts1,
@@ -320,7 +323,7 @@ void main() {
     test('All accounts available by transport', () {
       final strategy = AllWalletTypeSupports();
       final seedsList = NekotonRepository().buildSeeds(
-        seedNames: {masterKey.publicKey: superMasterName},
+        seedMeta: {masterKey.publicKey: superMasterMeta},
         allKeys: [masterKey, subKey1, subKey2, masterKey2],
         allAccounts: [
           account1ExternalHidden.account,
@@ -401,7 +404,7 @@ void main() {
           masterKey2.publicKey: [account2External.account.address],
         },
         transport: strategy,
-        seedNames: {},
+        seedMeta: {},
       );
 
       expect(seedsList.seeds.length, 2);

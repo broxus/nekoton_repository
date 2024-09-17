@@ -138,8 +138,16 @@ void main() {
       masterKey: seedKey1,
       subKeys: [subSeedKey1, subSeedKey2],
       name: null,
+      addType: SeedAddType.create,
+      addedAt: 0,
     );
-    final seed2 = Seed(masterKey: seedKey2, subKeys: const [], name: null);
+    final seed2 = Seed(
+      masterKey: seedKey2,
+      subKeys: const [],
+      name: null,
+      addType: SeedAddType.create,
+      addedAt: 0,
+    );
 
     test('fromSeed', () {
       final changesDeleted = SeedListDiffChange.fromSeed(
@@ -261,12 +269,12 @@ void main() {
   group('NekotonRepository.findChanges', () {
     test('Finds adding new seed with keys and accounts', () {
       final oldList = SeedList(
-        seedNames: const {},
+        seedMeta: const {},
         allKeys: [masterKey2],
         mappedAccounts: {masterKey2.publicKey: accounts2},
       );
       final newList = SeedList(
-        seedNames: const {},
+        seedMeta: const {},
         allKeys: [masterKey2, masterKey, subKey1, subKey2],
         mappedAccounts: {
           masterKey.publicKey: accounts1,
@@ -335,7 +343,7 @@ void main() {
 
     test('Finds deleting seed with keys and accounts', () {
       final oldList = SeedList(
-        seedNames: const {},
+        seedMeta: const {},
         allKeys: [masterKey2, masterKey, subKey1, subKey2],
         mappedAccounts: {
           masterKey.publicKey: accounts1,
@@ -345,7 +353,7 @@ void main() {
         },
       );
       final newList = SeedList(
-        seedNames: const {},
+        seedMeta: const {},
         allKeys: [masterKey2],
         mappedAccounts: {masterKey2.publicKey: accounts2},
       );
@@ -409,7 +417,7 @@ void main() {
 
     test('Finds adding key with accounts', () {
       final oldList = SeedList(
-        seedNames: const {},
+        seedMeta: const {},
         allKeys: [masterKey2, masterKey, subKey1],
         mappedAccounts: {
           masterKey.publicKey: accounts1,
@@ -418,7 +426,7 @@ void main() {
         },
       );
       final newList = SeedList(
-        seedNames: const {},
+        seedMeta: const {},
         allKeys: [masterKey2, masterKey, subKey1, subKey2],
         mappedAccounts: {
           masterKey.publicKey: accounts1,
@@ -452,7 +460,7 @@ void main() {
 
     test('Finds deleting key with accounts', () {
       final oldList = SeedList(
-        seedNames: const {},
+        seedMeta: const {},
         allKeys: [masterKey2, masterKey, subKey1, subKey2],
         mappedAccounts: {
           masterKey.publicKey: accounts1,
@@ -462,7 +470,7 @@ void main() {
         },
       );
       final newList = SeedList(
-        seedNames: const {},
+        seedMeta: const {},
         allKeys: [masterKey2, masterKey, subKey1],
         mappedAccounts: {
           masterKey.publicKey: accounts1,
@@ -495,7 +503,7 @@ void main() {
 
     test('Finds adding accounts', () {
       final oldList = SeedList(
-        seedNames: const {},
+        seedMeta: const {},
         allKeys: [masterKey2, masterKey, subKey1, subKey2],
         mappedAccounts: {
           masterKey2.publicKey: accounts2,
@@ -504,7 +512,7 @@ void main() {
         },
       );
       final newList = SeedList(
-        seedNames: const {},
+        seedMeta: const {},
         allKeys: [masterKey2, masterKey, subKey1, subKey2],
         mappedAccounts: {
           masterKey.publicKey: accounts1,
@@ -546,7 +554,7 @@ void main() {
 
     test('Finds deleting accounts', () {
       final oldList = SeedList(
-        seedNames: const {},
+        seedMeta: const {},
         allKeys: [masterKey2, masterKey, subKey1, subKey2],
         mappedAccounts: {
           masterKey.publicKey: accounts1,
@@ -556,7 +564,7 @@ void main() {
         },
       );
       final newList = SeedList(
-        seedNames: const {},
+        seedMeta: const {},
         allKeys: [masterKey2, masterKey, subKey1, subKey2],
         mappedAccounts: {
           masterKey2.publicKey: accounts2,
@@ -597,12 +605,12 @@ void main() {
 
     test('Finds adding and deleting seeds with keys and accounts at time', () {
       final oldList = SeedList(
-        seedNames: const {},
+        seedMeta: const {},
         allKeys: [masterKey2],
         mappedAccounts: {masterKey2.publicKey: accounts2},
       );
       final newList = SeedList(
-        seedNames: const {},
+        seedMeta: const {},
         allKeys: [masterKey, subKey1, subKey2],
         mappedAccounts: {
           masterKey.publicKey: accounts1,

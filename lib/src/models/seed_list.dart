@@ -14,8 +14,8 @@ class SeedList extends Equatable {
   SeedList({
     required List<KeyStoreEntry> allKeys,
     required Map<PublicKey, AccountList> mappedAccounts,
-    required Map<PublicKey, String> seedNames,
-  }) : _seedsMap = _mapKeysToSeeds(allKeys, mappedAccounts, seedNames) {
+    required Map<PublicKey, SeedMetadata> seedMeta,
+  }) : _seedsMap = _mapKeysToSeeds(allKeys, mappedAccounts, seedMeta) {
     _allKeys = _seedsMap.values.expand((seed) => seed.allKeys).toList();
   }
 
@@ -205,7 +205,7 @@ class SeedList extends Equatable {
   static Map<PublicKey, Seed> _mapKeysToSeeds(
     List<KeyStoreEntry> allKeys,
     Map<PublicKey, AccountList> mappedAccounts,
-    Map<PublicKey, String> seedNames,
+    Map<PublicKey, SeedMetadata> seedMeta,
   ) {
     /// Key - publicKey of masterKey.
     /// Value - list of all keys that derives from this masterKey.
@@ -224,11 +224,15 @@ class SeedList extends Equatable {
       }
     }
 
-    return seeds.map(
-      (master, keys) => MapEntry(
+    return seeds.map((master, keys) {
+      final meta = seedMeta[master];
+
+      return MapEntry(
         master,
         Seed(
-          name: seedNames[master],
+          name: meta?.name,
+          addType: meta?.addType ?? SeedAddType.create,
+          addedAt: meta?.addedAt ?? 0,
           masterKey: SeedKey(
             key: keys.first,
             accountList: mappedAccounts[keys.first.publicKey] ??
@@ -248,8 +252,8 @@ class SeedList extends Equatable {
               (a, b) => a.key.accountId.compareTo(b.key.accountId),
             ),
         ),
-      ),
-    );
+      );
+    });
   }
 
   @override
