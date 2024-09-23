@@ -128,9 +128,7 @@ mixin SeedKeyRepositoryImpl on TransportRepository
           );
 
     final publicKey = await keyStore.addKey(createKeyInput);
-    if (name != null) {
-      await storageRepository.updateSeedName(masterKey: publicKey, name: name);
-    }
+
     await storageRepository.updateSeedMetadata(
       masterKey: publicKey,
       meta: SeedMetadata(
