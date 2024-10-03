@@ -143,11 +143,11 @@ mixin TonWalletRepositoryImpl implements TonWalletRepository {
   }
 
   @override
-  void startPolling(
+  Future<void> startPolling(
     Address address, {
     Duration refreshInterval = tonWalletRefreshInterval,
     bool stopPrevious = true,
-  }) {
+  }) async {
     // If wallet has polling but was stopped, so rerun
     if (pollingQueues[address] != null) {
       pollingQueues[address]!.startPolling();
@@ -159,7 +159,7 @@ mixin TonWalletRepositoryImpl implements TonWalletRepository {
       stopPolling();
     }
 
-    final wallet = getWallet(address).wallet;
+    final wallet = (await getWallet(address)).wallet;
     if (wallet == null) return;
 
     pollingQueues[address] = RefreshPollingQueue(
@@ -295,7 +295,7 @@ mixin TonWalletRepositoryImpl implements TonWalletRepository {
     Address address,
     Expiration expiration,
   ) async {
-    final wallet = getWallet(address).wallet;
+    final wallet = (await getWallet(address)).wallet;
 
     if (wallet == null) throw TonWalletStateNotInitializedException();
 
@@ -309,7 +309,7 @@ mixin TonWalletRepositoryImpl implements TonWalletRepository {
     required int reqConfirms,
     required Expiration expiration,
   }) async {
-    final wallet = getWallet(address).wallet;
+    final wallet = (await getWallet(address)).wallet;
 
     if (wallet == null) throw TonWalletStateNotInitializedException();
 
@@ -330,7 +330,7 @@ mixin TonWalletRepositoryImpl implements TonWalletRepository {
     PublicKey? publicKey,
     String? body,
   }) async {
-    final tonWallet = getWallet(address).wallet;
+    final tonWallet = (await getWallet(address)).wallet;
 
     if (tonWallet == null) throw TonWalletStateNotInitializedException();
 
@@ -354,7 +354,7 @@ mixin TonWalletRepositoryImpl implements TonWalletRepository {
     required String transactionId,
     required Expiration expiration,
   }) async {
-    final tonWallet = getWallet(address).wallet;
+    final tonWallet = (await getWallet(address)).wallet;
 
     if (tonWallet == null) throw TonWalletStateNotInitializedException();
 
@@ -373,7 +373,7 @@ mixin TonWalletRepositoryImpl implements TonWalletRepository {
     required Address address,
     required UnsignedMessage message,
   }) async {
-    final tonWallet = getWallet(address).wallet;
+    final tonWallet = (await getWallet(address)).wallet;
 
     if (tonWallet == null) throw TonWalletStateNotInitializedException();
 
@@ -390,7 +390,7 @@ mixin TonWalletRepositoryImpl implements TonWalletRepository {
     required Address destination,
     required BigInt amount,
   }) async {
-    final tonWallet = getWallet(address).wallet;
+    final tonWallet = (await getWallet(address)).wallet;
 
     if (tonWallet == null) throw TonWalletStateNotInitializedException();
 
@@ -418,8 +418,8 @@ mixin TonWalletRepositoryImpl implements TonWalletRepository {
   Future<Transaction> waitSending({
     required PendingTransaction pending,
     required Address address,
-  }) {
-    final tonWallet = getWallet(address).wallet;
+  }) async {
+    final tonWallet = (await getWallet(address)).wallet;
 
     if (tonWallet == null) throw TonWalletStateNotInitializedException();
 
@@ -533,8 +533,8 @@ mixin TonWalletRepositoryImpl implements TonWalletRepository {
   Future<void> preloadTransactions({
     required Address address,
     required String fromLt,
-  }) {
-    final wallet = getWallet(address).wallet;
+  }) async {
+    final wallet = (await getWallet(address)).wallet;
 
     if (wallet == null) throw TonWalletStateNotInitializedException();
 
@@ -542,18 +542,14 @@ mixin TonWalletRepositoryImpl implements TonWalletRepository {
   }
 
   @override
-  TonWalletState getWallet(Address address) {
-    final wallet = walletsMap[address];
-    if (wallet == null) {
-      throw Exception('TonWalletState $address not found');
-    }
-
+  Future<TonWalletState> getWallet(Address address) async {
+    final wallet = walletsMap[address] ?? await subscribeByAddress(address);
     return wallet;
   }
 
   @override
-  List<PublicKey>? getLocalCustodians(Address address) {
-    final wallet = getWallet(address).wallet;
+  Future<List<PublicKey>?> getLocalCustodians(Address address) async {
+    final wallet = (await getWallet(address)).wallet;
     if (wallet == null) throw TonWalletStateNotInitializedException();
 
     final custodians = wallet.custodians;
@@ -829,12 +825,13 @@ mixin TonWalletRepositoryImpl implements TonWalletRepository {
 
   @override
   // ignore: long-method
-  List<TonWalletMultisigOrdinaryTransaction> mapMultisigOrdinaryTransactions({
+  Future<List<TonWalletMultisigOrdinaryTransaction>>
+      mapMultisigOrdinaryTransactions({
     required Address walletAddress,
     required List<TransactionWithData<TransactionAdditionalInfo?>> transactions,
     required List<MultisigPendingTransaction> multisigPendingTransactions,
-  }) {
-    final wallet = getWallet(walletAddress).wallet;
+  }) async {
+    final wallet = (await getWallet(walletAddress)).wallet;
     if (wallet == null) return [];
 
     return transactions
@@ -976,12 +973,13 @@ mixin TonWalletRepositoryImpl implements TonWalletRepository {
 
   @override
   // ignore: long-method
-  List<TonWalletMultisigPendingTransaction> mapMultisigPendingTransactions({
+  Future<List<TonWalletMultisigPendingTransaction>>
+      mapMultisigPendingTransactions({
     required Address walletAddress,
     required List<TransactionWithData<TransactionAdditionalInfo?>> transactions,
     required List<MultisigPendingTransaction> multisigPendingTransactions,
-  }) {
-    final wallet = getWallet(walletAddress).wallet;
+  }) async {
+    final wallet = (await getWallet(walletAddress)).wallet;
     if (wallet == null) return [];
 
     return transactions
@@ -1153,12 +1151,13 @@ mixin TonWalletRepositoryImpl implements TonWalletRepository {
 
   @override
   // ignore: long-method
-  List<TonWalletMultisigExpiredTransaction> mapMultisigExpiredTransactions({
+  Future<List<TonWalletMultisigExpiredTransaction>>
+      mapMultisigExpiredTransactions({
     required Address walletAddress,
     required List<TransactionWithData<TransactionAdditionalInfo?>> transactions,
     required List<MultisigPendingTransaction> multisigPendingTransactions,
-  }) {
-    final wallet = getWallet(walletAddress).wallet;
+  }) async {
+    final wallet = (await getWallet(walletAddress)).wallet;
     if (wallet == null) return [];
 
     return transactions
@@ -1303,7 +1302,7 @@ mixin TonWalletRepositoryImpl implements TonWalletRepository {
     required Address address,
     required UnsignedMessage message,
   }) async {
-    final tonWallet = getWallet(address).wallet;
+    final tonWallet = (await getWallet(address)).wallet;
 
     if (tonWallet == null) throw TonWalletStateNotInitializedException();
 

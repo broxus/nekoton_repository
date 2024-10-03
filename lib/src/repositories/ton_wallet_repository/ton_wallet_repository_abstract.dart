@@ -67,7 +67,7 @@ abstract class TonWalletRepository {
   ///   [tonWalletRefreshInterval].
   /// [stopPrevious] - if previously created pollers should be stopped,
   ///   default true.
-  void startPolling(
+  Future<void> startPolling(
     Address address, {
     Duration refreshInterval,
     bool stopPrevious,
@@ -209,9 +209,7 @@ abstract class TonWalletRepository {
 
   /// Get instance of wallet that was added by [subscribe], [subscribeByAddress]
   /// or [subscribeByExistingWallet].
-  /// This method will throw error if there is no wallet that had been added
-  /// before.
-  TonWalletState getWallet(Address address);
+  Future<TonWalletState> getWallet(Address address);
 
   /// Get list of custodians for TonWallet with [address] that were added
   /// to application before.
@@ -222,7 +220,7 @@ abstract class TonWalletRepository {
   /// wallets returns single-item list (if exists), for multisig returns as much
   /// as found.
   /// If local custodians were not found, returns null for any wallet.
-  List<PublicKey>? getLocalCustodians(Address address);
+  Future<List<PublicKey>?> getLocalCustodians(Address address);
 
   /// Get list of custodians for TonWallet with [address] that were added
   /// to application before.
@@ -270,7 +268,8 @@ abstract class TonWalletRepository {
   ///   [TonWalletTransactionsStorage.addFoundTransactions].
   /// [multisigPendingTransactions] - list of transactions from
   ///   [TonWallet.getUnconfirmedTransactions]
-  List<TonWalletMultisigOrdinaryTransaction> mapMultisigOrdinaryTransactions({
+  Future<List<TonWalletMultisigOrdinaryTransaction>>
+      mapMultisigOrdinaryTransactions({
     required Address walletAddress,
     required List<TransactionWithData<TransactionAdditionalInfo?>> transactions,
     required List<MultisigPendingTransaction> multisigPendingTransactions,
@@ -283,7 +282,8 @@ abstract class TonWalletRepository {
   ///   [TonWalletTransactionsStorage.addFoundTransactions].
   /// [multisigPendingTransactions] - list of transactions from
   ///   [TonWallet.getUnconfirmedTransactions]
-  List<TonWalletMultisigPendingTransaction> mapMultisigPendingTransactions({
+  Future<List<TonWalletMultisigPendingTransaction>>
+      mapMultisigPendingTransactions({
     required Address walletAddress,
     required List<TransactionWithData<TransactionAdditionalInfo?>> transactions,
     required List<MultisigPendingTransaction> multisigPendingTransactions,
@@ -296,7 +296,8 @@ abstract class TonWalletRepository {
   ///   [TonWalletTransactionsStorage.addFoundTransactions].
   /// [multisigPendingTransactions] - list of transactions from
   ///   [TonWallet.getUnconfirmedTransactions]
-  List<TonWalletMultisigExpiredTransaction> mapMultisigExpiredTransactions({
+  Future<List<TonWalletMultisigExpiredTransaction>>
+      mapMultisigExpiredTransactions({
     required Address walletAddress,
     required List<TransactionWithData<TransactionAdditionalInfo?>> transactions,
     required List<MultisigPendingTransaction> multisigPendingTransactions,

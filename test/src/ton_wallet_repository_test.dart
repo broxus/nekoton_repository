@@ -289,7 +289,7 @@ void main() {
       expect(poller2.isPolling, isFalse);
     });
 
-    test('startPolling with clearing previous', () {
+    test('startPolling with clearing previous', () async {
       when(() => wallet.onMessageExpiredStream)
           .thenAnswer((_) => expiredStream);
       when(() => wallet.onMessageSentStream)
@@ -309,9 +309,8 @@ void main() {
 
       repository.pollingQueues[duplicateAddress] = oldPoller;
 
-      repository
-        ..addWalletInst(wallet)
-        ..startPolling(address);
+      repository.addWalletInst(wallet);
+      await repository.startPolling(address);
 
       expect(repository.pollingQueues[address], isNotNull);
       expect(repository.pollingQueues[address]!.isPolling, isTrue);
@@ -319,7 +318,7 @@ void main() {
       expect(oldPoller.isPolling, false);
     });
 
-    test('startPolling without clearing previous', () {
+    test('startPolling without clearing previous', () async {
       when(() => wallet.onMessageExpiredStream)
           .thenAnswer((_) => expiredStream);
       when(() => wallet.onMessageSentStream)
@@ -336,9 +335,8 @@ void main() {
 
       repository.pollingQueues[duplicateAddress] = oldPoller;
 
-      repository
-        ..addWalletInst(wallet)
-        ..startPolling(address, stopPrevious: false);
+      repository.addWalletInst(wallet);
+      await repository.startPolling(address, stopPrevious: false);
 
       expect(repository.pollingQueues[address], isNotNull);
       expect(repository.pollingQueues[address]!.isPolling, isTrue);
@@ -1045,7 +1043,7 @@ void main() {
       when(() => wallet.address).thenReturn(multisigAddress);
 
       repository.addWalletInst(wallet);
-      final local = repository.getLocalCustodians(multisigAddress);
+      final local = await repository.getLocalCustodians(multisigAddress);
       expect(local, [multisigKey1]);
     });
 
@@ -1065,7 +1063,7 @@ void main() {
       when(() => wallet.address).thenReturn(multisigAddress);
 
       repository.addWalletInst(wallet);
-      final local = repository.getLocalCustodians(multisigAddress);
+      final local = await repository.getLocalCustodians(multisigAddress);
       expect(local, [multisigKey1, multisigKey2]);
     });
 
@@ -1084,11 +1082,11 @@ void main() {
       when(() => wallet.address).thenReturn(notMultisigAddress);
 
       repository.addWalletInst(wallet);
-      final local = repository.getLocalCustodians(notMultisigAddress);
+      final local = await repository.getLocalCustodians(notMultisigAddress);
       expect(local, [notMultisigKey]);
     });
 
-    test('Return null for not multisig if no local found', () {
+    test('Return null for not multisig if no local found', () async {
       when(() => wallet.onMessageExpiredStream)
           .thenAnswer((_) => expiredStream);
       when(() => wallet.onMessageSentStream)
@@ -1103,7 +1101,7 @@ void main() {
       when(() => wallet.address).thenReturn(notMultisigAddress);
 
       repository.addWalletInst(wallet);
-      final local = repository.getLocalCustodians(notMultisigAddress);
+      final local = await repository.getLocalCustodians(notMultisigAddress);
       expect(local, isNull);
     });
   });

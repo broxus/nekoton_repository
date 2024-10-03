@@ -236,7 +236,7 @@ void main() {
       expect(poller2.isPolling, isFalse);
     });
 
-    test('startPolling with clearing previous', () {
+    test('startPolling with clearing previous', () async {
       when(() => wallet.onBalanceChangedStream)
           .thenAnswer((_) => balanceStream);
       when(() => wallet.onTransactionsFoundStream)
@@ -254,9 +254,8 @@ void main() {
 
       repository.tokenPollingQueues[(owner, root2)] = oldPoller;
 
-      repository
-        ..addTokenWalletInst(wallet)
-        ..startPollingToken(owner, root1);
+      repository.addTokenWalletInst(wallet);
+      await repository.startPollingToken(owner, root1);
 
       expect(repository.tokenPollingQueues[(owner, root1)], isNotNull);
       expect(repository.tokenPollingQueues[(owner, root1)]!.isPolling, isTrue);
@@ -264,7 +263,7 @@ void main() {
       expect(oldPoller.isPolling, false);
     });
 
-    test('startPolling without clearing previous', () {
+    test('startPolling without clearing previous', () async {
       when(() => wallet.onBalanceChangedStream)
           .thenAnswer((_) => balanceStream);
       when(() => wallet.onTransactionsFoundStream)
@@ -279,9 +278,8 @@ void main() {
 
       repository.tokenPollingQueues[(owner, root2)] = oldPoller;
 
-      repository
-        ..addTokenWalletInst(wallet)
-        ..startPollingToken(owner, root1, stopPrevious: false);
+      repository.addTokenWalletInst(wallet);
+      await repository.startPollingToken(owner, root1, stopPrevious: false);
 
       expect(repository.tokenPollingQueues[(owner, root1)], isNotNull);
       expect(repository.tokenPollingQueues[(owner, root1)]!.isPolling, isTrue);

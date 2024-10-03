@@ -214,23 +214,8 @@ class NekotonRepository
       await updateTokenTransportSubscriptions();
       updateContractTransportSubscriptions();
 
-      loadAccountsIfTransportChanged(prevTransport, transport);
-
       prevTransport = transport;
     });
-  }
-
-  /// If transport group was changed, try to load existed accounts.
-  /// If account will be loaded for current key, then subscription must be
-  /// created in [updateSubscriptions] on app side.
-  void loadAccountsIfTransportChanged(
-    TransportStrategy prevTransport,
-    TransportStrategy newTransport,
-  ) {
-    if (prevTransport.transport.group != newTransport.transport.group) {
-      final keys = seedList.allPublicKeys;
-      triggerAddingAccounts(keys);
-    }
   }
 
   /// Helper method that allows update one of incoming param of [buildSeeds].

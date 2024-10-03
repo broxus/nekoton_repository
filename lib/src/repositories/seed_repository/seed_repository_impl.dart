@@ -144,9 +144,6 @@ mixin SeedKeyRepositoryImpl on TransportRepository
   }
 
   /// Trigger adding accounts to [AccountRepository] by public keys.
-  /// This method will be called when transport changed to load accounts that
-  /// were not added but they exists in new network,
-  /// see [NekotonRepository.loadAccountsIfTransportChanged]
   Future<void> triggerAddingAccounts(List<PublicKey> publicKeys) async {
     final foundAccounts = <ExistingWalletInfo>[];
     final accountsToAdd = <AccountToAdd>[];

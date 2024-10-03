@@ -46,7 +46,7 @@ abstract class TokenWalletRepository {
   ///   [tonWalletRefreshInterval].
   /// [stopPrevious] - if previously created pollers should be stopped,
   ///   default true.
-  void startPollingToken(
+  Future<void> startPollingToken(
     Address owner,
     Address rootTokenContract, {
     Duration refreshInterval,
@@ -118,7 +118,10 @@ abstract class TokenWalletRepository {
   /// Get instance of wallet that was added by [subscribeToken].
   /// This method will throw error if there is no wallet that had been added
   /// before.
-  TokenWalletState getTokenWallet(Address owner, Address rootTokenContract);
+  Future<TokenWalletState> getTokenWallet(
+    Address owner,
+    Address rootTokenContract,
+  );
 
   /// Map list of transactions for TokenWallet to list of
   /// [TokenWalletOrdinaryTransaction].

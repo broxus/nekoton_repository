@@ -124,12 +124,12 @@ mixin TokenWalletRepositoryImpl implements TokenWalletRepository {
   }
 
   @override
-  void startPollingToken(
+  Future<void> startPollingToken(
     Address owner,
     Address rootTokenContract, {
     Duration refreshInterval = tokenWalletRefreshInterval,
     bool stopPrevious = true,
-  }) {
+  }) async {
     final pair = (owner, rootTokenContract);
 
     // If wallet has polling but was stopped, so rerun
@@ -143,7 +143,7 @@ mixin TokenWalletRepositoryImpl implements TokenWalletRepository {
       stopPollingToken();
     }
 
-    final wallet = getTokenWallet(owner, rootTokenContract).wallet;
+    final wallet = (await getTokenWallet(owner, rootTokenContract)).wallet;
     if (wallet == null) return;
 
     tokenPollingQueues[pair] = RefreshPollingQueue(
@@ -324,7 +324,7 @@ mixin TokenWalletRepositoryImpl implements TokenWalletRepository {
     BigInt? attachedAmount,
     String? payload,
   }) async {
-    final tokenWallet = getTokenWallet(owner, rootTokenContract).wallet;
+    final tokenWallet = (await getTokenWallet(owner, rootTokenContract)).wallet;
 
     if (tokenWallet == null) throw TokenWalletStateNotInitializedException();
 
@@ -350,8 +350,8 @@ mixin TokenWalletRepositoryImpl implements TokenWalletRepository {
     required Address owner,
     required Address rootTokenContract,
     required String fromLt,
-  }) {
-    final tokenWallet = getTokenWallet(owner, rootTokenContract).wallet;
+  }) async {
+    final tokenWallet = (await getTokenWallet(owner, rootTokenContract)).wallet;
 
     if (tokenWallet == null) throw TokenWalletStateNotInitializedException();
 
@@ -359,14 +359,15 @@ mixin TokenWalletRepositoryImpl implements TokenWalletRepository {
   }
 
   @override
-  TokenWalletState getTokenWallet(Address owner, Address rootTokenContract) {
-    final wallet = tokenWalletsMap[(owner, rootTokenContract)];
-    if (wallet == null) {
-      throw Exception(
-        'TokenWalletState ($owner, $rootTokenContract) not found',
-      );
-    }
-
+  Future<TokenWalletState> getTokenWallet(
+    Address owner,
+    Address rootTokenContract,
+  ) async {
+    final wallet = tokenWalletsMap[(owner, rootTokenContract)] ??
+        await subscribeToken(
+          owner: owner,
+          rootTokenContract: rootTokenContract,
+        );
     return wallet;
   }
 
