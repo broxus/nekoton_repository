@@ -42,6 +42,9 @@ abstract class TransportRepository {
     required String group,
     required List<String> endpoints,
     required bool local,
+    int? latencyDetectionInterval,
+    int? maxLatency,
+    int? endpointSelectionRetryCount,
   });
 
   /// This allows create Protobuf based transport from application.

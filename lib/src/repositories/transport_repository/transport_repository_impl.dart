@@ -44,12 +44,17 @@ mixin TransportRepositoryImpl implements TransportRepository {
     required String group,
     required List<String> endpoints,
     required bool local,
+    int? latencyDetectionInterval,
+    int? maxLatency,
+    int? endpointSelectionRetryCount,
   }) async {
     final settings = GqlNetworkSettings(
       endpoints: endpoints,
-      latencyDetectionInterval: defaultLatencyDetectionInterval,
-      maxLatency: defaultMaxLatency,
-      endpointSelectionRetryCount: defaultEndpointSelectionRetryCount,
+      latencyDetectionInterval:
+          latencyDetectionInterval ?? defaultLatencyDetectionInterval,
+      maxLatency: maxLatency ?? defaultMaxLatency,
+      endpointSelectionRetryCount:
+          endpointSelectionRetryCount ?? defaultEndpointSelectionRetryCount,
       local: local,
     );
 
