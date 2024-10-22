@@ -256,11 +256,8 @@ class NekotonRepository
     required Map<PublicKey, SeedMetadata> seedMeta,
   }) {
     final planeExternalAccounts = externalAccounts.values.expand((e) => e);
-    final transportedAllAccounts = allAccounts.where(
-      (a) => transport.availableWalletTypes.contains(a.tonWallet.contract),
-    );
     final mapped = <PublicKey, List<KeyAccount>>{};
-    for (final account in transportedAllAccounts) {
+    for (final account in allAccounts) {
       final key = account.publicKey;
       final isHidden = hiddenAccounts.contains(account.address);
       final isExternal = planeExternalAccounts.contains(account.address);
