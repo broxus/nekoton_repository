@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:get_it/get_it.dart';
 import 'package:nekoton_repository/nekoton_repository.dart';
+import 'package:rxdart/rxdart.dart';
 
 const _maxDeriveKeys = 100;
 
@@ -12,6 +13,16 @@ const _maxDeriveKeys = 100;
 /// ```
 mixin SeedKeyRepositoryImpl on TransportRepository
     implements SeedKeyRepository {
+  final _findingExistingWalletsSubject = BehaviorSubject.seeded(<String>{});
+
+  @override
+  Set<String> get findingExistingWallets =>
+      _findingExistingWalletsSubject.value;
+
+  @override
+  Stream<Set<String>> get findingExistingWalletsStream =>
+      _findingExistingWalletsSubject.stream;
+
   KeyStore get keyStore;
 
   AccountsStorage get accountsStorage;
@@ -145,57 +156,74 @@ mixin SeedKeyRepositoryImpl on TransportRepository
 
   /// Trigger adding accounts to [AccountRepository] by public keys.
   Future<void> triggerAddingAccounts(List<PublicKey> publicKeys) async {
-    final foundAccounts = <ExistingWalletInfo>[];
-    final accountsToAdd = <AccountToAdd>[];
-
     final transport = currentTransport;
+    final keys = publicKeys.map((item) => item.toString()).toSet();
+
+    _findingExistingWalletsSubject.add(
+      _findingExistingWalletsSubject.value.union(keys),
+    );
 
     for (final key in publicKeys) {
-      if (transport.transport.disposed) return;
-
-      final found = await TonWallet.findExistingWallets(
-        transport: transport.transport,
-        workchainId: defaultWorkchainId,
-        publicKey: key,
-        walletTypes: transport.availableWalletTypes,
-      );
-
-      final activeAccounts = found.where((e) => e.isActive);
-
-      // If account already in storage, skip it
-      final notExistedAccounts = activeAccounts.where(
-        (active) =>
-            accountsStorage.accounts.every((a) => a.address != active.address),
-      );
-
-      // If no accounts were found for this key, then create default one.
-      // We must create default if no accounts were found in general.
-      if (activeAccounts.isEmpty) {
-        accountsToAdd.add(
-          AccountToAdd(
-            name: transport.defaultAccountName(transport.defaultWalletType),
-            publicKey: key,
-            contract: transport.defaultWalletType,
-            workchain: defaultWorkchainId,
-          ),
+      if (transport.transport.disposed) {
+        _findingExistingWalletsSubject.add(
+          _findingExistingWalletsSubject.value.difference(keys),
         );
-      } else {
-        // but we add here only accounts not existed in storage
-        foundAccounts.addAll(notExistedAccounts);
+        return;
+      }
+
+      try {
+        final foundAccounts = <ExistingWalletInfo>[];
+        final accountsToAdd = <AccountToAdd>[];
+
+        final found = await TonWallet.findExistingWallets(
+          transport: transport.transport,
+          workchainId: defaultWorkchainId,
+          publicKey: key,
+          walletTypes: transport.availableWalletTypes,
+        );
+
+        final activeAccounts = found.where((e) => e.isActive);
+
+        // If account already in storage, skip it
+        final notExistedAccounts = activeAccounts.where(
+          (active) => accountsStorage.accounts
+              .every((a) => a.address != active.address),
+        );
+
+        // If no accounts were found for this key, then create default one.
+        // We must create default if no accounts were found in general.
+        if (activeAccounts.isEmpty) {
+          accountsToAdd.add(
+            AccountToAdd(
+              name: transport.defaultAccountName(transport.defaultWalletType),
+              publicKey: key,
+              contract: transport.defaultWalletType,
+              workchain: defaultWorkchainId,
+            ),
+          );
+        } else {
+          // but we add here only accounts not existed in storage
+          foundAccounts.addAll(notExistedAccounts);
+        }
+
+        for (final a in foundAccounts) {
+          accountsToAdd.add(
+            AccountToAdd(
+              publicKey: a.publicKey,
+              contract: a.walletType,
+              workchain: a.address.workchain,
+              name: transport.defaultAccountName(a.walletType),
+            ),
+          );
+        }
+
+        await GetIt.instance<AccountRepository>().addAccounts(accountsToAdd);
+      } finally {
+        _findingExistingWalletsSubject.add(
+          {..._findingExistingWalletsSubject.value}..remove(key.toString()),
+        );
       }
     }
-    for (final a in foundAccounts) {
-      accountsToAdd.add(
-        AccountToAdd(
-          publicKey: a.publicKey,
-          contract: a.walletType,
-          workchain: a.address.workchain,
-          name: transport.defaultAccountName(a.walletType),
-        ),
-      );
-    }
-
-    await GetIt.instance<AccountRepository>().addAccounts(accountsToAdd);
   }
 
   @override
