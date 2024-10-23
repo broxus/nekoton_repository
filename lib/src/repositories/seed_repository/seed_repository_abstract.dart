@@ -4,6 +4,12 @@ import 'package:nekoton_repository/nekoton_repository.dart';
 /// This repository can be used as <SeedKeyRepositoryImpl> or you can add
 /// custom logic.
 abstract class SeedKeyRepository {
+  /// Set of public keys that are currently scanning for existing wallets.
+  Set<String> get findingExistingWallets;
+
+  /// Stream to listen for changes in [findingExistingWallets].
+  Stream<Set<String>> get findingExistingWalletsStream;
+
   /// Returns list of public keys that can be used in [deriveKeys] from
   /// seed with [masterKey] and [password].
   /// Returns list of up to 100 public keys, that could be displayed by pages.
