@@ -66,4 +66,7 @@ abstract class TransportStrategy {
 
   /// If staking is enabled for transport, then it must return information.
   StakingInformation? get stakeInformation;
+
+  /// If transport has token API, then it must return base URL for it.
+  String? get tokenApiBaseUrl;
 }
