@@ -1307,13 +1307,16 @@ mixin TonWalletRepositoryImpl implements TonWalletRepository {
     if (tonWallet == null) throw TonWalletStateNotInitializedException();
 
     await message.refreshTimeout();
-    final signedMessage = await message.signFake();
 
-    return tonWallet.transport.simulateTransactionTree(
+    final signedMessage = await message.signFake();
+    final errors = await tonWallet.transport.simulateTransactionTree(
       signedMessage: signedMessage,
       ignoredComputePhaseCodes: Int32List.fromList([0, 1, 60, 100]),
       ignoredActionPhaseCodes: Int32List.fromList([0, 1]),
     );
+
+    // remove duplicate errors
+    return errors.toSet().toList();
   }
 }
 
