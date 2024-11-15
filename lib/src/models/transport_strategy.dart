@@ -69,4 +69,7 @@ abstract class TransportStrategy {
 
   /// If transport has token API, then it must return base URL for it.
   String? get tokenApiBaseUrl;
+
+  /// If transport has currency API, then it must return base URL for it.
+  String? get currencyApiBaseUrl;
 }
