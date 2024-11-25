@@ -131,6 +131,7 @@ abstract class TonWalletRepository {
     required List<PublicKey> custodians,
     required int reqConfirms,
     required Expiration expiration,
+    required int? hours,
   });
 
   /// Prepare transfer of any token from wallet with [address] to [destination]
