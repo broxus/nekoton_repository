@@ -308,6 +308,7 @@ mixin TonWalletRepositoryImpl implements TonWalletRepository {
     required List<PublicKey> custodians,
     required int reqConfirms,
     required Expiration expiration,
+    required int? hours,
   }) async {
     final wallet = (await getWallet(address)).wallet;
 
@@ -317,6 +318,7 @@ mixin TonWalletRepositoryImpl implements TonWalletRepository {
       expiration: expiration,
       custodians: custodians,
       reqConfirms: reqConfirms,
+      expirationTime: hours,
     );
   }
 
