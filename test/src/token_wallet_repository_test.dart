@@ -16,7 +16,10 @@ class MockWalletStorage extends Mock
 
 class MockWallet extends Mock implements TokenWallet {}
 
-class MockProtoTransport extends Mock implements ProtoTransport {}
+class MockProtoTransport extends Mock implements ProtoTransport {
+  @override
+  Future<T> use<T>(Future<T> Function() fn) => fn();
+}
 
 class TokenWalletRepoTest with TokenWalletRepositoryImpl {
   TokenWalletRepoTest(

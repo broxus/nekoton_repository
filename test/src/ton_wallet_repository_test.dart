@@ -21,11 +21,20 @@ class MockWalletStorage extends Mock implements TonWalletTransactionsStorage {}
 
 class MockWallet extends Mock implements TonWallet {}
 
-class MockGqlTransport extends Mock implements GqlTransport {}
+class MockGqlTransport extends Mock implements GqlTransport {
+  @override
+  Future<T> use<T>(Future<T> Function() fn) => fn();
+}
 
-class MockProtoTransport extends Mock implements ProtoTransport {}
+class MockProtoTransport extends Mock implements ProtoTransport {
+  @override
+  Future<T> use<T>(Future<T> Function() fn) => fn();
+}
 
-class MockJrpcTransport extends Mock implements ProtoTransport {}
+class MockJrpcTransport extends Mock implements ProtoTransport {
+  @override
+  Future<T> use<T>(Future<T> Function() fn) => fn();
+}
 
 class TonWalletRepoTest with TonWalletRepositoryImpl {
   TonWalletRepoTest(
