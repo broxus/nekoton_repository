@@ -33,7 +33,7 @@ mixin TransportRepositoryImpl implements TransportRepository {
       ),
     );
 
-    prev?.transport.dispose();
+    await prev?.transport.dispose();
   }
 
   @override
