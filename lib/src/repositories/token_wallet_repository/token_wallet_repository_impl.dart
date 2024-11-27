@@ -328,20 +328,22 @@ mixin TokenWalletRepositoryImpl implements TokenWalletRepository {
 
     if (tokenWallet == null) throw TokenWalletStateNotInitializedException();
 
-    final attached = attachedAmount ??
-        await tokenWallet.estimateMinAttachedAmount(
-          destination: destination,
-          amount: amount,
-          notifyReceiver: notifyReceiver,
-          payload: payload,
-        );
+    BigInt? minAttachedAmount;
+    try {
+      minAttachedAmount = await tokenWallet.estimateMinAttachedAmount(
+        destination: destination,
+        amount: amount,
+        notifyReceiver: notifyReceiver,
+        payload: payload,
+      );
+    } catch (_) {}
 
     return tokenWallet.prepareTransfer(
       destination: destination,
       amount: amount,
       notifyReceiver: notifyReceiver,
       payload: payload,
-      attachedAmount: attached,
+      attachedAmount: minAttachedAmount ?? attachedAmount,
     );
   }
 
