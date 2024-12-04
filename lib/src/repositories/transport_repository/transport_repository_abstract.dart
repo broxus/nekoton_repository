@@ -36,8 +36,7 @@ abstract class TransportRepository {
   /// !!! This method do not modify [currentTransport]. To do it, use
   /// [updateTransport].
   Future<GqlTransport> createGqlTransport({
-    required GqlConnectionPost post,
-    required GqlConnectionGet get,
+    required GqlConnectionHttpClient client,
     required String name,
     required String group,
     required List<String> endpoints,
@@ -52,7 +51,7 @@ abstract class TransportRepository {
   /// !!! This method do not modify [currentTransport]. To do it, use
   /// [updateTransport].
   Future<ProtoTransport> createProtoTransport({
-    required ProtoConnectionPost post,
+    required ProtoConnectionHttpClient client,
     required String name,
     required String group,
     required String endpoint,
@@ -63,7 +62,7 @@ abstract class TransportRepository {
   /// !!! This method do not modify [currentTransport]. To do it, use
   /// [updateTransport].
   Future<JrpcTransport> createJrpcTransport({
-    required JrpcConnectionPost post,
+    required JrpcConnectionHttpClient client,
     required String name,
     required String group,
     required String endpoint,

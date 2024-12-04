@@ -38,8 +38,7 @@ mixin TransportRepositoryImpl implements TransportRepository {
 
   @override
   Future<GqlTransport> createGqlTransport({
-    required GqlConnectionPost post,
-    required GqlConnectionGet get,
+    required GqlConnectionHttpClient client,
     required String name,
     required String group,
     required List<String> endpoints,
@@ -59,8 +58,7 @@ mixin TransportRepositoryImpl implements TransportRepository {
     );
 
     final connection = await GqlConnection.create(
-      post: post,
-      get: get,
+      client: client,
       name: name,
       group: group,
       settings: settings,
@@ -71,7 +69,7 @@ mixin TransportRepositoryImpl implements TransportRepository {
 
   @override
   Future<ProtoTransport> createProtoTransport({
-    required ProtoConnectionPost post,
+    required ProtoConnectionHttpClient client,
     required String name,
     required String group,
     required String endpoint,
@@ -79,7 +77,7 @@ mixin TransportRepositoryImpl implements TransportRepository {
     final settings = ProtoNetworkSettings(endpoint: endpoint);
 
     final connection = await ProtoConnection.create(
-      post: post,
+      client: client,
       name: name,
       group: group,
       settings: settings,
@@ -90,7 +88,7 @@ mixin TransportRepositoryImpl implements TransportRepository {
 
   @override
   Future<JrpcTransport> createJrpcTransport({
-    required JrpcConnectionPost post,
+    required JrpcConnectionHttpClient client,
     required String name,
     required String group,
     required String endpoint,
@@ -98,7 +96,7 @@ mixin TransportRepositoryImpl implements TransportRepository {
     final settings = JrpcNetworkSettings(endpoint: endpoint);
 
     final connection = await JrpcConnection.create(
-      post: post,
+      client: client,
       name: name,
       group: group,
       settings: settings,
