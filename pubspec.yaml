@@ -1,6 +1,6 @@
 name: nekoton_repository
 description: Nekoton repository package
-version: 0.37.0-dev.15
+version: 0.37.0-dev.16
 repository: https://github.com/broxus/nekoton_repository
 
 environment:
