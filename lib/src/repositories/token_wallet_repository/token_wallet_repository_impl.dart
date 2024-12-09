@@ -84,10 +84,7 @@ mixin TokenWalletRepositoryImpl implements TokenWalletRepository {
     required Address owner,
     required Address rootTokenContract,
   }) async {
-    final transport = currentTransport.transport;
-
-    final wallet = await TokenWallet.subscribe(
-      transport: transport,
+    final wallet = await currentTransport.subscribeToken(
       owner: owner,
       rootTokenContract: rootTokenContract,
     );
@@ -148,7 +145,7 @@ mixin TokenWalletRepositoryImpl implements TokenWalletRepository {
 
     tokenPollingQueues[pair] = RefreshPollingQueue(
       refreshInterval: refreshInterval,
-      refresher: wallet,
+      refresher: wallet.inner,
     )..startPolling();
   }
 
@@ -329,21 +326,40 @@ mixin TokenWalletRepositoryImpl implements TokenWalletRepository {
     if (tokenWallet == null) throw TokenWalletStateNotInitializedException();
 
     try {
-      attachedAmount ??= await tokenWallet.estimateMinAttachedAmount(
-        destination: destination,
-        amount: amount,
-        notifyReceiver: notifyReceiver,
-        payload: payload,
-      );
+      attachedAmount ??= await switch (tokenWallet) {
+        Tip3TokenWallet() => tokenWallet.inner.estimateMinAttachedAmount(
+            destination: destination,
+            amount: amount,
+            notifyReceiver: notifyReceiver,
+            payload: payload,
+          ),
+        JettonTokenWallet() => tokenWallet.inner.estimateMinAttachedAmount(
+            destination: destination,
+            amount: amount,
+            customPayload: payload,
+            remainingGasTo: tokenWallet.owner,
+            callbackValue: BigInt.one,
+          ),
+      };
     } catch (_) {}
 
-    return tokenWallet.prepareTransfer(
-      destination: destination,
-      amount: amount,
-      notifyReceiver: notifyReceiver,
-      payload: payload,
-      attachedAmount: attachedAmount,
-    );
+    return switch (tokenWallet) {
+      Tip3TokenWallet() => tokenWallet.inner.prepareTransfer(
+          destination: destination,
+          amount: amount,
+          payload: payload,
+          notifyReceiver: notifyReceiver,
+          attachedAmount: attachedAmount,
+        ),
+      JettonTokenWallet() => tokenWallet.inner.prepareTransfer(
+          destination: destination,
+          amount: amount,
+          customPayload: payload,
+          remainingGasTo: tokenWallet.owner,
+          callbackValue: BigInt.one,
+          attachedAmount: attachedAmount,
+        ),
+    };
   }
 
   @override
@@ -376,7 +392,7 @@ mixin TokenWalletRepositoryImpl implements TokenWalletRepository {
   /// You must not call this method directly form app, use [subscribeToken].
   @protected
   @visibleForTesting
-  TokenWalletState addTokenWalletInst(TokenWallet wallet) {
+  TokenWalletState addTokenWalletInst(GenericTokenWallet wallet) {
     final wallets = tokenWalletsMap;
     final pair = (wallet.owner, wallet.rootTokenContract);
     final res = TokenWalletState.wallet(wallet);
@@ -404,28 +420,33 @@ mixin TokenWalletRepositoryImpl implements TokenWalletRepository {
     return wallet;
   }
 
-  TokenWalletSubscription _createWalletSubscription(TokenWallet wallet) {
-    return TokenWalletSubscription(
-      tokenWallet: wallet,
-      onBalanceChanged: (event) => tokenWalletStorage.updateTokenWalletDetails(
-        owner: wallet.owner,
-        rootTokenContract: wallet.rootTokenContract,
-        group: wallet.transport.group,
-        networkId: wallet.transport.networkId,
-        symbol: wallet.symbol,
-        version: wallet.version,
-        balance: wallet.balance,
-        contractState: wallet.contractState,
-      ),
-      onTransactionsFound: (event) => tokenWalletStorage.addFoundTransactions(
-        owner: wallet.owner,
-        rootTokenContract: wallet.rootTokenContract,
-        group: wallet.transport.group,
-        networkId: wallet.transport.networkId,
-        transaction: event.$1,
-      ),
-    );
-  }
+  TokenWalletSubscription _createWalletSubscription(
+    GenericTokenWallet wallet,
+  ) =>
+      TokenWalletSubscription(
+        wallet: wallet,
+        onBalanceChanged: (event) =>
+            tokenWalletStorage.updateTokenWalletDetails(
+          owner: wallet.owner,
+          rootTokenContract: wallet.rootTokenContract,
+          group: wallet.transport.group,
+          networkId: wallet.transport.networkId,
+          symbol: wallet.symbol,
+          version: switch (wallet) {
+            Tip3TokenWallet() => wallet.inner.version,
+            _ => null,
+          },
+          balance: wallet.balance,
+          contractState: wallet.contractState,
+        ),
+        onTransactionsFound: (event) => tokenWalletStorage.addFoundTransactions(
+          owner: wallet.owner,
+          rootTokenContract: wallet.rootTokenContract,
+          group: wallet.transport.group,
+          networkId: wallet.transport.networkId,
+          transaction: event.$1,
+        ),
+      );
 
   @override
 // ignore: long-method
@@ -462,6 +483,8 @@ mixin TokenWalletRepositoryImpl implements TokenWalletRepository {
             accept: (data) => data,
             transferBounced: (data) => data,
             swapBackBounced: (data) => data,
+            transfer: (data) => data.tokens,
+            internalTransfer: (data) => data.tokens,
           );
 
           final isOutgoing = e.data!.when(
@@ -471,6 +494,8 @@ mixin TokenWalletRepositoryImpl implements TokenWalletRepository {
             accept: (data) => false,
             transferBounced: (data) => false,
             swapBackBounced: (data) => false,
+            transfer: (data) => true,
+            internalTransfer: (data) => false,
           );
 
           final address =
@@ -494,6 +519,10 @@ mixin TokenWalletRepositoryImpl implements TokenWalletRepository {
 
           BigInt? swapBackBounced;
 
+          JettonOutgoingTransfer? jettonOutgoingTransfer;
+
+          JettonIncomingTransfer? jettonIncomingTransfer;
+
           e.data!.when(
             incomingTransfer: (tokenIncomingTransfer) =>
                 incomingTransfer = tokenIncomingTransfer,
@@ -503,6 +532,8 @@ mixin TokenWalletRepositoryImpl implements TokenWalletRepository {
             accept: (data) => accept = data,
             transferBounced: (data) => transferBounced = data,
             swapBackBounced: (data) => swapBackBounced = data,
+            transfer: (data) => jettonOutgoingTransfer = data,
+            internalTransfer: (data) => jettonIncomingTransfer = data,
           );
 
           return TokenWalletOrdinaryTransaction(
@@ -520,6 +551,8 @@ mixin TokenWalletRepositoryImpl implements TokenWalletRepository {
             accept: accept,
             transferBounced: transferBounced,
             swapBackBounced: swapBackBounced,
+            jettonIncomingTransfer: jettonIncomingTransfer,
+            jettonOutgoingTransfer: jettonOutgoingTransfer,
           );
         },
       ).toList();

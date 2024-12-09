@@ -72,4 +72,10 @@ abstract class TransportStrategy {
 
   /// If transport has currency API, then it must return base URL for it.
   String? get currencyApiBaseUrl;
+
+  /// Create token wallet subscribtion.
+  Future<GenericTokenWallet> subscribeToken({
+    required Address owner,
+    required Address rootTokenContract,
+  });
 }

@@ -7,7 +7,6 @@ import 'package:mocktail/mocktail.dart';
 import 'package:nekoton_repository/nekoton_repository.dart' hide Symbol;
 import 'package:nekoton_repository/src/repositories/ton_wallet_repository/ton_wallet_gql_block_poller.dart';
 import 'package:nekoton_repository/src/utils/utils.dart';
-import 'package:tuple/tuple.dart';
 
 class MockTokenRepository extends Mock implements TokenWalletRepository {}
 
@@ -65,12 +64,14 @@ void main() {
   late TonWalletRepoTest repository;
   late MockTokenRepository tokenRepository;
 
-  late Stream<Tuple2<PendingTransaction, Transaction?>> messageSentStream;
+  late Stream<(PendingTransaction, Transaction?)> messageSentStream;
   late Stream<PendingTransaction> expiredStream;
   late Stream<ContractState> stateStream;
   late Stream<
-      Tuple2<List<TransactionWithData<TransactionAdditionalInfo?>>,
-          TransactionsBatchInfo>> transactionsFoundStream;
+      (
+        List<TransactionWithData<TransactionAdditionalInfo?>>,
+        TransactionsBatchInfo
+      )> transactionsFoundStream;
 
   const address = Address(address: '0:1111111111111');
   const duplicateAddress = Address(address: '0:22222222222');
@@ -415,7 +416,7 @@ void main() {
       when(() => wallet.onMessageSentStream).thenAnswer(
         (_) => Stream.fromFuture(
           Future.delayed(sendDuration, () {
-            return Tuple2<PendingTransaction, Transaction?>(
+            return (
               pendingTransaction,
               transaction,
             );
@@ -660,7 +661,7 @@ void main() {
       when(() => wallet.onMessageSentStream).thenAnswer(
         (_) => Stream.fromFuture(
           Future.delayed(sendDuration, () {
-            return Tuple2<PendingTransaction, Transaction?>(
+            return (
               pendingTransaction,
               transaction,
             );
@@ -853,7 +854,7 @@ void main() {
       when(() => wallet.onMessageSentStream).thenAnswer(
         (_) => Stream.fromFuture(
           Future.delayed(sendDuration, () {
-            return Tuple2<PendingTransaction, Transaction?>(
+            return (
               pendingTransaction,
               transaction,
             );

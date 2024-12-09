@@ -18,9 +18,9 @@ abstract class TokenWalletTransactionsStorage {
     required Address owner,
     required Address rootTokenContract,
     required Symbol symbol,
-    required TokenWalletVersion version,
     required BigInt balance,
     required ContractState contractState,
+    TokenWalletVersion? version,
   });
 
   /// Add list of found transactions to list of transactions.
