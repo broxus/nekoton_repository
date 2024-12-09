@@ -38,6 +38,10 @@ mixin _$TokenWalletOrdinaryTransaction {
   BigInt? get transferBounced => throw _privateConstructorUsedError;
   @amountJsonConverter
   BigInt? get swapBackBounced => throw _privateConstructorUsedError;
+  JettonOutgoingTransfer? get jettonOutgoingTransfer =>
+      throw _privateConstructorUsedError;
+  JettonIncomingTransfer? get jettonIncomingTransfer =>
+      throw _privateConstructorUsedError;
 
   /// Create a copy of TokenWalletOrdinaryTransaction
   /// with the given fields replaced by the non-null parameter values.
@@ -68,12 +72,16 @@ abstract class $TokenWalletOrdinaryTransactionCopyWith<$Res> {
       TokenSwapBack? swapBack,
       @amountJsonConverter BigInt? accept,
       @amountJsonConverter BigInt? transferBounced,
-      @amountJsonConverter BigInt? swapBackBounced});
+      @amountJsonConverter BigInt? swapBackBounced,
+      JettonOutgoingTransfer? jettonOutgoingTransfer,
+      JettonIncomingTransfer? jettonIncomingTransfer});
 
   $AddressCopyWith<$Res> get address;
   $TokenIncomingTransferCopyWith<$Res>? get incomingTransfer;
   $TokenOutgoingTransferCopyWith<$Res>? get outgoingTransfer;
   $TokenSwapBackCopyWith<$Res>? get swapBack;
+  $JettonOutgoingTransferCopyWith<$Res>? get jettonOutgoingTransfer;
+  $JettonIncomingTransferCopyWith<$Res>? get jettonIncomingTransfer;
 }
 
 /// @nodoc
@@ -106,6 +114,8 @@ class _$TokenWalletOrdinaryTransactionCopyWithImpl<$Res,
     Object? accept = freezed,
     Object? transferBounced = freezed,
     Object? swapBackBounced = freezed,
+    Object? jettonOutgoingTransfer = freezed,
+    Object? jettonIncomingTransfer = freezed,
   }) {
     return _then(_value.copyWith(
       lt: null == lt
@@ -164,6 +174,14 @@ class _$TokenWalletOrdinaryTransactionCopyWithImpl<$Res,
           ? _value.swapBackBounced
           : swapBackBounced // ignore: cast_nullable_to_non_nullable
               as BigInt?,
+      jettonOutgoingTransfer: freezed == jettonOutgoingTransfer
+          ? _value.jettonOutgoingTransfer
+          : jettonOutgoingTransfer // ignore: cast_nullable_to_non_nullable
+              as JettonOutgoingTransfer?,
+      jettonIncomingTransfer: freezed == jettonIncomingTransfer
+          ? _value.jettonIncomingTransfer
+          : jettonIncomingTransfer // ignore: cast_nullable_to_non_nullable
+              as JettonIncomingTransfer?,
     ) as $Val);
   }
 
@@ -220,6 +238,36 @@ class _$TokenWalletOrdinaryTransactionCopyWithImpl<$Res,
       return _then(_value.copyWith(swapBack: value) as $Val);
     });
   }
+
+  /// Create a copy of TokenWalletOrdinaryTransaction
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @pragma('vm:prefer-inline')
+  $JettonOutgoingTransferCopyWith<$Res>? get jettonOutgoingTransfer {
+    if (_value.jettonOutgoingTransfer == null) {
+      return null;
+    }
+
+    return $JettonOutgoingTransferCopyWith<$Res>(_value.jettonOutgoingTransfer!,
+        (value) {
+      return _then(_value.copyWith(jettonOutgoingTransfer: value) as $Val);
+    });
+  }
+
+  /// Create a copy of TokenWalletOrdinaryTransaction
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @pragma('vm:prefer-inline')
+  $JettonIncomingTransferCopyWith<$Res>? get jettonIncomingTransfer {
+    if (_value.jettonIncomingTransfer == null) {
+      return null;
+    }
+
+    return $JettonIncomingTransferCopyWith<$Res>(_value.jettonIncomingTransfer!,
+        (value) {
+      return _then(_value.copyWith(jettonIncomingTransfer: value) as $Val);
+    });
+  }
 }
 
 /// @nodoc
@@ -245,7 +293,9 @@ abstract class _$$TokenWalletOrdinaryTransactionImplCopyWith<$Res>
       TokenSwapBack? swapBack,
       @amountJsonConverter BigInt? accept,
       @amountJsonConverter BigInt? transferBounced,
-      @amountJsonConverter BigInt? swapBackBounced});
+      @amountJsonConverter BigInt? swapBackBounced,
+      JettonOutgoingTransfer? jettonOutgoingTransfer,
+      JettonIncomingTransfer? jettonIncomingTransfer});
 
   @override
   $AddressCopyWith<$Res> get address;
@@ -255,6 +305,10 @@ abstract class _$$TokenWalletOrdinaryTransactionImplCopyWith<$Res>
   $TokenOutgoingTransferCopyWith<$Res>? get outgoingTransfer;
   @override
   $TokenSwapBackCopyWith<$Res>? get swapBack;
+  @override
+  $JettonOutgoingTransferCopyWith<$Res>? get jettonOutgoingTransfer;
+  @override
+  $JettonIncomingTransferCopyWith<$Res>? get jettonIncomingTransfer;
 }
 
 /// @nodoc
@@ -286,6 +340,8 @@ class __$$TokenWalletOrdinaryTransactionImplCopyWithImpl<$Res>
     Object? accept = freezed,
     Object? transferBounced = freezed,
     Object? swapBackBounced = freezed,
+    Object? jettonOutgoingTransfer = freezed,
+    Object? jettonIncomingTransfer = freezed,
   }) {
     return _then(_$TokenWalletOrdinaryTransactionImpl(
       lt: null == lt
@@ -344,6 +400,14 @@ class __$$TokenWalletOrdinaryTransactionImplCopyWithImpl<$Res>
           ? _value.swapBackBounced
           : swapBackBounced // ignore: cast_nullable_to_non_nullable
               as BigInt?,
+      jettonOutgoingTransfer: freezed == jettonOutgoingTransfer
+          ? _value.jettonOutgoingTransfer
+          : jettonOutgoingTransfer // ignore: cast_nullable_to_non_nullable
+              as JettonOutgoingTransfer?,
+      jettonIncomingTransfer: freezed == jettonIncomingTransfer
+          ? _value.jettonIncomingTransfer
+          : jettonIncomingTransfer // ignore: cast_nullable_to_non_nullable
+              as JettonIncomingTransfer?,
     ));
   }
 }
@@ -366,7 +430,9 @@ class _$TokenWalletOrdinaryTransactionImpl
       this.swapBack,
       @amountJsonConverter this.accept,
       @amountJsonConverter this.transferBounced,
-      @amountJsonConverter this.swapBackBounced});
+      @amountJsonConverter this.swapBackBounced,
+      this.jettonOutgoingTransfer,
+      this.jettonIncomingTransfer});
 
   @override
   final String lt;
@@ -402,10 +468,14 @@ class _$TokenWalletOrdinaryTransactionImpl
   @override
   @amountJsonConverter
   final BigInt? swapBackBounced;
+  @override
+  final JettonOutgoingTransfer? jettonOutgoingTransfer;
+  @override
+  final JettonIncomingTransfer? jettonIncomingTransfer;
 
   @override
   String toString() {
-    return 'TokenWalletOrdinaryTransaction(lt: $lt, isOutgoing: $isOutgoing, value: $value, address: $address, date: $date, fees: $fees, hash: $hash, prevTransactionLt: $prevTransactionLt, incomingTransfer: $incomingTransfer, outgoingTransfer: $outgoingTransfer, swapBack: $swapBack, accept: $accept, transferBounced: $transferBounced, swapBackBounced: $swapBackBounced)';
+    return 'TokenWalletOrdinaryTransaction(lt: $lt, isOutgoing: $isOutgoing, value: $value, address: $address, date: $date, fees: $fees, hash: $hash, prevTransactionLt: $prevTransactionLt, incomingTransfer: $incomingTransfer, outgoingTransfer: $outgoingTransfer, swapBack: $swapBack, accept: $accept, transferBounced: $transferBounced, swapBackBounced: $swapBackBounced, jettonOutgoingTransfer: $jettonOutgoingTransfer, jettonIncomingTransfer: $jettonIncomingTransfer)';
   }
 
   @override
@@ -433,7 +503,11 @@ class _$TokenWalletOrdinaryTransactionImpl
             (identical(other.transferBounced, transferBounced) ||
                 other.transferBounced == transferBounced) &&
             (identical(other.swapBackBounced, swapBackBounced) ||
-                other.swapBackBounced == swapBackBounced));
+                other.swapBackBounced == swapBackBounced) &&
+            (identical(other.jettonOutgoingTransfer, jettonOutgoingTransfer) ||
+                other.jettonOutgoingTransfer == jettonOutgoingTransfer) &&
+            (identical(other.jettonIncomingTransfer, jettonIncomingTransfer) ||
+                other.jettonIncomingTransfer == jettonIncomingTransfer));
   }
 
   @override
@@ -452,7 +526,9 @@ class _$TokenWalletOrdinaryTransactionImpl
       swapBack,
       accept,
       transferBounced,
-      swapBackBounced);
+      swapBackBounced,
+      jettonOutgoingTransfer,
+      jettonIncomingTransfer);
 
   /// Create a copy of TokenWalletOrdinaryTransaction
   /// with the given fields replaced by the non-null parameter values.
@@ -481,7 +557,9 @@ abstract class _TokenWalletOrdinaryTransaction
           final TokenSwapBack? swapBack,
           @amountJsonConverter final BigInt? accept,
           @amountJsonConverter final BigInt? transferBounced,
-          @amountJsonConverter final BigInt? swapBackBounced}) =
+          @amountJsonConverter final BigInt? swapBackBounced,
+          final JettonOutgoingTransfer? jettonOutgoingTransfer,
+          final JettonIncomingTransfer? jettonIncomingTransfer}) =
       _$TokenWalletOrdinaryTransactionImpl;
 
   @override
@@ -518,6 +596,10 @@ abstract class _TokenWalletOrdinaryTransaction
   @override
   @amountJsonConverter
   BigInt? get swapBackBounced;
+  @override
+  JettonOutgoingTransfer? get jettonOutgoingTransfer;
+  @override
+  JettonIncomingTransfer? get jettonIncomingTransfer;
 
   /// Create a copy of TokenWalletOrdinaryTransaction
   /// with the given fields replaced by the non-null parameter values.

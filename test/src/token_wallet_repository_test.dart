@@ -5,11 +5,23 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:nekoton_repository/nekoton_repository.dart' hide Symbol;
 import 'package:nekoton_repository/nekoton_repository.dart' as nek show Symbol;
-import 'package:tuple/tuple.dart';
 
 class MockBridge extends Mock implements NekotonBridge {}
 
-class MockTransport extends Mock implements TransportStrategy {}
+class MockTransport extends Mock implements TransportStrategy {
+  @override
+  Future<GenericTokenWallet> subscribeToken({
+    required Address owner,
+    required Address rootTokenContract,
+  }) async =>
+      Tip3TokenWallet(
+        await TokenWallet.subscribe(
+          transport: transport,
+          owner: owner,
+          rootTokenContract: rootTokenContract,
+        ),
+      );
+}
 
 class MockWalletStorage extends Mock
     implements TokenWalletTransactionsStorage {}
@@ -39,13 +51,16 @@ void main() {
   late MockWalletStorage storage;
   late MockWallet wallet;
   late MockProtoTransport proto;
+  late Tip3TokenWallet tokenWallet;
 
   late TokenWalletRepoTest repository;
 
   late Stream<BigInt> balanceStream;
   late Stream<
-      Tuple2<List<TransactionWithData<TokenWalletTransaction?>>,
-          TransactionsBatchInfo>> transactionsFoundStream;
+      (
+        List<TransactionWithData<TokenWalletTransaction?>>,
+        TransactionsBatchInfo
+      )> transactionsFoundStream;
 
   const owner = Address(address: '0:1111111111111');
 
@@ -113,6 +128,7 @@ void main() {
     transport = MockTransport();
     storage = MockWalletStorage();
     wallet = MockWallet();
+    tokenWallet = Tip3TokenWallet(wallet);
     repository = TokenWalletRepoTest(transport, storage);
     proto = MockProtoTransport();
 
@@ -152,9 +168,9 @@ void main() {
       when(() => wallet.owner).thenReturn(owner);
       when(() => wallet.rootTokenContract).thenReturn(root1);
 
-      repository.addTokenWalletInst(wallet);
+      repository.addTokenWalletInst(tokenWallet);
 
-      expect(repository.tokenWalletsMap[(owner, root1)]!.wallet, wallet);
+      expect(repository.tokenWalletsMap[(owner, root1)]!.wallet!.inner, wallet);
       expect(repository.tokenWalletSubscriptions[(owner, root1)], isNotNull);
 
       verify(() => wallet.onBalanceChangedStream).called(1);
@@ -170,7 +186,7 @@ void main() {
       when(() => wallet.rootTokenContract).thenReturn(root1);
 
       repository
-        ..addTokenWalletInst(wallet)
+        ..addTokenWalletInst(tokenWallet)
         ..removeTokenWalletInst(owner, root1);
 
       expect(repository.tokenWalletsMap[(owner, root1)]?.wallet, isNull);
@@ -196,7 +212,7 @@ void main() {
       repository.tokenPollingQueues[(owner, root1)] = poller;
 
       repository
-        ..addTokenWalletInst(wallet)
+        ..addTokenWalletInst(tokenWallet)
         ..unsubscribeToken(owner, root1);
 
       expect(repository.tokenWalletsMap[(owner, root1)], isNull);
@@ -230,7 +246,7 @@ void main() {
       repository.tokenPollingQueues[(owner, root2)] = poller2;
 
       repository
-        ..addTokenWalletInst(wallet)
+        ..addTokenWalletInst(tokenWallet)
         ..stopPollingToken();
 
       expect(repository.tokenPollingQueues[(owner, root1)], isNull);
@@ -257,7 +273,7 @@ void main() {
 
       repository.tokenPollingQueues[(owner, root2)] = oldPoller;
 
-      repository.addTokenWalletInst(wallet);
+      repository.addTokenWalletInst(tokenWallet);
       await repository.startPollingToken(owner, root1);
 
       expect(repository.tokenPollingQueues[(owner, root1)], isNotNull);
@@ -281,7 +297,7 @@ void main() {
 
       repository.tokenPollingQueues[(owner, root2)] = oldPoller;
 
-      repository.addTokenWalletInst(wallet);
+      repository.addTokenWalletInst(tokenWallet);
       await repository.startPollingToken(owner, root1, stopPrevious: false);
 
       expect(repository.tokenPollingQueues[(owner, root1)], isNotNull);
@@ -561,7 +577,7 @@ void main() {
       mockTokenWallet(tokenWrapper1, asset1, symbol1);
       mockTokenWallet(tokenWrapper2, asset2, symbol2);
 
-      final state = TokenWalletState.wallet(wallet);
+      final state = TokenWalletState.wallet(tokenWallet);
 
       repository.tokenWalletsMap[(owner, root1)] = state;
       repository.tokenWalletsMap[(owner, root2)] = state;
