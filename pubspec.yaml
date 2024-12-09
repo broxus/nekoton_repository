@@ -34,5 +34,4 @@ dev_dependencies:
   injectable_generator: ^2.6.2
   melos: ^6.2.0
   mocktail: ^1.0.4
-  tuple: ^2.0.2
   very_good_analysis: ^5.1.0

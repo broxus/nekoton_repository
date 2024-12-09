@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:nekoton_repository/nekoton_repository.dart';
 
-/// Callbacks that allows handle events from [TokenWallet]
+/// Callbacks that allows handle events from [GenericTokenWallet]
 typedef TokenWalletOnBalanceChanged = void Function(BigInt event);
 typedef TokenWalletOnTransactionsFound = void Function(
   (
@@ -11,15 +11,15 @@ typedef TokenWalletOnTransactionsFound = void Function(
   ) event,
 );
 
-/// Helper class that allows to listen for events from [TokenWallet] and
+/// Helper class that allows to listen for events from [GenericTokenWallet] and
 /// automatically dispose all subscriptions.
 class TokenWalletSubscription {
   TokenWalletSubscription({
-    required TokenWallet tokenWallet,
+    required GenericTokenWallet wallet,
     required TokenWalletOnBalanceChanged onBalanceChanged,
     required TokenWalletOnTransactionsFound onTransactionsFound,
   })  : _onBalanceChangedSubscription =
-            tokenWallet.onBalanceChangedStream.listen(onBalanceChanged),
+            wallet.onBalanceChangedStream.listen(onBalanceChanged),
         _onTransactionsFoundSubscription =
             tokenWallet.onTransactionsFoundStream.listen(onTransactionsFound);
 
