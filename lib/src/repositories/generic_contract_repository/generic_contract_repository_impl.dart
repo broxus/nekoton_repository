@@ -40,8 +40,8 @@ mixin GenericContractRepositoryImpl implements GenericContractRepository {
             (c) => c.contract.onTransactionsFoundStream.map(
               (event) => ContractFoundTransactionEvent(
                 address: c.address,
-                transactions: event.item1,
-                info: event.item2,
+                transactions: event.$1,
+                info: event.$2,
               ),
             ),
           );
@@ -205,14 +205,14 @@ mixin GenericContractRepositoryImpl implements GenericContractRepository {
       // ignore: prefer-async-await
       contract.onMessageSentStream
           .firstWhere(
-            (e) => e.item1 == pending && e.item2 != null,
+            (e) => e.$1 == pending && e.$2 != null,
             orElse: () => throw Exception(
               'onMessageSent is empty during TonWalletRepository.send',
             ),
           )
           .timeout(pending.expireAt.toTimeout())
           .then((v) {
-        if (!completer.isCompleted) completer.complete(v.item2);
+        if (!completer.isCompleted) completer.complete(v.$2);
         completePolling();
       }).onError<Object>((err, st) {
         _logger.severe(

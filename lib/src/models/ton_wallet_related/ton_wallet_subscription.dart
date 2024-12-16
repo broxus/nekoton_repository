@@ -25,16 +25,14 @@ class TonWalletSubscription {
     required TonWalletOnTransactionsFound onTransactionsFound,
     required TonWalletOnMessageExpired onMessageExpired,
   })  : _onMessageSentSubscription = tonWallet.onMessageSentStream.listen(
-          (e) => onMessageSent((e.item1, e.item2)),
+          onMessageSent,
         ),
         _onStateChangedSubscription =
             tonWallet.onStateChangedStream.listen(onStateChanged),
         _onMessageExpiredSubscription =
             tonWallet.onMessageExpiredStream.listen(onMessageExpired),
         _onTransactionsFoundSubscription =
-            tonWallet.onTransactionsFoundStream.listen(
-          (e) => onTransactionsFound((e.item1, e.item2)),
-        );
+            tonWallet.onTransactionsFoundStream.listen(onTransactionsFound);
 
   /// Dynamic is used here to avoid importing Tuple lib, anyway we do not need
   /// this type in subscription.

@@ -488,14 +488,14 @@ mixin TonWalletRepositoryImpl implements TonWalletRepository {
       // ignore: prefer-async-await
       tonWallet.onMessageSentStream
           .firstWhere(
-            (e) => e.item1 == pending && e.item2 != null,
+            (e) => e.$1 == pending && e.$2 != null,
             orElse: () => throw Exception(
               'onMessageSent is empty during TonWalletRepository.send',
             ),
           )
           .timeout(pending.expireAt.toTimeout())
           .then((v) {
-        if (!completer.isCompleted) completer.complete(v.item2);
+        if (!completer.isCompleted) completer.complete(v.$2);
         completePolling();
       }).onError<Object>((err, st) {
         _logger.severe(

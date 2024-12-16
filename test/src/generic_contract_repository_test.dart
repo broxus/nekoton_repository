@@ -4,7 +4,6 @@ import 'package:nekoton_repository/nekoton_repository.dart';
 import 'package:nekoton_repository/src/repositories/ton_wallet_repository/ton_wallet_gql_block_poller.dart';
 import 'package:nekoton_repository/src/utils/utils.dart';
 import 'package:rxdart/rxdart.dart';
-import 'package:tuple/tuple.dart';
 
 class MockBridge extends Mock implements NekotonBridge {}
 
@@ -35,10 +34,10 @@ void main() {
   late MockJrpcTransport jrpc;
   late GenericContractRepoTest repository;
 
-  late Stream<Tuple2<PendingTransaction, Transaction?>> messageSentStream;
+  late Stream<(PendingTransaction, Transaction)> messageSentStream;
   late Stream<PendingTransaction> expiredStream;
   late Stream<ContractState> stateStream;
-  late Stream<Tuple2<List<Transaction>, TransactionsBatchInfo>>
+  late Stream<(List<Transaction>, TransactionsBatchInfo)>
       transactionsFoundStream;
 
   const address1 = Address(
@@ -237,8 +236,7 @@ void main() {
     });
 
     test('tabTransactionsStream', () async {
-      transactionsFoundStream =
-          Stream.value(const Tuple2(<Transaction>[], batch));
+      transactionsFoundStream = Stream.value((<Transaction>[], batch));
       when(() => contract.onMessageExpiredStream)
           .thenAnswer((_) => expiredStream);
       when(() => contract.onMessageSentStream)
@@ -388,7 +386,7 @@ void main() {
       when(() => contract.onMessageSentStream).thenAnswer(
         (_) => Stream.fromFuture(
           Future.delayed(sendDuration, () {
-            return Tuple2<PendingTransaction, Transaction?>(
+            return (
               pendingTransaction,
               transaction,
             );
@@ -562,7 +560,7 @@ void main() {
       when(() => contract.onMessageSentStream).thenAnswer(
         (_) => Stream.fromFuture(
           Future.delayed(sendDuration, () {
-            return Tuple2<PendingTransaction, Transaction?>(
+            return (
               pendingTransaction,
               transaction,
             );
@@ -700,7 +698,7 @@ void main() {
       when(() => contract.onMessageSentStream).thenAnswer(
         (_) => Stream.fromFuture(
           Future.delayed(sendDuration, () {
-            return Tuple2<PendingTransaction, Transaction?>(
+            return (
               pendingTransaction,
               transaction,
             );

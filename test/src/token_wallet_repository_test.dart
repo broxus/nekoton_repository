@@ -5,7 +5,6 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:nekoton_repository/nekoton_repository.dart' hide Symbol;
 import 'package:nekoton_repository/nekoton_repository.dart' as nek show Symbol;
-import 'package:tuple/tuple.dart';
 
 class MockBridge extends Mock implements NekotonBridge {}
 
@@ -44,8 +43,10 @@ void main() {
 
   late Stream<BigInt> balanceStream;
   late Stream<
-      Tuple2<List<TransactionWithData<TokenWalletTransaction?>>,
-          TransactionsBatchInfo>> transactionsFoundStream;
+      (
+        List<TransactionWithData<TokenWalletTransaction?>>,
+        TransactionsBatchInfo
+      )> transactionsFoundStream;
 
   const owner = Address(address: '0:1111111111111');
 

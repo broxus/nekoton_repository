@@ -462,6 +462,8 @@ mixin TokenWalletRepositoryImpl implements TokenWalletRepository {
             accept: (data) => data,
             transferBounced: (data) => data,
             swapBackBounced: (data) => data,
+            transfer: (data) => data.tokens,
+            internalTransfer: (data) => data.tokens,
           );
 
           final isOutgoing = e.data!.when(
@@ -471,6 +473,8 @@ mixin TokenWalletRepositoryImpl implements TokenWalletRepository {
             accept: (data) => false,
             transferBounced: (data) => false,
             swapBackBounced: (data) => false,
+            transfer: (data) => true,
+            internalTransfer: (data) => false,
           );
 
           final address =
@@ -494,6 +498,10 @@ mixin TokenWalletRepositoryImpl implements TokenWalletRepository {
 
           BigInt? swapBackBounced;
 
+          JettonIncomingTransfer? jettonIncomingTransfer;
+
+          JettonOutgoingTransfer? jettonOutgoingTransfer;
+
           e.data!.when(
             incomingTransfer: (tokenIncomingTransfer) =>
                 incomingTransfer = tokenIncomingTransfer,
@@ -503,6 +511,8 @@ mixin TokenWalletRepositoryImpl implements TokenWalletRepository {
             accept: (data) => accept = data,
             transferBounced: (data) => transferBounced = data,
             swapBackBounced: (data) => swapBackBounced = data,
+            transfer: (data) => jettonOutgoingTransfer = data,
+            internalTransfer: (data) => jettonIncomingTransfer = data,
           );
 
           return TokenWalletOrdinaryTransaction(

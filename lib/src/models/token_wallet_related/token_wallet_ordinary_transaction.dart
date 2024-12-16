@@ -22,5 +22,7 @@ class TokenWalletOrdinaryTransaction with _$TokenWalletOrdinaryTransaction {
     @amountJsonConverter BigInt? accept,
     @amountJsonConverter BigInt? transferBounced,
     @amountJsonConverter BigInt? swapBackBounced,
+    JettonIncomingTransfer? jettonIncomingTransfer,
+    JettonOutgoingTransfer? jettonOutgoingTransfer,
   }) = _TokenWalletOrdinaryTransaction;
 }
