@@ -530,6 +530,8 @@ mixin TokenWalletRepositoryImpl implements TokenWalletRepository {
             accept: accept,
             transferBounced: transferBounced,
             swapBackBounced: swapBackBounced,
+            jettonIncomingTransfer: jettonIncomingTransfer,
+            jettonOutgoingTransfer: jettonOutgoingTransfer,
           );
         },
       ).toList();
