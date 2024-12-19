@@ -350,13 +350,13 @@ mixin TokenWalletRepositoryImpl implements TokenWalletRepository {
   Future<void> preloadTokenTransactions({
     required Address owner,
     required Address rootTokenContract,
-    required String fromLt,
+    String? fromLt,
   }) async {
     final tokenWallet = (await getTokenWallet(owner, rootTokenContract)).wallet;
 
     if (tokenWallet == null) throw TokenWalletStateNotInitializedException();
 
-    return tokenWallet.preloadTransactions(fromLt: fromLt);
+    return tokenWallet.preloadTransactions(fromLt);
   }
 
   @override

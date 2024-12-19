@@ -334,6 +334,7 @@ void main() {
           transport: any(named: 'transport'),
           rootTokenContract: any(named: 'rootTokenContract'),
           owner: any(named: 'owner'),
+          preloadTransactions: any(named: 'preloadTransactions'),
         ),
       ).thenAnswer((call) {
         if (call.namedArguments[const Symbol('rootTokenContract')] ==
@@ -374,6 +375,7 @@ void main() {
           transport: any(named: 'transport'),
           rootTokenContract: any(named: 'rootTokenContract'),
           owner: any(named: 'owner'),
+          preloadTransactions: any(named: 'preloadTransactions'),
         ),
       ).thenAnswer((call) {
         if (call.namedArguments[const Symbol('rootTokenContract')] ==
@@ -414,6 +416,7 @@ void main() {
           transport: any(named: 'transport'),
           rootTokenContract: any(named: 'rootTokenContract'),
           owner: any(named: 'owner'),
+          preloadTransactions: any(named: 'preloadTransactions'),
         ),
       ).thenAnswer((_) => throwError());
       mockTokenWallet(tokenWrapper1, asset1, symbol1);
@@ -428,6 +431,7 @@ void main() {
           transport: any(named: 'transport'),
           rootTokenContract: any(named: 'rootTokenContract'),
           owner: any(named: 'owner'),
+          preloadTransactions: any(named: 'preloadTransactions'),
         ),
       ).thenAnswer((_) => Future.value(tokenWrapper1));
 
@@ -459,6 +463,7 @@ void main() {
           transport: any(named: 'transport'),
           rootTokenContract: any(named: 'rootTokenContract'),
           owner: any(named: 'owner'),
+          preloadTransactions: any(named: 'preloadTransactions'),
         ),
       ).thenAnswer((_) => throwError());
       mockTokenWallet(tokenWrapper1, asset1, symbol1);
@@ -495,6 +500,7 @@ void main() {
           transport: any(named: 'transport'),
           rootTokenContract: any(named: 'rootTokenContract'),
           owner: any(named: 'owner'),
+          preloadTransactions: any(named: 'preloadTransactions'),
         ),
       ).thenAnswer((call) {
         if (call.namedArguments[const Symbol('rootTokenContract')] ==
@@ -517,6 +523,7 @@ void main() {
           transport: any(named: 'transport'),
           rootTokenContract: root1.address,
           owner: any(named: 'owner'),
+          preloadTransactions: any(named: 'preloadTransactions'),
         ),
       ).called(1);
       verify(
@@ -525,6 +532,7 @@ void main() {
           transport: any(named: 'transport'),
           rootTokenContract: root2.address,
           owner: any(named: 'owner'),
+          preloadTransactions: any(named: 'preloadTransactions'),
         ),
       ).called(1);
       expect(Currencies()[symbol1.name], isNotNull);
@@ -551,6 +559,7 @@ void main() {
           transport: any(named: 'transport'),
           rootTokenContract: any(named: 'rootTokenContract'),
           owner: any(named: 'owner'),
+          preloadTransactions: any(named: 'preloadTransactions'),
         ),
       ).thenAnswer((call) {
         if (call.namedArguments[const Symbol('rootTokenContract')] ==

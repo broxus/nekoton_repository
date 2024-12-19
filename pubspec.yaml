@@ -13,7 +13,7 @@ dependencies:
   equatable: ^2.0.7
   flutter:
     sdk: flutter
-  flutter_nekoton_bridge: ^2.0.1-dev.13
+  flutter_nekoton_bridge: ^2.0.1-dev.14
   freezed_annotation: ^2.4.4
   get_it: ^7.7.0
   injectable: ^2.5.0
