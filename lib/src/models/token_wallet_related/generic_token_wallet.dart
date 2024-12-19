@@ -23,7 +23,7 @@ sealed class GenericTokenWallet {
         TransactionsBatchInfo
       )> get onTransactionsFoundStream;
   Future<ContractState> getContractState();
-  Future<void> preloadTransactions({required String fromLt});
+  Future<void> preloadTransactions(String? fromLt);
   void onBalanceChanged(String balance);
   void onTransactionsFound(String payload);
   void dispose();

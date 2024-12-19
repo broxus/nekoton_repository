@@ -75,8 +75,8 @@ class JettonTokenWallet extends GenericTokenWallet {
   Future<ContractState> getContractState() => _wallet.getContractState();
 
   @override
-  Future<void> preloadTransactions({required String fromLt}) =>
-      _wallet.preloadTransactions(fromLt: fromLt);
+  Future<void> preloadTransactions([String? fromLt]) =>
+      _wallet.preloadTransactions(fromLt);
 
   @override
   void onBalanceChanged(String balance) => _wallet.onBalanceChanged(balance);

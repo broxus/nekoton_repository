@@ -21,7 +21,7 @@ class TokenWalletSubscription {
   })  : _onBalanceChangedSubscription =
             wallet.onBalanceChangedStream.listen(onBalanceChanged),
         _onTransactionsFoundSubscription =
-            tokenWallet.onTransactionsFoundStream.listen(onTransactionsFound);
+            wallet.onTransactionsFoundStream.listen(onTransactionsFound);
 
   /// Dynamic is used here to avoid importing Tuple lib, anyway we do not need
   /// this type in subscription.
