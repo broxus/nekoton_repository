@@ -985,7 +985,14 @@ mixin TonWalletRepositoryImpl implements TonWalletRepository {
     if (wallet == null) return [];
 
     return transactions
-        .where((e) => e.isPendingTransaction(multisigPendingTransactions))
+        .where(
+      (e) =>
+          e.isPendingTransaction(multisigPendingTransactions) &&
+          !e.isExpiredTransaction(
+            details: wallet.details,
+            transactions: transactions,
+          ),
+    )
         .map(
       (e) {
         final lt = e.transaction.id.lt;
