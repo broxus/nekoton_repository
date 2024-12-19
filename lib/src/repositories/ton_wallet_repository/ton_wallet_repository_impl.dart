@@ -1167,7 +1167,6 @@ mixin TonWalletRepositoryImpl implements TonWalletRepository {
       (e) => e.isExpiredTransaction(
         details: wallet.details,
         transactions: transactions,
-        pendingTransactions: multisigPendingTransactions,
       ),
     )
         .map(
@@ -1404,14 +1403,12 @@ extension TonWalletTransactionExtension
   bool isExpiredTransaction({
     required TonWalletDetails details,
     required List<TransactionWithData<TransactionAdditionalInfo?>> transactions,
-    required List<MultisigPendingTransaction> pendingTransactions,
   }) =>
       data != null &&
       data!.maybeWhen(
         walletInteraction: (data) => data.method.maybeWhen(
           multisig: (data) => data.maybeWhen(
             submit: (data) =>
-                pendingTransactions.every((e) => e.id != data.transId) &&
                 !isEnoughSubscribers(data.transId, details, transactions) &&
                 isExpiredByTime(details),
             orElse: () => false,
