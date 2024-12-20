@@ -335,10 +335,6 @@ mixin TokenWalletRepositoryImpl implements TokenWalletRepository {
           ),
         JettonTokenWallet() => tokenWallet.inner.estimateMinAttachedAmount(
             destination: destination,
-            amount: amount,
-            customPayload: payload,
-            remainingGasTo: tokenWallet.owner,
-            callbackValue: BigInt.one,
           ),
       };
     } catch (_) {}
