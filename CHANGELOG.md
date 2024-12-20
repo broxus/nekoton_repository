@@ -3,6 +3,33 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## 2024-12-20
+
+### Changes
+
+---
+
+Packages with breaking changes:
+
+ - There are no breaking changes in this release.
+
+Packages with other changes:
+
+ - [`nekoton_repository` - `v0.37.0`](#nekoton_repository---v0370)
+
+Packages graduated to a stable release (see pre-releases prior to the stable version for changelog entries):
+
+ - `nekoton_repository` - `v0.37.0`
+
+---
+
+#### `nekoton_repository` - `v0.37.0`
+
+## 0.37.0
+
+ - Graduate package to a stable release. See pre-releases prior to this version for changelog entries.
+
+
 ## 2024-12-19
 
 ### Changes
