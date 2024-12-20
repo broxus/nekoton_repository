@@ -2,8 +2,8 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
 import 'package:nekoton_repository/nekoton_repository.dart';
 
-/// State of [TokenWallet] that allows tracking when subscription was created
-/// successfully or when it failed with some error.
+/// State of [GenericTokenWallet] that allows tracking when subscription was
+/// created successfully or when it failed with some error.
 ///
 /// To detect which state is active, use [hasWallet] and [hasError].
 @immutable
@@ -17,7 +17,7 @@ class TokenWalletState extends Equatable {
         error = err;
 
   /// Create state with wallet
-  TokenWalletState.wallet(TokenWallet w)
+  TokenWalletState.wallet(GenericTokenWallet w)
       : error = null,
         owner = w.owner,
         rootTokenContract = w.rootTokenContract,
@@ -31,7 +31,7 @@ class TokenWalletState extends Equatable {
   /// Wallet that could be created.
   /// If wallet was created, then [hasWallet] returns true and you can use it
   /// as usual.
-  final TokenWallet? wallet;
+  final GenericTokenWallet? wallet;
 
   /// Any error that could be thrown during creating subscription.
   /// Typically, this is [FfiException] or
