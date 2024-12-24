@@ -14,6 +14,7 @@ sealed class GenericTokenWallet {
   Address get owner;
   Symbol get symbol;
   ContractState get contractState;
+  bool get isTransactionsPreloaded;
   Stream<void> get fieldUpdatesStream;
   Stream<BigInt> get onBalanceChangedStream;
   Stream<Money> get onMoneyBalanceChangedStream;

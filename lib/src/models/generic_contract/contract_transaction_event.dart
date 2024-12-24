@@ -2,7 +2,6 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:nekoton_repository/nekoton_repository.dart';
 
 part 'contract_transaction_event.freezed.dart';
-
 part 'contract_transaction_event.g.dart';
 
 /// Event that contains list of last transactions for [GenericContract].

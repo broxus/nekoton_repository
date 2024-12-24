@@ -49,6 +49,9 @@ class Tip3TokenWallet extends GenericTokenWallet {
   ContractState get contractState => _wallet.contractState;
 
   @override
+  bool get isTransactionsPreloaded => _wallet.isTransactionsPreloaded;
+
+  @override
   Stream<void> get fieldUpdatesStream => _wallet.fieldUpdatesStream;
 
   @override
