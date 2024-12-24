@@ -6,6 +6,7 @@ class JettonTokenWallet extends GenericTokenWallet {
 
   static Future<JettonTokenWallet> subscribe({
     required Transport transport,
+    required GqlConnection gqlConnection,
     required Address owner,
     required Address rootTokenContract,
     required Symbol symbol,
@@ -13,6 +14,7 @@ class JettonTokenWallet extends GenericTokenWallet {
       JettonTokenWallet(
         await JettonWallet.subscribe(
           transport: transport,
+          gqlConnection: gqlConnection,
           owner: owner,
           rootTokenContract: rootTokenContract,
         ),
