@@ -26,8 +26,8 @@ mixin AccountRepositoryImpl on TransportRepository
 
   @override
   Future<void> addExternalAccount({
-    required PublicKey publicKey,
     required Address address,
+    PublicKey? publicKey,
     String? name,
   }) async {
     if (currentTransport.transport.disposed) return;
@@ -37,37 +37,49 @@ mixin AccountRepositoryImpl on TransportRepository
       address: address,
     );
 
-    final isCustodian = custodians.contains(publicKey);
+    var isCustodian = false;
+    final externalAccounts = storageRepository.externalAccounts;
+    final publicKeys = (publicKey == null
+            ? keyStore.keys.map((e) => e.publicKey)
+            : [publicKey])
+        .where(custodians.contains);
 
-    if (!isCustodian) throw Exception('Is not custodian');
+    for (final publicKey in publicKeys) {
+      if (externalAccounts[publicKey]?.contains(address) ?? false) continue;
 
-    // Check if this account is part of publicKey
-    final account =
-        accountsStorage.accounts.firstWhereOrNull((e) => e.address == address);
+      // Check if this account is part of publicKey
+      final account = accountsStorage.accounts
+          .firstWhereOrNull((e) => e.address == address);
 
-    if (account == null) {
-      final existingWalletInfo = await TonWallet.getExistingWalletInfo(
-        transport: currentTransport.transport,
+      if (account == null) {
+        final existingWalletInfo = await TonWallet.getExistingWalletInfo(
+          transport: currentTransport.transport,
+          address: address,
+        );
+
+        await addAccount(
+          AccountToAdd(
+            name: name ??
+                currentTransport.defaultAccountName(
+                  existingWalletInfo.walletType,
+                ),
+            publicKey: publicKey,
+            contract: existingWalletInfo.walletType,
+            workchain: existingWalletInfo.address.workchain,
+            explicitAddress: address,
+          ),
+        );
+      }
+
+      await storageRepository.addExternalAccount(
+        publicKey: publicKey,
         address: address,
       );
 
-      await addAccount(
-        AccountToAdd(
-          name: name ??
-              currentTransport
-                  .defaultAccountName(existingWalletInfo.walletType),
-          publicKey: publicKey,
-          contract: existingWalletInfo.walletType,
-          workchain: existingWalletInfo.address.workchain,
-          explicitAddress: address,
-        ),
-      );
+      isCustodian = true;
     }
 
-    await storageRepository.addExternalAccount(
-      publicKey: publicKey,
-      address: address,
-    );
+    if (!isCustodian) throw Exception('Is not custodian');
   }
 
   @override

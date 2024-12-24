@@ -11,12 +11,14 @@ abstract class AccountRepository {
   /// Same as [addAccount] but for multiple accounts.
   Future<List<Address>> addAccounts(List<AccountToAdd> accounts);
 
-  /// Add external account with [address] where [publicKey] is custodian.
+  /// Add external account with [address].
+  /// If publicKey is not specified, then all public keys will be checked.
+  /// Throws an exception if no external accounts were added.
   /// [name] is optional.
   /// This method calls [addAccount] inside.
   Future<void> addExternalAccount({
-    required PublicKey publicKey,
     required Address address,
+    PublicKey? publicKey,
     String? name,
   });
 
