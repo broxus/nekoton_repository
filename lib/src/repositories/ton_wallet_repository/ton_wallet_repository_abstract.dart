@@ -126,12 +126,13 @@ abstract class TonWalletRepository {
   /// [custodians] list of public keys that will be custodians of wallet.
   /// [reqConfirms] is a number of custodians that must confirm any action.
   /// [expiration] is a timeout after which action will be failed.
+  /// [expirationTime] is a time in seconds after which transaction will expire.
   Future<UnsignedMessage> prepareDeployWithMultipleOwners({
     required Address address,
     required List<PublicKey> custodians,
     required int reqConfirms,
     required Expiration expiration,
-    required int? hours,
+    required int? expirationTime,
   });
 
   /// Prepare transfer of any token from wallet with [address] to [destination]
