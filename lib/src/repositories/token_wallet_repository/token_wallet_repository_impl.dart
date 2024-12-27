@@ -131,7 +131,7 @@ mixin TokenWalletRepositoryImpl implements TokenWalletRepository {
 
     // If wallet has polling but was stopped, so rerun
     if (tokenPollingQueues[pair] != null) {
-      tokenPollingQueues[pair]!.startPolling();
+      tokenPollingQueues[pair]!.start();
 
       return;
     }
@@ -146,13 +146,13 @@ mixin TokenWalletRepositoryImpl implements TokenWalletRepository {
     tokenPollingQueues[pair] = RefreshPollingQueue(
       refreshInterval: refreshInterval,
       refresher: wallet.inner,
-    )..startPolling();
+    )..start();
   }
 
   @override
   void stopPollingToken() {
     for (final polling in tokenPollingQueues.values) {
-      polling.stopPolling();
+      polling.stop();
     }
     tokenPollingQueues.clear();
   }
@@ -160,7 +160,7 @@ mixin TokenWalletRepositoryImpl implements TokenWalletRepository {
   @override
   void unsubscribeToken(Address owner, Address rootTokenContract) {
     final wallet = removeTokenWalletInst(owner, rootTokenContract);
-    tokenPollingQueues.remove((owner, rootTokenContract))?.stopPolling();
+    tokenPollingQueues.remove((owner, rootTokenContract))?.stop();
     wallet?.wallet?.dispose();
   }
 

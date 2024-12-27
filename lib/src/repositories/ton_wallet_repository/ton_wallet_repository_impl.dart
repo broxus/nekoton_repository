@@ -150,7 +150,7 @@ mixin TonWalletRepositoryImpl implements TonWalletRepository {
   }) async {
     // If wallet has polling but was stopped, so rerun
     if (pollingQueues[address] != null) {
-      pollingQueues[address]!.startPolling();
+      pollingQueues[address]!.start();
 
       return;
     }
@@ -165,13 +165,13 @@ mixin TonWalletRepositoryImpl implements TonWalletRepository {
     pollingQueues[address] = RefreshPollingQueue(
       refreshInterval: refreshInterval,
       refresher: wallet,
-    )..startPolling();
+    )..start();
   }
 
   @override
   void stopPolling() {
     for (final polling in pollingQueues.values) {
-      polling.stopPolling();
+      polling.stop();
     }
     pollingQueues.clear();
   }
@@ -179,7 +179,7 @@ mixin TonWalletRepositoryImpl implements TonWalletRepository {
   @override
   void unsubscribe(Address address) {
     final wallet = removeWalletInst(address);
-    pollingQueues.remove(address)?.stopPolling();
+    pollingQueues.remove(address)?.stop();
     wallet?.wallet?.dispose();
   }
 
@@ -431,10 +431,7 @@ mixin TonWalletRepositoryImpl implements TonWalletRepository {
     // stop polling existed poller for this wallet to avoid multiple duplicate
     // calls, it will be rerun in the end of this method.
     final existedPoller = pollingQueues[address];
-    final oldIsPolling = existedPoller?.isPolling ?? false;
-    if (oldIsPolling) {
-      existedPoller?.stopPolling();
-    }
+    existedPoller?.pause();
 
     // This is a poller, that lets subscribe for next pending transaction
     // in code below.
@@ -442,10 +439,8 @@ mixin TonWalletRepositoryImpl implements TonWalletRepository {
 
     // Stop this poller and start old poller if it was enabled before sending
     void completePolling() {
-      poller.stopPolling();
-      if (oldIsPolling) {
-        existedPoller?.startPolling();
-      }
+      poller.stop();
+      existedPoller?.resume();
     }
 
     void createPoller(RefreshingInterface refresher) {
@@ -468,7 +463,7 @@ mixin TonWalletRepositoryImpl implements TonWalletRepository {
           }
         },
         // refresh immediately to start polling without delay
-      )..startPolling(refreshImmediately: true);
+      )..start(refreshImmediately: true);
     }
 
     if (transport is GqlTransport) {
@@ -484,28 +479,36 @@ mixin TonWalletRepositoryImpl implements TonWalletRepository {
       return completer.future;
     }
 
+    void onStreamCompletedError(OperationCanceledException err, StackTrace st) {
+      if (!completer.isCompleted) completer.completeError(err, st);
+      completePolling();
+    }
+
+    void onError(Object err, StackTrace st) {
+      _logger.severe(
+        'TonWallet send transaction ${transport.runtimeType}',
+        err,
+        st,
+      );
+      if (!completer.isCompleted) completer.completeError(err, st);
+      completePolling();
+    }
+
+    void onSent((PendingTransaction, Transaction?) v) {
+      if (!completer.isCompleted) completer.complete(v.$2);
+      completePolling();
+    }
+
     unawaited(
-      // ignore: prefer-async-await
       tonWallet.onMessageSentStream
           .firstWhere(
             (e) => e.$1 == pending && e.$2 != null,
-            orElse: () => throw Exception(
-              'onMessageSent is empty during TonWalletRepository.send',
-            ),
+            orElse: () => throw OperationCanceledException(),
           )
           .timeout(pending.expireAt.toTimeout())
-          .then((v) {
-        if (!completer.isCompleted) completer.complete(v.$2);
-        completePolling();
-      }).onError<Object>((err, st) {
-        _logger.severe(
-          'TonWallet send transaction ${transport.runtimeType}',
-          err,
-          st,
-        );
-        if (!completer.isCompleted) completer.completeError(err, st);
-        completePolling();
-      }),
+          .then(onSent)
+          .onError<OperationCanceledException>(onStreamCompletedError)
+          .onError<Object>(onError),
     );
 
     return completer.future;

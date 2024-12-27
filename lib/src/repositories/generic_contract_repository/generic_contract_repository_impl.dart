@@ -5,6 +5,7 @@ import 'package:logging/logging.dart';
 
 import 'package:nekoton_repository/nekoton_repository.dart';
 import 'package:nekoton_repository/src/repositories/generic_contract_repository/contract_gql_block_poller.dart';
+import 'package:nekoton_repository/src/utils/utils.dart';
 import 'package:rxdart/rxdart.dart';
 
 mixin GenericContractRepositoryImpl implements GenericContractRepository {
@@ -162,7 +163,7 @@ mixin GenericContractRepositoryImpl implements GenericContractRepository {
 
     // Stop this poller sending any requests
     void completePolling() {
-      poller.stopPolling();
+      poller.stop();
     }
 
     void createPoller(RefreshingInterface refresher) {
@@ -185,7 +186,7 @@ mixin GenericContractRepositoryImpl implements GenericContractRepository {
           }
         },
         // refresh immediately to start polling without delay
-      )..startPolling(refreshImmediately: true);
+      )..start(refreshImmediately: true);
     }
 
     if (transport is GqlTransport) {
@@ -201,28 +202,36 @@ mixin GenericContractRepositoryImpl implements GenericContractRepository {
       return completer.future;
     }
 
+    void onStreamCompletedError(OperationCanceledException err, StackTrace st) {
+      if (!completer.isCompleted) completer.completeError(err, st);
+      completePolling();
+    }
+
+    void onError(Object err, StackTrace st) {
+      _logger.severe(
+        'Generic contract send transaction ${transport.runtimeType}',
+        err,
+        st,
+      );
+      if (!completer.isCompleted) completer.completeError(err, st);
+      completePolling();
+    }
+
+    void onSent((PendingTransaction, Transaction?) v) {
+      if (!completer.isCompleted) completer.complete(v.$2);
+      completePolling();
+    }
+
     unawaited(
-      // ignore: prefer-async-await
       contract.onMessageSentStream
           .firstWhere(
             (e) => e.$1 == pending && e.$2 != null,
-            orElse: () => throw Exception(
-              'onMessageSent is empty during TonWalletRepository.send',
-            ),
+            orElse: () => throw OperationCanceledException(),
           )
           .timeout(pending.expireAt.toTimeout())
-          .then((v) {
-        if (!completer.isCompleted) completer.complete(v.$2);
-        completePolling();
-      }).onError<Object>((err, st) {
-        _logger.severe(
-          'Ton wallet send transaction ${transport.runtimeType}',
-          err,
-          st,
-        );
-        if (!completer.isCompleted) completer.completeError(err, st);
-        completePolling();
-      }),
+          .then(onSent)
+          .onError<OperationCanceledException>(onStreamCompletedError)
+          .onError<Object>(onError),
     );
 
     return completer.future;

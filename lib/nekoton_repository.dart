@@ -10,6 +10,7 @@ export 'src/extensions.dart';
 export 'src/models/models.dart';
 export 'src/nekoton_repository.dart';
 export 'src/repositories/repositories.dart';
+export 'src/utils/exceptions.dart';
 
 // ignore_for_file: always_declare_return_types
 // ignore_for_file: inference_failure_on_function_return_type

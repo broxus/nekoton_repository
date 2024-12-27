@@ -23,16 +23,16 @@ class RefreshPollingQueue {
   static final _logger = Logger('RefreshPollingQueue');
 
   /// Flag for refresh requests.
-  /// Flag is rising by calling [startPolling], this means, that polling
+  /// Flag is rising by calling [start], this means, that polling
   /// queue must start refresh operation when possible.
   ///
-  /// Flag will be omitted by calling [stopPolling] method.
+  /// Flag will be omitted by calling [stop] method.
   ///
   /// This means, that refreshes will be called until this flag is raised.
   bool _hasRequest = false;
 
   /// If true, then polling will be stopped after error during refresh.
-  /// To rerun process, you should call [startPolling] again.
+  /// To rerun process, you should call [start] again.
   final bool stopPollingIfError;
 
   /// Refresh function that should be called periodically.
@@ -59,8 +59,10 @@ class RefreshPollingQueue {
   /// This timer is not periodic, it will be created and launched every time,
   /// when refresh operation completes.
   ///
-  /// To start timer work, use [startPolling].
+  /// To start timer work, use [start].
   Timer? _timer;
+
+  bool _isPaused = false;
 
   /// Get if polling is active now.
   /// Timer can be paused after it was completed, but not launched again after
@@ -68,6 +70,8 @@ class RefreshPollingQueue {
   bool get isPolling =>
       _timer != null && _timer!.isActive ||
       _refreshCompleter != null && !_refreshCompleter!.isCompleted;
+
+  bool get isPaused => _isPaused;
 
   /// Returns future that completes when current refresh is finished.
   /// Or empty future if there is no refresh action.
@@ -98,7 +102,7 @@ class RefreshPollingQueue {
   /// single flow.
   /// If [refreshImmediately] is true, then 1-st step of workflow above will be
   /// omitted and started with refresh operation.
-  void startPolling({bool refreshImmediately = false}) {
+  void start({bool refreshImmediately = false}) {
     if (_hasRequest) {
       return;
     }
@@ -113,7 +117,7 @@ class RefreshPollingQueue {
   }
 
   /// Create delay timer after which refresh will be called.
-  /// This timer calls in the beginning of [startPolling] or in the end of
+  /// This timer calls in the beginning of [start] or in the end of
   /// refresh operation.
   void _createTimer() {
     if (!_hasRequest) return;
@@ -122,10 +126,26 @@ class RefreshPollingQueue {
   }
 
   /// Stop refresh polling.
-  void stopPolling() {
+  void stop() {
     _timer?.cancel();
     _timer = null;
     _hasRequest = false;
+    _isPaused = false;
+  }
+
+  void pause() {
+    _timer?.cancel();
+    _timer = null;
+    _hasRequest = false;
+    _isPaused = true;
+  }
+
+  void resume() {
+    // resume only if it was paused and not stopped
+    if (_isPaused) {
+      _isPaused = false;
+      start(refreshImmediately: true);
+    }
   }
 
   /// ---------------------------------------------------
@@ -172,7 +192,7 @@ class RefreshPollingQueue {
     } catch (e, s) {
       _logger.severe('Refresh ${refresher.refreshDescription} failed!', e, s);
       if (stopPollingIfError) {
-        stopPolling();
+        stop();
       }
       _refreshCompleter?.completeError(e, s);
       refreshCompleteCallback?.call((e, s));

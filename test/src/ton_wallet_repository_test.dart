@@ -249,7 +249,7 @@ void main() {
       final poller = RefreshPollingQueue(
         refresher: wallet,
         refreshInterval: tonWalletRefreshInterval,
-      )..startPolling();
+      )..start();
 
       repository.pollingQueues[address] = poller;
 
@@ -280,11 +280,11 @@ void main() {
       final poller1 = RefreshPollingQueue(
         refresher: wallet,
         refreshInterval: tonWalletRefreshInterval,
-      )..startPolling();
+      )..start();
       final poller2 = RefreshPollingQueue(
         refresher: wallet,
         refreshInterval: tonWalletRefreshInterval,
-      )..startPolling();
+      )..start();
 
       repository.pollingQueues[address] = poller1;
       repository.pollingQueues[duplicateAddress] = poller2;
@@ -315,7 +315,7 @@ void main() {
       final oldPoller = RefreshPollingQueue(
         refresher: wallet,
         refreshInterval: tonWalletRefreshInterval,
-      )..startPolling();
+      )..start();
 
       repository.pollingQueues[duplicateAddress] = oldPoller;
 
@@ -341,7 +341,7 @@ void main() {
       final oldPoller = RefreshPollingQueue(
         refresher: wallet,
         refreshInterval: tonWalletRefreshInterval,
-      )..startPolling();
+      )..start();
 
       repository.pollingQueues[duplicateAddress] = oldPoller;
 
@@ -478,7 +478,7 @@ void main() {
       final oldPoller = RefreshPollingQueue(
         refresher: wallet,
         refreshInterval: tonWalletRefreshInterval,
-      )..startPolling();
+      )..start();
       repository.pollingQueues[address] = oldPoller;
       repository.addWalletInst(wallet);
 
@@ -587,7 +587,7 @@ void main() {
       final oldPoller = RefreshPollingQueue(
         refresher: wallet,
         refreshInterval: tonWalletRefreshInterval,
-      )..startPolling();
+      )..start();
       repository.pollingQueues[address] = oldPoller;
       repository.addWalletInst(wallet);
 

@@ -207,7 +207,7 @@ void main() {
       final poller = RefreshPollingQueue(
         refresher: wallet,
         refreshInterval: tokenWalletRefreshInterval,
-      )..startPolling();
+      )..start();
 
       repository.tokenPollingQueues[(owner, root1)] = poller;
 
@@ -236,11 +236,11 @@ void main() {
       final poller1 = RefreshPollingQueue(
         refresher: wallet,
         refreshInterval: tokenWalletRefreshInterval,
-      )..startPolling();
+      )..start();
       final poller2 = RefreshPollingQueue(
         refresher: wallet,
         refreshInterval: tokenWalletRefreshInterval,
-      )..startPolling();
+      )..start();
 
       repository.tokenPollingQueues[(owner, root1)] = poller1;
       repository.tokenPollingQueues[(owner, root2)] = poller2;
@@ -269,7 +269,7 @@ void main() {
       final oldPoller = RefreshPollingQueue(
         refresher: wallet,
         refreshInterval: tonWalletRefreshInterval,
-      )..startPolling();
+      )..start();
 
       repository.tokenPollingQueues[(owner, root2)] = oldPoller;
 
@@ -293,7 +293,7 @@ void main() {
       final oldPoller = RefreshPollingQueue(
         refresher: wallet,
         refreshInterval: tonWalletRefreshInterval,
-      )..startPolling();
+      )..start();
 
       repository.tokenPollingQueues[(owner, root2)] = oldPoller;
 

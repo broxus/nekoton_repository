@@ -52,7 +52,7 @@ void main() {
         refresher: refresher,
         refreshInterval: queueTimeout,
         refreshCompleteCallback: callback.call,
-      )..startPolling();
+      )..start();
 
       // 6.2 secs lasts, refreshed 2 times
       await Future<void>.delayed(
@@ -60,7 +60,7 @@ void main() {
             refresherDelay * 2 +
             const Duration(milliseconds: 300),
       );
-      queue.stopPolling();
+      queue.stop();
       verify(refresher.refresh).called(2);
       verify(callback.call).called(2);
     });
@@ -74,7 +74,7 @@ void main() {
       final queue = RefreshPollingQueue(
         refresher: refresher,
         refreshInterval: queueTimeout,
-      )..startPolling(refreshImmediately: true);
+      )..start(refreshImmediately: true);
 
       // 7.3 secs lasts, refreshed 3 times
       await Future<void>.delayed(
@@ -82,7 +82,7 @@ void main() {
             refresherDelay * 3 +
             const Duration(milliseconds: 300),
       );
-      queue.stopPolling();
+      queue.stop();
       verify(refresher.refresh).called(3);
     });
 
@@ -95,7 +95,7 @@ void main() {
       RefreshPollingQueue(
         refresher: refresher,
         refreshInterval: queueTimeout,
-      ).startPolling();
+      ).start();
 
       // 7 secs lasts, refreshed 2 times
       await Future<void>.delayed(const Duration(seconds: 11));
@@ -113,7 +113,7 @@ void main() {
         refresher: refresher,
         refreshInterval: queueTimeout,
         refreshCompleteCallback: callback.call,
-      ).startPolling();
+      ).start();
 
       // 7 secs lasts, refreshed 1 times with error
       await Future<void>.delayed(queueTimeout * 3.5);
@@ -133,7 +133,7 @@ void main() {
         refreshInterval: queueTimeout,
         stopPollingIfError: false,
         refreshCompleteCallback: callback.call,
-      ).startPolling();
+      ).start();
 
       // 7 secs lasts, refreshed 3 times with error
       await Future<void>.delayed(queueTimeout * 3.5);
