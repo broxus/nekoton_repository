@@ -5,7 +5,6 @@ import 'package:logging/logging.dart';
 
 import 'package:nekoton_repository/nekoton_repository.dart';
 import 'package:nekoton_repository/src/repositories/generic_contract_repository/contract_gql_block_poller.dart';
-import 'package:nekoton_repository/src/utils/utils.dart';
 import 'package:rxdart/rxdart.dart';
 
 mixin GenericContractRepositoryImpl implements GenericContractRepository {
