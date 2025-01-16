@@ -10,7 +10,7 @@ import 'package:nekoton_repository/src/utils/utils.dart';
 
 class MockTokenRepository extends Mock implements TokenWalletRepository {}
 
-class MockBridge extends Mock implements NekotonBridge {}
+class MockBridge extends Mock implements NekotonBridgeApi {}
 
 class MockTransport extends Mock implements TransportStrategy {}
 
@@ -19,6 +19,12 @@ class MockKeystore extends Mock implements KeyStore {}
 class MockWalletStorage extends Mock implements TonWalletTransactionsStorage {}
 
 class MockWallet extends Mock implements TonWallet {}
+
+class MockArcTransportBoxTrait extends Mock implements ArcTransportBoxTrait {}
+
+class MockArcTonWalletBoxTrait extends Mock implements ArcTonWalletBoxTrait {}
+
+class MockTonWalletDartWrapper extends Mock implements TonWalletDartWrapper {}
 
 class MockGqlTransport extends Mock implements GqlTransport {
   @override
@@ -144,12 +150,11 @@ void main() {
     genTimings: const GenTimings(genLt: '', genUtime: 0),
     isDeployed: true,
   );
+  final bridge = MockBridge();
 
   late TonWalletDartWrapper tonWrapper1;
   late TonWalletDartWrapper tonWrapper2;
   late ArcTonWalletBoxTrait walletBoxTrait;
-
-  late MockBridge bridge;
   late ArcTransportBoxTrait box;
 
   /// We must use this method except of thenThrow because it will broke
@@ -168,19 +173,12 @@ void main() {
     proto = MockProtoTransport();
     jrpc = MockJrpcTransport();
 
-    bridge = MockBridge();
-    box = ArcTransportBoxTrait.fromRaw(0, 0, bridge);
+    box = MockArcTransportBoxTrait();
     registerFallbackValue(box);
 
-    walletBoxTrait = ArcTonWalletBoxTrait.fromRaw(0, 0, bridge);
-    tonWrapper1 = TonWalletDartWrapper(
-      bridge: bridge,
-      innerWallet: walletBoxTrait,
-    );
-    tonWrapper2 = TonWalletDartWrapper(
-      bridge: bridge,
-      innerWallet: walletBoxTrait,
-    );
+    walletBoxTrait = MockArcTonWalletBoxTrait();
+    tonWrapper1 = MockTonWalletDartWrapper();
+    tonWrapper2 = MockTonWalletDartWrapper();
     registerFallbackValue(walletBoxTrait);
     registerFallbackValue(tonWrapper1);
     registerFallbackValue(tonWrapper2);
@@ -191,6 +189,10 @@ void main() {
     expiredStream = const Stream.empty();
     stateStream = const Stream.empty();
     transactionsFoundStream = const Stream.empty();
+  });
+
+  setUpAll(() {
+    NekotonBridge.initMock(api: bridge);
   });
 
   group('TonWalletRepository', () {
@@ -369,9 +371,9 @@ void main() {
       expireAt: NtpTime.now(),
       boc: 'boc',
     );
-    const latestBlock = LatestBlock(
+    final latestBlock = LatestBlock(
       id: 'latest',
-      endLt: 0,
+      endLt: BigInt.zero,
       genUtime: 0,
     );
     const nextBlockId = 'next';
@@ -1118,10 +1120,9 @@ void main() {
 
   group('TonWalletRepository.getLocalCustodiansAsync', () {
     test('Get only one local custodian', () async {
-      mockWrapper(bridge);
       when(() => proto.transportBox).thenReturn(box);
       when(
-        () => bridge.getCustodiansStaticMethodTonWalletDartWrapper(
+        () => bridge.crateApiMergedTonWalletDartWrapperGetCustodians(
           address: any(named: 'address'),
           transport: any(named: 'transport'),
         ),
@@ -1138,10 +1139,9 @@ void main() {
     });
 
     test('Get several local custodian', () async {
-      mockWrapper(bridge);
       when(() => proto.transportBox).thenReturn(box);
       when(
-        () => bridge.getCustodiansStaticMethodTonWalletDartWrapper(
+        () => bridge.crateApiMergedTonWalletDartWrapperGetCustodians(
           address: any(named: 'address'),
           transport: any(named: 'transport'),
         ),
@@ -1159,10 +1159,9 @@ void main() {
     });
 
     test('Return single-item custodians for not multisig ', () async {
-      mockWrapper(bridge);
       when(() => proto.transportBox).thenReturn(box);
       when(
-        () => bridge.getCustodiansStaticMethodTonWalletDartWrapper(
+        () => bridge.crateApiMergedTonWalletDartWrapperGetCustodians(
           address: any(named: 'address'),
           transport: any(named: 'transport'),
         ),
@@ -1178,10 +1177,9 @@ void main() {
     });
 
     test('Return null for not multisig if no local found ', () async {
-      mockWrapper(bridge);
       when(() => proto.transportBox).thenReturn(box);
       when(
-        () => bridge.getCustodiansStaticMethodTonWalletDartWrapper(
+        () => bridge.crateApiMergedTonWalletDartWrapperGetCustodians(
           address: any(named: 'address'),
           transport: any(named: 'transport'),
         ),
@@ -1221,7 +1219,7 @@ void main() {
       (_) => Future.value(jsonEncode([])),
     );
     when(() => box.pollingMethod()).thenAnswer(
-      (_) => Future.value(PollingMethod.Manual),
+      (_) => Future.value(PollingMethod.manual),
     );
     when(() => box.custodians()).thenAnswer(
       (_) => Future.value([asset.publicKey.publicKey]),
@@ -1230,7 +1228,6 @@ void main() {
 
   group('TonWalletRepository', () {
     test('updateSubscriptions without side effects', () async {
-      mockWrapper(bridge);
       when(() => wallet.onMessageExpiredStream)
           .thenAnswer((_) => expiredStream);
       when(() => wallet.onMessageSentStream)
@@ -1245,7 +1242,7 @@ void main() {
       when(() => proto.transportBox).thenReturn(box);
 
       when(
-        () => bridge.subscribeStaticMethodTonWalletDartWrapper(
+        () => bridge.crateApiMergedTonWalletDartWrapperSubscribe(
           publicKey: any(named: 'publicKey'),
           instanceHash: any(named: 'instanceHash'),
           transport: any(named: 'transport'),
@@ -1268,7 +1265,6 @@ void main() {
     });
 
     test('updateSubscriptions without side effects by address metod', () async {
-      mockWrapper(bridge);
       when(() => wallet.onMessageExpiredStream)
           .thenAnswer((_) => expiredStream);
       when(() => wallet.onMessageSentStream)
@@ -1283,7 +1279,7 @@ void main() {
       when(() => proto.transportBox).thenReturn(box);
 
       when(
-        () => bridge.subscribeStaticMethodTonWalletDartWrapper(
+        () => bridge.crateApiMergedTonWalletDartWrapperSubscribe(
           publicKey: any(named: 'publicKey'),
           instanceHash: any(named: 'instanceHash'),
           transport: any(named: 'transport'),
@@ -1292,7 +1288,7 @@ void main() {
         ),
       ).thenAnswer((_) => Future.value(tonWrapper2));
       when(
-        () => bridge.subscribeByAddressStaticMethodTonWalletDartWrapper(
+        () => bridge.crateApiMergedTonWalletDartWrapperSubscribeByAddress(
           address: any(named: 'address'),
           instanceHash: any(named: 'instanceHash'),
           transport: any(named: 'transport'),
@@ -1307,7 +1303,6 @@ void main() {
     });
 
     test('updateSubscriptions with failed subscribe of one wallet', () async {
-      mockWrapper(bridge);
       when(() => wallet.onMessageExpiredStream)
           .thenAnswer((_) => expiredStream);
       when(() => wallet.onMessageSentStream)
@@ -1322,7 +1317,7 @@ void main() {
       when(() => proto.transportBox).thenReturn(box);
 
       when(
-        () => bridge.subscribeStaticMethodTonWalletDartWrapper(
+        () => bridge.crateApiMergedTonWalletDartWrapperSubscribe(
           publicKey: any(named: 'publicKey'),
           instanceHash: any(named: 'instanceHash'),
           transport: any(named: 'transport'),
@@ -1349,7 +1344,6 @@ void main() {
     });
 
     test('retrySubscriptions successfully', () async {
-      mockWrapper(bridge);
       when(() => wallet.onMessageExpiredStream)
           .thenAnswer((_) => expiredStream);
       when(() => wallet.onMessageSentStream)
@@ -1364,7 +1358,7 @@ void main() {
       when(() => proto.transportBox).thenReturn(box);
 
       when(
-        () => bridge.subscribeStaticMethodTonWalletDartWrapper(
+        () => bridge.crateApiMergedTonWalletDartWrapperSubscribe(
           publicKey: any(named: 'publicKey'),
           instanceHash: any(named: 'instanceHash'),
           transport: any(named: 'transport'),
@@ -1382,7 +1376,7 @@ void main() {
       expect(wallets.where((e) => e.hasError).length, 1);
 
       when(
-        () => bridge.subscribeStaticMethodTonWalletDartWrapper(
+        () => bridge.crateApiMergedTonWalletDartWrapperSubscribe(
           publicKey: any(named: 'publicKey'),
           instanceHash: any(named: 'instanceHash'),
           transport: any(named: 'transport'),
@@ -1400,7 +1394,6 @@ void main() {
     });
 
     test('retrySubscriptions no cached asset', () async {
-      mockWrapper(bridge);
       when(() => wallet.onMessageExpiredStream)
           .thenAnswer((_) => expiredStream);
       when(() => wallet.onMessageSentStream)
@@ -1414,7 +1407,7 @@ void main() {
       when(() => proto.transportBox).thenReturn(box);
 
       when(
-        () => bridge.subscribeStaticMethodTonWalletDartWrapper(
+        () => bridge.crateApiMergedTonWalletDartWrapperSubscribe(
           publicKey: any(named: 'publicKey'),
           instanceHash: any(named: 'instanceHash'),
           transport: any(named: 'transport'),
@@ -1437,7 +1430,8 @@ void main() {
     });
 
     test('updateSubscriptions with expanding assets list', () async {
-      mockWrapper(bridge);
+      reset(bridge);
+
       when(() => wallet.onMessageExpiredStream)
           .thenAnswer((_) => expiredStream);
       when(() => wallet.onMessageSentStream)
@@ -1452,7 +1446,7 @@ void main() {
       when(() => proto.transportBox).thenReturn(box);
 
       when(
-        () => bridge.subscribeStaticMethodTonWalletDartWrapper(
+        () => bridge.crateApiMergedTonWalletDartWrapperSubscribe(
           publicKey: any(named: 'publicKey'),
           instanceHash: any(named: 'instanceHash'),
           transport: any(named: 'transport'),
@@ -1475,7 +1469,7 @@ void main() {
 
       expect(repository.wallets.length, 2);
       verify(
-        () => bridge.subscribeStaticMethodTonWalletDartWrapper(
+        () => bridge.crateApiMergedTonWalletDartWrapperSubscribe(
           publicKey: any(named: 'publicKey'),
           instanceHash: any(named: 'instanceHash'),
           transport: any(named: 'transport'),
@@ -1484,7 +1478,7 @@ void main() {
         ),
       ).called(1);
       verify(
-        () => bridge.subscribeStaticMethodTonWalletDartWrapper(
+        () => bridge.crateApiMergedTonWalletDartWrapperSubscribe(
           publicKey: any(named: 'publicKey'),
           instanceHash: any(named: 'instanceHash'),
           transport: any(named: 'transport'),
@@ -1495,7 +1489,6 @@ void main() {
     });
 
     test('updateTransportSubscriptions without side effects', () async {
-      mockWrapper(bridge);
       when(() => wallet.onMessageExpiredStream)
           .thenAnswer((_) => expiredStream);
       when(() => wallet.onMessageSentStream)
@@ -1516,7 +1509,7 @@ void main() {
       GetIt.instance.registerSingleton<TokenWalletRepository>(tokenRepository);
 
       when(
-        () => bridge.subscribeStaticMethodTonWalletDartWrapper(
+        () => bridge.crateApiMergedTonWalletDartWrapperSubscribe(
           publicKey: any(named: 'publicKey'),
           instanceHash: any(named: 'instanceHash'),
           transport: any(named: 'transport'),

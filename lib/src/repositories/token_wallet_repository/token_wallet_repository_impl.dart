@@ -102,7 +102,7 @@ mixin TokenWalletRepositoryImpl implements TokenWalletRepository {
           (e) => e.additionalAssets[lastUpdatedNetworkGroup]?.tokenWallets
               .map((el) => (e.tonWallet.address, el.rootTokenContract)),
         )
-        .whereNotNull()
+        .nonNulls
         .expand((e) => e)
         .firstWhereOrNull((e) => e.$1 == owner && e.$2 == rootTokenContract);
 
@@ -183,7 +183,7 @@ mixin TokenWalletRepositoryImpl implements TokenWalletRepository {
           (e) => e.additionalAssets[networkGroup]?.tokenWallets
               .map((el) => (e.tonWallet.address, el.rootTokenContract)),
         )
-        .whereNotNull()
+        .nonNulls
         .expand((e) => e)
         .toList();
 
@@ -304,7 +304,7 @@ mixin TokenWalletRepositoryImpl implements TokenWalletRepository {
           (e) => e.additionalAssets[networkGroup]?.tokenWallets
               .map((el) => (e.tonWallet.address, el.rootTokenContract)),
         )
-        .whereNotNull()
+        .nonNulls
         .expand((e) => e)
         .toList();
 

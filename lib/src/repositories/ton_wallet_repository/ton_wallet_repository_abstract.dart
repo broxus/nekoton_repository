@@ -11,7 +11,7 @@ abstract class TonWalletRepository {
   /// Subscribe to TonWallet by its asset and return its instance.
   /// This calls [TonWallet.subscribe].
   ///
-  /// If address of asset contains in [tonWalletZeroStateAddresses], then
+  /// If address of [asset] is zerostate address, then
   /// [subscribeByAddress] will be used.
   ///
   /// !!! You do not need to refresh wallet directly after subscribing, because

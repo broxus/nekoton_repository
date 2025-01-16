@@ -179,7 +179,7 @@ mixin GenericContractRepositoryImpl implements GenericContractRepository {
             completePolling();
             if (!completer.isCompleted) completer.completeError(err.$1, err.$2);
           }
-          if (contract.pollingMethod != PollingMethod.Reliable) {
+          if (contract.pollingMethod != PollingMethod.reliable) {
             // Being here means, that onMessageSentStream got data
             completePolling();
           }

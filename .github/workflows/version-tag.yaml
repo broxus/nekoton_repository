@@ -7,6 +7,6 @@ on:
 jobs:
   version_tag:
     if: github.event.pull_request.merged && github.head_ref == 'version-bump'
-    uses: broxus/flutter_templates/.github/workflows/version-tag.yaml@main
+    uses: broxus/flutter_templates/.github/workflows/version-tag.yaml@v2
     secrets:
       token: ${{ secrets.BOT_ACCESS_TOKEN }}
