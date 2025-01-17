@@ -31,8 +31,6 @@ class TonWalletState extends Equatable {
   final TonWallet? wallet;
 
   /// Any error that could be thrown during creating subscription.
-  /// Typically, this is [FfiException] or
-  /// [TonWalletRetrySubscriptionMissedAsset] but may be any other type.
   final Object? error;
 
   bool get hasWallet => wallet != null;

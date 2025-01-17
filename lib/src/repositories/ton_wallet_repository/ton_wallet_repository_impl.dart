@@ -82,7 +82,7 @@ mixin TonWalletRepositoryImpl implements TonWalletRepository {
 
   @override
   Future<TonWalletState> subscribe(TonWalletAsset asset) async {
-    if (tonWalletZeroStateAddresses.contains(asset.address)) {
+    if (asset.address.isZeroState) {
       return subscribeByAddress(asset.address);
     }
 
@@ -457,7 +457,7 @@ mixin TonWalletRepositoryImpl implements TonWalletRepository {
             completePolling();
             if (!completer.isCompleted) completer.completeError(err.$1, err.$2);
           }
-          if (tonWallet.pollingMethod != PollingMethod.Reliable) {
+          if (tonWallet.pollingMethod != PollingMethod.reliable) {
             // Being here means, that onMessageSentStream got data
             completePolling();
           }
@@ -862,7 +862,7 @@ mixin TonWalletRepositoryImpl implements TonWalletRepository {
         final confirmations = transactions
             .where((e) => e.isSubmitOrConfirmTransaction(transactionId))
             .map((e) => e.custodian)
-            .whereNotNull()
+            .nonNulls
             .toList();
 
         final msgSender = e.transaction.inMessage.src;
@@ -1194,7 +1194,7 @@ mixin TonWalletRepositoryImpl implements TonWalletRepository {
         final confirmations = transactions
             .where((e) => e.isSubmitOrConfirmTransaction(transactionId))
             .map((e) => e.custodian)
-            .whereNotNull()
+            .nonNulls
             .toList();
 
         final msgSender = e.transaction.inMessage.src;

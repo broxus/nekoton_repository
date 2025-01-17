@@ -466,15 +466,15 @@ class NekotonRepository
 
   /// The main log level map
   static final Map<Level, fnb.LogLevel?> _logMap = {
-    Level.ALL: fnb.LogLevel.Trace,
-    Level.FINEST: fnb.LogLevel.Trace,
-    Level.FINER: fnb.LogLevel.Trace,
-    Level.FINE: fnb.LogLevel.Debug,
-    Level.CONFIG: fnb.LogLevel.Debug,
-    Level.INFO: fnb.LogLevel.Info,
-    Level.WARNING: fnb.LogLevel.Warn,
-    Level.SEVERE: fnb.LogLevel.Error,
-    Level.SHOUT: fnb.LogLevel.Error,
+    Level.ALL: fnb.LogLevel.trace,
+    Level.FINEST: fnb.LogLevel.trace,
+    Level.FINER: fnb.LogLevel.trace,
+    Level.FINE: fnb.LogLevel.debug,
+    Level.CONFIG: fnb.LogLevel.debug,
+    Level.INFO: fnb.LogLevel.info,
+    Level.WARNING: fnb.LogLevel.warn,
+    Level.SEVERE: fnb.LogLevel.error,
+    Level.SHOUT: fnb.LogLevel.error,
     Level.OFF: null,
   };
 

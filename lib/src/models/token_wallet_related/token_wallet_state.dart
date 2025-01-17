@@ -34,8 +34,6 @@ class TokenWalletState extends Equatable {
   final GenericTokenWallet? wallet;
 
   /// Any error that could be thrown during creating subscription.
-  /// Typically, this is [FfiException] or
-  /// [TokenWalletRetrySubscriptionMissedAsset], but may be any other type.
   final Object? error;
 
   bool get hasWallet => wallet != null;

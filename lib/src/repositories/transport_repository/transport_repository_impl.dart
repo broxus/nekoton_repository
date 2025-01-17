@@ -46,7 +46,7 @@ mixin TransportRepositoryImpl implements TransportRepository {
     int? latencyDetectionInterval,
     int? maxLatency,
     int? endpointSelectionRetryCount,
-  }) async {
+  }) {
     final settings = GqlNetworkSettings(
       endpoints: endpoints,
       latencyDetectionInterval:
@@ -57,7 +57,7 @@ mixin TransportRepositoryImpl implements TransportRepository {
       local: local,
     );
 
-    final connection = await GqlConnection.create(
+    final connection = GqlConnection.create(
       client: client,
       name: name,
       group: group,
@@ -73,10 +73,10 @@ mixin TransportRepositoryImpl implements TransportRepository {
     required String name,
     required String group,
     required String endpoint,
-  }) async {
+  }) {
     final settings = ProtoNetworkSettings(endpoint: endpoint);
 
-    final connection = await ProtoConnection.create(
+    final connection = ProtoConnection.create(
       client: client,
       name: name,
       group: group,
@@ -92,10 +92,10 @@ mixin TransportRepositoryImpl implements TransportRepository {
     required String name,
     required String group,
     required String endpoint,
-  }) async {
+  }) {
     final settings = JrpcNetworkSettings(endpoint: endpoint);
 
-    final connection = await JrpcConnection.create(
+    final connection = JrpcConnection.create(
       client: client,
       name: name,
       group: group,

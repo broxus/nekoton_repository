@@ -6,7 +6,7 @@ import 'package:mocktail/mocktail.dart';
 import 'package:nekoton_repository/nekoton_repository.dart' hide Symbol;
 import 'package:nekoton_repository/nekoton_repository.dart' as nek show Symbol;
 
-class MockBridge extends Mock implements NekotonBridge {}
+class MockBridge extends Mock implements NekotonBridgeApi {}
 
 class MockTransport extends Mock implements TransportStrategy {
   @override
@@ -27,6 +27,14 @@ class MockWalletStorage extends Mock
     implements TokenWalletTransactionsStorage {}
 
 class MockWallet extends Mock implements TokenWallet {}
+
+class MockArcTransportBoxTrait extends Mock implements ArcTransportBoxTrait {}
+
+class MockArcTokenWalletBoxTrait extends Mock
+    implements ArcTokenWalletBoxTrait {}
+
+class MockTokenWalletDartWrapper extends Mock
+    implements TokenWalletDartWrapper {}
 
 class MockProtoTransport extends Mock implements ProtoTransport {
   @override
@@ -116,12 +124,12 @@ void main() {
     fullName: '',
   );
   const version = TokenWalletVersion.tip3;
+  final bridge = MockBridge();
 
   late TokenWalletDartWrapper tokenWrapper1;
   late TokenWalletDartWrapper tokenWrapper2;
   late ArcTokenWalletBoxTrait walletBoxTrait;
 
-  late MockBridge bridge;
   late ArcTransportBoxTrait box;
 
   setUp(() {
@@ -132,25 +140,22 @@ void main() {
     repository = TokenWalletRepoTest(transport, storage);
     proto = MockProtoTransport();
 
-    bridge = MockBridge();
-    box = ArcTransportBoxTrait.fromRaw(0, 0, bridge);
+    box = MockArcTransportBoxTrait();
     registerFallbackValue(box);
 
-    walletBoxTrait = ArcTokenWalletBoxTrait.fromRaw(0, 0, bridge);
-    tokenWrapper1 = TokenWalletDartWrapper(
-      bridge: bridge,
-      innerWallet: walletBoxTrait,
-    );
-    tokenWrapper2 = TokenWalletDartWrapper(
-      bridge: bridge,
-      innerWallet: walletBoxTrait,
-    );
+    walletBoxTrait = MockArcTokenWalletBoxTrait();
+    tokenWrapper1 = MockTokenWalletDartWrapper();
+    tokenWrapper2 = MockTokenWalletDartWrapper();
     registerFallbackValue(walletBoxTrait);
     registerFallbackValue(tokenWrapper1);
     registerFallbackValue(tokenWrapper2);
 
     balanceStream = const Stream.empty();
     transactionsFoundStream = const Stream.empty();
+  });
+
+  setUpAll(() {
+    NekotonBridge.initMock(api: bridge);
   });
 
   /// We must use this method except of thenThrow because it will broke
@@ -330,7 +335,6 @@ void main() {
 
   group('TokenWalletRepository', () {
     test('updateTokenSubscriptions without side effects', () async {
-      mockWrapper(bridge);
       when(() => wallet.onBalanceChangedStream)
           .thenAnswer((_) => balanceStream);
       when(() => wallet.onTransactionsFoundStream)
@@ -344,7 +348,7 @@ void main() {
       when(() => proto.group).thenReturn(transportGroup);
 
       when(
-        () => bridge.subscribeStaticMethodTokenWalletDartWrapper(
+        () => bridge.crateApiMergedTokenWalletDartWrapperSubscribe(
           instanceHash: any(named: 'instanceHash'),
           transport: any(named: 'transport'),
           rootTokenContract: any(named: 'rootTokenContract'),
@@ -371,7 +375,6 @@ void main() {
 
     test('updateTokenSubscriptions with failed subscribe of one token',
         () async {
-      mockWrapper(bridge);
       when(() => wallet.onBalanceChangedStream)
           .thenAnswer((_) => balanceStream);
       when(() => wallet.onTransactionsFoundStream)
@@ -385,7 +388,7 @@ void main() {
       when(() => proto.group).thenReturn(transportGroup);
 
       when(
-        () => bridge.subscribeStaticMethodTokenWalletDartWrapper(
+        () => bridge.crateApiMergedTokenWalletDartWrapperSubscribe(
           instanceHash: any(named: 'instanceHash'),
           transport: any(named: 'transport'),
           rootTokenContract: any(named: 'rootTokenContract'),
@@ -412,7 +415,6 @@ void main() {
     });
 
     test('retrySubscriptions successfully', () async {
-      mockWrapper(bridge);
       when(() => wallet.onBalanceChangedStream)
           .thenAnswer((_) => balanceStream);
       when(() => wallet.onTransactionsFoundStream)
@@ -426,7 +428,7 @@ void main() {
       when(() => proto.group).thenReturn(transportGroup);
 
       when(
-        () => bridge.subscribeStaticMethodTokenWalletDartWrapper(
+        () => bridge.crateApiMergedTokenWalletDartWrapperSubscribe(
           instanceHash: any(named: 'instanceHash'),
           transport: any(named: 'transport'),
           rootTokenContract: any(named: 'rootTokenContract'),
@@ -441,7 +443,7 @@ void main() {
       expect(repository.tokenWallets.length, 1);
 
       when(
-        () => bridge.subscribeStaticMethodTokenWalletDartWrapper(
+        () => bridge.crateApiMergedTokenWalletDartWrapperSubscribe(
           instanceHash: any(named: 'instanceHash'),
           transport: any(named: 'transport'),
           rootTokenContract: any(named: 'rootTokenContract'),
@@ -460,7 +462,6 @@ void main() {
     });
 
     test('retrySubscriptions no cached asset', () async {
-      mockWrapper(bridge);
       when(() => wallet.onBalanceChangedStream)
           .thenAnswer((_) => balanceStream);
       when(() => wallet.onTransactionsFoundStream)
@@ -473,7 +474,7 @@ void main() {
       when(() => proto.group).thenReturn(transportGroup);
 
       when(
-        () => bridge.subscribeStaticMethodTokenWalletDartWrapper(
+        () => bridge.crateApiMergedTokenWalletDartWrapperSubscribe(
           instanceHash: any(named: 'instanceHash'),
           transport: any(named: 'transport'),
           rootTokenContract: any(named: 'rootTokenContract'),
@@ -496,7 +497,8 @@ void main() {
     });
 
     test('updateTokenSubscriptions with expanding assets list', () async {
-      mockWrapper(bridge);
+      reset(bridge);
+
       when(() => wallet.onBalanceChangedStream)
           .thenAnswer((_) => balanceStream);
       when(() => wallet.onTransactionsFoundStream)
@@ -510,7 +512,7 @@ void main() {
       when(() => proto.group).thenReturn(transportGroup);
 
       when(
-        () => bridge.subscribeStaticMethodTokenWalletDartWrapper(
+        () => bridge.crateApiMergedTokenWalletDartWrapperSubscribe(
           instanceHash: any(named: 'instanceHash'),
           transport: any(named: 'transport'),
           rootTokenContract: any(named: 'rootTokenContract'),
@@ -533,7 +535,7 @@ void main() {
 
       expect(repository.tokenWallets.length, 2);
       verify(
-        () => bridge.subscribeStaticMethodTokenWalletDartWrapper(
+        () => bridge.crateApiMergedTokenWalletDartWrapperSubscribe(
           instanceHash: any(named: 'instanceHash'),
           transport: any(named: 'transport'),
           rootTokenContract: root1.address,
@@ -542,7 +544,7 @@ void main() {
         ),
       ).called(1);
       verify(
-        () => bridge.subscribeStaticMethodTokenWalletDartWrapper(
+        () => bridge.crateApiMergedTokenWalletDartWrapperSubscribe(
           instanceHash: any(named: 'instanceHash'),
           transport: any(named: 'transport'),
           rootTokenContract: root2.address,
@@ -555,7 +557,6 @@ void main() {
     });
 
     test('updateTokenTransportSubscriptions without side effects', () async {
-      mockWrapper(bridge);
       when(() => wallet.onBalanceChangedStream)
           .thenAnswer((_) => balanceStream);
       when(() => wallet.onTransactionsFoundStream)
@@ -569,7 +570,7 @@ void main() {
       when(() => proto.group).thenReturn(transportGroup);
 
       when(
-        () => bridge.subscribeStaticMethodTokenWalletDartWrapper(
+        () => bridge.crateApiMergedTokenWalletDartWrapperSubscribe(
           instanceHash: any(named: 'instanceHash'),
           transport: any(named: 'transport'),
           rootTokenContract: any(named: 'rootTokenContract'),

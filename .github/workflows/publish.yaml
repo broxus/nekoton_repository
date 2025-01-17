@@ -7,4 +7,4 @@ on:
 
 jobs:
   publish:
-    uses: broxus/flutter_templates/.github/workflows/publish-package.yaml@main
+    uses: broxus/flutter_templates/.github/workflows/publish-package.yaml@v2

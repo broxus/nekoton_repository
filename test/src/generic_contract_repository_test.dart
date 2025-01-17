@@ -5,7 +5,7 @@ import 'package:nekoton_repository/src/repositories/ton_wallet_repository/ton_wa
 import 'package:nekoton_repository/src/utils/utils.dart';
 import 'package:rxdart/rxdart.dart';
 
-class MockBridge extends Mock implements NekotonBridge {}
+class MockBridge extends Mock implements NekotonBridgeApi {}
 
 class MockTransport extends Mock implements TransportStrategy {}
 
@@ -16,6 +16,10 @@ class MockGqlTransport extends Mock implements GqlTransport {}
 class MockProtoTransport extends Mock implements ProtoTransport {}
 
 class MockJrpcTransport extends Mock implements ProtoTransport {}
+
+class MockArcTransportBoxTrait extends Mock implements ArcTransportBoxTrait {}
+
+class MockArcTonWalletBoxTrait extends Mock implements ArcTonWalletBoxTrait {}
 
 class GenericContractRepoTest with GenericContractRepositoryImpl {
   GenericContractRepoTest(
@@ -68,12 +72,12 @@ void main() {
     minLt: '',
     batchType: TransactionsBatchType.newTransactions,
   );
+  final bridge = MockBridge();
 
   late TonWalletDartWrapper tonWrapper1;
   late TonWalletDartWrapper tonWrapper2;
   late ArcTonWalletBoxTrait walletBoxTrait;
 
-  late MockBridge bridge;
   late ArcTransportBoxTrait box;
 
   /// We must use this method except of thenThrow because it will broke
@@ -90,17 +94,14 @@ void main() {
     proto = MockProtoTransport();
     jrpc = MockJrpcTransport();
 
-    bridge = MockBridge();
-    box = ArcTransportBoxTrait.fromRaw(0, 0, bridge);
+    box = MockArcTransportBoxTrait();
     registerFallbackValue(box);
 
-    walletBoxTrait = ArcTonWalletBoxTrait.fromRaw(0, 0, bridge);
+    walletBoxTrait = MockArcTonWalletBoxTrait();
     tonWrapper1 = TonWalletDartWrapper(
-      bridge: bridge,
       innerWallet: walletBoxTrait,
     );
     tonWrapper2 = TonWalletDartWrapper(
-      bridge: bridge,
       innerWallet: walletBoxTrait,
     );
     registerFallbackValue(walletBoxTrait);
@@ -111,6 +112,10 @@ void main() {
     expiredStream = const Stream.empty();
     stateStream = const Stream.empty();
     transactionsFoundStream = const Stream.empty();
+  });
+
+  setUpAll(() {
+    NekotonBridge.initMock(api: bridge);
   });
 
   group('GenericContractRepository', () {
@@ -346,9 +351,9 @@ void main() {
       expireAt: NtpTime.now(),
       boc: 'boc',
     );
-    const latestBlock = LatestBlock(
+    final latestBlock = LatestBlock(
       id: 'latest',
-      endLt: 0,
+      endLt: BigInt.zero,
       genUtime: 0,
     );
     const nextBlockId = 'next';

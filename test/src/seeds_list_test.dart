@@ -1,5 +1,8 @@
 import 'package:flutter_test/flutter_test.dart';
+import 'package:mocktail/mocktail.dart';
 import 'package:nekoton_repository/nekoton_repository.dart';
+
+class MockBridge extends Mock implements NekotonBridgeApi {}
 
 class AllWalletTypeSupports extends Fake implements TransportStrategy {
   @override
@@ -16,6 +19,7 @@ class OnlyV3WalletTypeSupports extends Fake implements TransportStrategy {
 }
 
 void main() {
+  final bridge = MockBridge();
   const superMasterName = 'SUPER MASTER';
   const superMasterMeta = SeedMetadata(
     name: superMasterName,
@@ -147,6 +151,10 @@ void main() {
     allAccounts: [accountSub2Hidden],
     publicKey: subKey2.publicKey,
   );
+
+  setUpAll(() {
+    NekotonBridge.initMock(api: bridge);
+  });
 
   group('SeedList test', () {
     test('SeedList only keys creation', () {
@@ -314,7 +322,7 @@ void main() {
       expect(account!.address, account1Pure.address);
 
       final notExisted =
-          seedsList.findAccountByAddress(const Address(address: '0'));
+          seedsList.findAccountByAddress(const Address(address: '0:0000'));
       expect(notExisted, isNull);
     });
   });
