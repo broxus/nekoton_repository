@@ -16,7 +16,7 @@ on:
 
 jobs:
   version_bump:
-    uses: broxus/flutter_templates/.github/workflows/version.yaml@v2
+    uses: broxus/flutter_templates/.github/workflows/version.yaml@v3
     with:
       version_parameters: ${{ inputs.version_parameters }}
     secrets:
