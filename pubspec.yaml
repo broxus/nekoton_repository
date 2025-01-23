@@ -4,8 +4,8 @@ version: 0.46.0-dev.3
 repository: https://github.com/broxus/nekoton_repository
 
 environment:
-  sdk: '>=3.6.0 <4.0.0'
-  flutter: ">=3.27.0"
+  sdk: '>=3.5.0 <4.0.0'
+  flutter: ">=3.24.0"
 
 dependencies:
   async: ^2.11.0
@@ -14,7 +14,7 @@ dependencies:
   equatable: ^2.0.7
   flutter:
     sdk: flutter
-  flutter_nekoton_bridge: ^2.3.0-dev.4
+  flutter_nekoton_bridge: ^2.3.0
   freezed_annotation: ^2.4.4
   get_it: ^8.0.3
   injectable: ^2.5.0
