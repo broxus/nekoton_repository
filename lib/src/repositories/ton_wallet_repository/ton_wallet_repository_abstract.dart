@@ -167,6 +167,12 @@ abstract class TonWalletRepository {
     required UnsignedMessage message,
   });
 
+  /// Estimate fees of deployment with [message] and wallet with [address].
+  Future<BigInt> estimateDeploymentFees({
+    required Address address,
+    required UnsignedMessage message,
+  });
+
   /// Send message to blockchain and listen for its completion.
   /// [address] - is wallet from which funds will be sent.
   /// [signedMessage] - message to blockchain that user had signed

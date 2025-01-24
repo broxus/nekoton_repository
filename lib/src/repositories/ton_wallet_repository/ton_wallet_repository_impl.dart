@@ -386,6 +386,26 @@ mixin TonWalletRepositoryImpl implements TonWalletRepository {
   }
 
   @override
+  Future<BigInt> estimateDeploymentFees({
+    required Address address,
+    required UnsignedMessage message,
+  }) async {
+    final tonWallet = (await getWallet(address)).wallet;
+
+    if (tonWallet == null) throw TonWalletStateNotInitializedException();
+
+    await message.refreshTimeout();
+
+    return tonWallet.estimateFees(
+      signedMessage: await message.signFake(),
+      executionOptions: TransactionExecutionOptions(
+        disableSignatureCheck: true,
+        overrideBalance: BigInt.parse('100000000000'), // 100 EVER
+      ),
+    );
+  }
+
+  @override
   Future<PendingTransaction> sendUnawaited({
     required Address address,
     required SignedMessage signedMessage,
