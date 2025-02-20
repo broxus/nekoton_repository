@@ -14,7 +14,6 @@ class JettonTokenWallet extends GenericTokenWallet {
       JettonTokenWallet(
         await JettonWallet.subscribe(
           transport: transport,
-          gqlConnection: gqlConnection,
           owner: owner,
           rootTokenContract: rootTokenContract,
         ),
