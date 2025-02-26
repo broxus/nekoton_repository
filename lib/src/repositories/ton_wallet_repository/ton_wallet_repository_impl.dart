@@ -325,12 +325,9 @@ mixin TonWalletRepositoryImpl implements TonWalletRepository {
   @override
   Future<UnsignedMessage> prepareTransfer({
     required Address address,
-    required Address destination,
-    required BigInt amount,
-    required bool bounce,
     required Expiration expiration,
+    required List<TonWalletTransferParams> params,
     PublicKey? publicKey,
-    String? body,
   }) async {
     final tonWallet = (await getWallet(address)).wallet;
 
@@ -341,11 +338,8 @@ mixin TonWalletRepositoryImpl implements TonWalletRepository {
     return tonWallet.prepareTransfer(
       contractState: contractState,
       publicKey: publicKey ?? tonWallet.publicKey,
-      destination: destination,
-      amount: amount,
-      bounce: bounce,
-      body: body,
       expiration: expiration,
+      params: params,
     );
   }
 

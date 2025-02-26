@@ -135,20 +135,16 @@ abstract class TonWalletRepository {
     required int? expirationTime,
   });
 
-  /// Prepare transfer of any token from wallet with [address] to [destination]
-  /// and [amount] of tokens.
+  /// Prepare transfer of any token from wallet with [address] using [params].
   ///
   /// To transfer token wallets, it must be calculated via
   /// [TokenWalletRepository.prepareTokenTransfer] and recalculated amount of
   /// original tokens.
   Future<UnsignedMessage> prepareTransfer({
     required Address address,
-    required Address destination,
-    required BigInt amount,
-    required bool bounce,
     required Expiration expiration,
+    required List<TonWalletTransferParams> params,
     PublicKey? publicKey,
-    String? body,
   });
 
   /// Create message to confirm transaction to transfer tokens from wallet with
