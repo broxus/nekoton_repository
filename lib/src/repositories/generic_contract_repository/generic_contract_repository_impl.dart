@@ -122,7 +122,9 @@ mixin GenericContractRepositoryImpl implements GenericContractRepository {
 
   @override
   void updateContractTransportSubscriptions() {
-    for (final contract in allContracts) {
+    final contractListClone =
+        List<GenericContractSubscriptionItem>.from(allContracts);
+    for (final contract in contractListClone) {
       unsubscribeContract(
         tabId: contract.tabId,
         origin: contract.origin,
