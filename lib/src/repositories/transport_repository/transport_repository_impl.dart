@@ -7,7 +7,7 @@ import 'package:rxdart/rxdart.dart';
 /// class NekotonRepository with TransportRepositoryImpl {}
 /// ```
 mixin TransportRepositoryImpl implements TransportRepository {
-  final _transportSubject = BehaviorSubject<TransportStrategy>();
+  final _transportSubject = BehaviorSubject<TransportStrategy>(sync: true);
 
   @override
   TransportStrategy get currentTransport => _transportSubject.value;
