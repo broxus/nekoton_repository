@@ -105,12 +105,11 @@ mixin SeedKeyRepositoryImpl on TransportRepository
   Future<PublicKey> addSeed({
     required List<String> phrase,
     required String password,
+    required MnemonicType mnemonicType,
     String? name,
     SeedAddType addType = SeedAddType.create,
   }) async {
     final isLegacy = phrase.length == 24;
-    final mnemonicType =
-        isLegacy ? const MnemonicType.legacy() : const MnemonicType.labs(0);
     final phraseStr = phrase.join(' ');
 
     name = name?.isEmpty ?? true ? null : name;
