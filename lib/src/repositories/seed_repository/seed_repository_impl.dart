@@ -105,7 +105,7 @@ mixin SeedKeyRepositoryImpl on TransportRepository
   Future<PublicKey> addSeed({
     required List<String> phrase,
     required String password,
-    required MnemonicType mnemonicType,
+    MnemonicType? mnemonicType,
     String? name,
     SeedAddType addType = SeedAddType.create,
   }) async {
@@ -113,27 +113,33 @@ mixin SeedKeyRepositoryImpl on TransportRepository
     final phraseStr = phrase.join(' ');
 
     name = name?.isEmpty ?? true ? null : name;
+    mnemonicType ??= isLegacy
+        ? const MnemonicType.legacy()
+        : const MnemonicType.bip39(
+            Bip39MnemonicData(
+              accountId: 0,
+              path: Bip39Path.ever,
+              entropy: Bip39Entropy.bits128,
+            ),
+          );
+
+    final passwordExplicit = Password.explicit(
+      PasswordExplicit(
+        password: password,
+        cacheBehavior: const PasswordCacheBehavior.nop(),
+      ),
+    );
 
     final createKeyInput = isLegacy
         ? EncryptedKeyCreateInput(
             phrase: phraseStr,
+            password: passwordExplicit,
             mnemonicType: mnemonicType,
-            password: Password.explicit(
-              PasswordExplicit(
-                password: password,
-                cacheBehavior: const PasswordCacheBehavior.nop(),
-              ),
-            ),
           )
         : DerivedKeyCreateInput.import(
             DerivedKeyCreateInputImport(
               phrase: phraseStr,
-              password: Password.explicit(
-                PasswordExplicit(
-                  password: password,
-                  cacheBehavior: const PasswordCacheBehavior.nop(),
-                ),
-              ),
+              password: passwordExplicit,
             ),
           );
 
