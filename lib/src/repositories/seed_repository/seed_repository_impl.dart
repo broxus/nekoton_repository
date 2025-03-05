@@ -109,11 +109,8 @@ mixin SeedKeyRepositoryImpl on TransportRepository
     String? name,
     SeedAddType addType = SeedAddType.create,
   }) async {
-    final isLegacy = phrase.length == 24;
-    final phraseStr = phrase.join(' ');
-
     name = name?.isEmpty ?? true ? null : name;
-    mnemonicType ??= isLegacy
+    mnemonicType ??= phrase.length == 24
         ? const MnemonicType.legacy()
         : const MnemonicType.bip39(
             Bip39MnemonicData(
@@ -123,6 +120,7 @@ mixin SeedKeyRepositoryImpl on TransportRepository
             ),
           );
 
+    final phraseStr = phrase.join(' ');
     final passwordExplicit = Password.explicit(
       PasswordExplicit(
         password: password,
@@ -130,7 +128,12 @@ mixin SeedKeyRepositoryImpl on TransportRepository
       ),
     );
 
-    final createKeyInput = isLegacy
+    final useEncryptedKey = mnemonicType.map<bool>(
+      legacy: (_) => true,
+      bip39: (value) => value.field0.path == Bip39Path.ton,
+    );
+
+    final createKeyInput = useEncryptedKey
         ? EncryptedKeyCreateInput(
             phrase: phraseStr,
             password: passwordExplicit,
