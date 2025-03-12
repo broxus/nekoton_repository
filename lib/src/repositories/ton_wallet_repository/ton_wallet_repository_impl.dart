@@ -394,7 +394,9 @@ mixin TonWalletRepositoryImpl implements TonWalletRepository {
       signedMessage: await message.signFake(),
       executionOptions: TransactionExecutionOptions(
         disableSignatureCheck: true,
-        overrideBalance: BigInt.parse('100000000000'), // 100 EVER
+        overrideBalance: 100.toNativeToken(
+          currentTransport.defaultNativeCurrencyDecimal,
+        ), // 100 EVER
       ),
     );
   }
