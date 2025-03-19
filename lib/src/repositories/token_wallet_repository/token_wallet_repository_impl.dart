@@ -350,9 +350,9 @@ mixin TokenWalletRepositoryImpl implements TokenWalletRepository {
       JettonTokenWallet() => tokenWallet.inner.prepareTransfer(
           destination: destination,
           amount: amount,
-          customPayload: payload,
           remainingGasTo: tokenWallet.owner,
           callbackValue: BigInt.one,
+          callbackPayload: payload,
           attachedAmount: attachedAmount,
         ),
     };
