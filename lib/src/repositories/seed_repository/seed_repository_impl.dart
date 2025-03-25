@@ -33,12 +33,14 @@ mixin SeedKeyRepositoryImpl on TransportRepository
   Future<List<PublicKey>> getKeysToDerive({
     required PublicKey masterKey,
     required String password,
+    int offset = 0,
+    int limit = _maxDeriveKeys,
   }) {
     return keyStore.getPublicKeys(
       DerivedKeyGetPublicKeys(
         masterKey: masterKey,
-        offset: 0,
-        limit: _maxDeriveKeys,
+        offset: offset,
+        limit: limit,
         password: Password.explicit(
           PasswordExplicit(
             password: password,
@@ -54,6 +56,7 @@ mixin SeedKeyRepositoryImpl on TransportRepository
     required List<int> accountIds,
     required String password,
     required PublicKey masterKey,
+    bool addActiveAccounts = true,
   }) async {
     final publicKeys = await keyStore.addKeys(
       accountIds
@@ -74,7 +77,9 @@ mixin SeedKeyRepositoryImpl on TransportRepository
           .toList(),
     );
 
-    unawaited(triggerAddingAccounts(publicKeys));
+    if (addActiveAccounts) {
+      unawaited(triggerAddingAccounts(publicKeys));
+    }
 
     return publicKeys;
   }
@@ -157,15 +162,96 @@ mixin SeedKeyRepositoryImpl on TransportRepository
       ),
     );
 
-    unawaited(triggerAddingAccounts([publicKey]));
+    if (useEncryptedKey) {
+      unawaited(triggerAddingAccounts([publicKey]));
+    } else {
+      unawaited(triggerDerivingKeys(masterKey: publicKey, password: password));
+    }
 
     return publicKey;
+  }
+
+  /// Initiates the process of deriving additional keys from a master key and
+  /// adds active accounts. Additionally, it triggers adding accounts to the
+  /// master key.
+  ///
+  /// This method searches for active wallets associated with derived keys and
+  /// adds them to the repository.
+  /// It starts from the second derived key (skipping the first which is assumed
+  /// to be already added) and continues until it finds no more active wallets.
+  ///
+  /// Parameters:
+  /// - [masterKey]: The master public key used for deriving additional keys
+  /// - [password]: The password required to decrypt and use the master key
+  ///
+  /// The method will not perform any actions if no new active accounts are
+  /// found.
+  Future<void> triggerDerivingKeys({
+    required PublicKey masterKey,
+    required String password,
+  }) async {
+    await triggerAddingAccounts([masterKey]);
+
+    final transport = currentTransport;
+    final accounts = accountsStorage.accounts.map((e) => e.address).toSet();
+    final accountsToAdd = <AccountToAdd>[];
+    final accountIds = <int>[];
+
+    final keys = await getKeysToDerive(
+      masterKey: masterKey,
+      password: password,
+    );
+
+    // skip first key, because it's already added
+    for (var accountId = 1; accountId < keys.length; accountId++) {
+      if (transport.transport.disposed) break;
+
+      // Logic is the same as in triggerAddingAccounts method but without
+      // adding default account if no accounts were found.
+      final key = keys[accountId];
+      final found = await TonWallet.findExistingWallets(
+        transport: transport.transport,
+        workchainId: defaultWorkchainId,
+        publicKey: key,
+        walletTypes: transport.availableWalletTypes,
+      );
+
+      final activeAccounts = found.where(
+        (e) => e.isActive && !accounts.contains(e.address),
+      );
+
+      if (activeAccounts.isEmpty) break;
+
+      accountIds.add(accountId);
+      accountsToAdd.addAll(
+        activeAccounts.map(
+          (a) => AccountToAdd(
+            publicKey: a.publicKey,
+            contract: a.walletType,
+            workchain: a.address.workchain,
+            name: transport.defaultAccountName(a.walletType),
+          ),
+        ),
+      );
+    }
+
+    if (accountIds.isEmpty || accountsToAdd.isEmpty) return;
+
+    await deriveKeys(
+      accountIds: accountIds,
+      password: password,
+      masterKey: masterKey,
+      addActiveAccounts: false,
+    );
+
+    await GetIt.instance<AccountRepository>().addAccounts(accountsToAdd);
   }
 
   /// Trigger adding accounts to [AccountRepository] by public keys.
   Future<void> triggerAddingAccounts(List<PublicKey> publicKeys) async {
     final transport = currentTransport;
     final keys = publicKeys.map((item) => item.toString()).toSet();
+    final accounts = accountsStorage.accounts.map((e) => e.address).toSet();
 
     _findingExistingWalletsSubject.add(
       _findingExistingWalletsSubject.value.union(keys),
@@ -194,8 +280,7 @@ mixin SeedKeyRepositoryImpl on TransportRepository
 
         // If account already in storage, skip it
         final notExistedAccounts = activeAccounts.where(
-          (active) => accountsStorage.accounts
-              .every((a) => a.address != active.address),
+          (active) => !accounts.contains(active.address),
         );
 
         // If no accounts were found for this key, then create default one.
@@ -214,16 +299,16 @@ mixin SeedKeyRepositoryImpl on TransportRepository
           foundAccounts.addAll(notExistedAccounts);
         }
 
-        for (final a in foundAccounts) {
-          accountsToAdd.add(
-            AccountToAdd(
+        accountsToAdd.addAll(
+          activeAccounts.map(
+            (a) => AccountToAdd(
               publicKey: a.publicKey,
               contract: a.walletType,
               workchain: a.address.workchain,
               name: transport.defaultAccountName(a.walletType),
             ),
-          );
-        }
+          ),
+        );
 
         await GetIt.instance<AccountRepository>().addAccounts(accountsToAdd);
       } finally {
