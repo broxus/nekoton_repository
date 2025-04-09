@@ -6,7 +6,7 @@ part 'ton_wallet_pending_transaction.freezed.dart';
 /// Transaction for TonWallet that is created by
 /// [TonWalletRepository.mapPendingTransactions].
 @freezed
-class TonWalletPendingTransaction with _$TonWalletPendingTransaction {
+abstract class TonWalletPendingTransaction with _$TonWalletPendingTransaction {
   const factory TonWalletPendingTransaction({
     // address of wallet for which this transaction found
     required Address address,

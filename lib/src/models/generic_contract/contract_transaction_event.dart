@@ -6,7 +6,8 @@ part 'contract_transaction_event.g.dart';
 
 /// Event that contains list of last transactions for [GenericContract].
 @freezed
-class ContractFoundTransactionEvent with _$ContractFoundTransactionEvent {
+abstract class ContractFoundTransactionEvent
+    with _$ContractFoundTransactionEvent {
   const factory ContractFoundTransactionEvent({
     required Address address,
     required List<Transaction> transactions,

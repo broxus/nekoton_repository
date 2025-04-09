@@ -5,7 +5,7 @@ part 'pending_transaction_with_data.freezed.dart';
 part 'pending_transaction_with_data.g.dart';
 
 @freezed
-sealed class PendingTransactionWithData
+abstract class PendingTransactionWithData
     with _$PendingTransactionWithData
     implements Comparable<PendingTransactionWithData> {
   const factory PendingTransactionWithData({

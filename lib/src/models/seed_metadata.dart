@@ -6,7 +6,7 @@ part 'seed_metadata.g.dart';
 
 /// Object to store seed metadata (name, created at, etc.)
 @freezed
-class SeedMetadata with _$SeedMetadata {
+abstract class SeedMetadata with _$SeedMetadata {
   const factory SeedMetadata({
     String? name,
     int? addedAt,

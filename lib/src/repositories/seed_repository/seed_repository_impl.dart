@@ -133,10 +133,10 @@ mixin SeedKeyRepositoryImpl on TransportRepository
       ),
     );
 
-    final useEncryptedKey = mnemonicType.map<bool>(
-      legacy: (_) => true,
-      bip39: (value) => value.field0.path == Bip39Path.ton,
-    );
+    final useEncryptedKey = switch (mnemonicType) {
+      MnemonicType_Legacy() => true,
+      MnemonicType_Bip39(:final field0) => field0.path == Bip39Path.ton,
+    };
 
     final createKeyInput = useEncryptedKey
         ? EncryptedKeyCreateInput(

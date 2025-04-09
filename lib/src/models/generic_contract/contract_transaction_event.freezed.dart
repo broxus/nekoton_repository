@@ -1,3 +1,4 @@
+// dart format width=80
 // coverage:ignore-file
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // ignore_for_file: type=lint
@@ -9,39 +10,55 @@ part of 'contract_transaction_event.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// dart format off
 T _$identity<T>(T value) => value;
-
-final _privateConstructorUsedError = UnsupportedError(
-    'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models');
-
-ContractFoundTransactionEvent _$ContractFoundTransactionEventFromJson(
-    Map<String, dynamic> json) {
-  return _ContractFoundTransactionEvent.fromJson(json);
-}
 
 /// @nodoc
 mixin _$ContractFoundTransactionEvent {
-  Address get address => throw _privateConstructorUsedError;
-  List<Transaction> get transactions => throw _privateConstructorUsedError;
-  TransactionsBatchInfo get info => throw _privateConstructorUsedError;
-
-  /// Serializes this ContractFoundTransactionEvent to a JSON map.
-  Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
+  Address get address;
+  List<Transaction> get transactions;
+  TransactionsBatchInfo get info;
 
   /// Create a copy of ContractFoundTransactionEvent
   /// with the given fields replaced by the non-null parameter values.
   @JsonKey(includeFromJson: false, includeToJson: false)
+  @pragma('vm:prefer-inline')
   $ContractFoundTransactionEventCopyWith<ContractFoundTransactionEvent>
-      get copyWith => throw _privateConstructorUsedError;
+      get copyWith => _$ContractFoundTransactionEventCopyWithImpl<
+              ContractFoundTransactionEvent>(
+          this as ContractFoundTransactionEvent, _$identity);
+
+  /// Serializes this ContractFoundTransactionEvent to a JSON map.
+  Map<String, dynamic> toJson();
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is ContractFoundTransactionEvent &&
+            (identical(other.address, address) || other.address == address) &&
+            const DeepCollectionEquality()
+                .equals(other.transactions, transactions) &&
+            (identical(other.info, info) || other.info == info));
+  }
+
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  int get hashCode => Object.hash(runtimeType, address,
+      const DeepCollectionEquality().hash(transactions), info);
+
+  @override
+  String toString() {
+    return 'ContractFoundTransactionEvent(address: $address, transactions: $transactions, info: $info)';
+  }
 }
 
 /// @nodoc
-abstract class $ContractFoundTransactionEventCopyWith<$Res> {
+abstract mixin class $ContractFoundTransactionEventCopyWith<$Res> {
   factory $ContractFoundTransactionEventCopyWith(
           ContractFoundTransactionEvent value,
-          $Res Function(ContractFoundTransactionEvent) then) =
-      _$ContractFoundTransactionEventCopyWithImpl<$Res,
-          ContractFoundTransactionEvent>;
+          $Res Function(ContractFoundTransactionEvent) _then) =
+      _$ContractFoundTransactionEventCopyWithImpl;
   @useResult
   $Res call(
       {Address address,
@@ -53,15 +70,12 @@ abstract class $ContractFoundTransactionEventCopyWith<$Res> {
 }
 
 /// @nodoc
-class _$ContractFoundTransactionEventCopyWithImpl<$Res,
-        $Val extends ContractFoundTransactionEvent>
+class _$ContractFoundTransactionEventCopyWithImpl<$Res>
     implements $ContractFoundTransactionEventCopyWith<$Res> {
-  _$ContractFoundTransactionEventCopyWithImpl(this._value, this._then);
+  _$ContractFoundTransactionEventCopyWithImpl(this._self, this._then);
 
-  // ignore: unused_field
-  final $Val _value;
-  // ignore: unused_field
-  final $Res Function($Val) _then;
+  final ContractFoundTransactionEvent _self;
+  final $Res Function(ContractFoundTransactionEvent) _then;
 
   /// Create a copy of ContractFoundTransactionEvent
   /// with the given fields replaced by the non-null parameter values.
@@ -72,20 +86,20 @@ class _$ContractFoundTransactionEventCopyWithImpl<$Res,
     Object? transactions = null,
     Object? info = null,
   }) {
-    return _then(_value.copyWith(
+    return _then(_self.copyWith(
       address: null == address
-          ? _value.address
+          ? _self.address
           : address // ignore: cast_nullable_to_non_nullable
               as Address,
       transactions: null == transactions
-          ? _value.transactions
+          ? _self.transactions
           : transactions // ignore: cast_nullable_to_non_nullable
               as List<Transaction>,
       info: null == info
-          ? _value.info
+          ? _self.info
           : info // ignore: cast_nullable_to_non_nullable
               as TransactionsBatchInfo,
-    ) as $Val);
+    ));
   }
 
   /// Create a copy of ContractFoundTransactionEvent
@@ -93,8 +107,8 @@ class _$ContractFoundTransactionEventCopyWithImpl<$Res,
   @override
   @pragma('vm:prefer-inline')
   $AddressCopyWith<$Res> get address {
-    return $AddressCopyWith<$Res>(_value.address, (value) {
-      return _then(_value.copyWith(address: value) as $Val);
+    return $AddressCopyWith<$Res>(_self.address, (value) {
+      return _then(_self.copyWith(address: value));
     });
   }
 
@@ -103,81 +117,22 @@ class _$ContractFoundTransactionEventCopyWithImpl<$Res,
   @override
   @pragma('vm:prefer-inline')
   $TransactionsBatchInfoCopyWith<$Res> get info {
-    return $TransactionsBatchInfoCopyWith<$Res>(_value.info, (value) {
-      return _then(_value.copyWith(info: value) as $Val);
+    return $TransactionsBatchInfoCopyWith<$Res>(_self.info, (value) {
+      return _then(_self.copyWith(info: value));
     });
   }
 }
 
 /// @nodoc
-abstract class _$$ContractFoundTransactionEventImplCopyWith<$Res>
-    implements $ContractFoundTransactionEventCopyWith<$Res> {
-  factory _$$ContractFoundTransactionEventImplCopyWith(
-          _$ContractFoundTransactionEventImpl value,
-          $Res Function(_$ContractFoundTransactionEventImpl) then) =
-      __$$ContractFoundTransactionEventImplCopyWithImpl<$Res>;
-  @override
-  @useResult
-  $Res call(
-      {Address address,
-      List<Transaction> transactions,
-      TransactionsBatchInfo info});
-
-  @override
-  $AddressCopyWith<$Res> get address;
-  @override
-  $TransactionsBatchInfoCopyWith<$Res> get info;
-}
-
-/// @nodoc
-class __$$ContractFoundTransactionEventImplCopyWithImpl<$Res>
-    extends _$ContractFoundTransactionEventCopyWithImpl<$Res,
-        _$ContractFoundTransactionEventImpl>
-    implements _$$ContractFoundTransactionEventImplCopyWith<$Res> {
-  __$$ContractFoundTransactionEventImplCopyWithImpl(
-      _$ContractFoundTransactionEventImpl _value,
-      $Res Function(_$ContractFoundTransactionEventImpl) _then)
-      : super(_value, _then);
-
-  /// Create a copy of ContractFoundTransactionEvent
-  /// with the given fields replaced by the non-null parameter values.
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? address = null,
-    Object? transactions = null,
-    Object? info = null,
-  }) {
-    return _then(_$ContractFoundTransactionEventImpl(
-      address: null == address
-          ? _value.address
-          : address // ignore: cast_nullable_to_non_nullable
-              as Address,
-      transactions: null == transactions
-          ? _value._transactions
-          : transactions // ignore: cast_nullable_to_non_nullable
-              as List<Transaction>,
-      info: null == info
-          ? _value.info
-          : info // ignore: cast_nullable_to_non_nullable
-              as TransactionsBatchInfo,
-    ));
-  }
-}
-
-/// @nodoc
 @JsonSerializable()
-class _$ContractFoundTransactionEventImpl
-    implements _ContractFoundTransactionEvent {
-  const _$ContractFoundTransactionEventImpl(
+class _ContractFoundTransactionEvent implements ContractFoundTransactionEvent {
+  const _ContractFoundTransactionEvent(
       {required this.address,
       required final List<Transaction> transactions,
       required this.info})
       : _transactions = transactions;
-
-  factory _$ContractFoundTransactionEventImpl.fromJson(
-          Map<String, dynamic> json) =>
-      _$$ContractFoundTransactionEventImplFromJson(json);
+  factory _ContractFoundTransactionEvent.fromJson(Map<String, dynamic> json) =>
+      _$ContractFoundTransactionEventFromJson(json);
 
   @override
   final Address address;
@@ -192,16 +147,27 @@ class _$ContractFoundTransactionEventImpl
   @override
   final TransactionsBatchInfo info;
 
+  /// Create a copy of ContractFoundTransactionEvent
+  /// with the given fields replaced by the non-null parameter values.
   @override
-  String toString() {
-    return 'ContractFoundTransactionEvent(address: $address, transactions: $transactions, info: $info)';
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @pragma('vm:prefer-inline')
+  _$ContractFoundTransactionEventCopyWith<_ContractFoundTransactionEvent>
+      get copyWith => __$ContractFoundTransactionEventCopyWithImpl<
+          _ContractFoundTransactionEvent>(this, _$identity);
+
+  @override
+  Map<String, dynamic> toJson() {
+    return _$ContractFoundTransactionEventToJson(
+      this,
+    );
   }
 
   @override
   bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$ContractFoundTransactionEventImpl &&
+            other is _ContractFoundTransactionEvent &&
             (identical(other.address, address) || other.address == address) &&
             const DeepCollectionEquality()
                 .equals(other._transactions, _transactions) &&
@@ -213,47 +179,84 @@ class _$ContractFoundTransactionEventImpl
   int get hashCode => Object.hash(runtimeType, address,
       const DeepCollectionEquality().hash(_transactions), info);
 
-  /// Create a copy of ContractFoundTransactionEvent
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
-  @pragma('vm:prefer-inline')
-  _$$ContractFoundTransactionEventImplCopyWith<
-          _$ContractFoundTransactionEventImpl>
-      get copyWith => __$$ContractFoundTransactionEventImplCopyWithImpl<
-          _$ContractFoundTransactionEventImpl>(this, _$identity);
-
-  @override
-  Map<String, dynamic> toJson() {
-    return _$$ContractFoundTransactionEventImplToJson(
-      this,
-    );
+  String toString() {
+    return 'ContractFoundTransactionEvent(address: $address, transactions: $transactions, info: $info)';
   }
 }
 
-abstract class _ContractFoundTransactionEvent
-    implements ContractFoundTransactionEvent {
-  const factory _ContractFoundTransactionEvent(
-          {required final Address address,
-          required final List<Transaction> transactions,
-          required final TransactionsBatchInfo info}) =
-      _$ContractFoundTransactionEventImpl;
+/// @nodoc
+abstract mixin class _$ContractFoundTransactionEventCopyWith<$Res>
+    implements $ContractFoundTransactionEventCopyWith<$Res> {
+  factory _$ContractFoundTransactionEventCopyWith(
+          _ContractFoundTransactionEvent value,
+          $Res Function(_ContractFoundTransactionEvent) _then) =
+      __$ContractFoundTransactionEventCopyWithImpl;
+  @override
+  @useResult
+  $Res call(
+      {Address address,
+      List<Transaction> transactions,
+      TransactionsBatchInfo info});
 
-  factory _ContractFoundTransactionEvent.fromJson(Map<String, dynamic> json) =
-      _$ContractFoundTransactionEventImpl.fromJson;
+  @override
+  $AddressCopyWith<$Res> get address;
+  @override
+  $TransactionsBatchInfoCopyWith<$Res> get info;
+}
 
-  @override
-  Address get address;
-  @override
-  List<Transaction> get transactions;
-  @override
-  TransactionsBatchInfo get info;
+/// @nodoc
+class __$ContractFoundTransactionEventCopyWithImpl<$Res>
+    implements _$ContractFoundTransactionEventCopyWith<$Res> {
+  __$ContractFoundTransactionEventCopyWithImpl(this._self, this._then);
+
+  final _ContractFoundTransactionEvent _self;
+  final $Res Function(_ContractFoundTransactionEvent) _then;
 
   /// Create a copy of ContractFoundTransactionEvent
   /// with the given fields replaced by the non-null parameter values.
   @override
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  _$$ContractFoundTransactionEventImplCopyWith<
-          _$ContractFoundTransactionEventImpl>
-      get copyWith => throw _privateConstructorUsedError;
+  @pragma('vm:prefer-inline')
+  $Res call({
+    Object? address = null,
+    Object? transactions = null,
+    Object? info = null,
+  }) {
+    return _then(_ContractFoundTransactionEvent(
+      address: null == address
+          ? _self.address
+          : address // ignore: cast_nullable_to_non_nullable
+              as Address,
+      transactions: null == transactions
+          ? _self._transactions
+          : transactions // ignore: cast_nullable_to_non_nullable
+              as List<Transaction>,
+      info: null == info
+          ? _self.info
+          : info // ignore: cast_nullable_to_non_nullable
+              as TransactionsBatchInfo,
+    ));
+  }
+
+  /// Create a copy of ContractFoundTransactionEvent
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @pragma('vm:prefer-inline')
+  $AddressCopyWith<$Res> get address {
+    return $AddressCopyWith<$Res>(_self.address, (value) {
+      return _then(_self.copyWith(address: value));
+    });
+  }
+
+  /// Create a copy of ContractFoundTransactionEvent
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @pragma('vm:prefer-inline')
+  $TransactionsBatchInfoCopyWith<$Res> get info {
+    return $TransactionsBatchInfoCopyWith<$Res>(_self.info, (value) {
+      return _then(_self.copyWith(info: value));
+    });
+  }
 }
+
+// dart format on

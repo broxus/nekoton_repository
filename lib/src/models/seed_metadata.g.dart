@@ -6,14 +6,14 @@ part of 'seed_metadata.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-_$SeedMetadataImpl _$$SeedMetadataImplFromJson(Map<String, dynamic> json) =>
-    _$SeedMetadataImpl(
+_SeedMetadata _$SeedMetadataFromJson(Map<String, dynamic> json) =>
+    _SeedMetadata(
       name: json['name'] as String?,
       addedAt: (json['addedAt'] as num?)?.toInt(),
       addType: $enumDecodeNullable(_$SeedAddTypeEnumMap, json['addType']),
     );
 
-Map<String, dynamic> _$$SeedMetadataImplToJson(_$SeedMetadataImpl instance) =>
+Map<String, dynamic> _$SeedMetadataToJson(_SeedMetadata instance) =>
     <String, dynamic>{
       'name': instance.name,
       'addedAt': instance.addedAt,

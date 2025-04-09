@@ -6,7 +6,8 @@ part 'token_wallet_ordinary_transaction.freezed.dart';
 /// Transaction for TokenWallet that is created by
 /// [TokenWalletRepository.mapOrdinaryTokenTransactions].
 @freezed
-class TokenWalletOrdinaryTransaction with _$TokenWalletOrdinaryTransaction {
+abstract class TokenWalletOrdinaryTransaction
+    with _$TokenWalletOrdinaryTransaction {
   const factory TokenWalletOrdinaryTransaction({
     required String lt,
     required bool isOutgoing,

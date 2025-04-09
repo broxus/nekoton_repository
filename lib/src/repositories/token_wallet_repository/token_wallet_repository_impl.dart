@@ -456,43 +456,41 @@ mixin TokenWalletRepositoryImpl implements TokenWalletRepository {
 
           final prevTransactionLt = e.transaction.prevTransactionId?.lt;
 
-          final sender = e.data!.maybeWhen(
-                incomingTransfer: (tokenIncomingTransfer) =>
-                    tokenIncomingTransfer.senderAddress,
-                orElse: () => null,
-              ) ??
+          final sender = switch (e.data!) {
+                TokenWalletTransactionIncomingTransfer(:final data) =>
+                  data.senderAddress,
+                _ => null
+              } ??
               e.transaction.inMessage.src;
 
-          final recipient = e.data!.maybeWhen(
-                outgoingTransfer: (tokenOutgoingTransfer) =>
-                    tokenOutgoingTransfer.to.data,
-                orElse: () => null,
-              ) ??
+          final recipient = switch (e.data!) {
+                TokenWalletTransactionOutgoingTransfer(:final data) =>
+                  data.to.data,
+                _ => null
+              } ??
               e.transaction.outMessages.firstOrNull?.dst;
 
-          final value = e.data!.when(
-            incomingTransfer: (tokenIncomingTransfer) =>
-                tokenIncomingTransfer.tokens,
-            outgoingTransfer: (tokenOutgoingTransfer) =>
-                tokenOutgoingTransfer.tokens,
-            swapBack: (tokenSwapBack) => tokenSwapBack.tokens,
-            accept: (data) => data,
-            transferBounced: (data) => data,
-            swapBackBounced: (data) => data,
-            transfer: (data) => data.tokens,
-            internalTransfer: (data) => data.tokens,
-          );
+          final value = switch (e.data!) {
+            TokenWalletTransactionIncomingTransfer(:final data) => data.tokens,
+            TokenWalletTransactionOutgoingTransfer(:final data) => data.tokens,
+            TokenWalletTransactionSwapBack(:final data) => data.tokens,
+            TokenWalletTransactionAccept(:final data) => data,
+            TokenWalletTransactionTransferBounced(:final data) => data,
+            TokenWalletTransactionSwapBackBounced(:final data) => data,
+            TokenWalletTransactionTransfer(:final data) => data.tokens,
+            TokenWalletTransactionInternalTransfer(:final data) => data.tokens,
+          };
 
-          final isOutgoing = e.data!.when(
-            incomingTransfer: (tokenIncomingTransfer) => false,
-            outgoingTransfer: (tokenOutgoingTransfer) => true,
-            swapBack: (tokenSwapBack) => true,
-            accept: (data) => false,
-            transferBounced: (data) => false,
-            swapBackBounced: (data) => false,
-            transfer: (data) => true,
-            internalTransfer: (data) => false,
-          );
+          final isOutgoing = switch (e.data!) {
+            TokenWalletTransactionIncomingTransfer() => false,
+            TokenWalletTransactionOutgoingTransfer() => true,
+            TokenWalletTransactionSwapBack() => true,
+            TokenWalletTransactionAccept() => false,
+            TokenWalletTransactionTransferBounced() => false,
+            TokenWalletTransactionSwapBackBounced() => false,
+            TokenWalletTransactionTransfer() => true,
+            TokenWalletTransactionInternalTransfer() => false,
+          };
 
           final address =
               (isOutgoing ? recipient : sender) ?? rootTokenContract;
@@ -519,18 +517,24 @@ mixin TokenWalletRepositoryImpl implements TokenWalletRepository {
 
           JettonOutgoingTransfer? jettonOutgoingTransfer;
 
-          e.data!.when(
-            incomingTransfer: (tokenIncomingTransfer) =>
-                incomingTransfer = tokenIncomingTransfer,
-            outgoingTransfer: (tokenOutgoingTransfer) =>
-                outgoingTransfer = tokenOutgoingTransfer,
-            swapBack: (tokenSwapBack) => swapBack = tokenSwapBack,
-            accept: (data) => accept = data,
-            transferBounced: (data) => transferBounced = data,
-            swapBackBounced: (data) => swapBackBounced = data,
-            transfer: (data) => jettonOutgoingTransfer = data,
-            internalTransfer: (data) => jettonIncomingTransfer = data,
-          );
+          switch (e.data!) {
+            case TokenWalletTransactionIncomingTransfer(:final data):
+              incomingTransfer = data;
+            case TokenWalletTransactionOutgoingTransfer(:final data):
+              outgoingTransfer = data;
+            case TokenWalletTransactionSwapBack(:final data):
+              swapBack = data;
+            case TokenWalletTransactionAccept(:final data):
+              accept = data;
+            case TokenWalletTransactionTransferBounced(:final data):
+              transferBounced = data;
+            case TokenWalletTransactionSwapBackBounced(:final data):
+              swapBackBounced = data;
+            case TokenWalletTransactionTransfer(:final data):
+              jettonOutgoingTransfer = data;
+            case TokenWalletTransactionInternalTransfer(:final data):
+              jettonIncomingTransfer = data;
+          }
 
           return TokenWalletOrdinaryTransaction(
             lt: lt,
