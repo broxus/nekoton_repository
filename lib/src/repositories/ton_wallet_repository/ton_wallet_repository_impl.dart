@@ -66,6 +66,9 @@ mixin TonWalletRepositoryImpl implements TonWalletRepository {
   Stream<List<TonWalletState>> get walletsStream =>
       _walletsSubject.stream.map((e) => e.values.toList());
 
+  Stream<Map<Address, TonWalletState>> get walletsMapStream =>
+      _walletsSubject.stream;
+
   /// Get current available subscriptions for wallets
   List<TonWalletState> get wallets => _walletsSubject.value.values.toList();
 
