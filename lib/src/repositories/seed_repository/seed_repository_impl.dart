@@ -11,9 +11,9 @@ const _maxDeriveKeys = 100;
 /// ```
 /// class NekotonRepository with SeedRepositoryImpl {}
 /// ```
-mixin SeedKeyRepositoryImpl on TransportRepository
-    implements SeedKeyRepository {
+mixin SeedKeyRepositoryImpl implements SeedKeyRepository {
   final _findingExistingWalletsSubject = BehaviorSubject.seeded(<String>{});
+  final _findingDerivedKeysSubject = BehaviorSubject.seeded(<String>{});
 
   @override
   Set<String> get findingExistingWallets =>
@@ -23,11 +23,20 @@ mixin SeedKeyRepositoryImpl on TransportRepository
   Stream<Set<String>> get findingExistingWalletsStream =>
       _findingExistingWalletsSubject.stream;
 
+  @override
+  Set<String> get findingDerivedKeys => _findingDerivedKeysSubject.value;
+
+  @override
+  Stream<Set<String>> get findingDerivedKeysStream =>
+      _findingDerivedKeysSubject.stream;
+
   KeyStore get keyStore;
 
   AccountsStorage get accountsStorage;
 
   NekotonStorageRepository get storageRepository;
+
+  TransportStrategy get currentTransport;
 
   @override
   Future<List<PublicKey>> getKeysToDerive({
@@ -89,8 +98,9 @@ mixin SeedKeyRepositoryImpl on TransportRepository
     required int accountId,
     required String password,
     required PublicKey masterKey,
-  }) {
-    return keyStore.addKey(
+    bool addActiveAccounts = true,
+  }) async {
+    final publicKey = await keyStore.addKey(
       DerivedKeyCreateInput.derive(
         DerivedKeyCreateInputDerive(
           masterKey: masterKey,
@@ -104,6 +114,12 @@ mixin SeedKeyRepositoryImpl on TransportRepository
         ),
       ),
     );
+
+    if (addActiveAccounts) {
+      unawaited(triggerAddingAccounts([publicKey]));
+    }
+
+    return publicKey;
   }
 
   @override
@@ -162,13 +178,35 @@ mixin SeedKeyRepositoryImpl on TransportRepository
       ),
     );
 
-    if (useEncryptedKey) {
-      unawaited(triggerAddingAccounts([publicKey]));
+    if (addType == SeedAddType.create) {
+      // no need to scan for existing wallets
+      // if seed was created from scratch
+      await addDefaultAccount(publicKey);
     } else {
-      unawaited(triggerDerivingKeys(masterKey: publicKey, password: password));
+      if (useEncryptedKey) {
+        unawaited(triggerAddingAccounts([publicKey]));
+      } else {
+        unawaited(
+          triggerDerivingKeys(masterKey: publicKey, password: password),
+        );
+      }
     }
 
     return publicKey;
+  }
+
+  Future<void> addDefaultAccount(PublicKey publicKey) async {
+    final transport = currentTransport;
+    if (transport.transport.disposed) return;
+
+    final defaultAccount = AccountToAdd(
+      name: transport.defaultAccountName(transport.defaultWalletType),
+      publicKey: publicKey,
+      contract: transport.defaultWalletType,
+      workchain: defaultWorkchainId,
+    );
+
+    await GetIt.instance<AccountRepository>().addAccount(defaultAccount);
   }
 
   /// Initiates the process of deriving additional keys from a master key and
@@ -190,61 +228,71 @@ mixin SeedKeyRepositoryImpl on TransportRepository
     required PublicKey masterKey,
     required String password,
   }) async {
-    await triggerAddingAccounts([masterKey]);
-
-    final transport = currentTransport;
-    final accounts = accountsStorage.accounts.map((e) => e.address).toSet();
-    final accountsToAdd = <AccountToAdd>[];
-    final accountIds = <int>[];
-
-    final keys = await getKeysToDerive(
-      masterKey: masterKey,
-      password: password,
+    _findingDerivedKeysSubject.add(
+      Set.of(_findingDerivedKeysSubject.value)..add(masterKey.toString()),
     );
 
-    // skip first key, because it's already added
-    for (var accountId = 1; accountId < keys.length; accountId++) {
-      if (transport.transport.disposed) break;
+    try {
+      await triggerAddingAccounts([masterKey]);
 
-      // Logic is the same as in triggerAddingAccounts method but without
-      // adding default account if no accounts were found.
-      final key = keys[accountId];
-      final found = await TonWallet.findExistingWallets(
-        transport: transport.transport,
-        workchainId: defaultWorkchainId,
-        publicKey: key,
-        walletTypes: transport.availableWalletTypes,
+      final transport = currentTransport;
+      final accounts = accountsStorage.accounts.map((e) => e.address).toSet();
+      final accountsToAdd = <AccountToAdd>[];
+      final accountIds = <int>[];
+
+      final keys = await getKeysToDerive(
+        masterKey: masterKey,
+        password: password,
       );
 
-      final activeAccounts = found.where(
-        (e) => e.isActive && !accounts.contains(e.address),
-      );
+      // skip first key, because it's already added
+      for (var accountId = 1; accountId < keys.length; accountId++) {
+        if (transport.transport.disposed) break;
 
-      if (activeAccounts.isEmpty) break;
+        // Logic is the same as in triggerAddingAccounts method but without
+        // adding default account if no accounts were found.
+        final key = keys[accountId];
+        final found = await TonWallet.findExistingWallets(
+          transport: transport.transport,
+          workchainId: defaultWorkchainId,
+          publicKey: key,
+          walletTypes: transport.availableWalletTypes,
+        );
 
-      accountIds.add(accountId);
-      accountsToAdd.addAll(
-        activeAccounts.map(
-          (a) => AccountToAdd(
-            publicKey: a.publicKey,
-            contract: a.walletType,
-            workchain: a.address.workchain,
-            name: transport.defaultAccountName(a.walletType),
+        final activeAccounts = found.where(
+          (e) => e.isActive && !accounts.contains(e.address),
+        );
+
+        if (activeAccounts.isEmpty) break;
+
+        accountIds.add(accountId);
+        accountsToAdd.addAll(
+          activeAccounts.map(
+            (a) => AccountToAdd(
+              publicKey: a.publicKey,
+              contract: a.walletType,
+              workchain: a.address.workchain,
+              name: transport.defaultAccountName(a.walletType),
+            ),
           ),
-        ),
+        );
+      }
+
+      if (accountIds.isEmpty || accountsToAdd.isEmpty) return;
+
+      await deriveKeys(
+        accountIds: accountIds,
+        password: password,
+        masterKey: masterKey,
+        addActiveAccounts: false,
+      );
+
+      await GetIt.instance<AccountRepository>().addAccounts(accountsToAdd);
+    } finally {
+      _findingDerivedKeysSubject.add(
+        Set.of(_findingDerivedKeysSubject.value)..remove(masterKey.toString()),
       );
     }
-
-    if (accountIds.isEmpty || accountsToAdd.isEmpty) return;
-
-    await deriveKeys(
-      accountIds: accountIds,
-      password: password,
-      masterKey: masterKey,
-      addActiveAccounts: false,
-    );
-
-    await GetIt.instance<AccountRepository>().addAccounts(accountsToAdd);
   }
 
   /// Trigger adding accounts to [AccountRepository] by public keys.

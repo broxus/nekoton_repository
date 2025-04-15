@@ -10,6 +10,13 @@ abstract class SeedKeyRepository {
   /// Stream to listen for changes in [findingExistingWallets].
   Stream<Set<String>> get findingExistingWalletsStream;
 
+  /// Set of master keys that are currently scanning for derived keys
+  /// with existing wallets.
+  Set<String> get findingDerivedKeys;
+
+  /// Stream to listen for changes in [findingDerivedKeys].
+  Stream<Set<String>> get findingDerivedKeysStream;
+
   /// Returns list of public keys that can be used in [deriveKeys] from
   /// seed with [masterKey] and [password].
   /// Returns list of up to 100 public keys, that could be displayed by pages.
@@ -27,6 +34,7 @@ abstract class SeedKeyRepository {
     required List<int> accountIds,
     required String password,
     required PublicKey masterKey,
+    bool addActiveAccounts,
   });
 
   /// Derive key from [masterKey] which is key of seed.
@@ -36,6 +44,7 @@ abstract class SeedKeyRepository {
     required int accountId,
     required String password,
     required PublicKey masterKey,
+    bool addActiveAccounts,
   });
 
   /// Add new seed to application.
@@ -43,8 +52,9 @@ abstract class SeedKeyRepository {
   Future<PublicKey> addSeed({
     required List<String> phrase,
     required String password,
-    required MnemonicType mnemonicType,
+    MnemonicType? mnemonicType,
     String? name,
+    SeedAddType addType,
   });
 
   /// Change password of seed phrase.
