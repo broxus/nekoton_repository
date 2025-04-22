@@ -1,3 +1,4 @@
+---
 name: nekoton_repository
 description: Nekoton repository package
 version: 0.61.0
@@ -5,7 +6,7 @@ repository: https://github.com/broxus/nekoton_repository
 
 environment:
   sdk: '>=3.5.0 <4.0.0'
-  flutter: ">=3.24.0"
+  flutter: '>=3.24.0'
 
 dependencies:
   async: ^2.11.0
@@ -14,7 +15,7 @@ dependencies:
   equatable: ^2.0.7
   flutter:
     sdk: flutter
-  flutter_nekoton_bridge: ^2.8.0
+  flutter_nekoton_bridge: ^2.8.1
   freezed_annotation: ^2.4.4
   get_it: ^8.0.3
   injectable: ^2.5.0
@@ -25,9 +26,9 @@ dependencies:
 
 dev_dependencies:
   broxus_flutter_analysis:
-   git:
-     url: https://github.com/broxus/flutter_templates.git
-     ref: main
+    git:
+      url: https://github.com/broxus/flutter_templates.git
+      ref: main
   build_runner: ^2.4.13
   flutter_test:
     sdk: flutter
