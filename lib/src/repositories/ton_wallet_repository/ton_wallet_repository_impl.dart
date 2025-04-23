@@ -5,6 +5,7 @@ import 'package:flutter/foundation.dart';
 import 'package:get_it/get_it.dart';
 import 'package:logging/logging.dart';
 import 'package:nekoton_repository/nekoton_repository.dart';
+import 'package:nekoton_repository/src/models/generic_contract/contract_not_exists_exception.dart';
 import 'package:nekoton_repository/src/repositories/ton_wallet_repository/ton_wallet_gql_block_poller.dart';
 import 'package:nekoton_repository/src/utils/utils.dart';
 import 'package:quiver/iterables.dart';
@@ -337,6 +338,8 @@ mixin TonWalletRepositoryImpl implements TonWalletRepository {
     if (tonWallet == null) throw TonWalletStateNotInitializedException();
 
     final contractState = await tonWallet.transport.getContractState(address);
+
+    if (!contractState.isExists()) throw ContractNotExistsException();
 
     return tonWallet.prepareTransfer(
       contractState: contractState,
