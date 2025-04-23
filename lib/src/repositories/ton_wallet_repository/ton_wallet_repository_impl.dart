@@ -1338,15 +1338,20 @@ mixin TonWalletRepositoryImpl implements TonWalletRepository {
 
     await message.refreshTimeout();
 
-    final signedMessage = await message.signFake();
-    final errors = await tonWallet.transport.simulateTransactionTree(
-      signedMessage: signedMessage,
-      ignoredComputePhaseCodes: Int32List.fromList([0, 1, 60, 100]),
-      ignoredActionPhaseCodes: Int32List.fromList([0, 1]),
-    );
+    try {
+      final signedMessage = await message.signFake();
+      final errors = await tonWallet.transport.simulateTransactionTree(
+        signedMessage: signedMessage,
+        ignoredComputePhaseCodes: Int32List.fromList([0, 1, 60, 100]),
+        ignoredActionPhaseCodes: Int32List.fromList([0, 1]),
+      );
 
-    // remove duplicate errors
-    return errors.toSet().toList();
+      // remove duplicate errors
+      return errors.toSet().toList();
+    } catch (e, st) {
+      _logger.severe('TonWallet simulateTransactionTree error', e, st);
+      return [];
+    }
   }
 }
 
