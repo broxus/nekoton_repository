@@ -5,7 +5,6 @@ import 'package:flutter/foundation.dart';
 import 'package:get_it/get_it.dart';
 import 'package:logging/logging.dart';
 import 'package:nekoton_repository/nekoton_repository.dart';
-import 'package:nekoton_repository/src/models/generic_contract/contract_not_exists_exception.dart';
 import 'package:nekoton_repository/src/repositories/ton_wallet_repository/ton_wallet_gql_block_poller.dart';
 import 'package:nekoton_repository/src/utils/utils.dart';
 import 'package:quiver/iterables.dart';
@@ -17,6 +16,9 @@ const tonWalletRefreshInterval = Duration(seconds: 10);
 /// This is an interval for active polling to check wallet state during send
 /// method.
 const intensivePollingInterval = Duration(seconds: 2);
+
+const _ignoredComputePhaseCodes = [0, 1, 60, 100];
+const _ignoredActionPhaseCodes = [0, 1];
 
 mixin TonWalletRepositoryImpl implements TonWalletRepository {
   final _logger = Logger('TonWalletRepositoryImpl');
@@ -1334,6 +1336,8 @@ mixin TonWalletRepositoryImpl implements TonWalletRepository {
   Future<List<TxTreeSimulationErrorItem>> simulateTransactionTree({
     required Address address,
     required UnsignedMessage message,
+    List<IgnoreTransactionTreeSimulationError>? ignoredComputePhaseCodes,
+    List<IgnoreTransactionTreeSimulationError>? ignoredActionPhaseCodes,
   }) async {
     final tonWallet = (await getWallet(address)).wallet;
 
@@ -1341,13 +1345,51 @@ mixin TonWalletRepositoryImpl implements TonWalletRepository {
 
     await message.refreshTimeout();
 
+    final icpc = ignoredComputePhaseCodes
+        ?.where((e) => e.address == null)
+        .map((e) => e.code);
+    final iapc = ignoredActionPhaseCodes
+        ?.where((e) => e.address == null)
+        .map((e) => e.code);
+
     try {
       final signedMessage = await message.signFake();
-      final errors = await tonWallet.transport.simulateTransactionTree(
+      Iterable<TxTreeSimulationErrorItem> errors =
+          await tonWallet.transport.simulateTransactionTree(
         signedMessage: signedMessage,
-        ignoredComputePhaseCodes: Int32List.fromList([0, 1, 60, 100]),
-        ignoredActionPhaseCodes: Int32List.fromList([0, 1]),
+        ignoredComputePhaseCodes: Int32List.fromList(
+          [
+            ..._ignoredComputePhaseCodes,
+            if (icpc != null) ...icpc,
+          ],
+        ),
+        ignoredActionPhaseCodes: Int32List.fromList(
+          [
+            ..._ignoredActionPhaseCodes,
+            if (iapc != null) ...iapc,
+          ],
+        ),
       );
+
+      // filter out ignoredComputePhaseCodes by address
+      if (ignoredComputePhaseCodes != null &&
+          ignoredComputePhaseCodes.isNotEmpty) {
+        errors = errors.whereNot(
+          (e) =>
+              e.error.type == TxTreeSimulationErrorType.computePhase &&
+              ignoredComputePhaseCodes.any((el) => el.shouldIgnore(e)),
+        );
+      }
+
+      // filter out ignoredActionPhaseCodes by address
+      if (ignoredActionPhaseCodes != null &&
+          ignoredActionPhaseCodes.isNotEmpty) {
+        errors = errors.whereNot(
+          (e) =>
+              e.error.type == TxTreeSimulationErrorType.actionPhase &&
+              ignoredActionPhaseCodes.any((el) => el.shouldIgnore(e)),
+        );
+      }
 
       // remove duplicate errors
       return errors.toSet().toList();
