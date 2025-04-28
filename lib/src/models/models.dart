@@ -2,6 +2,7 @@
 export 'account_list.dart';
 export 'base/base.dart';
 export 'generic_contract/generic_contract.dart';
+export 'ignore_transaction_tree_simulation_error.dart';
 export 'key_account.dart';
 export 'seed.dart';
 export 'seed_add_type.dart';

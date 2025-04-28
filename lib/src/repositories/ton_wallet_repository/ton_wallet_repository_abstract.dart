@@ -310,5 +310,7 @@ abstract class TonWalletRepository {
   Future<List<TxTreeSimulationErrorItem>> simulateTransactionTree({
     required Address address,
     required UnsignedMessage message,
+    List<IgnoreTransactionTreeSimulationError>? ignoredComputePhaseCodes,
+    List<IgnoreTransactionTreeSimulationError>? ignoredActionPhaseCodes,
   });
 }
