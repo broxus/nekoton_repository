@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:typed_data';
 
 import 'package:flutter_test/flutter_test.dart';
 import 'package:get_it/get_it.dart';
@@ -25,6 +26,8 @@ class MockArcTransportBoxTrait extends Mock implements ArcTransportBoxTrait {}
 class MockArcTonWalletBoxTrait extends Mock implements ArcTonWalletBoxTrait {}
 
 class MockTonWalletDartWrapper extends Mock implements TonWalletDartWrapper {}
+
+class MockUnsignedMessage extends Mock implements UnsignedMessage {}
 
 class MockGqlTransport extends Mock implements GqlTransport {
   @override
@@ -189,6 +192,8 @@ void main() {
     expiredStream = const Stream.empty();
     stateStream = const Stream.empty();
     transactionsFoundStream = const Stream.empty();
+
+    registerFallbackValue(Int32List(0));
   });
 
   setUpAll(() {
@@ -1537,6 +1542,119 @@ void main() {
       verify(() => tokenRepository.closeAllTokenSubscriptions()).called(1);
 
       expect(repository.wallets.length, 2);
+    });
+
+    test('simulateTransactionTree', () async {
+      const address = Address(address: '0:1234567890abcdef');
+      const errors = [
+        TxTreeSimulationErrorItem(
+          address: address,
+          error: TxTreeSimulationError(
+            code: 1000,
+            type: TxTreeSimulationErrorType.computePhase,
+          ),
+        ),
+        TxTreeSimulationErrorItem(
+          address: address,
+          error: TxTreeSimulationError(
+            code: 1000,
+            type: TxTreeSimulationErrorType.actionPhase,
+          ),
+        ),
+      ];
+      final message = MockUnsignedMessage();
+
+      when(() => wallet.onMessageExpiredStream)
+          .thenAnswer((_) => expiredStream);
+      when(() => wallet.onMessageSentStream)
+          .thenAnswer((_) => messageSentStream);
+      when(() => wallet.onTransactionsFoundStream)
+          .thenAnswer((_) => transactionsFoundStream);
+      when(() => wallet.onStateChangedStream).thenAnswer((_) => stateStream);
+
+      when(() => transport.transport).thenReturn(proto);
+      when(() => proto.disposed).thenReturn(false);
+      when(() => wallet.address).thenReturn(multisigAddress);
+      when(() => wallet.transport).thenReturn(proto);
+      when(() => proto.transportBox).thenReturn(box);
+
+      when(
+        () => proto.simulateTransactionTree(
+          signedMessage: any(named: 'signedMessage'),
+          ignoredComputePhaseCodes: any(named: 'ignoredComputePhaseCodes'),
+          ignoredActionPhaseCodes: any(named: 'ignoredActionPhaseCodes'),
+        ),
+      ).thenAnswer((_) => Future.value(errors));
+      when(message.refreshTimeout).thenAnswer((_) async {});
+      when(message.signFake).thenAnswer(
+        (_) => Future.value(
+          SignedMessage(boc: '', hash: '', expireAt: DateTime.now()),
+        ),
+      );
+
+      repository.addWalletInst(wallet);
+
+      final result1 = await repository.simulateTransactionTree(
+        address: wallet.address,
+        message: message,
+      );
+      expect(result1, equals(errors));
+
+      final result2 = await repository.simulateTransactionTree(
+        address: wallet.address,
+        message: message,
+        ignoredComputePhaseCodes: const [
+          IgnoreTransactionTreeSimulationError(
+            code: 1000,
+            address: Address(address: '0:00000000000000000'),
+          ),
+        ],
+        ignoredActionPhaseCodes: const [
+          IgnoreTransactionTreeSimulationError(
+            code: 1000,
+            address: Address(address: '0:00000000000000000'),
+          ),
+        ],
+      );
+      expect(result2, equals(errors));
+
+      final result3 = await repository.simulateTransactionTree(
+        address: wallet.address,
+        message: message,
+        ignoredComputePhaseCodes: const [
+          IgnoreTransactionTreeSimulationError(
+            code: 1000,
+            address: address,
+          ),
+        ],
+      );
+      expect(result3.length, 1);
+      expect(result3.first.error.type, TxTreeSimulationErrorType.actionPhase);
+
+      final result4 = await repository.simulateTransactionTree(
+        address: wallet.address,
+        message: message,
+        ignoredActionPhaseCodes: const [
+          IgnoreTransactionTreeSimulationError(
+            code: 1000,
+            address: address,
+          ),
+        ],
+      );
+      expect(result4.length, 1);
+      expect(result4.first.error.type, TxTreeSimulationErrorType.computePhase);
+
+      final result5 = await repository.simulateTransactionTree(
+        address: wallet.address,
+        message: message,
+        ignoredActionPhaseCodes: const [
+          IgnoreTransactionTreeSimulationError(code: 1000),
+        ],
+        ignoredComputePhaseCodes: const [
+          IgnoreTransactionTreeSimulationError(code: 1000),
+        ],
+      );
+      expect(result5, isEmpty);
     });
   });
 }
