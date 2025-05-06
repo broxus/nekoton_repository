@@ -237,6 +237,7 @@ mixin SeedKeyRepositoryImpl implements SeedKeyRepository {
 
       final transport = currentTransport;
       final accounts = accountsStorage.accounts.map((e) => e.address).toSet();
+      final existingKeys = keyStore.keys.map((e) => e.publicKey).toSet();
       final accountsToAdd = <AccountToAdd>[];
       final accountIds = <int>[];
 
@@ -259,15 +260,20 @@ mixin SeedKeyRepositoryImpl implements SeedKeyRepository {
           walletTypes: transport.availableWalletTypes,
         );
 
-        final activeAccounts = found.where(
-          (e) => e.isActive && !accounts.contains(e.address),
-        );
-
+        final activeAccounts = found.where((e) => e.isActive);
         if (activeAccounts.isEmpty) break;
 
-        accountIds.add(accountId);
+        final notExistedAccounts = activeAccounts.where(
+          (active) => !accounts.contains(active.address),
+        );
+
+        // check if key already exists in storage
+        if (!existingKeys.contains(key)) {
+          accountIds.add(accountId);
+        }
+
         accountsToAdd.addAll(
-          activeAccounts.map(
+          notExistedAccounts.map(
             (a) => AccountToAdd(
               publicKey: a.publicKey,
               contract: a.walletType,
@@ -278,16 +284,18 @@ mixin SeedKeyRepositoryImpl implements SeedKeyRepository {
         );
       }
 
-      if (accountIds.isEmpty || accountsToAdd.isEmpty) return;
-
-      await deriveKeys(
-        accountIds: accountIds,
-        password: password,
-        masterKey: masterKey,
-        addActiveAccounts: false,
-      );
-
-      await GetIt.instance<AccountRepository>().addAccounts(accountsToAdd);
+      if (accountIds.isNotEmpty) {
+        await deriveKeys(
+          accountIds: accountIds,
+          password: password,
+          masterKey: masterKey,
+          addActiveAccounts: false,
+        );
+      }
+      
+      if (accountsToAdd.isNotEmpty) {
+        await GetIt.instance<AccountRepository>().addAccounts(accountsToAdd);
+      }
     } finally {
       _findingDerivedKeysSubject.add(
         Set.of(_findingDerivedKeysSubject.value)..remove(masterKey.toString()),
