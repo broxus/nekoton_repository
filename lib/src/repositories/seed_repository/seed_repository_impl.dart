@@ -292,7 +292,7 @@ mixin SeedKeyRepositoryImpl implements SeedKeyRepository {
           addActiveAccounts: false,
         );
       }
-      
+
       if (accountsToAdd.isNotEmpty) {
         await GetIt.instance<AccountRepository>().addAccounts(accountsToAdd);
       }
