@@ -105,6 +105,19 @@ mixin GenericContractRepositoryImpl implements GenericContractRepository {
   }
 
   @override
+  void unsubscribeAllContracts() {
+    final contracts = allContracts;
+
+    if (contracts.isEmpty) return;
+
+    for (final contract in contracts) {
+      contract.contract.dispose();
+    }
+
+    _contractSubscriptions.add([]);
+  }
+
+  @override
   void unsubscribeContractsTab(String tabId) {
     // copy list to avoid concurrent modification
     final possible = List<GenericContractSubscriptionItem>.from(

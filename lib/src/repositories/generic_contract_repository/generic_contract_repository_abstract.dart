@@ -33,6 +33,9 @@ abstract class GenericContractRepository {
     required Address address,
   });
 
+  /// Close all contract's subscriptions
+  void unsubscribeAllContracts();
+
   /// Close all contract's subscriptions specified for browser tab with [tabId]
   ///
   /// Typically, this method should be called when browser tab closes.
