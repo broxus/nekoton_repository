@@ -16,7 +16,7 @@ on:
 
 jobs:
   version_bump:
-    uses: broxus/flutter_templates/.github/workflows/version.yaml@v3
+    uses: broxus/flutter_templates/.github/workflows/version.yaml@v4
     with:
       version_parameters: ${{ inputs.version_parameters }}
       flutter_version: '3.29.2'
