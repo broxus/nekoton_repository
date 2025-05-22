@@ -1,0 +1,29 @@
+{
+	"ABI version": 2,
+	"version": "2.2",
+	"header": ["pubkey", "time", "expire"],
+	"functions": [
+		{
+			"name": "getCollectionUrl",
+			"inputs": [
+				{"name":"answerId","type":"uint32"}
+			],
+			"outputs": [
+				{"name":"collectionUrl","type":"string"}
+			]
+		},
+		{
+            "name": "getNftUrl",
+            "inputs": [
+                {"name":"answerId","type":"uint32"},
+                {"name":"parts","type":"cell"}
+            ],
+            "outputs": [
+                {"name":"nftUrl","type":"string"}
+            ]
+        }
+	],
+	"data": [],
+	"events": [],
+	"fields": []
+}

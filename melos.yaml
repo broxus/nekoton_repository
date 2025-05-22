@@ -10,7 +10,7 @@ scripts:
 
   codegen:
     description: Generate code for all packages
-    exec: "flutter packages pub run build_runner build --delete-conflicting-outputs"
+    exec: "find . -type f -name \"*.gen.dart\" -delete && flutter packages pub run build_runner build --delete-conflicting-outputs"
     failFast: true
     packageFilters:
       dependsOn: "build_runner"
