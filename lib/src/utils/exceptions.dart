@@ -1,10 +1,21 @@
 final class OperationCanceledException implements Exception {
-  OperationCanceledException([this.message]);
+  const OperationCanceledException([this.message]);
 
   final String? message;
 
   @override
   String toString() {
     return 'SubscriptionCanceledException: $message';
+  }
+}
+
+final class TvmException implements Exception {
+  const TvmException(this.code);
+
+  final int code;
+
+  @override
+  String toString() {
+    return 'TvmException: $code';
   }
 }
