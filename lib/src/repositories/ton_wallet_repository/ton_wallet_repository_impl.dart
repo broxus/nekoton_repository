@@ -341,7 +341,7 @@ mixin TonWalletRepositoryImpl implements TonWalletRepository {
 
     final contractState = await tonWallet.transport.getContractState(address);
 
-    if (!contractState.isExists()) throw ContractNotExistsException();
+    if (!contractState.isExists()) throw ContractNotExistsException(address);
 
     return tonWallet.prepareTransfer(
       contractState: contractState,

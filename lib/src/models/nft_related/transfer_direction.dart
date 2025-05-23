@@ -1,0 +1,4 @@
+enum TransferDirection {
+  incoming,
+  outgoing;
+}
