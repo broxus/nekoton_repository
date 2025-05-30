@@ -1,0 +1,183 @@
+{
+	"ABI version": 2,
+	"version": "2.2",
+	"header": ["pubkey", "time", "expire"],
+	"functions": [
+		{
+			"name": "constructor",
+			"inputs": [
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "onDeployRetry",
+			"id": "0x60903B64",
+			"inputs": [
+				{"name":"value0","type":"cell"},
+				{"name":"value1","type":"cell"},
+				{"name":"sender","type":"address"},
+				{"name":"remainingGasTo","type":"address"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "destroy",
+			"inputs": [
+				{"name":"remainingGasTo","type":"address"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "indexCode",
+			"inputs": [
+				{"name":"answerId","type":"uint32"}
+			],
+			"outputs": [
+				{"name":"code","type":"cell"}
+			]
+		},
+		{
+			"name": "indexCodeHash",
+			"inputs": [
+				{"name":"answerId","type":"uint32"}
+			],
+			"outputs": [
+				{"name":"hash","type":"uint256"}
+			]
+		},
+		{
+			"name": "resolveIndex",
+			"inputs": [
+				{"name":"answerId","type":"uint32"},
+				{"name":"collection","type":"address"},
+				{"name":"owner","type":"address"}
+			],
+			"outputs": [
+				{"name":"index","type":"address"}
+			]
+		},
+		{
+			"name": "getInfo",
+			"inputs": [
+				{"name":"answerId","type":"uint32"}
+			],
+			"outputs": [
+				{"name":"id","type":"uint256"},
+				{"name":"owner","type":"address"},
+				{"name":"collection","type":"address"}
+			]
+		},
+		{
+			"name": "balance",
+			"inputs": [
+				{"name":"answerId","type":"uint32"}
+			],
+			"outputs": [
+				{"name":"value","type":"uint128"}
+			]
+		},
+		{
+			"name": "transfer",
+			"inputs": [
+				{"name":"count","type":"uint128"},
+				{"name":"recipient","type":"address"},
+				{"name":"deployTokenWalletValue","type":"uint128"},
+				{"name":"remainingGasTo","type":"address"},
+				{"name":"notify","type":"bool"},
+				{"name":"payload","type":"cell"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "transferToWallet",
+			"inputs": [
+				{"name":"count","type":"uint128"},
+				{"name":"recipientToken","type":"address"},
+				{"name":"remainingGasTo","type":"address"},
+				{"name":"notify","type":"bool"},
+				{"name":"payload","type":"cell"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "acceptTransfer",
+			"inputs": [
+				{"name":"count","type":"uint128"},
+				{"name":"sender","type":"address"},
+				{"name":"remainingGasTo","type":"address"},
+				{"name":"notify","type":"bool"},
+				{"name":"payload","type":"cell"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "burn",
+			"inputs": [
+				{"name":"count","type":"uint128"},
+				{"name":"remainingGasTo","type":"address"},
+				{"name":"callbackTo","type":"address"},
+				{"name":"payload","type":"cell"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "supportsInterface",
+			"inputs": [
+				{"name":"answerId","type":"uint32"},
+				{"name":"interfaceID","type":"uint32"}
+			],
+			"outputs": [
+				{"name":"value0","type":"bool"}
+			]
+		}
+	],
+	"data": [
+	],
+	"events": [
+		{
+			"name": "MultiTokenWalletCreated",
+			"inputs": [
+				{"name":"id","type":"uint256"},
+				{"name":"owner","type":"address"},
+				{"name":"collection","type":"address"},
+				{"name":"balance","type":"uint128"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "MultiTokenTransfered",
+			"inputs": [
+				{"name":"sender","type":"address"},
+				{"name":"senderWallet","type":"address"},
+				{"name":"recipient","type":"address"},
+				{"name":"count","type":"uint128"},
+				{"name":"newBalance","type":"uint128"}
+			],
+			"outputs": [
+			]
+		}
+	],
+	"fields": [
+		{"name":"_pubkey","type":"uint256"},
+		{"name":"_timestamp","type":"uint64"},
+		{"name":"_constructorFlag","type":"bool"},
+		{"name":"_supportedInterfaces","type":"optional(cell)"},
+		{"name":"_id","type":"uint256"},
+		{"name":"_collection","type":"address"},
+		{"name":"_owner","type":"address"},
+		{"name":"_nft","type":"address"},
+		{"name":"_balance","type":"uint128"},
+		{"name":"_indexDeployValue","type":"uint128"},
+		{"name":"_indexDestroyValue","type":"uint128"},
+		{"name":"_codeIndex","type":"cell"},
+		{"name":"_platformCode","type":"cell"}
+	]
+}

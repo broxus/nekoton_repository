@@ -240,7 +240,7 @@ mixin GenericContractRepositoryImpl implements GenericContractRepository {
       contract.onMessageSentStream
           .firstWhere(
             (e) => e.$1 == pending && e.$2 != null,
-            orElse: () => throw OperationCanceledException(),
+            orElse: () => throw const OperationCanceledException(),
           )
           .timeout(pending.expireAt.toTimeout())
           .then(onSent)

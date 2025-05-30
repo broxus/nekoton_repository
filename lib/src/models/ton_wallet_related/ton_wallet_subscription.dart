@@ -20,10 +20,10 @@ typedef TonWalletOnMessageExpired = void Function(PendingTransaction event);
 class TonWalletSubscription {
   TonWalletSubscription({
     required TonWallet tonWallet,
-    required TonWalletOnMessageSent onMessageSent,
-    required TonWalletOnStateChanged onStateChanged,
-    required TonWalletOnTransactionsFound onTransactionsFound,
-    required TonWalletOnMessageExpired onMessageExpired,
+    TonWalletOnMessageSent? onMessageSent,
+    TonWalletOnStateChanged? onStateChanged,
+    TonWalletOnTransactionsFound? onTransactionsFound,
+    TonWalletOnMessageExpired? onMessageExpired,
   })  : _onMessageSentSubscription = tonWallet.onMessageSentStream.listen(
           onMessageSent,
         ),

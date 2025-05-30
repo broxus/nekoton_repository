@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:collection/collection.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_nekoton_bridge/flutter_nekoton_bridge.dart' as fnb;
 import 'package:injectable/injectable.dart';
 import 'package:logging/logging.dart';
@@ -27,7 +28,8 @@ class NekotonRepository
         AccountRepositoryImpl,
         TonWalletRepositoryImpl,
         TokenWalletRepositoryImpl,
-        GenericContractRepositoryImpl {
+        GenericContractRepositoryImpl,
+        NftRepositoryImpl {
   /// {@macro nekoton_repository}
   NekotonRepository();
 
@@ -68,6 +70,11 @@ class NekotonRepository
   @override
   TokenWalletTransactionsStorage get tokenWalletStorage => _tokenWalletStorage;
 
+  late final AbiLoader _abiLoader;
+
+  @override
+  AbiLoader get abiLoader => _abiLoader;
+
   // TODO(alex-a4): uncomment when ledger will be implemented
   // late final fnb.LedgerConnection _ledgerConnection;
 
@@ -91,6 +98,7 @@ class NekotonRepository
     required NekotonStorageRepository storage,
     required TonWalletTransactionsStorage tonWalletStorage,
     required TokenWalletTransactionsStorage tokenWalletStorage,
+    AssetBundle? bundle,
   }) async {
     _storageRepository = storage;
     _tonWalletStorage = tonWalletStorage;
@@ -123,6 +131,7 @@ class NekotonRepository
       ],
     );
     _accountsStorage = await AccountsStorage.create(storage: _nekotonStorage);
+    _abiLoader = AbiLoader(bundle ?? rootBundle);
 
     _initHasAnySeeds();
   }
