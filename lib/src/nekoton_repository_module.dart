@@ -29,4 +29,7 @@ abstract class NekotonRepositoryModule {
     NekotonRepository repository,
   ) =>
       repository;
+
+  @singleton
+  NftRepository registerNft(NekotonRepository repository) => repository;
 }

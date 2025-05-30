@@ -341,7 +341,7 @@ mixin TonWalletRepositoryImpl implements TonWalletRepository {
 
     final contractState = await tonWallet.transport.getContractState(address);
 
-    if (!contractState.isExists()) throw ContractNotExistsException();
+    if (!contractState.isExists()) throw ContractNotExistsException(address);
 
     return tonWallet.prepareTransfer(
       contractState: contractState,
@@ -527,7 +527,7 @@ mixin TonWalletRepositoryImpl implements TonWalletRepository {
       tonWallet.onMessageSentStream
           .firstWhere(
             (e) => e.$1 == pending && e.$2 != null,
-            orElse: () => throw OperationCanceledException(),
+            orElse: () => throw const OperationCanceledException(),
           )
           .timeout(pending.expireAt.toTimeout())
           .then(onSent)

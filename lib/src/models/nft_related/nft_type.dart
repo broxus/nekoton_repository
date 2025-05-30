@@ -1,0 +1,4 @@
+enum NftType {
+  nft,
+  fungible,
+}
