@@ -395,7 +395,7 @@ mixin NftRepositoryImpl implements NftRepository {
 
     final supply = isVep1155 ? await _getMultitokenSupply(address) : null;
     final json = isTip422
-        ? await _getTip422NftJson(address)
+        ? await _getTip422NftJson(address: address, collection: info.collection)
         : await _getJsonFromContract(address, AbiType.nft);
 
     return Nft(
@@ -462,7 +462,10 @@ mixin NftRepositoryImpl implements NftRepository {
     }
   }
 
-  Future<NftJsonData?> _getTip422NftJson(Address address) async {
+  Future<NftJsonData?> _getTip422NftJson({
+    required Address address,
+    required Address collection,
+  }) async {
     try {
       final parts = await _callContract(
         type: AbiType.tip422Nft,
@@ -473,7 +476,7 @@ mixin NftRepositoryImpl implements NftRepository {
       );
       final result = await _callContract(
         type: AbiType.tip422Collection,
-        address: address,
+        address: collection,
         methodId: 'getNftUrl',
         responsible: true,
         input: {
