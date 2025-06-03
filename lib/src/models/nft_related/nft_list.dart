@@ -1,11 +1,12 @@
+import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:nekoton_repository/nekoton_repository.dart';
 
-class NftList {
-  const NftList({
-    required this.items,
-    this.continuation,
-  });
+part 'nft_list.freezed.dart';
 
-  final List<NftItem> items;
-  final String? continuation;
+@freezed
+class NftList with _$NftList {
+  const factory NftList({
+    required List<NftItem> items,
+    String? continuation,
+  }) = _NftList;
 }

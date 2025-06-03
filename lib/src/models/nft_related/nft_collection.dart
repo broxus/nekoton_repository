@@ -17,7 +17,7 @@ class NftCollection with _$NftCollection {
 
   const NftCollection._();
 
-  String get name => json.name ?? 'Unknown';
+  String? get name => json.name;
 
   String? get description => json.description;
 

@@ -22,7 +22,7 @@ class Nft with _$Nft {
 
   Address get collection => info.collection;
 
-  String get name => json.name ?? 'Unknown';
+  String? get name => json.name;
 
   String? get description => json.description;
 
