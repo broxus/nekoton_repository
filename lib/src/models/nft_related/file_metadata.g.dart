@@ -9,7 +9,7 @@ part of 'file_metadata.dart';
 _$FileMetadataImpl _$$FileMetadataImplFromJson(Map<String, dynamic> json) =>
     _$FileMetadataImpl(
       source: json['source'] as String?,
-      mimetype: json['mimetype'] as String?,
+      mimetype: _readValue(json, 'mimetype') as String?,
     );
 
 Map<String, dynamic> _$$FileMetadataImplToJson(_$FileMetadataImpl instance) =>

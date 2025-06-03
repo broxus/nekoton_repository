@@ -21,6 +21,7 @@ FileMetadata _$FileMetadataFromJson(Map<String, dynamic> json) {
 /// @nodoc
 mixin _$FileMetadata {
   String? get source => throw _privateConstructorUsedError;
+  @JsonKey(readValue: _readValue)
   String? get mimetype => throw _privateConstructorUsedError;
 
   /// Serializes this FileMetadata to a JSON map.
@@ -39,7 +40,7 @@ abstract class $FileMetadataCopyWith<$Res> {
           FileMetadata value, $Res Function(FileMetadata) then) =
       _$FileMetadataCopyWithImpl<$Res, FileMetadata>;
   @useResult
-  $Res call({String? source, String? mimetype});
+  $Res call({String? source, @JsonKey(readValue: _readValue) String? mimetype});
 }
 
 /// @nodoc
@@ -81,7 +82,7 @@ abstract class _$$FileMetadataImplCopyWith<$Res>
       __$$FileMetadataImplCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call({String? source, String? mimetype});
+  $Res call({String? source, @JsonKey(readValue: _readValue) String? mimetype});
 }
 
 /// @nodoc
@@ -116,7 +117,8 @@ class __$$FileMetadataImplCopyWithImpl<$Res>
 /// @nodoc
 @JsonSerializable()
 class _$FileMetadataImpl implements _FileMetadata {
-  const _$FileMetadataImpl({this.source, this.mimetype});
+  const _$FileMetadataImpl(
+      {this.source, @JsonKey(readValue: _readValue) this.mimetype});
 
   factory _$FileMetadataImpl.fromJson(Map<String, dynamic> json) =>
       _$$FileMetadataImplFromJson(json);
@@ -124,6 +126,7 @@ class _$FileMetadataImpl implements _FileMetadata {
   @override
   final String? source;
   @override
+  @JsonKey(readValue: _readValue)
   final String? mimetype;
 
   @override
@@ -162,7 +165,9 @@ class _$FileMetadataImpl implements _FileMetadata {
 }
 
 abstract class _FileMetadata implements FileMetadata {
-  const factory _FileMetadata({final String? source, final String? mimetype}) =
+  const factory _FileMetadata(
+          {final String? source,
+          @JsonKey(readValue: _readValue) final String? mimetype}) =
       _$FileMetadataImpl;
 
   factory _FileMetadata.fromJson(Map<String, dynamic> json) =
@@ -171,6 +176,7 @@ abstract class _FileMetadata implements FileMetadata {
   @override
   String? get source;
   @override
+  @JsonKey(readValue: _readValue)
   String? get mimetype;
 
   /// Create a copy of FileMetadata
