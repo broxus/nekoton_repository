@@ -10,6 +10,7 @@ export 'src/models/models.dart';
 export 'src/nekoton_repository.dart';
 export 'src/repositories/repositories.dart';
 export 'src/utils/abi/abi.dart';
+export 'src/utils/cached_contract_state_provider.dart';
 export 'src/utils/exceptions.dart';
 export 'src/utils/extensions.dart';
 
