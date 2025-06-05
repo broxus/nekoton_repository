@@ -29,6 +29,8 @@ class NekotonRepositoryPackageModule extends _i526.MicroPackageModule {
         .registerTokenWallet(gh<_i771.NekotonRepository>()));
     gh.singleton<_i771.GenericContractRepository>(() => nekotonRepositoryModule
         .registerGenericContract(gh<_i771.NekotonRepository>()));
+    gh.singleton<_i771.NftRepository>(() =>
+        nekotonRepositoryModule.registerNft(gh<_i771.NekotonRepository>()));
   }
 }
 

@@ -78,4 +78,6 @@ abstract class TransportStrategy {
     required Address owner,
     required Address rootTokenContract,
   });
+
+  Future<Map<String, dynamic>?> fetchJson(String url);
 }
