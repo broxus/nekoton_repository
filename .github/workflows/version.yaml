@@ -20,5 +20,6 @@ jobs:
     with:
       version_parameters: ${{ inputs.version_parameters }}
       flutter_version: '3.29.3'
+      push_tags: true
     secrets:
       token: ${{ secrets.BOT_ACCESS_TOKEN }}
