@@ -3,6 +3,31 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## 2025-06-16
+
+### Changes
+
+---
+
+Packages with breaking changes:
+
+ - There are no breaking changes in this release.
+
+Packages with other changes:
+
+ - [`nekoton_repository` - `v1.1.0`](#nekoton_repository---v110)
+
+---
+
+#### `nekoton_repository` - `v1.1.0`
+
+ - **FEAT**: add pause and resume functionality in repositories; handle `TimeoutException` when polling is paused.
+
+## 1.1.0
+
+ - **FEAT**: add pause and resume functionality in repositories; handle `TimeoutException` when polling is paused.
+
+
 ## 2025-06-05
 
 ### Changes
