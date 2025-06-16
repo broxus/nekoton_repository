@@ -3,7 +3,6 @@ import 'dart:convert';
 import 'package:collection/collection.dart';
 import 'package:logging/logging.dart';
 import 'package:nekoton_repository/nekoton_repository.dart';
-import 'package:nekoton_repository/src/utils/utils.dart';
 import 'package:rxdart/rxdart.dart';
 
 const _indexCode =

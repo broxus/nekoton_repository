@@ -80,6 +80,10 @@ abstract class TonWalletRepository {
   /// [startPolling].
   void stopPolling();
 
+  void pausePolling();
+
+  void resumePolling();
+
   /// Dispose existing wallet instance and remove it from repository.
   void unsubscribe(Address address);
 

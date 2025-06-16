@@ -60,6 +60,10 @@ abstract class TokenWalletRepository {
   /// [startPollingToken].
   void stopPollingToken();
 
+  void pausePollingToken();
+
+  void resumePollingToken();
+
   /// Dispose existing wallet instance and remove it from repository.
   void unsubscribeToken(Address owner, Address rootTokenContract);
 

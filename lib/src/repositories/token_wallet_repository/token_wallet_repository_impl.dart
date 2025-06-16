@@ -158,6 +158,20 @@ mixin TokenWalletRepositoryImpl implements TokenWalletRepository {
   }
 
   @override
+  void pausePollingToken() {
+    for (final polling in tokenPollingQueues.values) {
+      polling.pause();
+    }
+  }
+
+  @override
+  void resumePollingToken() {
+    for (final polling in tokenPollingQueues.values) {
+      polling.resume();
+    }
+  }
+
+  @override
   void unsubscribeToken(Address owner, Address rootTokenContract) {
     final wallet = removeTokenWalletInst(owner, rootTokenContract);
     tokenPollingQueues.remove((owner, rootTokenContract))?.stop();

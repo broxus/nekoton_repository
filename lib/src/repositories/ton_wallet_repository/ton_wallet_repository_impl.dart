@@ -16,12 +16,17 @@ const tonWalletRefreshInterval = Duration(seconds: 10);
 /// This is an interval for active polling to check wallet state during send
 /// method.
 const intensivePollingInterval = Duration(seconds: 2);
+const _resumeTimeout = Duration(seconds: 1);
 
 const _ignoredComputePhaseCodes = [0, 1, 60, 100];
 const _ignoredActionPhaseCodes = [0, 1];
 
 mixin TonWalletRepositoryImpl implements TonWalletRepository {
   final _logger = Logger('TonWalletRepositoryImpl');
+
+  final List<RefreshPollingQueue> _sendPollingQueues = [];
+  final BehaviorSubject<bool> _isPollingPaused =
+      BehaviorSubject.seeded(false, sync: true);
 
   KeyStore get keyStore;
 
@@ -180,6 +185,30 @@ mixin TonWalletRepositoryImpl implements TonWalletRepository {
       polling.stop();
     }
     pollingQueues.clear();
+  }
+
+  @override
+  void pausePolling() {
+    for (final polling in pollingQueues.values) {
+      polling.pause();
+    }
+    for (final polling in _sendPollingQueues) {
+      polling.pause();
+    }
+
+    _isPollingPaused.add(true);
+  }
+
+  @override
+  void resumePolling() {
+    for (final polling in pollingQueues.values) {
+      polling.resume();
+    }
+    for (final polling in _sendPollingQueues) {
+      polling.resume();
+    }
+
+    _isPollingPaused.add(false);
   }
 
   @override
@@ -465,6 +494,7 @@ mixin TonWalletRepositoryImpl implements TonWalletRepository {
     void completePolling() {
       poller.stop();
       existedPoller?.resume();
+      _sendPollingQueues.remove(poller);
     }
 
     void createPoller(RefreshingInterface refresher) {
@@ -488,6 +518,8 @@ mixin TonWalletRepositoryImpl implements TonWalletRepository {
         },
         // refresh immediately to start polling without delay
       )..start(refreshImmediately: true);
+
+      _sendPollingQueues.add(poller);
     }
 
     if (transport is GqlTransport) {
@@ -523,13 +555,22 @@ mixin TonWalletRepositoryImpl implements TonWalletRepository {
       completePolling();
     }
 
+    final sentTransactionFuture = tonWallet.onMessageSentStream.firstWhere(
+      (e) => e.$1 == pending && e.$2 != null,
+      orElse: () => throw const OperationCanceledException(),
+    );
+
     unawaited(
-      tonWallet.onMessageSentStream
-          .firstWhere(
-            (e) => e.$1 == pending && e.$2 != null,
-            orElse: () => throw const OperationCanceledException(),
-          )
+      sentTransactionFuture
           .timeout(pending.expireAt.toTimeout())
+          .onError<TimeoutException>(
+            (e, _) => _isPollingPaused
+                .firstWhere((e) => !e) // wait for polling to be resumed
+                .then((_) => poller.currentRefresh())
+                .then((_) => sentTransactionFuture.timeout(_resumeTimeout)),
+            // handle case when polling is paused
+            test: (_) => _isPollingPaused.value,
+          )
           .then(onSent)
           .onError<OperationCanceledException>(onStreamCompletedError)
           .onError<Object>(onError),
