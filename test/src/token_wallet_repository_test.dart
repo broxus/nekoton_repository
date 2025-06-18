@@ -23,7 +23,7 @@ class MockTransport extends Mock implements TransportStrategy {
       );
 
   @override
-  PollingConfig get pollingConfig => const PollingConfig.defaultConfig();
+  PollingConfig get pollingConfig => PollingConfig.defaultConfig;
 }
 
 class MockWalletStorage extends Mock
@@ -127,7 +127,6 @@ void main() {
     fullName: '',
   );
   const version = TokenWalletVersion.tip3;
-  const pollingConfig = PollingConfig.defaultConfig();
   final bridge = MockBridge();
 
   late TokenWalletDartWrapper tokenWrapper1;
@@ -215,7 +214,7 @@ void main() {
 
       final poller = RefreshPollingQueue(
         refresher: wallet,
-        refreshInterval: pollingConfig.tokenWalletRefreshInterval,
+        refreshInterval: PollingConfig.defaultConfig.tokenWalletRefreshInterval,
       )..start();
 
       repository.tokenPollingQueues[(owner, root1)] = poller;
@@ -244,11 +243,11 @@ void main() {
 
       final poller1 = RefreshPollingQueue(
         refresher: wallet,
-        refreshInterval: pollingConfig.tokenWalletRefreshInterval,
+        refreshInterval: PollingConfig.defaultConfig.tokenWalletRefreshInterval,
       )..start();
       final poller2 = RefreshPollingQueue(
         refresher: wallet,
-        refreshInterval: pollingConfig.tokenWalletRefreshInterval,
+        refreshInterval: PollingConfig.defaultConfig.tokenWalletRefreshInterval,
       )..start();
 
       repository.tokenPollingQueues[(owner, root1)] = poller1;
@@ -277,7 +276,7 @@ void main() {
 
       final oldPoller = RefreshPollingQueue(
         refresher: wallet,
-        refreshInterval: pollingConfig.tokenWalletRefreshInterval,
+        refreshInterval: PollingConfig.defaultConfig.tokenWalletRefreshInterval,
       )..start();
 
       repository.tokenPollingQueues[(owner, root2)] = oldPoller;
@@ -301,7 +300,7 @@ void main() {
 
       final oldPoller = RefreshPollingQueue(
         refresher: wallet,
-        refreshInterval: pollingConfig.tokenWalletRefreshInterval,
+        refreshInterval: PollingConfig.defaultConfig.tokenWalletRefreshInterval,
       )..start();
 
       repository.tokenPollingQueues[(owner, root2)] = oldPoller;

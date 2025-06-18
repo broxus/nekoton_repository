@@ -9,7 +9,7 @@ class MockBridge extends Mock implements NekotonBridgeApi {}
 
 class MockTransport extends Mock implements TransportStrategy {
   @override
-  PollingConfig get pollingConfig => const PollingConfig.defaultConfig();
+  PollingConfig get pollingConfig => PollingConfig.defaultConfig;
 }
 
 class MockContract extends Mock implements GenericContract {}
