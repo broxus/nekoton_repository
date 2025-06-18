@@ -10,14 +10,7 @@ import 'package:nekoton_repository/src/utils/utils.dart';
 import 'package:quiver/iterables.dart';
 import 'package:rxdart/rxdart.dart';
 
-/// Polling interval for [TonWallet.refresh]
-const tonWalletRefreshInterval = Duration(seconds: 10);
-
-/// This is an interval for active polling to check wallet state during send
-/// method.
-const intensivePollingInterval = Duration(seconds: 2);
 const _resumeTimeout = Duration(seconds: 1);
-
 const _ignoredComputePhaseCodes = [0, 1, 60, 100];
 const _ignoredActionPhaseCodes = [0, 1];
 
@@ -156,7 +149,7 @@ mixin TonWalletRepositoryImpl implements TonWalletRepository {
   @override
   Future<void> startPolling(
     Address address, {
-    Duration refreshInterval = tonWalletRefreshInterval,
+    Duration? refreshInterval,
     bool stopPrevious = true,
   }) async {
     // If wallet has polling but was stopped, so rerun
@@ -174,7 +167,8 @@ mixin TonWalletRepositoryImpl implements TonWalletRepository {
     if (wallet == null) return;
 
     pollingQueues[address] = RefreshPollingQueue(
-      refreshInterval: refreshInterval,
+      refreshInterval: refreshInterval ??
+          currentTransport.pollingConfig.tonWalletRefreshInterval,
       refresher: wallet,
     )..start();
   }
@@ -500,7 +494,8 @@ mixin TonWalletRepositoryImpl implements TonWalletRepository {
     void createPoller(RefreshingInterface refresher) {
       poller = RefreshPollingQueue(
         refresher: refresher,
-        refreshInterval: intensivePollingInterval,
+        refreshInterval:
+            currentTransport.pollingConfig.intensivePollingInterval,
         refreshCompleteCallback: ([(Object, StackTrace)? err]) {
           if (err != null) {
             _logger.severe(

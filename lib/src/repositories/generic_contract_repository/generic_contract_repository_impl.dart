@@ -183,7 +183,8 @@ mixin GenericContractRepositoryImpl implements GenericContractRepository {
     void createPoller(RefreshingInterface refresher) {
       poller = RefreshPollingQueue(
         refresher: refresher,
-        refreshInterval: intensivePollingInterval,
+        refreshInterval:
+            currentTransport.pollingConfig.intensivePollingInterval,
         refreshCompleteCallback: ([(Object, StackTrace)? err]) {
           if (err != null) {
             _logger.severe(

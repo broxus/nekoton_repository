@@ -5,6 +5,7 @@ export 'generic_contract/generic_contract.dart';
 export 'ignore_transaction_tree_simulation_error.dart';
 export 'key_account.dart';
 export 'nft_related/nft_related.dart';
+export 'polling_config.dart';
 export 'seed.dart';
 export 'seed_add_type.dart';
 export 'seed_key.dart';

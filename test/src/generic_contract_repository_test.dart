@@ -7,7 +7,10 @@ import 'package:rxdart/rxdart.dart';
 
 class MockBridge extends Mock implements NekotonBridgeApi {}
 
-class MockTransport extends Mock implements TransportStrategy {}
+class MockTransport extends Mock implements TransportStrategy {
+  @override
+  PollingConfig get pollingConfig => const PollingConfig.defaultConfig();
+}
 
 class MockContract extends Mock implements GenericContract {}
 
