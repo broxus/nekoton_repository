@@ -42,8 +42,7 @@ abstract class TokenWalletRepository {
   /// If [TokenWalletState.wallet] was null (wallet was not created), polling
   /// will be ignored.
   ///
-  /// [refreshInterval] - time to poll requests, default
-  ///   [tonWalletRefreshInterval].
+  /// [refreshInterval] - time to poll requests
   /// [stopPrevious] - if previously created pollers should be stopped,
   ///   default true.
   Future<void> startPollingToken(

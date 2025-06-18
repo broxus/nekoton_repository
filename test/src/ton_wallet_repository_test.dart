@@ -13,7 +13,10 @@ class MockTokenRepository extends Mock implements TokenWalletRepository {}
 
 class MockBridge extends Mock implements NekotonBridgeApi {}
 
-class MockTransport extends Mock implements TransportStrategy {}
+class MockTransport extends Mock implements TransportStrategy {
+  @override
+  PollingConfig get pollingConfig => PollingConfig.defaultConfig;
+}
 
 class MockKeystore extends Mock implements KeyStore {}
 
@@ -255,7 +258,7 @@ void main() {
 
       final poller = RefreshPollingQueue(
         refresher: wallet,
-        refreshInterval: tonWalletRefreshInterval,
+        refreshInterval: PollingConfig.defaultConfig.tonWalletRefreshInterval,
       )..start();
 
       repository.pollingQueues[address] = poller;
@@ -286,11 +289,11 @@ void main() {
 
       final poller1 = RefreshPollingQueue(
         refresher: wallet,
-        refreshInterval: tonWalletRefreshInterval,
+        refreshInterval: PollingConfig.defaultConfig.tonWalletRefreshInterval,
       )..start();
       final poller2 = RefreshPollingQueue(
         refresher: wallet,
-        refreshInterval: tonWalletRefreshInterval,
+        refreshInterval: PollingConfig.defaultConfig.tonWalletRefreshInterval,
       )..start();
 
       repository.pollingQueues[address] = poller1;
@@ -321,7 +324,7 @@ void main() {
 
       final oldPoller = RefreshPollingQueue(
         refresher: wallet,
-        refreshInterval: tonWalletRefreshInterval,
+        refreshInterval: PollingConfig.defaultConfig.tonWalletRefreshInterval,
       )..start();
 
       repository.pollingQueues[duplicateAddress] = oldPoller;
@@ -347,7 +350,7 @@ void main() {
 
       final oldPoller = RefreshPollingQueue(
         refresher: wallet,
-        refreshInterval: tonWalletRefreshInterval,
+        refreshInterval: PollingConfig.defaultConfig.tonWalletRefreshInterval,
       )..start();
 
       repository.pollingQueues[duplicateAddress] = oldPoller;
@@ -484,7 +487,7 @@ void main() {
       /// old poller must be paused
       final oldPoller = RefreshPollingQueue(
         refresher: wallet,
-        refreshInterval: tonWalletRefreshInterval,
+        refreshInterval: PollingConfig.defaultConfig.tonWalletRefreshInterval,
       )..start();
       repository.pollingQueues[address] = oldPoller;
       repository.addWalletInst(wallet);
@@ -593,7 +596,7 @@ void main() {
       /// old poller must be paused
       final oldPoller = RefreshPollingQueue(
         refresher: wallet,
-        refreshInterval: tonWalletRefreshInterval,
+        refreshInterval: PollingConfig.defaultConfig.tonWalletRefreshInterval,
       )..start();
       repository.pollingQueues[address] = oldPoller;
       repository.addWalletInst(wallet);

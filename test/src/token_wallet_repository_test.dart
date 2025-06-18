@@ -21,6 +21,9 @@ class MockTransport extends Mock implements TransportStrategy {
           rootTokenContract: rootTokenContract,
         ),
       );
+
+  @override
+  PollingConfig get pollingConfig => PollingConfig.defaultConfig;
 }
 
 class MockWalletStorage extends Mock
@@ -211,7 +214,7 @@ void main() {
 
       final poller = RefreshPollingQueue(
         refresher: wallet,
-        refreshInterval: tokenWalletRefreshInterval,
+        refreshInterval: PollingConfig.defaultConfig.tokenWalletRefreshInterval,
       )..start();
 
       repository.tokenPollingQueues[(owner, root1)] = poller;
@@ -240,11 +243,11 @@ void main() {
 
       final poller1 = RefreshPollingQueue(
         refresher: wallet,
-        refreshInterval: tokenWalletRefreshInterval,
+        refreshInterval: PollingConfig.defaultConfig.tokenWalletRefreshInterval,
       )..start();
       final poller2 = RefreshPollingQueue(
         refresher: wallet,
-        refreshInterval: tokenWalletRefreshInterval,
+        refreshInterval: PollingConfig.defaultConfig.tokenWalletRefreshInterval,
       )..start();
 
       repository.tokenPollingQueues[(owner, root1)] = poller1;
@@ -273,7 +276,7 @@ void main() {
 
       final oldPoller = RefreshPollingQueue(
         refresher: wallet,
-        refreshInterval: tonWalletRefreshInterval,
+        refreshInterval: PollingConfig.defaultConfig.tokenWalletRefreshInterval,
       )..start();
 
       repository.tokenPollingQueues[(owner, root2)] = oldPoller;
@@ -297,7 +300,7 @@ void main() {
 
       final oldPoller = RefreshPollingQueue(
         refresher: wallet,
-        refreshInterval: tonWalletRefreshInterval,
+        refreshInterval: PollingConfig.defaultConfig.tokenWalletRefreshInterval,
       )..start();
 
       repository.tokenPollingQueues[(owner, root2)] = oldPoller;

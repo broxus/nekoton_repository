@@ -5,9 +5,6 @@ import 'package:nekoton_repository/nekoton_repository.dart';
 import 'package:quiver/iterables.dart';
 import 'package:rxdart/rxdart.dart';
 
-/// Polling interval for token wallet refresh
-const tokenWalletRefreshInterval = Duration(seconds: 15);
-
 mixin TokenWalletRepositoryImpl implements TokenWalletRepository {
   final _logger = Logger('TokenWalletRepositoryImpl');
 
@@ -124,7 +121,7 @@ mixin TokenWalletRepositoryImpl implements TokenWalletRepository {
   Future<void> startPollingToken(
     Address owner,
     Address rootTokenContract, {
-    Duration refreshInterval = tokenWalletRefreshInterval,
+    Duration? refreshInterval,
     bool stopPrevious = true,
   }) async {
     final pair = (owner, rootTokenContract);
@@ -144,7 +141,8 @@ mixin TokenWalletRepositoryImpl implements TokenWalletRepository {
     if (wallet == null) return;
 
     tokenPollingQueues[pair] = RefreshPollingQueue(
-      refreshInterval: refreshInterval,
+      refreshInterval: refreshInterval ??
+          currentTransport.pollingConfig.tokenWalletRefreshInterval,
       refresher: wallet.inner,
     )..start();
   }
