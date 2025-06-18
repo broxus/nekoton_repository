@@ -320,7 +320,12 @@ mixin TokenWalletRepositoryImpl implements TokenWalletRepository {
         .expand((e) => e)
         .toList();
 
-    return _updateTokenSubscriptionsPairs(newWallets);
+    await _updateTokenSubscriptionsPairs(newWallets);
+
+    // restart polling after transport changed
+    for (final (owner, rootTokenContract) in newWallets) {
+      await startPollingToken(owner, rootTokenContract);
+    }
   }
 
   @override

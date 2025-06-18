@@ -316,7 +316,12 @@ mixin TonWalletRepositoryImpl implements TonWalletRepository {
     // make null to avoid comparing for subscriptions
     lastUpdatedAssets = null;
 
-    return updateSubscriptions(last);
+    await updateSubscriptions(last);
+
+    // restart polling after transport changed
+    for (final (wallet, _) in last) {
+      await startPolling(wallet.address);
+    }
   }
 
   @override
