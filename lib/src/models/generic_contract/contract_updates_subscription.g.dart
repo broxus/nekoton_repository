@@ -6,15 +6,15 @@ part of 'contract_updates_subscription.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-_$ContractUpdatesSubscriptionImpl _$$ContractUpdatesSubscriptionImplFromJson(
+_ContractUpdatesSubscription _$ContractUpdatesSubscriptionFromJson(
         Map<String, dynamic> json) =>
-    _$ContractUpdatesSubscriptionImpl(
+    _ContractUpdatesSubscription(
       contractState: json['state'] as bool?,
       transactions: json['transactions'] as bool?,
     );
 
-Map<String, dynamic> _$$ContractUpdatesSubscriptionImplToJson(
-        _$ContractUpdatesSubscriptionImpl instance) =>
+Map<String, dynamic> _$ContractUpdatesSubscriptionToJson(
+        _ContractUpdatesSubscription instance) =>
     <String, dynamic>{
       if (instance.contractState case final value?) 'state': value,
       if (instance.transactions case final value?) 'transactions': value,

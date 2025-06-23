@@ -6,8 +6,7 @@ part of 'nft_json_data.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-_$NftJsonDataImpl _$$NftJsonDataImplFromJson(Map<String, dynamic> json) =>
-    _$NftJsonDataImpl(
+_NftJsonData _$NftJsonDataFromJson(Map<String, dynamic> json) => _NftJsonData(
       name: json['name'] as String?,
       description: json['description'] as String?,
       preview: json['preview'] == null
@@ -19,7 +18,7 @@ _$NftJsonDataImpl _$$NftJsonDataImplFromJson(Map<String, dynamic> json) =>
       externalUrl: json['external_url'] as String?,
     );
 
-Map<String, dynamic> _$$NftJsonDataImplToJson(_$NftJsonDataImpl instance) =>
+Map<String, dynamic> _$NftJsonDataToJson(_NftJsonData instance) =>
     <String, dynamic>{
       'name': instance.name,
       'description': instance.description,

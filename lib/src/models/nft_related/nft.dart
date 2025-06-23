@@ -4,7 +4,7 @@ import 'package:nekoton_repository/nekoton_repository.dart';
 part 'nft.freezed.dart';
 
 @freezed
-class Nft with _$Nft {
+abstract class Nft with _$Nft {
   const factory Nft({
     required Address address,
     required NftInfo info,

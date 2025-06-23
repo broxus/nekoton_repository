@@ -5,7 +5,7 @@ part 'nft_token_transfer_payload.freezed.dart';
 part 'nft_token_transfer_payload.g.dart';
 
 @freezed
-class NftTokenTransferPayload with _$NftTokenTransferPayload {
+abstract class NftTokenTransferPayload with _$NftTokenTransferPayload {
   const factory NftTokenTransferPayload({
     required String id,
     required Address collection,

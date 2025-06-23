@@ -5,7 +5,7 @@ part 'nft_collection.freezed.dart';
 part 'nft_collection.g.dart';
 
 @freezed
-class NftCollection with _$NftCollection {
+abstract class NftCollection with _$NftCollection {
   const factory NftCollection({
     required Address address,
     required NftJsonData json,

@@ -6,18 +6,17 @@ part of 'ignore_transaction_tree_simulation_error.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-_$IgnoreTransactionTreeSimulationErrorImpl
-    _$$IgnoreTransactionTreeSimulationErrorImplFromJson(
-            Map<String, dynamic> json) =>
-        _$IgnoreTransactionTreeSimulationErrorImpl(
+_IgnoreTransactionTreeSimulationError
+    _$IgnoreTransactionTreeSimulationErrorFromJson(Map<String, dynamic> json) =>
+        _IgnoreTransactionTreeSimulationError(
           code: (json['code'] as num).toInt(),
           address: json['address'] == null
               ? null
               : Address.fromJson(json['address'] as String),
         );
 
-Map<String, dynamic> _$$IgnoreTransactionTreeSimulationErrorImplToJson(
-        _$IgnoreTransactionTreeSimulationErrorImpl instance) =>
+Map<String, dynamic> _$IgnoreTransactionTreeSimulationErrorToJson(
+        _IgnoreTransactionTreeSimulationError instance) =>
     <String, dynamic>{
       'code': instance.code,
       'address': instance.address?.toJson(),

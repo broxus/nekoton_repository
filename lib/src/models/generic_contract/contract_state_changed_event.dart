@@ -6,7 +6,7 @@ part 'contract_state_changed_event.g.dart';
 
 /// Event that contains actual contract state for [GenericContract].
 @freezed
-class ContractStateChangedEvent with _$ContractStateChangedEvent {
+abstract class ContractStateChangedEvent with _$ContractStateChangedEvent {
   const factory ContractStateChangedEvent({
     required Address address,
     required ContractState state,

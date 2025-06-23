@@ -5,7 +5,7 @@ part 'nft_token_transfer_input.freezed.dart';
 part 'nft_token_transfer_input.g.dart';
 
 @freezed
-class NftTokenTransferInput with _$NftTokenTransferInput {
+abstract class NftTokenTransferInput with _$NftTokenTransferInput {
   const factory NftTokenTransferInput({
     @amountJsonConverter required BigInt count,
     @amountJsonConverter required BigInt deployTokenWalletValue,

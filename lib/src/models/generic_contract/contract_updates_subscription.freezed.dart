@@ -1,3 +1,4 @@
+// dart format width=80
 // coverage:ignore-file
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // ignore_for_file: type=lint
@@ -9,152 +10,33 @@ part of 'contract_updates_subscription.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// dart format off
 T _$identity<T>(T value) => value;
-
-final _privateConstructorUsedError = UnsupportedError(
-    'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models');
-
-ContractUpdatesSubscription _$ContractUpdatesSubscriptionFromJson(
-    Map<String, dynamic> json) {
-  return _ContractUpdatesSubscription.fromJson(json);
-}
 
 /// @nodoc
 mixin _$ContractUpdatesSubscription {
   @JsonKey(includeIfNull: false, name: 'state')
-  bool? get contractState => throw _privateConstructorUsedError;
+  bool? get contractState;
   @JsonKey(includeIfNull: false)
-  bool? get transactions => throw _privateConstructorUsedError;
-
-  /// Serializes this ContractUpdatesSubscription to a JSON map.
-  Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
+  bool? get transactions;
 
   /// Create a copy of ContractUpdatesSubscription
   /// with the given fields replaced by the non-null parameter values.
   @JsonKey(includeFromJson: false, includeToJson: false)
+  @pragma('vm:prefer-inline')
   $ContractUpdatesSubscriptionCopyWith<ContractUpdatesSubscription>
-      get copyWith => throw _privateConstructorUsedError;
-}
+      get copyWith => _$ContractUpdatesSubscriptionCopyWithImpl<
+              ContractUpdatesSubscription>(
+          this as ContractUpdatesSubscription, _$identity);
 
-/// @nodoc
-abstract class $ContractUpdatesSubscriptionCopyWith<$Res> {
-  factory $ContractUpdatesSubscriptionCopyWith(
-          ContractUpdatesSubscription value,
-          $Res Function(ContractUpdatesSubscription) then) =
-      _$ContractUpdatesSubscriptionCopyWithImpl<$Res,
-          ContractUpdatesSubscription>;
-  @useResult
-  $Res call(
-      {@JsonKey(includeIfNull: false, name: 'state') bool? contractState,
-      @JsonKey(includeIfNull: false) bool? transactions});
-}
-
-/// @nodoc
-class _$ContractUpdatesSubscriptionCopyWithImpl<$Res,
-        $Val extends ContractUpdatesSubscription>
-    implements $ContractUpdatesSubscriptionCopyWith<$Res> {
-  _$ContractUpdatesSubscriptionCopyWithImpl(this._value, this._then);
-
-  // ignore: unused_field
-  final $Val _value;
-  // ignore: unused_field
-  final $Res Function($Val) _then;
-
-  /// Create a copy of ContractUpdatesSubscription
-  /// with the given fields replaced by the non-null parameter values.
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? contractState = freezed,
-    Object? transactions = freezed,
-  }) {
-    return _then(_value.copyWith(
-      contractState: freezed == contractState
-          ? _value.contractState
-          : contractState // ignore: cast_nullable_to_non_nullable
-              as bool?,
-      transactions: freezed == transactions
-          ? _value.transactions
-          : transactions // ignore: cast_nullable_to_non_nullable
-              as bool?,
-    ) as $Val);
-  }
-}
-
-/// @nodoc
-abstract class _$$ContractUpdatesSubscriptionImplCopyWith<$Res>
-    implements $ContractUpdatesSubscriptionCopyWith<$Res> {
-  factory _$$ContractUpdatesSubscriptionImplCopyWith(
-          _$ContractUpdatesSubscriptionImpl value,
-          $Res Function(_$ContractUpdatesSubscriptionImpl) then) =
-      __$$ContractUpdatesSubscriptionImplCopyWithImpl<$Res>;
-  @override
-  @useResult
-  $Res call(
-      {@JsonKey(includeIfNull: false, name: 'state') bool? contractState,
-      @JsonKey(includeIfNull: false) bool? transactions});
-}
-
-/// @nodoc
-class __$$ContractUpdatesSubscriptionImplCopyWithImpl<$Res>
-    extends _$ContractUpdatesSubscriptionCopyWithImpl<$Res,
-        _$ContractUpdatesSubscriptionImpl>
-    implements _$$ContractUpdatesSubscriptionImplCopyWith<$Res> {
-  __$$ContractUpdatesSubscriptionImplCopyWithImpl(
-      _$ContractUpdatesSubscriptionImpl _value,
-      $Res Function(_$ContractUpdatesSubscriptionImpl) _then)
-      : super(_value, _then);
-
-  /// Create a copy of ContractUpdatesSubscription
-  /// with the given fields replaced by the non-null parameter values.
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? contractState = freezed,
-    Object? transactions = freezed,
-  }) {
-    return _then(_$ContractUpdatesSubscriptionImpl(
-      contractState: freezed == contractState
-          ? _value.contractState
-          : contractState // ignore: cast_nullable_to_non_nullable
-              as bool?,
-      transactions: freezed == transactions
-          ? _value.transactions
-          : transactions // ignore: cast_nullable_to_non_nullable
-              as bool?,
-    ));
-  }
-}
-
-/// @nodoc
-@JsonSerializable()
-class _$ContractUpdatesSubscriptionImpl
-    implements _ContractUpdatesSubscription {
-  const _$ContractUpdatesSubscriptionImpl(
-      {@JsonKey(includeIfNull: false, name: 'state') this.contractState,
-      @JsonKey(includeIfNull: false) this.transactions});
-
-  factory _$ContractUpdatesSubscriptionImpl.fromJson(
-          Map<String, dynamic> json) =>
-      _$$ContractUpdatesSubscriptionImplFromJson(json);
-
-  @override
-  @JsonKey(includeIfNull: false, name: 'state')
-  final bool? contractState;
-  @override
-  @JsonKey(includeIfNull: false)
-  final bool? transactions;
-
-  @override
-  String toString() {
-    return 'ContractUpdatesSubscription(contractState: $contractState, transactions: $transactions)';
-  }
+  /// Serializes this ContractUpdatesSubscription to a JSON map.
+  Map<String, dynamic> toJson();
 
   @override
   bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$ContractUpdatesSubscriptionImpl &&
+            other is ContractUpdatesSubscription &&
             (identical(other.contractState, contractState) ||
                 other.contractState == contractState) &&
             (identical(other.transactions, transactions) ||
@@ -165,44 +47,147 @@ class _$ContractUpdatesSubscriptionImpl
   @override
   int get hashCode => Object.hash(runtimeType, contractState, transactions);
 
-  /// Create a copy of ContractUpdatesSubscription
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
-  @pragma('vm:prefer-inline')
-  _$$ContractUpdatesSubscriptionImplCopyWith<_$ContractUpdatesSubscriptionImpl>
-      get copyWith => __$$ContractUpdatesSubscriptionImplCopyWithImpl<
-          _$ContractUpdatesSubscriptionImpl>(this, _$identity);
-
-  @override
-  Map<String, dynamic> toJson() {
-    return _$$ContractUpdatesSubscriptionImplToJson(
-      this,
-    );
+  String toString() {
+    return 'ContractUpdatesSubscription(contractState: $contractState, transactions: $transactions)';
   }
 }
 
-abstract class _ContractUpdatesSubscription
-    implements ContractUpdatesSubscription {
-  const factory _ContractUpdatesSubscription(
-      {@JsonKey(includeIfNull: false, name: 'state') final bool? contractState,
-      @JsonKey(includeIfNull: false)
-      final bool? transactions}) = _$ContractUpdatesSubscriptionImpl;
+/// @nodoc
+abstract mixin class $ContractUpdatesSubscriptionCopyWith<$Res> {
+  factory $ContractUpdatesSubscriptionCopyWith(
+          ContractUpdatesSubscription value,
+          $Res Function(ContractUpdatesSubscription) _then) =
+      _$ContractUpdatesSubscriptionCopyWithImpl;
+  @useResult
+  $Res call(
+      {@JsonKey(includeIfNull: false, name: 'state') bool? contractState,
+      @JsonKey(includeIfNull: false) bool? transactions});
+}
 
-  factory _ContractUpdatesSubscription.fromJson(Map<String, dynamic> json) =
-      _$ContractUpdatesSubscriptionImpl.fromJson;
+/// @nodoc
+class _$ContractUpdatesSubscriptionCopyWithImpl<$Res>
+    implements $ContractUpdatesSubscriptionCopyWith<$Res> {
+  _$ContractUpdatesSubscriptionCopyWithImpl(this._self, this._then);
+
+  final ContractUpdatesSubscription _self;
+  final $Res Function(ContractUpdatesSubscription) _then;
+
+  /// Create a copy of ContractUpdatesSubscription
+  /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? contractState = freezed,
+    Object? transactions = freezed,
+  }) {
+    return _then(_self.copyWith(
+      contractState: freezed == contractState
+          ? _self.contractState
+          : contractState // ignore: cast_nullable_to_non_nullable
+              as bool?,
+      transactions: freezed == transactions
+          ? _self.transactions
+          : transactions // ignore: cast_nullable_to_non_nullable
+              as bool?,
+    ));
+  }
+}
+
+/// @nodoc
+@JsonSerializable()
+class _ContractUpdatesSubscription implements ContractUpdatesSubscription {
+  const _ContractUpdatesSubscription(
+      {@JsonKey(includeIfNull: false, name: 'state') this.contractState,
+      @JsonKey(includeIfNull: false) this.transactions});
+  factory _ContractUpdatesSubscription.fromJson(Map<String, dynamic> json) =>
+      _$ContractUpdatesSubscriptionFromJson(json);
 
   @override
   @JsonKey(includeIfNull: false, name: 'state')
-  bool? get contractState;
+  final bool? contractState;
   @override
   @JsonKey(includeIfNull: false)
-  bool? get transactions;
+  final bool? transactions;
 
   /// Create a copy of ContractUpdatesSubscription
   /// with the given fields replaced by the non-null parameter values.
   @override
   @JsonKey(includeFromJson: false, includeToJson: false)
-  _$$ContractUpdatesSubscriptionImplCopyWith<_$ContractUpdatesSubscriptionImpl>
-      get copyWith => throw _privateConstructorUsedError;
+  @pragma('vm:prefer-inline')
+  _$ContractUpdatesSubscriptionCopyWith<_ContractUpdatesSubscription>
+      get copyWith => __$ContractUpdatesSubscriptionCopyWithImpl<
+          _ContractUpdatesSubscription>(this, _$identity);
+
+  @override
+  Map<String, dynamic> toJson() {
+    return _$ContractUpdatesSubscriptionToJson(
+      this,
+    );
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _ContractUpdatesSubscription &&
+            (identical(other.contractState, contractState) ||
+                other.contractState == contractState) &&
+            (identical(other.transactions, transactions) ||
+                other.transactions == transactions));
+  }
+
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  int get hashCode => Object.hash(runtimeType, contractState, transactions);
+
+  @override
+  String toString() {
+    return 'ContractUpdatesSubscription(contractState: $contractState, transactions: $transactions)';
+  }
 }
+
+/// @nodoc
+abstract mixin class _$ContractUpdatesSubscriptionCopyWith<$Res>
+    implements $ContractUpdatesSubscriptionCopyWith<$Res> {
+  factory _$ContractUpdatesSubscriptionCopyWith(
+          _ContractUpdatesSubscription value,
+          $Res Function(_ContractUpdatesSubscription) _then) =
+      __$ContractUpdatesSubscriptionCopyWithImpl;
+  @override
+  @useResult
+  $Res call(
+      {@JsonKey(includeIfNull: false, name: 'state') bool? contractState,
+      @JsonKey(includeIfNull: false) bool? transactions});
+}
+
+/// @nodoc
+class __$ContractUpdatesSubscriptionCopyWithImpl<$Res>
+    implements _$ContractUpdatesSubscriptionCopyWith<$Res> {
+  __$ContractUpdatesSubscriptionCopyWithImpl(this._self, this._then);
+
+  final _ContractUpdatesSubscription _self;
+  final $Res Function(_ContractUpdatesSubscription) _then;
+
+  /// Create a copy of ContractUpdatesSubscription
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @pragma('vm:prefer-inline')
+  $Res call({
+    Object? contractState = freezed,
+    Object? transactions = freezed,
+  }) {
+    return _then(_ContractUpdatesSubscription(
+      contractState: freezed == contractState
+          ? _self.contractState
+          : contractState // ignore: cast_nullable_to_non_nullable
+              as bool?,
+      transactions: freezed == transactions
+          ? _self.transactions
+          : transactions // ignore: cast_nullable_to_non_nullable
+              as bool?,
+    ));
+  }
+}
+
+// dart format on

@@ -1,3 +1,4 @@
+// dart format width=80
 // coverage:ignore-file
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // ignore_for_file: type=lint
@@ -9,167 +10,30 @@ part of 'contract_state_changed_event.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// dart format off
 T _$identity<T>(T value) => value;
-
-final _privateConstructorUsedError = UnsupportedError(
-    'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models');
-
-ContractStateChangedEvent _$ContractStateChangedEventFromJson(
-    Map<String, dynamic> json) {
-  return _ContractStateChangedEvent.fromJson(json);
-}
 
 /// @nodoc
 mixin _$ContractStateChangedEvent {
-  Address get address => throw _privateConstructorUsedError;
-  ContractState get state => throw _privateConstructorUsedError;
-
-  /// Serializes this ContractStateChangedEvent to a JSON map.
-  Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
+  Address get address;
+  ContractState get state;
 
   /// Create a copy of ContractStateChangedEvent
   /// with the given fields replaced by the non-null parameter values.
   @JsonKey(includeFromJson: false, includeToJson: false)
+  @pragma('vm:prefer-inline')
   $ContractStateChangedEventCopyWith<ContractStateChangedEvent> get copyWith =>
-      throw _privateConstructorUsedError;
-}
+      _$ContractStateChangedEventCopyWithImpl<ContractStateChangedEvent>(
+          this as ContractStateChangedEvent, _$identity);
 
-/// @nodoc
-abstract class $ContractStateChangedEventCopyWith<$Res> {
-  factory $ContractStateChangedEventCopyWith(ContractStateChangedEvent value,
-          $Res Function(ContractStateChangedEvent) then) =
-      _$ContractStateChangedEventCopyWithImpl<$Res, ContractStateChangedEvent>;
-  @useResult
-  $Res call({Address address, ContractState state});
-
-  $AddressCopyWith<$Res> get address;
-  $ContractStateCopyWith<$Res> get state;
-}
-
-/// @nodoc
-class _$ContractStateChangedEventCopyWithImpl<$Res,
-        $Val extends ContractStateChangedEvent>
-    implements $ContractStateChangedEventCopyWith<$Res> {
-  _$ContractStateChangedEventCopyWithImpl(this._value, this._then);
-
-  // ignore: unused_field
-  final $Val _value;
-  // ignore: unused_field
-  final $Res Function($Val) _then;
-
-  /// Create a copy of ContractStateChangedEvent
-  /// with the given fields replaced by the non-null parameter values.
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? address = null,
-    Object? state = null,
-  }) {
-    return _then(_value.copyWith(
-      address: null == address
-          ? _value.address
-          : address // ignore: cast_nullable_to_non_nullable
-              as Address,
-      state: null == state
-          ? _value.state
-          : state // ignore: cast_nullable_to_non_nullable
-              as ContractState,
-    ) as $Val);
-  }
-
-  /// Create a copy of ContractStateChangedEvent
-  /// with the given fields replaced by the non-null parameter values.
-  @override
-  @pragma('vm:prefer-inline')
-  $AddressCopyWith<$Res> get address {
-    return $AddressCopyWith<$Res>(_value.address, (value) {
-      return _then(_value.copyWith(address: value) as $Val);
-    });
-  }
-
-  /// Create a copy of ContractStateChangedEvent
-  /// with the given fields replaced by the non-null parameter values.
-  @override
-  @pragma('vm:prefer-inline')
-  $ContractStateCopyWith<$Res> get state {
-    return $ContractStateCopyWith<$Res>(_value.state, (value) {
-      return _then(_value.copyWith(state: value) as $Val);
-    });
-  }
-}
-
-/// @nodoc
-abstract class _$$ContractStateChangedEventImplCopyWith<$Res>
-    implements $ContractStateChangedEventCopyWith<$Res> {
-  factory _$$ContractStateChangedEventImplCopyWith(
-          _$ContractStateChangedEventImpl value,
-          $Res Function(_$ContractStateChangedEventImpl) then) =
-      __$$ContractStateChangedEventImplCopyWithImpl<$Res>;
-  @override
-  @useResult
-  $Res call({Address address, ContractState state});
-
-  @override
-  $AddressCopyWith<$Res> get address;
-  @override
-  $ContractStateCopyWith<$Res> get state;
-}
-
-/// @nodoc
-class __$$ContractStateChangedEventImplCopyWithImpl<$Res>
-    extends _$ContractStateChangedEventCopyWithImpl<$Res,
-        _$ContractStateChangedEventImpl>
-    implements _$$ContractStateChangedEventImplCopyWith<$Res> {
-  __$$ContractStateChangedEventImplCopyWithImpl(
-      _$ContractStateChangedEventImpl _value,
-      $Res Function(_$ContractStateChangedEventImpl) _then)
-      : super(_value, _then);
-
-  /// Create a copy of ContractStateChangedEvent
-  /// with the given fields replaced by the non-null parameter values.
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? address = null,
-    Object? state = null,
-  }) {
-    return _then(_$ContractStateChangedEventImpl(
-      address: null == address
-          ? _value.address
-          : address // ignore: cast_nullable_to_non_nullable
-              as Address,
-      state: null == state
-          ? _value.state
-          : state // ignore: cast_nullable_to_non_nullable
-              as ContractState,
-    ));
-  }
-}
-
-/// @nodoc
-@JsonSerializable()
-class _$ContractStateChangedEventImpl implements _ContractStateChangedEvent {
-  const _$ContractStateChangedEventImpl(
-      {required this.address, required this.state});
-
-  factory _$ContractStateChangedEventImpl.fromJson(Map<String, dynamic> json) =>
-      _$$ContractStateChangedEventImplFromJson(json);
-
-  @override
-  final Address address;
-  @override
-  final ContractState state;
-
-  @override
-  String toString() {
-    return 'ContractStateChangedEvent(address: $address, state: $state)';
-  }
+  /// Serializes this ContractStateChangedEvent to a JSON map.
+  Map<String, dynamic> toJson();
 
   @override
   bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$ContractStateChangedEventImpl &&
+            other is ContractStateChangedEvent &&
             (identical(other.address, address) || other.address == address) &&
             (identical(other.state, state) || other.state == state));
   }
@@ -178,40 +42,185 @@ class _$ContractStateChangedEventImpl implements _ContractStateChangedEvent {
   @override
   int get hashCode => Object.hash(runtimeType, address, state);
 
-  /// Create a copy of ContractStateChangedEvent
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
-  @pragma('vm:prefer-inline')
-  _$$ContractStateChangedEventImplCopyWith<_$ContractStateChangedEventImpl>
-      get copyWith => __$$ContractStateChangedEventImplCopyWithImpl<
-          _$ContractStateChangedEventImpl>(this, _$identity);
-
-  @override
-  Map<String, dynamic> toJson() {
-    return _$$ContractStateChangedEventImplToJson(
-      this,
-    );
+  String toString() {
+    return 'ContractStateChangedEvent(address: $address, state: $state)';
   }
 }
 
-abstract class _ContractStateChangedEvent implements ContractStateChangedEvent {
-  const factory _ContractStateChangedEvent(
-      {required final Address address,
-      required final ContractState state}) = _$ContractStateChangedEventImpl;
+/// @nodoc
+abstract mixin class $ContractStateChangedEventCopyWith<$Res> {
+  factory $ContractStateChangedEventCopyWith(ContractStateChangedEvent value,
+          $Res Function(ContractStateChangedEvent) _then) =
+      _$ContractStateChangedEventCopyWithImpl;
+  @useResult
+  $Res call({Address address, ContractState state});
 
-  factory _ContractStateChangedEvent.fromJson(Map<String, dynamic> json) =
-      _$ContractStateChangedEventImpl.fromJson;
+  $AddressCopyWith<$Res> get address;
+  $ContractStateCopyWith<$Res> get state;
+}
+
+/// @nodoc
+class _$ContractStateChangedEventCopyWithImpl<$Res>
+    implements $ContractStateChangedEventCopyWith<$Res> {
+  _$ContractStateChangedEventCopyWithImpl(this._self, this._then);
+
+  final ContractStateChangedEvent _self;
+  final $Res Function(ContractStateChangedEvent) _then;
+
+  /// Create a copy of ContractStateChangedEvent
+  /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? address = null,
+    Object? state = null,
+  }) {
+    return _then(_self.copyWith(
+      address: null == address
+          ? _self.address
+          : address // ignore: cast_nullable_to_non_nullable
+              as Address,
+      state: null == state
+          ? _self.state
+          : state // ignore: cast_nullable_to_non_nullable
+              as ContractState,
+    ));
+  }
+
+  /// Create a copy of ContractStateChangedEvent
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @pragma('vm:prefer-inline')
+  $AddressCopyWith<$Res> get address {
+    return $AddressCopyWith<$Res>(_self.address, (value) {
+      return _then(_self.copyWith(address: value));
+    });
+  }
+
+  /// Create a copy of ContractStateChangedEvent
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @pragma('vm:prefer-inline')
+  $ContractStateCopyWith<$Res> get state {
+    return $ContractStateCopyWith<$Res>(_self.state, (value) {
+      return _then(_self.copyWith(state: value));
+    });
+  }
+}
+
+/// @nodoc
+@JsonSerializable()
+class _ContractStateChangedEvent implements ContractStateChangedEvent {
+  const _ContractStateChangedEvent(
+      {required this.address, required this.state});
+  factory _ContractStateChangedEvent.fromJson(Map<String, dynamic> json) =>
+      _$ContractStateChangedEventFromJson(json);
 
   @override
-  Address get address;
+  final Address address;
   @override
-  ContractState get state;
+  final ContractState state;
 
   /// Create a copy of ContractStateChangedEvent
   /// with the given fields replaced by the non-null parameter values.
   @override
   @JsonKey(includeFromJson: false, includeToJson: false)
-  _$$ContractStateChangedEventImplCopyWith<_$ContractStateChangedEventImpl>
-      get copyWith => throw _privateConstructorUsedError;
+  @pragma('vm:prefer-inline')
+  _$ContractStateChangedEventCopyWith<_ContractStateChangedEvent>
+      get copyWith =>
+          __$ContractStateChangedEventCopyWithImpl<_ContractStateChangedEvent>(
+              this, _$identity);
+
+  @override
+  Map<String, dynamic> toJson() {
+    return _$ContractStateChangedEventToJson(
+      this,
+    );
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _ContractStateChangedEvent &&
+            (identical(other.address, address) || other.address == address) &&
+            (identical(other.state, state) || other.state == state));
+  }
+
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  int get hashCode => Object.hash(runtimeType, address, state);
+
+  @override
+  String toString() {
+    return 'ContractStateChangedEvent(address: $address, state: $state)';
+  }
 }
+
+/// @nodoc
+abstract mixin class _$ContractStateChangedEventCopyWith<$Res>
+    implements $ContractStateChangedEventCopyWith<$Res> {
+  factory _$ContractStateChangedEventCopyWith(_ContractStateChangedEvent value,
+          $Res Function(_ContractStateChangedEvent) _then) =
+      __$ContractStateChangedEventCopyWithImpl;
+  @override
+  @useResult
+  $Res call({Address address, ContractState state});
+
+  @override
+  $AddressCopyWith<$Res> get address;
+  @override
+  $ContractStateCopyWith<$Res> get state;
+}
+
+/// @nodoc
+class __$ContractStateChangedEventCopyWithImpl<$Res>
+    implements _$ContractStateChangedEventCopyWith<$Res> {
+  __$ContractStateChangedEventCopyWithImpl(this._self, this._then);
+
+  final _ContractStateChangedEvent _self;
+  final $Res Function(_ContractStateChangedEvent) _then;
+
+  /// Create a copy of ContractStateChangedEvent
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @pragma('vm:prefer-inline')
+  $Res call({
+    Object? address = null,
+    Object? state = null,
+  }) {
+    return _then(_ContractStateChangedEvent(
+      address: null == address
+          ? _self.address
+          : address // ignore: cast_nullable_to_non_nullable
+              as Address,
+      state: null == state
+          ? _self.state
+          : state // ignore: cast_nullable_to_non_nullable
+              as ContractState,
+    ));
+  }
+
+  /// Create a copy of ContractStateChangedEvent
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @pragma('vm:prefer-inline')
+  $AddressCopyWith<$Res> get address {
+    return $AddressCopyWith<$Res>(_self.address, (value) {
+      return _then(_self.copyWith(address: value));
+    });
+  }
+
+  /// Create a copy of ContractStateChangedEvent
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @pragma('vm:prefer-inline')
+  $ContractStateCopyWith<$Res> get state {
+    return $ContractStateCopyWith<$Res>(_self.state, (value) {
+      return _then(_self.copyWith(state: value));
+    });
+  }
+}
+
+// dart format on

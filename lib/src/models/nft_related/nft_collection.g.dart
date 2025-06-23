@@ -6,8 +6,8 @@ part of 'nft_collection.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-_$NftCollectionImpl _$$NftCollectionImplFromJson(Map<String, dynamic> json) =>
-    _$NftCollectionImpl(
+_NftCollection _$NftCollectionFromJson(Map<String, dynamic> json) =>
+    _NftCollection(
       address: Address.fromJson(json['address'] as String),
       json: NftJsonData.fromJson(json['json'] as Map<String, dynamic>),
       interfaces: (json['interfaces'] as List<dynamic>)
@@ -15,7 +15,7 @@ _$NftCollectionImpl _$$NftCollectionImplFromJson(Map<String, dynamic> json) =>
           .toList(),
     );
 
-Map<String, dynamic> _$$NftCollectionImplToJson(_$NftCollectionImpl instance) =>
+Map<String, dynamic> _$NftCollectionToJson(_NftCollection instance) =>
     <String, dynamic>{
       'address': instance.address.toJson(),
       'json': instance.json.toJson(),
