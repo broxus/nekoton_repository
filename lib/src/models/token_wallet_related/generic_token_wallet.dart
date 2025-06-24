@@ -1,4 +1,5 @@
 import 'package:flutter_nekoton_bridge/flutter_nekoton_bridge.dart';
+import 'package:nekoton_repository/src/utils/utils.dart';
 
 part 'jetton_token_wallet.dart';
 part 'tip3_token_wallet.dart';

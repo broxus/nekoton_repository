@@ -1,12 +1,14 @@
 part of 'generic_token_wallet.dart';
 
 class Tip3TokenWallet extends GenericTokenWallet {
-  Tip3TokenWallet(this._wallet);
+  Tip3TokenWallet(this._wallet, [this._symbol])
+      : _currency = _symbol?.toCurrency();
 
   static Future<Tip3TokenWallet> subscribe({
     required Transport transport,
     required Address owner,
     required Address rootTokenContract,
+    Symbol? symbol,
   }) async =>
       Tip3TokenWallet(
         await TokenWallet.subscribe(
@@ -14,9 +16,12 @@ class Tip3TokenWallet extends GenericTokenWallet {
           owner: owner,
           rootTokenContract: rootTokenContract,
         ),
+        symbol,
       );
 
   final TokenWallet _wallet;
+  final Symbol? _symbol;
+  final Currency? _currency;
 
   @override
   TokenWallet get inner => _wallet;
@@ -28,10 +33,10 @@ class Tip3TokenWallet extends GenericTokenWallet {
   BigInt get balance => _wallet.balance;
 
   @override
-  Money get moneyBalance => _wallet.moneyBalance;
+  Money get moneyBalance => Money.fromBigIntWithCurrency(balance, currency);
 
   @override
-  Currency get currency => _wallet.currency;
+  Currency get currency => _currency ?? _wallet.currency;
 
   @override
   Address get rootTokenContract => _wallet.rootTokenContract;
@@ -43,7 +48,7 @@ class Tip3TokenWallet extends GenericTokenWallet {
   Address get owner => _wallet.owner;
 
   @override
-  Symbol get symbol => _wallet.symbol;
+  Symbol get symbol => _symbol ?? _wallet.symbol;
 
   @override
   ContractState get contractState => _wallet.contractState;
@@ -58,8 +63,9 @@ class Tip3TokenWallet extends GenericTokenWallet {
   Stream<BigInt> get onBalanceChangedStream => _wallet.onBalanceChangedStream;
 
   @override
-  Stream<Money> get onMoneyBalanceChangedStream =>
-      _wallet.onMoneyBalanceChangedStream;
+  Stream<Money> get onMoneyBalanceChangedStream => onBalanceChangedStream.map(
+        (balance) => Money.fromBigIntWithCurrency(balance, currency),
+      );
 
   @override
   Stream<
