@@ -3,6 +3,33 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## 2025-06-24
+
+### Changes
+
+---
+
+Packages with breaking changes:
+
+ - There are no breaking changes in this release.
+
+Packages with other changes:
+
+ - [`nekoton_repository` - `v1.3.0`](#nekoton_repository---v130)
+
+---
+
+#### `nekoton_repository` - `v1.3.0`
+
+ - **FIX**: restart polling after transport update.
+ - **FEAT**(EWM-528): enhance token wallet functionality with currency conversion and symbol extension.
+
+## 1.3.0
+
+ - **FIX**: restart polling after transport update.
+ - **FEAT**(EWM-528): enhance token wallet functionality with currency conversion and symbol extension.
+
+
 ## 2025-06-18
 
 ### Changes
