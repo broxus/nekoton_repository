@@ -6,7 +6,7 @@ part 'nft_json_data.freezed.dart';
 part 'nft_json_data.g.dart';
 
 @freezed
-class NftJsonData with _$NftJsonData {
+abstract class NftJsonData with _$NftJsonData {
   const factory NftJsonData({
     String? name,
     String? description,

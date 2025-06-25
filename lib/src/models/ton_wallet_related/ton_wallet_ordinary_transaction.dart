@@ -6,7 +6,8 @@ part 'ton_wallet_ordinary_transaction.freezed.dart';
 /// Transaction for TonWallet that is created by
 /// [TonWalletRepository.mapOrdinaryTransactions].
 @freezed
-class TonWalletOrdinaryTransaction with _$TonWalletOrdinaryTransaction {
+abstract class TonWalletOrdinaryTransaction
+    with _$TonWalletOrdinaryTransaction {
   const factory TonWalletOrdinaryTransaction({
     required String lt,
     required bool isOutgoing,

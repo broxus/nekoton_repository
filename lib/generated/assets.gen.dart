@@ -65,7 +65,7 @@ class $AssetsAbiGen {
         vep1155CollectionAbi,
         vep1155NftAbi,
         vep1155TransferAbi,
-        vep1155WalletAbi
+        vep1155WalletAbi,
       ];
 }
 

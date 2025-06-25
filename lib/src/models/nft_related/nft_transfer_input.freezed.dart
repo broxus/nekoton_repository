@@ -1,3 +1,4 @@
+// dart format width=80
 // coverage:ignore-file
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // ignore_for_file: type=lint
@@ -9,30 +10,49 @@ part of 'nft_transfer_input.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// dart format off
 T _$identity<T>(T value) => value;
-
-final _privateConstructorUsedError = UnsupportedError(
-    'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models');
 
 /// @nodoc
 mixin _$NftTransferInput {
-  Address get to => throw _privateConstructorUsedError;
-  Address get sendGasTo => throw _privateConstructorUsedError;
-  Map<Address, NftCallbackPayload> get callbacks =>
-      throw _privateConstructorUsedError;
+  Address get to;
+  Address get sendGasTo;
+  Map<Address, NftCallbackPayload> get callbacks;
 
   /// Create a copy of NftTransferInput
   /// with the given fields replaced by the non-null parameter values.
   @JsonKey(includeFromJson: false, includeToJson: false)
+  @pragma('vm:prefer-inline')
   $NftTransferInputCopyWith<NftTransferInput> get copyWith =>
-      throw _privateConstructorUsedError;
+      _$NftTransferInputCopyWithImpl<NftTransferInput>(
+          this as NftTransferInput, _$identity);
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is NftTransferInput &&
+            (identical(other.to, to) || other.to == to) &&
+            (identical(other.sendGasTo, sendGasTo) ||
+                other.sendGasTo == sendGasTo) &&
+            const DeepCollectionEquality().equals(other.callbacks, callbacks));
+  }
+
+  @override
+  int get hashCode => Object.hash(runtimeType, to, sendGasTo,
+      const DeepCollectionEquality().hash(callbacks));
+
+  @override
+  String toString() {
+    return 'NftTransferInput(to: $to, sendGasTo: $sendGasTo, callbacks: $callbacks)';
+  }
 }
 
 /// @nodoc
-abstract class $NftTransferInputCopyWith<$Res> {
+abstract mixin class $NftTransferInputCopyWith<$Res> {
   factory $NftTransferInputCopyWith(
-          NftTransferInput value, $Res Function(NftTransferInput) then) =
-      _$NftTransferInputCopyWithImpl<$Res, NftTransferInput>;
+          NftTransferInput value, $Res Function(NftTransferInput) _then) =
+      _$NftTransferInputCopyWithImpl;
   @useResult
   $Res call(
       {Address to,
@@ -44,14 +64,12 @@ abstract class $NftTransferInputCopyWith<$Res> {
 }
 
 /// @nodoc
-class _$NftTransferInputCopyWithImpl<$Res, $Val extends NftTransferInput>
+class _$NftTransferInputCopyWithImpl<$Res>
     implements $NftTransferInputCopyWith<$Res> {
-  _$NftTransferInputCopyWithImpl(this._value, this._then);
+  _$NftTransferInputCopyWithImpl(this._self, this._then);
 
-  // ignore: unused_field
-  final $Val _value;
-  // ignore: unused_field
-  final $Res Function($Val) _then;
+  final NftTransferInput _self;
+  final $Res Function(NftTransferInput) _then;
 
   /// Create a copy of NftTransferInput
   /// with the given fields replaced by the non-null parameter values.
@@ -62,20 +80,20 @@ class _$NftTransferInputCopyWithImpl<$Res, $Val extends NftTransferInput>
     Object? sendGasTo = null,
     Object? callbacks = null,
   }) {
-    return _then(_value.copyWith(
+    return _then(_self.copyWith(
       to: null == to
-          ? _value.to
+          ? _self.to
           : to // ignore: cast_nullable_to_non_nullable
               as Address,
       sendGasTo: null == sendGasTo
-          ? _value.sendGasTo
+          ? _self.sendGasTo
           : sendGasTo // ignore: cast_nullable_to_non_nullable
               as Address,
       callbacks: null == callbacks
-          ? _value.callbacks
+          ? _self.callbacks
           : callbacks // ignore: cast_nullable_to_non_nullable
               as Map<Address, NftCallbackPayload>,
-    ) as $Val);
+    ));
   }
 
   /// Create a copy of NftTransferInput
@@ -83,8 +101,8 @@ class _$NftTransferInputCopyWithImpl<$Res, $Val extends NftTransferInput>
   @override
   @pragma('vm:prefer-inline')
   $AddressCopyWith<$Res> get to {
-    return $AddressCopyWith<$Res>(_value.to, (value) {
-      return _then(_value.copyWith(to: value) as $Val);
+    return $AddressCopyWith<$Res>(_self.to, (value) {
+      return _then(_self.copyWith(to: value));
     });
   }
 
@@ -93,69 +111,16 @@ class _$NftTransferInputCopyWithImpl<$Res, $Val extends NftTransferInput>
   @override
   @pragma('vm:prefer-inline')
   $AddressCopyWith<$Res> get sendGasTo {
-    return $AddressCopyWith<$Res>(_value.sendGasTo, (value) {
-      return _then(_value.copyWith(sendGasTo: value) as $Val);
+    return $AddressCopyWith<$Res>(_self.sendGasTo, (value) {
+      return _then(_self.copyWith(sendGasTo: value));
     });
   }
 }
 
 /// @nodoc
-abstract class _$$NftTransferInputImplCopyWith<$Res>
-    implements $NftTransferInputCopyWith<$Res> {
-  factory _$$NftTransferInputImplCopyWith(_$NftTransferInputImpl value,
-          $Res Function(_$NftTransferInputImpl) then) =
-      __$$NftTransferInputImplCopyWithImpl<$Res>;
-  @override
-  @useResult
-  $Res call(
-      {Address to,
-      Address sendGasTo,
-      Map<Address, NftCallbackPayload> callbacks});
 
-  @override
-  $AddressCopyWith<$Res> get to;
-  @override
-  $AddressCopyWith<$Res> get sendGasTo;
-}
-
-/// @nodoc
-class __$$NftTransferInputImplCopyWithImpl<$Res>
-    extends _$NftTransferInputCopyWithImpl<$Res, _$NftTransferInputImpl>
-    implements _$$NftTransferInputImplCopyWith<$Res> {
-  __$$NftTransferInputImplCopyWithImpl(_$NftTransferInputImpl _value,
-      $Res Function(_$NftTransferInputImpl) _then)
-      : super(_value, _then);
-
-  /// Create a copy of NftTransferInput
-  /// with the given fields replaced by the non-null parameter values.
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? to = null,
-    Object? sendGasTo = null,
-    Object? callbacks = null,
-  }) {
-    return _then(_$NftTransferInputImpl(
-      to: null == to
-          ? _value.to
-          : to // ignore: cast_nullable_to_non_nullable
-              as Address,
-      sendGasTo: null == sendGasTo
-          ? _value.sendGasTo
-          : sendGasTo // ignore: cast_nullable_to_non_nullable
-              as Address,
-      callbacks: null == callbacks
-          ? _value._callbacks
-          : callbacks // ignore: cast_nullable_to_non_nullable
-              as Map<Address, NftCallbackPayload>,
-    ));
-  }
-}
-
-/// @nodoc
-
-class _$NftTransferInputImpl extends _NftTransferInput {
-  const _$NftTransferInputImpl(
+class _NftTransferInput extends NftTransferInput {
+  const _NftTransferInput(
       {required this.to,
       required this.sendGasTo,
       required final Map<Address, NftCallbackPayload> callbacks})
@@ -174,16 +139,19 @@ class _$NftTransferInputImpl extends _NftTransferInput {
     return EqualUnmodifiableMapView(_callbacks);
   }
 
+  /// Create a copy of NftTransferInput
+  /// with the given fields replaced by the non-null parameter values.
   @override
-  String toString() {
-    return 'NftTransferInput(to: $to, sendGasTo: $sendGasTo, callbacks: $callbacks)';
-  }
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @pragma('vm:prefer-inline')
+  _$NftTransferInputCopyWith<_NftTransferInput> get copyWith =>
+      __$NftTransferInputCopyWithImpl<_NftTransferInput>(this, _$identity);
 
   @override
   bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$NftTransferInputImpl &&
+            other is _NftTransferInput &&
             (identical(other.to, to) || other.to == to) &&
             (identical(other.sendGasTo, sendGasTo) ||
                 other.sendGasTo == sendGasTo) &&
@@ -195,35 +163,83 @@ class _$NftTransferInputImpl extends _NftTransferInput {
   int get hashCode => Object.hash(runtimeType, to, sendGasTo,
       const DeepCollectionEquality().hash(_callbacks));
 
+  @override
+  String toString() {
+    return 'NftTransferInput(to: $to, sendGasTo: $sendGasTo, callbacks: $callbacks)';
+  }
+}
+
+/// @nodoc
+abstract mixin class _$NftTransferInputCopyWith<$Res>
+    implements $NftTransferInputCopyWith<$Res> {
+  factory _$NftTransferInputCopyWith(
+          _NftTransferInput value, $Res Function(_NftTransferInput) _then) =
+      __$NftTransferInputCopyWithImpl;
+  @override
+  @useResult
+  $Res call(
+      {Address to,
+      Address sendGasTo,
+      Map<Address, NftCallbackPayload> callbacks});
+
+  @override
+  $AddressCopyWith<$Res> get to;
+  @override
+  $AddressCopyWith<$Res> get sendGasTo;
+}
+
+/// @nodoc
+class __$NftTransferInputCopyWithImpl<$Res>
+    implements _$NftTransferInputCopyWith<$Res> {
+  __$NftTransferInputCopyWithImpl(this._self, this._then);
+
+  final _NftTransferInput _self;
+  final $Res Function(_NftTransferInput) _then;
+
   /// Create a copy of NftTransferInput
   /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   @pragma('vm:prefer-inline')
-  _$$NftTransferInputImplCopyWith<_$NftTransferInputImpl> get copyWith =>
-      __$$NftTransferInputImplCopyWithImpl<_$NftTransferInputImpl>(
-          this, _$identity);
-}
-
-abstract class _NftTransferInput extends NftTransferInput {
-  const factory _NftTransferInput(
-          {required final Address to,
-          required final Address sendGasTo,
-          required final Map<Address, NftCallbackPayload> callbacks}) =
-      _$NftTransferInputImpl;
-  const _NftTransferInput._() : super._();
-
-  @override
-  Address get to;
-  @override
-  Address get sendGasTo;
-  @override
-  Map<Address, NftCallbackPayload> get callbacks;
+  $Res call({
+    Object? to = null,
+    Object? sendGasTo = null,
+    Object? callbacks = null,
+  }) {
+    return _then(_NftTransferInput(
+      to: null == to
+          ? _self.to
+          : to // ignore: cast_nullable_to_non_nullable
+              as Address,
+      sendGasTo: null == sendGasTo
+          ? _self.sendGasTo
+          : sendGasTo // ignore: cast_nullable_to_non_nullable
+              as Address,
+      callbacks: null == callbacks
+          ? _self._callbacks
+          : callbacks // ignore: cast_nullable_to_non_nullable
+              as Map<Address, NftCallbackPayload>,
+    ));
+  }
 
   /// Create a copy of NftTransferInput
   /// with the given fields replaced by the non-null parameter values.
   @override
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  _$$NftTransferInputImplCopyWith<_$NftTransferInputImpl> get copyWith =>
-      throw _privateConstructorUsedError;
+  @pragma('vm:prefer-inline')
+  $AddressCopyWith<$Res> get to {
+    return $AddressCopyWith<$Res>(_self.to, (value) {
+      return _then(_self.copyWith(to: value));
+    });
+  }
+
+  /// Create a copy of NftTransferInput
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @pragma('vm:prefer-inline')
+  $AddressCopyWith<$Res> get sendGasTo {
+    return $AddressCopyWith<$Res>(_self.sendGasTo, (value) {
+      return _then(_self.copyWith(sendGasTo: value));
+    });
+  }
 }
+
+// dart format on

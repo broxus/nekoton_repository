@@ -4,7 +4,7 @@ import 'package:nekoton_repository/nekoton_repository.dart';
 part 'nft_list.freezed.dart';
 
 @freezed
-class NftList with _$NftList {
+abstract class NftList with _$NftList {
   const factory NftList({
     required List<NftItem> items,
     String? continuation,

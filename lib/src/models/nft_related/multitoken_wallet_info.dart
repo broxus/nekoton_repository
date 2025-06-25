@@ -5,7 +5,7 @@ part 'multitoken_wallet_info.freezed.dart';
 part 'multitoken_wallet_info.g.dart';
 
 @freezed
-class MultitokenWalletInfo with _$MultitokenWalletInfo {
+abstract class MultitokenWalletInfo with _$MultitokenWalletInfo {
   const factory MultitokenWalletInfo({
     required String id,
     required Address owner,

@@ -6,9 +6,9 @@ part of 'nft_token_transfer_input.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-_$NftTokenTransferInputImpl _$$NftTokenTransferInputImplFromJson(
+_NftTokenTransferInput _$NftTokenTransferInputFromJson(
         Map<String, dynamic> json) =>
-    _$NftTokenTransferInputImpl(
+    _NftTokenTransferInput(
       count: amountJsonConverter.fromJson(json['count'] as String),
       deployTokenWalletValue: amountJsonConverter
           .fromJson(json['deployTokenWalletValue'] as String),
@@ -18,8 +18,8 @@ _$NftTokenTransferInputImpl _$$NftTokenTransferInputImplFromJson(
       notify: json['notify'] as bool,
     );
 
-Map<String, dynamic> _$$NftTokenTransferInputImplToJson(
-        _$NftTokenTransferInputImpl instance) =>
+Map<String, dynamic> _$NftTokenTransferInputToJson(
+        _NftTokenTransferInput instance) =>
     <String, dynamic>{
       'count': amountJsonConverter.toJson(instance.count),
       'deployTokenWalletValue':

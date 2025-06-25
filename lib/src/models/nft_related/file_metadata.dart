@@ -4,7 +4,7 @@ part 'file_metadata.freezed.dart';
 part 'file_metadata.g.dart';
 
 @freezed
-class FileMetadata with _$FileMetadata {
+abstract class FileMetadata with _$FileMetadata {
   const factory FileMetadata({
     String? source,
     @JsonKey(readValue: _readValue) String? mimetype,

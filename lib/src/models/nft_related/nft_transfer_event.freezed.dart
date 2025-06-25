@@ -1,3 +1,4 @@
+// dart format width=80
 // coverage:ignore-file
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // ignore_for_file: type=lint
@@ -9,96 +10,55 @@ part of 'nft_transfer_event.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// dart format off
 T _$identity<T>(T value) => value;
-
-final _privateConstructorUsedError = UnsupportedError(
-    'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models');
 
 /// @nodoc
 mixin _$NftTransferEvent {
-  TransferDirection get direction => throw _privateConstructorUsedError;
-  String get id => throw _privateConstructorUsedError;
-  Address get collection => throw _privateConstructorUsedError;
-  Address get sender => throw _privateConstructorUsedError;
-  Address get recipient => throw _privateConstructorUsedError;
-  @optionalTypeArgs
-  TResult when<TResult extends Object?>({
-    required TResult Function(TransferDirection direction, String id,
-            Address collection, Address sender, Address recipient)
-        ownership,
-    required TResult Function(
-            TransferDirection direction,
-            String id,
-            Address collection,
-            Address sender,
-            Address recipient,
-            @amountJsonConverter BigInt count)
-        token,
-  }) =>
-      throw _privateConstructorUsedError;
-  @optionalTypeArgs
-  TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function(TransferDirection direction, String id,
-            Address collection, Address sender, Address recipient)?
-        ownership,
-    TResult? Function(
-            TransferDirection direction,
-            String id,
-            Address collection,
-            Address sender,
-            Address recipient,
-            @amountJsonConverter BigInt count)?
-        token,
-  }) =>
-      throw _privateConstructorUsedError;
-  @optionalTypeArgs
-  TResult maybeWhen<TResult extends Object?>({
-    TResult Function(TransferDirection direction, String id, Address collection,
-            Address sender, Address recipient)?
-        ownership,
-    TResult Function(
-            TransferDirection direction,
-            String id,
-            Address collection,
-            Address sender,
-            Address recipient,
-            @amountJsonConverter BigInt count)?
-        token,
-    required TResult orElse(),
-  }) =>
-      throw _privateConstructorUsedError;
-  @optionalTypeArgs
-  TResult map<TResult extends Object?>({
-    required TResult Function(NftOwnershipTransferEvent value) ownership,
-    required TResult Function(NftTokenTransferEvent value) token,
-  }) =>
-      throw _privateConstructorUsedError;
-  @optionalTypeArgs
-  TResult? mapOrNull<TResult extends Object?>({
-    TResult? Function(NftOwnershipTransferEvent value)? ownership,
-    TResult? Function(NftTokenTransferEvent value)? token,
-  }) =>
-      throw _privateConstructorUsedError;
-  @optionalTypeArgs
-  TResult maybeMap<TResult extends Object?>({
-    TResult Function(NftOwnershipTransferEvent value)? ownership,
-    TResult Function(NftTokenTransferEvent value)? token,
-    required TResult orElse(),
-  }) =>
-      throw _privateConstructorUsedError;
+  TransferDirection get direction;
+  String get id;
+  Address get collection;
+  Address get sender;
+  Address get recipient;
 
   /// Create a copy of NftTransferEvent
   /// with the given fields replaced by the non-null parameter values.
   @JsonKey(includeFromJson: false, includeToJson: false)
+  @pragma('vm:prefer-inline')
   $NftTransferEventCopyWith<NftTransferEvent> get copyWith =>
-      throw _privateConstructorUsedError;
+      _$NftTransferEventCopyWithImpl<NftTransferEvent>(
+          this as NftTransferEvent, _$identity);
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is NftTransferEvent &&
+            (identical(other.direction, direction) ||
+                other.direction == direction) &&
+            (identical(other.id, id) || other.id == id) &&
+            (identical(other.collection, collection) ||
+                other.collection == collection) &&
+            (identical(other.sender, sender) || other.sender == sender) &&
+            (identical(other.recipient, recipient) ||
+                other.recipient == recipient));
+  }
+
+  @override
+  int get hashCode =>
+      Object.hash(runtimeType, direction, id, collection, sender, recipient);
+
+  @override
+  String toString() {
+    return 'NftTransferEvent(direction: $direction, id: $id, collection: $collection, sender: $sender, recipient: $recipient)';
+  }
 }
 
 /// @nodoc
-abstract class $NftTransferEventCopyWith<$Res> {
+abstract mixin class $NftTransferEventCopyWith<$Res> {
   factory $NftTransferEventCopyWith(
-          NftTransferEvent value, $Res Function(NftTransferEvent) then) =
-      _$NftTransferEventCopyWithImpl<$Res, NftTransferEvent>;
+          NftTransferEvent value, $Res Function(NftTransferEvent) _then) =
+      _$NftTransferEventCopyWithImpl;
   @useResult
   $Res call(
       {TransferDirection direction,
@@ -113,14 +73,12 @@ abstract class $NftTransferEventCopyWith<$Res> {
 }
 
 /// @nodoc
-class _$NftTransferEventCopyWithImpl<$Res, $Val extends NftTransferEvent>
+class _$NftTransferEventCopyWithImpl<$Res>
     implements $NftTransferEventCopyWith<$Res> {
-  _$NftTransferEventCopyWithImpl(this._value, this._then);
+  _$NftTransferEventCopyWithImpl(this._self, this._then);
 
-  // ignore: unused_field
-  final $Val _value;
-  // ignore: unused_field
-  final $Res Function($Val) _then;
+  final NftTransferEvent _self;
+  final $Res Function(NftTransferEvent) _then;
 
   /// Create a copy of NftTransferEvent
   /// with the given fields replaced by the non-null parameter values.
@@ -133,28 +91,28 @@ class _$NftTransferEventCopyWithImpl<$Res, $Val extends NftTransferEvent>
     Object? sender = null,
     Object? recipient = null,
   }) {
-    return _then(_value.copyWith(
+    return _then(_self.copyWith(
       direction: null == direction
-          ? _value.direction
+          ? _self.direction
           : direction // ignore: cast_nullable_to_non_nullable
               as TransferDirection,
       id: null == id
-          ? _value.id
+          ? _self.id
           : id // ignore: cast_nullable_to_non_nullable
               as String,
       collection: null == collection
-          ? _value.collection
+          ? _self.collection
           : collection // ignore: cast_nullable_to_non_nullable
               as Address,
       sender: null == sender
-          ? _value.sender
+          ? _self.sender
           : sender // ignore: cast_nullable_to_non_nullable
               as Address,
       recipient: null == recipient
-          ? _value.recipient
+          ? _self.recipient
           : recipient // ignore: cast_nullable_to_non_nullable
               as Address,
-    ) as $Val);
+    ));
   }
 
   /// Create a copy of NftTransferEvent
@@ -162,8 +120,8 @@ class _$NftTransferEventCopyWithImpl<$Res, $Val extends NftTransferEvent>
   @override
   @pragma('vm:prefer-inline')
   $AddressCopyWith<$Res> get collection {
-    return $AddressCopyWith<$Res>(_value.collection, (value) {
-      return _then(_value.copyWith(collection: value) as $Val);
+    return $AddressCopyWith<$Res>(_self.collection, (value) {
+      return _then(_self.copyWith(collection: value));
     });
   }
 
@@ -172,8 +130,8 @@ class _$NftTransferEventCopyWithImpl<$Res, $Val extends NftTransferEvent>
   @override
   @pragma('vm:prefer-inline')
   $AddressCopyWith<$Res> get sender {
-    return $AddressCopyWith<$Res>(_value.sender, (value) {
-      return _then(_value.copyWith(sender: value) as $Val);
+    return $AddressCopyWith<$Res>(_self.sender, (value) {
+      return _then(_self.copyWith(sender: value));
     });
   }
 
@@ -182,86 +140,16 @@ class _$NftTransferEventCopyWithImpl<$Res, $Val extends NftTransferEvent>
   @override
   @pragma('vm:prefer-inline')
   $AddressCopyWith<$Res> get recipient {
-    return $AddressCopyWith<$Res>(_value.recipient, (value) {
-      return _then(_value.copyWith(recipient: value) as $Val);
+    return $AddressCopyWith<$Res>(_self.recipient, (value) {
+      return _then(_self.copyWith(recipient: value));
     });
   }
 }
 
 /// @nodoc
-abstract class _$$NftOwnershipTransferEventImplCopyWith<$Res>
-    implements $NftTransferEventCopyWith<$Res> {
-  factory _$$NftOwnershipTransferEventImplCopyWith(
-          _$NftOwnershipTransferEventImpl value,
-          $Res Function(_$NftOwnershipTransferEventImpl) then) =
-      __$$NftOwnershipTransferEventImplCopyWithImpl<$Res>;
-  @override
-  @useResult
-  $Res call(
-      {TransferDirection direction,
-      String id,
-      Address collection,
-      Address sender,
-      Address recipient});
 
-  @override
-  $AddressCopyWith<$Res> get collection;
-  @override
-  $AddressCopyWith<$Res> get sender;
-  @override
-  $AddressCopyWith<$Res> get recipient;
-}
-
-/// @nodoc
-class __$$NftOwnershipTransferEventImplCopyWithImpl<$Res>
-    extends _$NftTransferEventCopyWithImpl<$Res,
-        _$NftOwnershipTransferEventImpl>
-    implements _$$NftOwnershipTransferEventImplCopyWith<$Res> {
-  __$$NftOwnershipTransferEventImplCopyWithImpl(
-      _$NftOwnershipTransferEventImpl _value,
-      $Res Function(_$NftOwnershipTransferEventImpl) _then)
-      : super(_value, _then);
-
-  /// Create a copy of NftTransferEvent
-  /// with the given fields replaced by the non-null parameter values.
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? direction = null,
-    Object? id = null,
-    Object? collection = null,
-    Object? sender = null,
-    Object? recipient = null,
-  }) {
-    return _then(_$NftOwnershipTransferEventImpl(
-      direction: null == direction
-          ? _value.direction
-          : direction // ignore: cast_nullable_to_non_nullable
-              as TransferDirection,
-      id: null == id
-          ? _value.id
-          : id // ignore: cast_nullable_to_non_nullable
-              as String,
-      collection: null == collection
-          ? _value.collection
-          : collection // ignore: cast_nullable_to_non_nullable
-              as Address,
-      sender: null == sender
-          ? _value.sender
-          : sender // ignore: cast_nullable_to_non_nullable
-              as Address,
-      recipient: null == recipient
-          ? _value.recipient
-          : recipient // ignore: cast_nullable_to_non_nullable
-              as Address,
-    ));
-  }
-}
-
-/// @nodoc
-
-class _$NftOwnershipTransferEventImpl implements NftOwnershipTransferEvent {
-  const _$NftOwnershipTransferEventImpl(
+class NftOwnershipTransferEvent implements NftTransferEvent {
+  const NftOwnershipTransferEvent(
       {required this.direction,
       required this.id,
       required this.collection,
@@ -279,16 +167,20 @@ class _$NftOwnershipTransferEventImpl implements NftOwnershipTransferEvent {
   @override
   final Address recipient;
 
+  /// Create a copy of NftTransferEvent
+  /// with the given fields replaced by the non-null parameter values.
   @override
-  String toString() {
-    return 'NftTransferEvent.ownership(direction: $direction, id: $id, collection: $collection, sender: $sender, recipient: $recipient)';
-  }
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @pragma('vm:prefer-inline')
+  $NftOwnershipTransferEventCopyWith<NftOwnershipTransferEvent> get copyWith =>
+      _$NftOwnershipTransferEventCopyWithImpl<NftOwnershipTransferEvent>(
+          this, _$identity);
 
   @override
   bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$NftOwnershipTransferEventImpl &&
+            other is NftOwnershipTransferEvent &&
             (identical(other.direction, direction) ||
                 other.direction == direction) &&
             (identical(other.id, id) || other.id == id) &&
@@ -303,139 +195,174 @@ class _$NftOwnershipTransferEventImpl implements NftOwnershipTransferEvent {
   int get hashCode =>
       Object.hash(runtimeType, direction, id, collection, sender, recipient);
 
-  /// Create a copy of NftTransferEvent
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
-  @pragma('vm:prefer-inline')
-  _$$NftOwnershipTransferEventImplCopyWith<_$NftOwnershipTransferEventImpl>
-      get copyWith => __$$NftOwnershipTransferEventImplCopyWithImpl<
-          _$NftOwnershipTransferEventImpl>(this, _$identity);
-
-  @override
-  @optionalTypeArgs
-  TResult when<TResult extends Object?>({
-    required TResult Function(TransferDirection direction, String id,
-            Address collection, Address sender, Address recipient)
-        ownership,
-    required TResult Function(
-            TransferDirection direction,
-            String id,
-            Address collection,
-            Address sender,
-            Address recipient,
-            @amountJsonConverter BigInt count)
-        token,
-  }) {
-    return ownership(direction, id, collection, sender, recipient);
+  String toString() {
+    return 'NftTransferEvent.ownership(direction: $direction, id: $id, collection: $collection, sender: $sender, recipient: $recipient)';
   }
-
-  @override
-  @optionalTypeArgs
-  TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function(TransferDirection direction, String id,
-            Address collection, Address sender, Address recipient)?
-        ownership,
-    TResult? Function(
-            TransferDirection direction,
-            String id,
-            Address collection,
-            Address sender,
-            Address recipient,
-            @amountJsonConverter BigInt count)?
-        token,
-  }) {
-    return ownership?.call(direction, id, collection, sender, recipient);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult maybeWhen<TResult extends Object?>({
-    TResult Function(TransferDirection direction, String id, Address collection,
-            Address sender, Address recipient)?
-        ownership,
-    TResult Function(
-            TransferDirection direction,
-            String id,
-            Address collection,
-            Address sender,
-            Address recipient,
-            @amountJsonConverter BigInt count)?
-        token,
-    required TResult orElse(),
-  }) {
-    if (ownership != null) {
-      return ownership(direction, id, collection, sender, recipient);
-    }
-    return orElse();
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult map<TResult extends Object?>({
-    required TResult Function(NftOwnershipTransferEvent value) ownership,
-    required TResult Function(NftTokenTransferEvent value) token,
-  }) {
-    return ownership(this);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult? mapOrNull<TResult extends Object?>({
-    TResult? Function(NftOwnershipTransferEvent value)? ownership,
-    TResult? Function(NftTokenTransferEvent value)? token,
-  }) {
-    return ownership?.call(this);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult maybeMap<TResult extends Object?>({
-    TResult Function(NftOwnershipTransferEvent value)? ownership,
-    TResult Function(NftTokenTransferEvent value)? token,
-    required TResult orElse(),
-  }) {
-    if (ownership != null) {
-      return ownership(this);
-    }
-    return orElse();
-  }
-}
-
-abstract class NftOwnershipTransferEvent implements NftTransferEvent {
-  const factory NftOwnershipTransferEvent(
-      {required final TransferDirection direction,
-      required final String id,
-      required final Address collection,
-      required final Address sender,
-      required final Address recipient}) = _$NftOwnershipTransferEventImpl;
-
-  @override
-  TransferDirection get direction;
-  @override
-  String get id;
-  @override
-  Address get collection;
-  @override
-  Address get sender;
-  @override
-  Address get recipient;
-
-  /// Create a copy of NftTransferEvent
-  /// with the given fields replaced by the non-null parameter values.
-  @override
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  _$$NftOwnershipTransferEventImplCopyWith<_$NftOwnershipTransferEventImpl>
-      get copyWith => throw _privateConstructorUsedError;
 }
 
 /// @nodoc
-abstract class _$$NftTokenTransferEventImplCopyWith<$Res>
+abstract mixin class $NftOwnershipTransferEventCopyWith<$Res>
     implements $NftTransferEventCopyWith<$Res> {
-  factory _$$NftTokenTransferEventImplCopyWith(
-          _$NftTokenTransferEventImpl value,
-          $Res Function(_$NftTokenTransferEventImpl) then) =
-      __$$NftTokenTransferEventImplCopyWithImpl<$Res>;
+  factory $NftOwnershipTransferEventCopyWith(NftOwnershipTransferEvent value,
+          $Res Function(NftOwnershipTransferEvent) _then) =
+      _$NftOwnershipTransferEventCopyWithImpl;
+  @override
+  @useResult
+  $Res call(
+      {TransferDirection direction,
+      String id,
+      Address collection,
+      Address sender,
+      Address recipient});
+
+  @override
+  $AddressCopyWith<$Res> get collection;
+  @override
+  $AddressCopyWith<$Res> get sender;
+  @override
+  $AddressCopyWith<$Res> get recipient;
+}
+
+/// @nodoc
+class _$NftOwnershipTransferEventCopyWithImpl<$Res>
+    implements $NftOwnershipTransferEventCopyWith<$Res> {
+  _$NftOwnershipTransferEventCopyWithImpl(this._self, this._then);
+
+  final NftOwnershipTransferEvent _self;
+  final $Res Function(NftOwnershipTransferEvent) _then;
+
+  /// Create a copy of NftTransferEvent
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @pragma('vm:prefer-inline')
+  $Res call({
+    Object? direction = null,
+    Object? id = null,
+    Object? collection = null,
+    Object? sender = null,
+    Object? recipient = null,
+  }) {
+    return _then(NftOwnershipTransferEvent(
+      direction: null == direction
+          ? _self.direction
+          : direction // ignore: cast_nullable_to_non_nullable
+              as TransferDirection,
+      id: null == id
+          ? _self.id
+          : id // ignore: cast_nullable_to_non_nullable
+              as String,
+      collection: null == collection
+          ? _self.collection
+          : collection // ignore: cast_nullable_to_non_nullable
+              as Address,
+      sender: null == sender
+          ? _self.sender
+          : sender // ignore: cast_nullable_to_non_nullable
+              as Address,
+      recipient: null == recipient
+          ? _self.recipient
+          : recipient // ignore: cast_nullable_to_non_nullable
+              as Address,
+    ));
+  }
+
+  /// Create a copy of NftTransferEvent
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @pragma('vm:prefer-inline')
+  $AddressCopyWith<$Res> get collection {
+    return $AddressCopyWith<$Res>(_self.collection, (value) {
+      return _then(_self.copyWith(collection: value));
+    });
+  }
+
+  /// Create a copy of NftTransferEvent
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @pragma('vm:prefer-inline')
+  $AddressCopyWith<$Res> get sender {
+    return $AddressCopyWith<$Res>(_self.sender, (value) {
+      return _then(_self.copyWith(sender: value));
+    });
+  }
+
+  /// Create a copy of NftTransferEvent
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @pragma('vm:prefer-inline')
+  $AddressCopyWith<$Res> get recipient {
+    return $AddressCopyWith<$Res>(_self.recipient, (value) {
+      return _then(_self.copyWith(recipient: value));
+    });
+  }
+}
+
+/// @nodoc
+
+class NftTokenTransferEvent implements NftTransferEvent {
+  const NftTokenTransferEvent(
+      {required this.direction,
+      required this.id,
+      required this.collection,
+      required this.sender,
+      required this.recipient,
+      @amountJsonConverter required this.count});
+
+  @override
+  final TransferDirection direction;
+  @override
+  final String id;
+  @override
+  final Address collection;
+  @override
+  final Address sender;
+  @override
+  final Address recipient;
+  @amountJsonConverter
+  final BigInt count;
+
+  /// Create a copy of NftTransferEvent
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @pragma('vm:prefer-inline')
+  $NftTokenTransferEventCopyWith<NftTokenTransferEvent> get copyWith =>
+      _$NftTokenTransferEventCopyWithImpl<NftTokenTransferEvent>(
+          this, _$identity);
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is NftTokenTransferEvent &&
+            (identical(other.direction, direction) ||
+                other.direction == direction) &&
+            (identical(other.id, id) || other.id == id) &&
+            (identical(other.collection, collection) ||
+                other.collection == collection) &&
+            (identical(other.sender, sender) || other.sender == sender) &&
+            (identical(other.recipient, recipient) ||
+                other.recipient == recipient) &&
+            (identical(other.count, count) || other.count == count));
+  }
+
+  @override
+  int get hashCode => Object.hash(
+      runtimeType, direction, id, collection, sender, recipient, count);
+
+  @override
+  String toString() {
+    return 'NftTransferEvent.token(direction: $direction, id: $id, collection: $collection, sender: $sender, recipient: $recipient, count: $count)';
+  }
+}
+
+/// @nodoc
+abstract mixin class $NftTokenTransferEventCopyWith<$Res>
+    implements $NftTransferEventCopyWith<$Res> {
+  factory $NftTokenTransferEventCopyWith(NftTokenTransferEvent value,
+          $Res Function(NftTokenTransferEvent) _then) =
+      _$NftTokenTransferEventCopyWithImpl;
   @override
   @useResult
   $Res call(
@@ -455,17 +382,17 @@ abstract class _$$NftTokenTransferEventImplCopyWith<$Res>
 }
 
 /// @nodoc
-class __$$NftTokenTransferEventImplCopyWithImpl<$Res>
-    extends _$NftTransferEventCopyWithImpl<$Res, _$NftTokenTransferEventImpl>
-    implements _$$NftTokenTransferEventImplCopyWith<$Res> {
-  __$$NftTokenTransferEventImplCopyWithImpl(_$NftTokenTransferEventImpl _value,
-      $Res Function(_$NftTokenTransferEventImpl) _then)
-      : super(_value, _then);
+class _$NftTokenTransferEventCopyWithImpl<$Res>
+    implements $NftTokenTransferEventCopyWith<$Res> {
+  _$NftTokenTransferEventCopyWithImpl(this._self, this._then);
+
+  final NftTokenTransferEvent _self;
+  final $Res Function(NftTokenTransferEvent) _then;
 
   /// Create a copy of NftTransferEvent
   /// with the given fields replaced by the non-null parameter values.
-  @pragma('vm:prefer-inline')
   @override
+  @pragma('vm:prefer-inline')
   $Res call({
     Object? direction = null,
     Object? id = null,
@@ -474,211 +401,63 @@ class __$$NftTokenTransferEventImplCopyWithImpl<$Res>
     Object? recipient = null,
     Object? count = null,
   }) {
-    return _then(_$NftTokenTransferEventImpl(
+    return _then(NftTokenTransferEvent(
       direction: null == direction
-          ? _value.direction
+          ? _self.direction
           : direction // ignore: cast_nullable_to_non_nullable
               as TransferDirection,
       id: null == id
-          ? _value.id
+          ? _self.id
           : id // ignore: cast_nullable_to_non_nullable
               as String,
       collection: null == collection
-          ? _value.collection
+          ? _self.collection
           : collection // ignore: cast_nullable_to_non_nullable
               as Address,
       sender: null == sender
-          ? _value.sender
+          ? _self.sender
           : sender // ignore: cast_nullable_to_non_nullable
               as Address,
       recipient: null == recipient
-          ? _value.recipient
+          ? _self.recipient
           : recipient // ignore: cast_nullable_to_non_nullable
               as Address,
       count: null == count
-          ? _value.count
+          ? _self.count
           : count // ignore: cast_nullable_to_non_nullable
               as BigInt,
     ));
   }
-}
-
-/// @nodoc
-
-class _$NftTokenTransferEventImpl implements NftTokenTransferEvent {
-  const _$NftTokenTransferEventImpl(
-      {required this.direction,
-      required this.id,
-      required this.collection,
-      required this.sender,
-      required this.recipient,
-      @amountJsonConverter required this.count});
-
-  @override
-  final TransferDirection direction;
-  @override
-  final String id;
-  @override
-  final Address collection;
-  @override
-  final Address sender;
-  @override
-  final Address recipient;
-  @override
-  @amountJsonConverter
-  final BigInt count;
-
-  @override
-  String toString() {
-    return 'NftTransferEvent.token(direction: $direction, id: $id, collection: $collection, sender: $sender, recipient: $recipient, count: $count)';
-  }
-
-  @override
-  bool operator ==(Object other) {
-    return identical(this, other) ||
-        (other.runtimeType == runtimeType &&
-            other is _$NftTokenTransferEventImpl &&
-            (identical(other.direction, direction) ||
-                other.direction == direction) &&
-            (identical(other.id, id) || other.id == id) &&
-            (identical(other.collection, collection) ||
-                other.collection == collection) &&
-            (identical(other.sender, sender) || other.sender == sender) &&
-            (identical(other.recipient, recipient) ||
-                other.recipient == recipient) &&
-            (identical(other.count, count) || other.count == count));
-  }
-
-  @override
-  int get hashCode => Object.hash(
-      runtimeType, direction, id, collection, sender, recipient, count);
 
   /// Create a copy of NftTransferEvent
   /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   @pragma('vm:prefer-inline')
-  _$$NftTokenTransferEventImplCopyWith<_$NftTokenTransferEventImpl>
-      get copyWith => __$$NftTokenTransferEventImplCopyWithImpl<
-          _$NftTokenTransferEventImpl>(this, _$identity);
-
-  @override
-  @optionalTypeArgs
-  TResult when<TResult extends Object?>({
-    required TResult Function(TransferDirection direction, String id,
-            Address collection, Address sender, Address recipient)
-        ownership,
-    required TResult Function(
-            TransferDirection direction,
-            String id,
-            Address collection,
-            Address sender,
-            Address recipient,
-            @amountJsonConverter BigInt count)
-        token,
-  }) {
-    return token(direction, id, collection, sender, recipient, count);
+  $AddressCopyWith<$Res> get collection {
+    return $AddressCopyWith<$Res>(_self.collection, (value) {
+      return _then(_self.copyWith(collection: value));
+    });
   }
-
-  @override
-  @optionalTypeArgs
-  TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function(TransferDirection direction, String id,
-            Address collection, Address sender, Address recipient)?
-        ownership,
-    TResult? Function(
-            TransferDirection direction,
-            String id,
-            Address collection,
-            Address sender,
-            Address recipient,
-            @amountJsonConverter BigInt count)?
-        token,
-  }) {
-    return token?.call(direction, id, collection, sender, recipient, count);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult maybeWhen<TResult extends Object?>({
-    TResult Function(TransferDirection direction, String id, Address collection,
-            Address sender, Address recipient)?
-        ownership,
-    TResult Function(
-            TransferDirection direction,
-            String id,
-            Address collection,
-            Address sender,
-            Address recipient,
-            @amountJsonConverter BigInt count)?
-        token,
-    required TResult orElse(),
-  }) {
-    if (token != null) {
-      return token(direction, id, collection, sender, recipient, count);
-    }
-    return orElse();
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult map<TResult extends Object?>({
-    required TResult Function(NftOwnershipTransferEvent value) ownership,
-    required TResult Function(NftTokenTransferEvent value) token,
-  }) {
-    return token(this);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult? mapOrNull<TResult extends Object?>({
-    TResult? Function(NftOwnershipTransferEvent value)? ownership,
-    TResult? Function(NftTokenTransferEvent value)? token,
-  }) {
-    return token?.call(this);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult maybeMap<TResult extends Object?>({
-    TResult Function(NftOwnershipTransferEvent value)? ownership,
-    TResult Function(NftTokenTransferEvent value)? token,
-    required TResult orElse(),
-  }) {
-    if (token != null) {
-      return token(this);
-    }
-    return orElse();
-  }
-}
-
-abstract class NftTokenTransferEvent implements NftTransferEvent {
-  const factory NftTokenTransferEvent(
-          {required final TransferDirection direction,
-          required final String id,
-          required final Address collection,
-          required final Address sender,
-          required final Address recipient,
-          @amountJsonConverter required final BigInt count}) =
-      _$NftTokenTransferEventImpl;
-
-  @override
-  TransferDirection get direction;
-  @override
-  String get id;
-  @override
-  Address get collection;
-  @override
-  Address get sender;
-  @override
-  Address get recipient;
-  @amountJsonConverter
-  BigInt get count;
 
   /// Create a copy of NftTransferEvent
   /// with the given fields replaced by the non-null parameter values.
   @override
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  _$$NftTokenTransferEventImplCopyWith<_$NftTokenTransferEventImpl>
-      get copyWith => throw _privateConstructorUsedError;
+  @pragma('vm:prefer-inline')
+  $AddressCopyWith<$Res> get sender {
+    return $AddressCopyWith<$Res>(_self.sender, (value) {
+      return _then(_self.copyWith(sender: value));
+    });
+  }
+
+  /// Create a copy of NftTransferEvent
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @pragma('vm:prefer-inline')
+  $AddressCopyWith<$Res> get recipient {
+    return $AddressCopyWith<$Res>(_self.recipient, (value) {
+      return _then(_self.copyWith(recipient: value));
+    });
+  }
 }
+
+// dart format on

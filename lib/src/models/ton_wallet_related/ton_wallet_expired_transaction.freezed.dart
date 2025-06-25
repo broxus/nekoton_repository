@@ -1,3 +1,4 @@
+// dart format width=80
 // coverage:ignore-file
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // ignore_for_file: type=lint
@@ -9,39 +10,64 @@ part of 'ton_wallet_expired_transaction.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// dart format off
 T _$identity<T>(T value) => value;
-
-final _privateConstructorUsedError = UnsupportedError(
-    'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models');
 
 /// @nodoc
 mixin _$TonWalletExpiredTransaction {
 // address of wallet for which this transaction found
-  Address get address => throw _privateConstructorUsedError; // creation date
-  DateTime get date => throw _privateConstructorUsedError;
-  DateTime get expireAt =>
-      throw _privateConstructorUsedError; // address for which tokens was sent
-  Address get destination => throw _privateConstructorUsedError;
+  Address get address; // creation date
+  DateTime get date;
+  DateTime get expireAt; // address for which tokens was sent
+  Address get destination;
   @amountJsonConverter
-  BigInt get amount => throw _privateConstructorUsedError;
-  String get messageHash =>
-      throw _privateConstructorUsedError; // flag if this transaction was sent to this wallet
-  bool get isIncoming => throw _privateConstructorUsedError;
+  BigInt get amount;
+  String get messageHash; // flag if this transaction was sent to this wallet
+  bool get isIncoming;
 
   /// Create a copy of TonWalletExpiredTransaction
   /// with the given fields replaced by the non-null parameter values.
   @JsonKey(includeFromJson: false, includeToJson: false)
+  @pragma('vm:prefer-inline')
   $TonWalletExpiredTransactionCopyWith<TonWalletExpiredTransaction>
-      get copyWith => throw _privateConstructorUsedError;
+      get copyWith => _$TonWalletExpiredTransactionCopyWithImpl<
+              TonWalletExpiredTransaction>(
+          this as TonWalletExpiredTransaction, _$identity);
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is TonWalletExpiredTransaction &&
+            (identical(other.address, address) || other.address == address) &&
+            (identical(other.date, date) || other.date == date) &&
+            (identical(other.expireAt, expireAt) ||
+                other.expireAt == expireAt) &&
+            (identical(other.destination, destination) ||
+                other.destination == destination) &&
+            (identical(other.amount, amount) || other.amount == amount) &&
+            (identical(other.messageHash, messageHash) ||
+                other.messageHash == messageHash) &&
+            (identical(other.isIncoming, isIncoming) ||
+                other.isIncoming == isIncoming));
+  }
+
+  @override
+  int get hashCode => Object.hash(runtimeType, address, date, expireAt,
+      destination, amount, messageHash, isIncoming);
+
+  @override
+  String toString() {
+    return 'TonWalletExpiredTransaction(address: $address, date: $date, expireAt: $expireAt, destination: $destination, amount: $amount, messageHash: $messageHash, isIncoming: $isIncoming)';
+  }
 }
 
 /// @nodoc
-abstract class $TonWalletExpiredTransactionCopyWith<$Res> {
+abstract mixin class $TonWalletExpiredTransactionCopyWith<$Res> {
   factory $TonWalletExpiredTransactionCopyWith(
           TonWalletExpiredTransaction value,
-          $Res Function(TonWalletExpiredTransaction) then) =
-      _$TonWalletExpiredTransactionCopyWithImpl<$Res,
-          TonWalletExpiredTransaction>;
+          $Res Function(TonWalletExpiredTransaction) _then) =
+      _$TonWalletExpiredTransactionCopyWithImpl;
   @useResult
   $Res call(
       {Address address,
@@ -57,15 +83,12 @@ abstract class $TonWalletExpiredTransactionCopyWith<$Res> {
 }
 
 /// @nodoc
-class _$TonWalletExpiredTransactionCopyWithImpl<$Res,
-        $Val extends TonWalletExpiredTransaction>
+class _$TonWalletExpiredTransactionCopyWithImpl<$Res>
     implements $TonWalletExpiredTransactionCopyWith<$Res> {
-  _$TonWalletExpiredTransactionCopyWithImpl(this._value, this._then);
+  _$TonWalletExpiredTransactionCopyWithImpl(this._self, this._then);
 
-  // ignore: unused_field
-  final $Val _value;
-  // ignore: unused_field
-  final $Res Function($Val) _then;
+  final TonWalletExpiredTransaction _self;
+  final $Res Function(TonWalletExpiredTransaction) _then;
 
   /// Create a copy of TonWalletExpiredTransaction
   /// with the given fields replaced by the non-null parameter values.
@@ -80,36 +103,36 @@ class _$TonWalletExpiredTransactionCopyWithImpl<$Res,
     Object? messageHash = null,
     Object? isIncoming = null,
   }) {
-    return _then(_value.copyWith(
+    return _then(_self.copyWith(
       address: null == address
-          ? _value.address
+          ? _self.address
           : address // ignore: cast_nullable_to_non_nullable
               as Address,
       date: null == date
-          ? _value.date
+          ? _self.date
           : date // ignore: cast_nullable_to_non_nullable
               as DateTime,
       expireAt: null == expireAt
-          ? _value.expireAt
+          ? _self.expireAt
           : expireAt // ignore: cast_nullable_to_non_nullable
               as DateTime,
       destination: null == destination
-          ? _value.destination
+          ? _self.destination
           : destination // ignore: cast_nullable_to_non_nullable
               as Address,
       amount: null == amount
-          ? _value.amount
+          ? _self.amount
           : amount // ignore: cast_nullable_to_non_nullable
               as BigInt,
       messageHash: null == messageHash
-          ? _value.messageHash
+          ? _self.messageHash
           : messageHash // ignore: cast_nullable_to_non_nullable
               as String,
       isIncoming: null == isIncoming
-          ? _value.isIncoming
+          ? _self.isIncoming
           : isIncoming // ignore: cast_nullable_to_non_nullable
               as bool,
-    ) as $Val);
+    ));
   }
 
   /// Create a copy of TonWalletExpiredTransaction
@@ -117,8 +140,8 @@ class _$TonWalletExpiredTransactionCopyWithImpl<$Res,
   @override
   @pragma('vm:prefer-inline')
   $AddressCopyWith<$Res> get address {
-    return $AddressCopyWith<$Res>(_value.address, (value) {
-      return _then(_value.copyWith(address: value) as $Val);
+    return $AddressCopyWith<$Res>(_self.address, (value) {
+      return _then(_self.copyWith(address: value));
     });
   }
 
@@ -127,97 +150,16 @@ class _$TonWalletExpiredTransactionCopyWithImpl<$Res,
   @override
   @pragma('vm:prefer-inline')
   $AddressCopyWith<$Res> get destination {
-    return $AddressCopyWith<$Res>(_value.destination, (value) {
-      return _then(_value.copyWith(destination: value) as $Val);
+    return $AddressCopyWith<$Res>(_self.destination, (value) {
+      return _then(_self.copyWith(destination: value));
     });
   }
 }
 
 /// @nodoc
-abstract class _$$TonWalletExpiredTransactionImplCopyWith<$Res>
-    implements $TonWalletExpiredTransactionCopyWith<$Res> {
-  factory _$$TonWalletExpiredTransactionImplCopyWith(
-          _$TonWalletExpiredTransactionImpl value,
-          $Res Function(_$TonWalletExpiredTransactionImpl) then) =
-      __$$TonWalletExpiredTransactionImplCopyWithImpl<$Res>;
-  @override
-  @useResult
-  $Res call(
-      {Address address,
-      DateTime date,
-      DateTime expireAt,
-      Address destination,
-      @amountJsonConverter BigInt amount,
-      String messageHash,
-      bool isIncoming});
 
-  @override
-  $AddressCopyWith<$Res> get address;
-  @override
-  $AddressCopyWith<$Res> get destination;
-}
-
-/// @nodoc
-class __$$TonWalletExpiredTransactionImplCopyWithImpl<$Res>
-    extends _$TonWalletExpiredTransactionCopyWithImpl<$Res,
-        _$TonWalletExpiredTransactionImpl>
-    implements _$$TonWalletExpiredTransactionImplCopyWith<$Res> {
-  __$$TonWalletExpiredTransactionImplCopyWithImpl(
-      _$TonWalletExpiredTransactionImpl _value,
-      $Res Function(_$TonWalletExpiredTransactionImpl) _then)
-      : super(_value, _then);
-
-  /// Create a copy of TonWalletExpiredTransaction
-  /// with the given fields replaced by the non-null parameter values.
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? address = null,
-    Object? date = null,
-    Object? expireAt = null,
-    Object? destination = null,
-    Object? amount = null,
-    Object? messageHash = null,
-    Object? isIncoming = null,
-  }) {
-    return _then(_$TonWalletExpiredTransactionImpl(
-      address: null == address
-          ? _value.address
-          : address // ignore: cast_nullable_to_non_nullable
-              as Address,
-      date: null == date
-          ? _value.date
-          : date // ignore: cast_nullable_to_non_nullable
-              as DateTime,
-      expireAt: null == expireAt
-          ? _value.expireAt
-          : expireAt // ignore: cast_nullable_to_non_nullable
-              as DateTime,
-      destination: null == destination
-          ? _value.destination
-          : destination // ignore: cast_nullable_to_non_nullable
-              as Address,
-      amount: null == amount
-          ? _value.amount
-          : amount // ignore: cast_nullable_to_non_nullable
-              as BigInt,
-      messageHash: null == messageHash
-          ? _value.messageHash
-          : messageHash // ignore: cast_nullable_to_non_nullable
-              as String,
-      isIncoming: null == isIncoming
-          ? _value.isIncoming
-          : isIncoming // ignore: cast_nullable_to_non_nullable
-              as bool,
-    ));
-  }
-}
-
-/// @nodoc
-
-class _$TonWalletExpiredTransactionImpl
-    implements _TonWalletExpiredTransaction {
-  const _$TonWalletExpiredTransactionImpl(
+class _TonWalletExpiredTransaction implements TonWalletExpiredTransaction {
+  const _TonWalletExpiredTransaction(
       {required this.address,
       required this.date,
       required this.expireAt,
@@ -246,16 +188,20 @@ class _$TonWalletExpiredTransactionImpl
   @override
   final bool isIncoming;
 
+  /// Create a copy of TonWalletExpiredTransaction
+  /// with the given fields replaced by the non-null parameter values.
   @override
-  String toString() {
-    return 'TonWalletExpiredTransaction(address: $address, date: $date, expireAt: $expireAt, destination: $destination, amount: $amount, messageHash: $messageHash, isIncoming: $isIncoming)';
-  }
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @pragma('vm:prefer-inline')
+  _$TonWalletExpiredTransactionCopyWith<_TonWalletExpiredTransaction>
+      get copyWith => __$TonWalletExpiredTransactionCopyWithImpl<
+          _TonWalletExpiredTransaction>(this, _$identity);
 
   @override
   bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$TonWalletExpiredTransactionImpl &&
+            other is _TonWalletExpiredTransaction &&
             (identical(other.address, address) || other.address == address) &&
             (identical(other.date, date) || other.date == date) &&
             (identical(other.expireAt, expireAt) ||
@@ -273,48 +219,108 @@ class _$TonWalletExpiredTransactionImpl
   int get hashCode => Object.hash(runtimeType, address, date, expireAt,
       destination, amount, messageHash, isIncoming);
 
+  @override
+  String toString() {
+    return 'TonWalletExpiredTransaction(address: $address, date: $date, expireAt: $expireAt, destination: $destination, amount: $amount, messageHash: $messageHash, isIncoming: $isIncoming)';
+  }
+}
+
+/// @nodoc
+abstract mixin class _$TonWalletExpiredTransactionCopyWith<$Res>
+    implements $TonWalletExpiredTransactionCopyWith<$Res> {
+  factory _$TonWalletExpiredTransactionCopyWith(
+          _TonWalletExpiredTransaction value,
+          $Res Function(_TonWalletExpiredTransaction) _then) =
+      __$TonWalletExpiredTransactionCopyWithImpl;
+  @override
+  @useResult
+  $Res call(
+      {Address address,
+      DateTime date,
+      DateTime expireAt,
+      Address destination,
+      @amountJsonConverter BigInt amount,
+      String messageHash,
+      bool isIncoming});
+
+  @override
+  $AddressCopyWith<$Res> get address;
+  @override
+  $AddressCopyWith<$Res> get destination;
+}
+
+/// @nodoc
+class __$TonWalletExpiredTransactionCopyWithImpl<$Res>
+    implements _$TonWalletExpiredTransactionCopyWith<$Res> {
+  __$TonWalletExpiredTransactionCopyWithImpl(this._self, this._then);
+
+  final _TonWalletExpiredTransaction _self;
+  final $Res Function(_TonWalletExpiredTransaction) _then;
+
   /// Create a copy of TonWalletExpiredTransaction
   /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   @pragma('vm:prefer-inline')
-  _$$TonWalletExpiredTransactionImplCopyWith<_$TonWalletExpiredTransactionImpl>
-      get copyWith => __$$TonWalletExpiredTransactionImplCopyWithImpl<
-          _$TonWalletExpiredTransactionImpl>(this, _$identity);
-}
-
-abstract class _TonWalletExpiredTransaction
-    implements TonWalletExpiredTransaction {
-  const factory _TonWalletExpiredTransaction(
-      {required final Address address,
-      required final DateTime date,
-      required final DateTime expireAt,
-      required final Address destination,
-      @amountJsonConverter required final BigInt amount,
-      required final String messageHash,
-      required final bool isIncoming}) = _$TonWalletExpiredTransactionImpl;
-
-// address of wallet for which this transaction found
-  @override
-  Address get address; // creation date
-  @override
-  DateTime get date;
-  @override
-  DateTime get expireAt; // address for which tokens was sent
-  @override
-  Address get destination;
-  @override
-  @amountJsonConverter
-  BigInt get amount;
-  @override
-  String get messageHash; // flag if this transaction was sent to this wallet
-  @override
-  bool get isIncoming;
+  $Res call({
+    Object? address = null,
+    Object? date = null,
+    Object? expireAt = null,
+    Object? destination = null,
+    Object? amount = null,
+    Object? messageHash = null,
+    Object? isIncoming = null,
+  }) {
+    return _then(_TonWalletExpiredTransaction(
+      address: null == address
+          ? _self.address
+          : address // ignore: cast_nullable_to_non_nullable
+              as Address,
+      date: null == date
+          ? _self.date
+          : date // ignore: cast_nullable_to_non_nullable
+              as DateTime,
+      expireAt: null == expireAt
+          ? _self.expireAt
+          : expireAt // ignore: cast_nullable_to_non_nullable
+              as DateTime,
+      destination: null == destination
+          ? _self.destination
+          : destination // ignore: cast_nullable_to_non_nullable
+              as Address,
+      amount: null == amount
+          ? _self.amount
+          : amount // ignore: cast_nullable_to_non_nullable
+              as BigInt,
+      messageHash: null == messageHash
+          ? _self.messageHash
+          : messageHash // ignore: cast_nullable_to_non_nullable
+              as String,
+      isIncoming: null == isIncoming
+          ? _self.isIncoming
+          : isIncoming // ignore: cast_nullable_to_non_nullable
+              as bool,
+    ));
+  }
 
   /// Create a copy of TonWalletExpiredTransaction
   /// with the given fields replaced by the non-null parameter values.
   @override
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  _$$TonWalletExpiredTransactionImplCopyWith<_$TonWalletExpiredTransactionImpl>
-      get copyWith => throw _privateConstructorUsedError;
+  @pragma('vm:prefer-inline')
+  $AddressCopyWith<$Res> get address {
+    return $AddressCopyWith<$Res>(_self.address, (value) {
+      return _then(_self.copyWith(address: value));
+    });
+  }
+
+  /// Create a copy of TonWalletExpiredTransaction
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @pragma('vm:prefer-inline')
+  $AddressCopyWith<$Res> get destination {
+    return $AddressCopyWith<$Res>(_self.destination, (value) {
+      return _then(_self.copyWith(destination: value));
+    });
+  }
 }
+
+// dart format on

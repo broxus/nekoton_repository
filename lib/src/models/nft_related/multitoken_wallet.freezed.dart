@@ -1,3 +1,4 @@
+// dart format width=80
 // coverage:ignore-file
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // ignore_for_file: type=lint
@@ -9,29 +10,47 @@ part of 'multitoken_wallet.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// dart format off
 T _$identity<T>(T value) => value;
-
-final _privateConstructorUsedError = UnsupportedError(
-    'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models');
 
 /// @nodoc
 mixin _$MultitokenWallet {
-  Address get address => throw _privateConstructorUsedError;
-  BigInt get balance => throw _privateConstructorUsedError;
-  MultitokenWalletInfo get info => throw _privateConstructorUsedError;
+  Address get address;
+  BigInt get balance;
+  MultitokenWalletInfo get info;
 
   /// Create a copy of MultitokenWallet
   /// with the given fields replaced by the non-null parameter values.
   @JsonKey(includeFromJson: false, includeToJson: false)
+  @pragma('vm:prefer-inline')
   $MultitokenWalletCopyWith<MultitokenWallet> get copyWith =>
-      throw _privateConstructorUsedError;
+      _$MultitokenWalletCopyWithImpl<MultitokenWallet>(
+          this as MultitokenWallet, _$identity);
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is MultitokenWallet &&
+            (identical(other.address, address) || other.address == address) &&
+            (identical(other.balance, balance) || other.balance == balance) &&
+            (identical(other.info, info) || other.info == info));
+  }
+
+  @override
+  int get hashCode => Object.hash(runtimeType, address, balance, info);
+
+  @override
+  String toString() {
+    return 'MultitokenWallet(address: $address, balance: $balance, info: $info)';
+  }
 }
 
 /// @nodoc
-abstract class $MultitokenWalletCopyWith<$Res> {
+abstract mixin class $MultitokenWalletCopyWith<$Res> {
   factory $MultitokenWalletCopyWith(
-          MultitokenWallet value, $Res Function(MultitokenWallet) then) =
-      _$MultitokenWalletCopyWithImpl<$Res, MultitokenWallet>;
+          MultitokenWallet value, $Res Function(MultitokenWallet) _then) =
+      _$MultitokenWalletCopyWithImpl;
   @useResult
   $Res call({Address address, BigInt balance, MultitokenWalletInfo info});
 
@@ -40,14 +59,12 @@ abstract class $MultitokenWalletCopyWith<$Res> {
 }
 
 /// @nodoc
-class _$MultitokenWalletCopyWithImpl<$Res, $Val extends MultitokenWallet>
+class _$MultitokenWalletCopyWithImpl<$Res>
     implements $MultitokenWalletCopyWith<$Res> {
-  _$MultitokenWalletCopyWithImpl(this._value, this._then);
+  _$MultitokenWalletCopyWithImpl(this._self, this._then);
 
-  // ignore: unused_field
-  final $Val _value;
-  // ignore: unused_field
-  final $Res Function($Val) _then;
+  final MultitokenWallet _self;
+  final $Res Function(MultitokenWallet) _then;
 
   /// Create a copy of MultitokenWallet
   /// with the given fields replaced by the non-null parameter values.
@@ -58,20 +75,20 @@ class _$MultitokenWalletCopyWithImpl<$Res, $Val extends MultitokenWallet>
     Object? balance = null,
     Object? info = null,
   }) {
-    return _then(_value.copyWith(
+    return _then(_self.copyWith(
       address: null == address
-          ? _value.address
+          ? _self.address
           : address // ignore: cast_nullable_to_non_nullable
               as Address,
       balance: null == balance
-          ? _value.balance
+          ? _self.balance
           : balance // ignore: cast_nullable_to_non_nullable
               as BigInt,
       info: null == info
-          ? _value.info
+          ? _self.info
           : info // ignore: cast_nullable_to_non_nullable
               as MultitokenWalletInfo,
-    ) as $Val);
+    ));
   }
 
   /// Create a copy of MultitokenWallet
@@ -79,8 +96,8 @@ class _$MultitokenWalletCopyWithImpl<$Res, $Val extends MultitokenWallet>
   @override
   @pragma('vm:prefer-inline')
   $AddressCopyWith<$Res> get address {
-    return $AddressCopyWith<$Res>(_value.address, (value) {
-      return _then(_value.copyWith(address: value) as $Val);
+    return $AddressCopyWith<$Res>(_self.address, (value) {
+      return _then(_self.copyWith(address: value));
     });
   }
 
@@ -89,66 +106,16 @@ class _$MultitokenWalletCopyWithImpl<$Res, $Val extends MultitokenWallet>
   @override
   @pragma('vm:prefer-inline')
   $MultitokenWalletInfoCopyWith<$Res> get info {
-    return $MultitokenWalletInfoCopyWith<$Res>(_value.info, (value) {
-      return _then(_value.copyWith(info: value) as $Val);
+    return $MultitokenWalletInfoCopyWith<$Res>(_self.info, (value) {
+      return _then(_self.copyWith(info: value));
     });
   }
 }
 
 /// @nodoc
-abstract class _$$MultitokenWalletImplCopyWith<$Res>
-    implements $MultitokenWalletCopyWith<$Res> {
-  factory _$$MultitokenWalletImplCopyWith(_$MultitokenWalletImpl value,
-          $Res Function(_$MultitokenWalletImpl) then) =
-      __$$MultitokenWalletImplCopyWithImpl<$Res>;
-  @override
-  @useResult
-  $Res call({Address address, BigInt balance, MultitokenWalletInfo info});
 
-  @override
-  $AddressCopyWith<$Res> get address;
-  @override
-  $MultitokenWalletInfoCopyWith<$Res> get info;
-}
-
-/// @nodoc
-class __$$MultitokenWalletImplCopyWithImpl<$Res>
-    extends _$MultitokenWalletCopyWithImpl<$Res, _$MultitokenWalletImpl>
-    implements _$$MultitokenWalletImplCopyWith<$Res> {
-  __$$MultitokenWalletImplCopyWithImpl(_$MultitokenWalletImpl _value,
-      $Res Function(_$MultitokenWalletImpl) _then)
-      : super(_value, _then);
-
-  /// Create a copy of MultitokenWallet
-  /// with the given fields replaced by the non-null parameter values.
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? address = null,
-    Object? balance = null,
-    Object? info = null,
-  }) {
-    return _then(_$MultitokenWalletImpl(
-      address: null == address
-          ? _value.address
-          : address // ignore: cast_nullable_to_non_nullable
-              as Address,
-      balance: null == balance
-          ? _value.balance
-          : balance // ignore: cast_nullable_to_non_nullable
-              as BigInt,
-      info: null == info
-          ? _value.info
-          : info // ignore: cast_nullable_to_non_nullable
-              as MultitokenWalletInfo,
-    ));
-  }
-}
-
-/// @nodoc
-
-class _$MultitokenWalletImpl implements _MultitokenWallet {
-  const _$MultitokenWalletImpl(
+class _MultitokenWallet implements MultitokenWallet {
+  const _MultitokenWallet(
       {required this.address, required this.balance, required this.info});
 
   @override
@@ -158,16 +125,19 @@ class _$MultitokenWalletImpl implements _MultitokenWallet {
   @override
   final MultitokenWalletInfo info;
 
+  /// Create a copy of MultitokenWallet
+  /// with the given fields replaced by the non-null parameter values.
   @override
-  String toString() {
-    return 'MultitokenWallet(address: $address, balance: $balance, info: $info)';
-  }
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @pragma('vm:prefer-inline')
+  _$MultitokenWalletCopyWith<_MultitokenWallet> get copyWith =>
+      __$MultitokenWalletCopyWithImpl<_MultitokenWallet>(this, _$identity);
 
   @override
   bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$MultitokenWalletImpl &&
+            other is _MultitokenWallet &&
             (identical(other.address, address) || other.address == address) &&
             (identical(other.balance, balance) || other.balance == balance) &&
             (identical(other.info, info) || other.info == info));
@@ -176,33 +146,80 @@ class _$MultitokenWalletImpl implements _MultitokenWallet {
   @override
   int get hashCode => Object.hash(runtimeType, address, balance, info);
 
+  @override
+  String toString() {
+    return 'MultitokenWallet(address: $address, balance: $balance, info: $info)';
+  }
+}
+
+/// @nodoc
+abstract mixin class _$MultitokenWalletCopyWith<$Res>
+    implements $MultitokenWalletCopyWith<$Res> {
+  factory _$MultitokenWalletCopyWith(
+          _MultitokenWallet value, $Res Function(_MultitokenWallet) _then) =
+      __$MultitokenWalletCopyWithImpl;
+  @override
+  @useResult
+  $Res call({Address address, BigInt balance, MultitokenWalletInfo info});
+
+  @override
+  $AddressCopyWith<$Res> get address;
+  @override
+  $MultitokenWalletInfoCopyWith<$Res> get info;
+}
+
+/// @nodoc
+class __$MultitokenWalletCopyWithImpl<$Res>
+    implements _$MultitokenWalletCopyWith<$Res> {
+  __$MultitokenWalletCopyWithImpl(this._self, this._then);
+
+  final _MultitokenWallet _self;
+  final $Res Function(_MultitokenWallet) _then;
+
   /// Create a copy of MultitokenWallet
   /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   @pragma('vm:prefer-inline')
-  _$$MultitokenWalletImplCopyWith<_$MultitokenWalletImpl> get copyWith =>
-      __$$MultitokenWalletImplCopyWithImpl<_$MultitokenWalletImpl>(
-          this, _$identity);
-}
-
-abstract class _MultitokenWallet implements MultitokenWallet {
-  const factory _MultitokenWallet(
-      {required final Address address,
-      required final BigInt balance,
-      required final MultitokenWalletInfo info}) = _$MultitokenWalletImpl;
-
-  @override
-  Address get address;
-  @override
-  BigInt get balance;
-  @override
-  MultitokenWalletInfo get info;
+  $Res call({
+    Object? address = null,
+    Object? balance = null,
+    Object? info = null,
+  }) {
+    return _then(_MultitokenWallet(
+      address: null == address
+          ? _self.address
+          : address // ignore: cast_nullable_to_non_nullable
+              as Address,
+      balance: null == balance
+          ? _self.balance
+          : balance // ignore: cast_nullable_to_non_nullable
+              as BigInt,
+      info: null == info
+          ? _self.info
+          : info // ignore: cast_nullable_to_non_nullable
+              as MultitokenWalletInfo,
+    ));
+  }
 
   /// Create a copy of MultitokenWallet
   /// with the given fields replaced by the non-null parameter values.
   @override
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  _$$MultitokenWalletImplCopyWith<_$MultitokenWalletImpl> get copyWith =>
-      throw _privateConstructorUsedError;
+  @pragma('vm:prefer-inline')
+  $AddressCopyWith<$Res> get address {
+    return $AddressCopyWith<$Res>(_self.address, (value) {
+      return _then(_self.copyWith(address: value));
+    });
+  }
+
+  /// Create a copy of MultitokenWallet
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @pragma('vm:prefer-inline')
+  $MultitokenWalletInfoCopyWith<$Res> get info {
+    return $MultitokenWalletInfoCopyWith<$Res>(_self.info, (value) {
+      return _then(_self.copyWith(info: value));
+    });
+  }
 }
+
+// dart format on

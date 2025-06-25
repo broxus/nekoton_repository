@@ -5,7 +5,7 @@ part 'multitoken_transfer.freezed.dart';
 part 'multitoken_transfer.g.dart';
 
 @freezed
-class MultitokenTransfer with _$MultitokenTransfer {
+abstract class MultitokenTransfer with _$MultitokenTransfer {
   const factory MultitokenTransfer({
     required String tokenId,
     required Address collection,

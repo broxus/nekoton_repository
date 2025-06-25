@@ -5,7 +5,7 @@ part 'nft_transfer.freezed.dart';
 part 'nft_transfer.g.dart';
 
 @freezed
-class NftTransfer with _$NftTransfer {
+abstract class NftTransfer with _$NftTransfer {
   const factory NftTransfer({
     required String id,
     required Address collection,

@@ -1,3 +1,4 @@
+// dart format width=80
 // coverage:ignore-file
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // ignore_for_file: type=lint
@@ -9,28 +10,46 @@ part of 'nft.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// dart format off
 T _$identity<T>(T value) => value;
-
-final _privateConstructorUsedError = UnsupportedError(
-    'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models');
 
 /// @nodoc
 mixin _$Nft {
-  Address get address => throw _privateConstructorUsedError;
-  NftInfo get info => throw _privateConstructorUsedError;
-  NftJsonData get json => throw _privateConstructorUsedError;
-  BigInt? get supply => throw _privateConstructorUsedError;
+  Address get address;
+  NftInfo get info;
+  NftJsonData get json;
+  BigInt? get supply;
 
   /// Create a copy of Nft
   /// with the given fields replaced by the non-null parameter values.
   @JsonKey(includeFromJson: false, includeToJson: false)
-  $NftCopyWith<Nft> get copyWith => throw _privateConstructorUsedError;
+  @pragma('vm:prefer-inline')
+  $NftCopyWith<Nft> get copyWith =>
+      _$NftCopyWithImpl<Nft>(this as Nft, _$identity);
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is Nft &&
+            (identical(other.address, address) || other.address == address) &&
+            (identical(other.info, info) || other.info == info) &&
+            (identical(other.json, json) || other.json == json) &&
+            (identical(other.supply, supply) || other.supply == supply));
+  }
+
+  @override
+  int get hashCode => Object.hash(runtimeType, address, info, json, supply);
+
+  @override
+  String toString() {
+    return 'Nft(address: $address, info: $info, json: $json, supply: $supply)';
+  }
 }
 
 /// @nodoc
-abstract class $NftCopyWith<$Res> {
-  factory $NftCopyWith(Nft value, $Res Function(Nft) then) =
-      _$NftCopyWithImpl<$Res, Nft>;
+abstract mixin class $NftCopyWith<$Res> {
+  factory $NftCopyWith(Nft value, $Res Function(Nft) _then) = _$NftCopyWithImpl;
   @useResult
   $Res call({Address address, NftInfo info, NftJsonData json, BigInt? supply});
 
@@ -40,13 +59,11 @@ abstract class $NftCopyWith<$Res> {
 }
 
 /// @nodoc
-class _$NftCopyWithImpl<$Res, $Val extends Nft> implements $NftCopyWith<$Res> {
-  _$NftCopyWithImpl(this._value, this._then);
+class _$NftCopyWithImpl<$Res> implements $NftCopyWith<$Res> {
+  _$NftCopyWithImpl(this._self, this._then);
 
-  // ignore: unused_field
-  final $Val _value;
-  // ignore: unused_field
-  final $Res Function($Val) _then;
+  final Nft _self;
+  final $Res Function(Nft) _then;
 
   /// Create a copy of Nft
   /// with the given fields replaced by the non-null parameter values.
@@ -58,24 +75,24 @@ class _$NftCopyWithImpl<$Res, $Val extends Nft> implements $NftCopyWith<$Res> {
     Object? json = null,
     Object? supply = freezed,
   }) {
-    return _then(_value.copyWith(
+    return _then(_self.copyWith(
       address: null == address
-          ? _value.address
+          ? _self.address
           : address // ignore: cast_nullable_to_non_nullable
               as Address,
       info: null == info
-          ? _value.info
+          ? _self.info
           : info // ignore: cast_nullable_to_non_nullable
               as NftInfo,
       json: null == json
-          ? _value.json
+          ? _self.json
           : json // ignore: cast_nullable_to_non_nullable
               as NftJsonData,
       supply: freezed == supply
-          ? _value.supply
+          ? _self.supply
           : supply // ignore: cast_nullable_to_non_nullable
               as BigInt?,
-    ) as $Val);
+    ));
   }
 
   /// Create a copy of Nft
@@ -83,8 +100,8 @@ class _$NftCopyWithImpl<$Res, $Val extends Nft> implements $NftCopyWith<$Res> {
   @override
   @pragma('vm:prefer-inline')
   $AddressCopyWith<$Res> get address {
-    return $AddressCopyWith<$Res>(_value.address, (value) {
-      return _then(_value.copyWith(address: value) as $Val);
+    return $AddressCopyWith<$Res>(_self.address, (value) {
+      return _then(_self.copyWith(address: value));
     });
   }
 
@@ -93,8 +110,8 @@ class _$NftCopyWithImpl<$Res, $Val extends Nft> implements $NftCopyWith<$Res> {
   @override
   @pragma('vm:prefer-inline')
   $NftInfoCopyWith<$Res> get info {
-    return $NftInfoCopyWith<$Res>(_value.info, (value) {
-      return _then(_value.copyWith(info: value) as $Val);
+    return $NftInfoCopyWith<$Res>(_self.info, (value) {
+      return _then(_self.copyWith(info: value));
     });
   }
 
@@ -103,69 +120,16 @@ class _$NftCopyWithImpl<$Res, $Val extends Nft> implements $NftCopyWith<$Res> {
   @override
   @pragma('vm:prefer-inline')
   $NftJsonDataCopyWith<$Res> get json {
-    return $NftJsonDataCopyWith<$Res>(_value.json, (value) {
-      return _then(_value.copyWith(json: value) as $Val);
+    return $NftJsonDataCopyWith<$Res>(_self.json, (value) {
+      return _then(_self.copyWith(json: value));
     });
   }
 }
 
 /// @nodoc
-abstract class _$$NftImplCopyWith<$Res> implements $NftCopyWith<$Res> {
-  factory _$$NftImplCopyWith(_$NftImpl value, $Res Function(_$NftImpl) then) =
-      __$$NftImplCopyWithImpl<$Res>;
-  @override
-  @useResult
-  $Res call({Address address, NftInfo info, NftJsonData json, BigInt? supply});
 
-  @override
-  $AddressCopyWith<$Res> get address;
-  @override
-  $NftInfoCopyWith<$Res> get info;
-  @override
-  $NftJsonDataCopyWith<$Res> get json;
-}
-
-/// @nodoc
-class __$$NftImplCopyWithImpl<$Res> extends _$NftCopyWithImpl<$Res, _$NftImpl>
-    implements _$$NftImplCopyWith<$Res> {
-  __$$NftImplCopyWithImpl(_$NftImpl _value, $Res Function(_$NftImpl) _then)
-      : super(_value, _then);
-
-  /// Create a copy of Nft
-  /// with the given fields replaced by the non-null parameter values.
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? address = null,
-    Object? info = null,
-    Object? json = null,
-    Object? supply = freezed,
-  }) {
-    return _then(_$NftImpl(
-      address: null == address
-          ? _value.address
-          : address // ignore: cast_nullable_to_non_nullable
-              as Address,
-      info: null == info
-          ? _value.info
-          : info // ignore: cast_nullable_to_non_nullable
-              as NftInfo,
-      json: null == json
-          ? _value.json
-          : json // ignore: cast_nullable_to_non_nullable
-              as NftJsonData,
-      supply: freezed == supply
-          ? _value.supply
-          : supply // ignore: cast_nullable_to_non_nullable
-              as BigInt?,
-    ));
-  }
-}
-
-/// @nodoc
-
-class _$NftImpl extends _Nft {
-  const _$NftImpl(
+class _Nft extends Nft {
+  const _Nft(
       {required this.address,
       required this.info,
       required this.json,
@@ -181,16 +145,19 @@ class _$NftImpl extends _Nft {
   @override
   final BigInt? supply;
 
+  /// Create a copy of Nft
+  /// with the given fields replaced by the non-null parameter values.
   @override
-  String toString() {
-    return 'Nft(address: $address, info: $info, json: $json, supply: $supply)';
-  }
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @pragma('vm:prefer-inline')
+  _$NftCopyWith<_Nft> get copyWith =>
+      __$NftCopyWithImpl<_Nft>(this, _$identity);
 
   @override
   bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$NftImpl &&
+            other is _Nft &&
             (identical(other.address, address) || other.address == address) &&
             (identical(other.info, info) || other.info == info) &&
             (identical(other.json, json) || other.json == json) &&
@@ -200,36 +167,94 @@ class _$NftImpl extends _Nft {
   @override
   int get hashCode => Object.hash(runtimeType, address, info, json, supply);
 
+  @override
+  String toString() {
+    return 'Nft(address: $address, info: $info, json: $json, supply: $supply)';
+  }
+}
+
+/// @nodoc
+abstract mixin class _$NftCopyWith<$Res> implements $NftCopyWith<$Res> {
+  factory _$NftCopyWith(_Nft value, $Res Function(_Nft) _then) =
+      __$NftCopyWithImpl;
+  @override
+  @useResult
+  $Res call({Address address, NftInfo info, NftJsonData json, BigInt? supply});
+
+  @override
+  $AddressCopyWith<$Res> get address;
+  @override
+  $NftInfoCopyWith<$Res> get info;
+  @override
+  $NftJsonDataCopyWith<$Res> get json;
+}
+
+/// @nodoc
+class __$NftCopyWithImpl<$Res> implements _$NftCopyWith<$Res> {
+  __$NftCopyWithImpl(this._self, this._then);
+
+  final _Nft _self;
+  final $Res Function(_Nft) _then;
+
   /// Create a copy of Nft
   /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   @pragma('vm:prefer-inline')
-  _$$NftImplCopyWith<_$NftImpl> get copyWith =>
-      __$$NftImplCopyWithImpl<_$NftImpl>(this, _$identity);
-}
-
-abstract class _Nft extends Nft {
-  const factory _Nft(
-      {required final Address address,
-      required final NftInfo info,
-      required final NftJsonData json,
-      final BigInt? supply}) = _$NftImpl;
-  const _Nft._() : super._();
-
-  @override
-  Address get address;
-  @override
-  NftInfo get info;
-  @override
-  NftJsonData get json;
-  @override
-  BigInt? get supply;
+  $Res call({
+    Object? address = null,
+    Object? info = null,
+    Object? json = null,
+    Object? supply = freezed,
+  }) {
+    return _then(_Nft(
+      address: null == address
+          ? _self.address
+          : address // ignore: cast_nullable_to_non_nullable
+              as Address,
+      info: null == info
+          ? _self.info
+          : info // ignore: cast_nullable_to_non_nullable
+              as NftInfo,
+      json: null == json
+          ? _self.json
+          : json // ignore: cast_nullable_to_non_nullable
+              as NftJsonData,
+      supply: freezed == supply
+          ? _self.supply
+          : supply // ignore: cast_nullable_to_non_nullable
+              as BigInt?,
+    ));
+  }
 
   /// Create a copy of Nft
   /// with the given fields replaced by the non-null parameter values.
   @override
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  _$$NftImplCopyWith<_$NftImpl> get copyWith =>
-      throw _privateConstructorUsedError;
+  @pragma('vm:prefer-inline')
+  $AddressCopyWith<$Res> get address {
+    return $AddressCopyWith<$Res>(_self.address, (value) {
+      return _then(_self.copyWith(address: value));
+    });
+  }
+
+  /// Create a copy of Nft
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @pragma('vm:prefer-inline')
+  $NftInfoCopyWith<$Res> get info {
+    return $NftInfoCopyWith<$Res>(_self.info, (value) {
+      return _then(_self.copyWith(info: value));
+    });
+  }
+
+  /// Create a copy of Nft
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @pragma('vm:prefer-inline')
+  $NftJsonDataCopyWith<$Res> get json {
+    return $NftJsonDataCopyWith<$Res>(_self.json, (value) {
+      return _then(_self.copyWith(json: value));
+    });
+  }
 }
+
+// dart format on

@@ -6,7 +6,7 @@ part 'ton_wallet_multisig_expired_transaction.freezed.dart';
 /// Transaction for TonWallet that is created by
 /// [TonWalletRepository.mapMultisigExpiredTransactions].
 @freezed
-class TonWalletMultisigExpiredTransaction
+abstract class TonWalletMultisigExpiredTransaction
     with _$TonWalletMultisigExpiredTransaction {
   const factory TonWalletMultisigExpiredTransaction({
     required String lt,

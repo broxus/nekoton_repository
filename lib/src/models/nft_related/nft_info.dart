@@ -5,7 +5,7 @@ part 'nft_info.freezed.dart';
 part 'nft_info.g.dart';
 
 @freezed
-class NftInfo with _$NftInfo {
+abstract class NftInfo with _$NftInfo {
   const factory NftInfo({
     required String id,
     required Address owner,

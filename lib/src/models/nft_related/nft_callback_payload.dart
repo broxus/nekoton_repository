@@ -5,7 +5,7 @@ part 'nft_callback_payload.freezed.dart';
 part 'nft_callback_payload.g.dart';
 
 @freezed
-class NftCallbackPayload with _$NftCallbackPayload {
+abstract class NftCallbackPayload with _$NftCallbackPayload {
   const factory NftCallbackPayload({
     @amountJsonConverter required BigInt value,
     required String payload,
