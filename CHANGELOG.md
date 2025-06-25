@@ -3,6 +3,31 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## 2025-06-25
+
+### Changes
+
+---
+
+Packages with breaking changes:
+
+ - There are no breaking changes in this release.
+
+Packages with other changes:
+
+ - [`nekoton_repository` - `v1.3.1`](#nekoton_repository---v131)
+
+---
+
+#### `nekoton_repository` - `v1.3.1`
+
+ - **REFACTOR**: migrate to `freezed v3` (#222).
+
+## 1.3.1
+
+ - **REFACTOR**: migrate to `freezed v3` (#222).
+
+
 ## 2025-06-24
 
 ### Changes
