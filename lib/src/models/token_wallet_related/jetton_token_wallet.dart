@@ -2,7 +2,7 @@ part of 'generic_token_wallet.dart';
 
 class JettonTokenWallet extends GenericTokenWallet {
   JettonTokenWallet(this._wallet, this._symbol)
-      : _currency = _getCurrency(_symbol);
+      : _currency = _symbol.toCurrency();
 
   static Future<JettonTokenWallet> subscribe({
     required Transport transport,
@@ -90,18 +90,4 @@ class JettonTokenWallet extends GenericTokenWallet {
 
   @override
   void dispose() => _wallet.dispose();
-}
-
-Currency _getCurrency(Symbol symbol) {
-  final patternDigits =
-      symbol.decimals > 0 ? '0.${'#' * symbol.decimals}' : '0';
-  final currency = Currency.create(
-    symbol.name,
-    symbol.decimals,
-    symbol: symbol.name,
-    pattern: patternDigits,
-  );
-  Currencies().register(currency);
-
-  return currency;
 }

@@ -16,3 +16,24 @@ extension ExistingWalletInfoX on ExistingWalletInfo {
     return isDeployed || balanceIsGreaterThanZero;
   }
 }
+
+extension SymbolX on Symbol {
+  Currency toCurrency({
+    bool register = true,
+  }) {
+    final patternDigits = decimals > 0 ? '0.${'#' * decimals}' : '0';
+    final currency = Currency.create(
+      name,
+      decimals,
+      symbol: name,
+      pattern: patternDigits,
+      name: fullName,
+    );
+
+    if (register) {
+      Currencies().register(currency);
+    }
+
+    return currency;
+  }
+}
