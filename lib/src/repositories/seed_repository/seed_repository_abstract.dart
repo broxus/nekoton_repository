@@ -17,14 +17,9 @@ abstract class SeedKeyRepository {
   /// Stream to listen for changes in [findingDerivedKeys].
   Stream<Set<String>> get findingDerivedKeysStream;
 
-  /// Returns list of public keys that can be used in [deriveKeys] from
-  /// seed with [masterKey] and [password].
-  /// Returns list of up to 100 public keys, that could be displayed by pages.
+  /// Returns list of public keys that can be used in [deriveKeys] from [params]
   /// !!! Seed should not be legacy.
-  Future<List<PublicKey>> getKeysToDerive({
-    required PublicKey masterKey,
-    required String password,
-  });
+  Future<List<PublicKey>> getKeysToDerive(GetPublicKeysParams params);
 
   /// Derive keys from [masterKey] which is key of seed.
   /// !!! This method won't work for legacy keys.
@@ -57,6 +52,11 @@ abstract class SeedKeyRepository {
     SeedAddType addType,
   });
 
+  Future<PublicKey> addLedgerKey({
+    required int accountId,
+    String? name,
+  });
+
   /// Change password of seed phrase.
   // TODO(alex-a4): verify accepting this action to master key, recursively
   //   change password of all sub keys.
@@ -72,7 +72,6 @@ abstract class SeedKeyRepository {
     required PublicKey publicKey,
     required PublicKey masterKey,
     required String name,
-    required bool isLegacy,
   });
 
   /// Rename seed with [masterKey] to [name].
