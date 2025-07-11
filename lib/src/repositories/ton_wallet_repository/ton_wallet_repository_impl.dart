@@ -1183,7 +1183,7 @@ extension TonWalletTransactionExtension
         data.reward,
       TransactionAdditionalInfoWalletInteraction(:final data) => switch (
             data.method) {
-          WalletInteractionMethodMultisig(:final data) => switch (data.data) {
+          WalletInteractionMethodMultisig(:final data) => switch (data) {
               MultisigTransactionSend(:final data) => data.value,
               MultisigTransactionSubmit(:final data) => data.value,
               _ => null,
@@ -1223,14 +1223,10 @@ extension TonWalletTransactionExtension
       };
 
   bool get isMultisigTransaction {
-    return switch (data) {
-      TransactionAdditionalInfoWalletInteraction(:final data) => switch (
-            data.method) {
-          WalletInteractionMethodMultisig(:final data) => switch (data.data) {
-              MultisigTransactionSubmit() => true,
-              MultisigTransactionConfirm() => true,
-              _ => false,
-            },
+    return switch (walletInteractionInfo?.method) {
+      WalletInteractionMethodMultisig(:final data) => switch (data) {
+          MultisigTransactionSubmit() => true,
+          MultisigTransactionConfirm() => true,
           _ => false,
         },
       _ => false,
@@ -1242,15 +1238,11 @@ extension TonWalletTransactionExtension
     required List<TransactionWithData<TransactionAdditionalInfo?>> transactions,
     required List<MultisigPendingTransaction> pendingTransactions,
   }) {
-    return switch (data) {
-      TransactionAdditionalInfoWalletInteraction(:final data) => switch (
-            data.method) {
-          WalletInteractionMethodMultisig(:final data) => switch (data.data) {
-              MultisigTransactionSubmit(:final data) =>
-                pendingTransactions.every((e) => e.id != data.transId) &&
-                    isEnoughSubscribers(data.transId, details, transactions),
-              _ => false,
-            },
+    return switch (walletInteractionInfo?.method) {
+      WalletInteractionMethodMultisig(:final data) => switch (data) {
+          MultisigTransactionSubmit(:final data) =>
+            pendingTransactions.every((e) => e.id != data.transId) &&
+                isEnoughSubscribers(data.transId, details, transactions),
           _ => false,
         },
       _ => false,
@@ -1258,14 +1250,9 @@ extension TonWalletTransactionExtension
   }
 
   bool isConfirmTransaction(String id) {
-    return switch (data) {
-      TransactionAdditionalInfoWalletInteraction(:final data) => switch (
-            data.method) {
-          WalletInteractionMethodMultisig(:final data) => switch (data.data) {
-              MultisigTransactionConfirm(:final data) =>
-                data.transactionId == id,
-              _ => false,
-            },
+    return switch (walletInteractionInfo?.method) {
+      WalletInteractionMethodMultisig(:final data) => switch (data) {
+          MultisigTransactionConfirm(:final data) => data.transactionId == id,
           _ => false,
         },
       _ => false,
@@ -1273,15 +1260,10 @@ extension TonWalletTransactionExtension
   }
 
   bool isSubmitOrConfirmTransaction(String id) {
-    return switch (data) {
-      TransactionAdditionalInfoWalletInteraction(:final data) => switch (
-            data.method) {
-          WalletInteractionMethodMultisig(:final data) => switch (data.data) {
-              MultisigTransactionSubmit(:final data) => data.transId == id,
-              MultisigTransactionConfirm(:final data) =>
-                data.transactionId == id,
-              _ => false,
-            },
+    return switch (walletInteractionInfo?.method) {
+      WalletInteractionMethodMultisig(:final data) => switch (data) {
+          MultisigTransactionSubmit(:final data) => data.transId == id,
+          MultisigTransactionConfirm(:final data) => data.transactionId == id,
           _ => false,
         },
       _ => false,
@@ -1291,14 +1273,10 @@ extension TonWalletTransactionExtension
   bool isPendingTransaction(
     List<MultisigPendingTransaction> pendingTransactions,
   ) {
-    return switch (data) {
-      TransactionAdditionalInfoWalletInteraction(:final data) => switch (
-            data.method) {
-          WalletInteractionMethodMultisig(:final data) => switch (data.data) {
-              MultisigTransactionSubmit(:final data) =>
-                pendingTransactions.any((e) => e.id == data.transId),
-              _ => false,
-            },
+    return switch (walletInteractionInfo?.method) {
+      WalletInteractionMethodMultisig(:final data) => switch (data) {
+          MultisigTransactionSubmit(:final data) =>
+            pendingTransactions.any((e) => e.id == data.transId),
           _ => false,
         },
       _ => false,
@@ -1309,15 +1287,11 @@ extension TonWalletTransactionExtension
     required TonWalletDetails details,
     required List<TransactionWithData<TransactionAdditionalInfo?>> transactions,
   }) {
-    return switch (data) {
-      TransactionAdditionalInfoWalletInteraction(:final data) => switch (
-            data.method) {
-          WalletInteractionMethodMultisig(:final data) => switch (data.data) {
-              MultisigTransactionSubmit(:final data) =>
-                !isEnoughSubscribers(data.transId, details, transactions) &&
-                    isExpiredByTime(details),
-              _ => false,
-            },
+    return switch (walletInteractionInfo?.method) {
+      WalletInteractionMethodMultisig(:final data) => switch (data) {
+          MultisigTransactionSubmit(:final data) =>
+            !isEnoughSubscribers(data.transId, details, transactions) &&
+                isExpiredByTime(details),
           _ => false,
         },
       _ => false,
@@ -1346,13 +1320,9 @@ extension TonWalletTransactionExtension
   }
 
   MultisigSubmitTransaction? get multisigSubmitTransaction {
-    return switch (data) {
-      TransactionAdditionalInfoWalletInteraction(:final data) => switch (
-            data.method) {
-          WalletInteractionMethodMultisig(:final data) => switch (data.data) {
-              MultisigTransactionSubmit(:final data) => data,
-              _ => null,
-            },
+    return switch (walletInteractionInfo?.method) {
+      WalletInteractionMethodMultisig(:final data) => switch (data) {
+          MultisigTransactionSubmit(:final data) => data,
           _ => null,
         },
       _ => null,
@@ -1360,14 +1330,10 @@ extension TonWalletTransactionExtension
   }
 
   PublicKey? get custodian {
-    return switch (data) {
-      TransactionAdditionalInfoWalletInteraction(:final data) => switch (
-            data.method) {
-          WalletInteractionMethodMultisig(:final data) => switch (data.data) {
-              MultisigTransactionSubmit(:final data) => data.custodian,
-              MultisigTransactionConfirm(:final data) => data.custodian,
-              _ => null,
-            },
+    return switch (walletInteractionInfo?.method) {
+      WalletInteractionMethodMultisig(:final data) => switch (data) {
+          MultisigTransactionSubmit(:final data) => data.custodian,
+          MultisigTransactionConfirm(:final data) => data.custodian,
           _ => null,
         },
       _ => null,
