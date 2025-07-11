@@ -3,6 +3,31 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## 2025-07-11
+
+### Changes
+
+---
+
+Packages with breaking changes:
+
+ - There are no breaking changes in this release.
+
+Packages with other changes:
+
+ - [`nekoton_repository` - `v1.3.2`](#nekoton_repository---v132)
+
+---
+
+#### `nekoton_repository` - `v1.3.2`
+
+ - **FIX**: fix & simplify multisig transaction mapping;.
+
+## 1.3.2
+
+ - **FIX**: fix & simplify multisig transaction mapping;.
+
+
 ## 2025-06-25
 
 ### Changes
