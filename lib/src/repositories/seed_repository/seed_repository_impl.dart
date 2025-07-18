@@ -4,8 +4,6 @@ import 'package:get_it/get_it.dart';
 import 'package:nekoton_repository/nekoton_repository.dart';
 import 'package:rxdart/rxdart.dart';
 
-const _maxDeriveKeys = 100;
-
 /// Implementation of SeedRepository.
 /// Usage
 /// ```
@@ -39,25 +37,24 @@ mixin SeedKeyRepositoryImpl implements SeedKeyRepository {
   TransportStrategy get currentTransport;
 
   @override
-  Future<List<PublicKey>> getKeysToDerive({
-    required PublicKey masterKey,
-    required String password,
-    int offset = 0,
-    int limit = _maxDeriveKeys,
-  }) {
-    return keyStore.getPublicKeys(
-      DerivedKeyGetPublicKeys(
-        masterKey: masterKey,
-        offset: offset,
-        limit: limit,
-        password: Password.explicit(
-          PasswordExplicit(
-            password: password,
-            cacheBehavior: const PasswordCacheBehavior.nop(),
+  Future<List<PublicKey>> getKeysToDerive(GetPublicKeysParams params) {
+    final input = switch (params) {
+      final GetPublicKeysParamsDerived p => DerivedKeyGetPublicKeys(
+          masterKey: p.masterKey,
+          password: Password.explicit(
+            PasswordExplicit(
+              password: p.password,
+              cacheBehavior: const PasswordCacheBehavior.nop(),
+            ),
           ),
+          offset: p.offset,
+          limit: p.limit,
         ),
-      ),
-    );
+      GetPublicKeysParamsLedger(:final limit, :final offset) =>
+        LedgerKeyGetPublicKeys(limit: limit, offset: offset),
+    };
+
+    return keyStore.getPublicKeys(input);
   }
 
   @override
@@ -195,6 +192,33 @@ mixin SeedKeyRepositoryImpl implements SeedKeyRepository {
     return publicKey;
   }
 
+  @override
+  Future<PublicKey> addLedgerKey({
+    required int accountId,
+    String? name,
+  }) async {
+    final publicKey = await keyStore.addKey(
+      LedgerKeyCreateInput(
+        accountId: accountId,
+        name: name,
+      ),
+    );
+
+    await storageRepository.updateSeedMetadata(
+      masterKey: publicKey,
+      meta: SeedMetadata(
+        name: name,
+        addType: SeedAddType.import,
+        addedAt: DateTime.now().millisecondsSinceEpoch,
+      ),
+    );
+
+    unawaited(triggerAddingAccounts([publicKey]));
+    // TODO(komarov): think about `triggerDerivingKeys` for ledger
+
+    return publicKey;
+  }
+
   Future<void> addDefaultAccount(PublicKey publicKey) async {
     final transport = currentTransport;
     if (transport.transport.disposed) return;
@@ -242,8 +266,12 @@ mixin SeedKeyRepositoryImpl implements SeedKeyRepository {
       final accountIds = <int>[];
 
       final keys = await getKeysToDerive(
-        masterKey: masterKey,
-        password: password,
+        GetPublicKeysParams.derived(
+          masterKey: masterKey,
+          password: password,
+          limit: 100,
+          offset: 0,
+        ),
       );
 
       // skip first key, because it's already added
@@ -426,22 +454,29 @@ mixin SeedKeyRepositoryImpl implements SeedKeyRepository {
     required PublicKey publicKey,
     required PublicKey masterKey,
     required String name,
-    required bool isLegacy,
   }) async {
-    final updateKeyInput = isLegacy
-        ? EncryptedKeyUpdateParams.rename(
-            EncryptedKeyUpdateParamsRename(
-              publicKey: publicKey,
-              name: name,
-            ),
-          )
-        : DerivedKeyUpdateParams.renameKey(
-            DerivedKeyUpdateParamsRenameKey(
-              masterKey: masterKey,
-              publicKey: publicKey,
-              name: name,
-            ),
-          );
+    final key = keyStore.keys.firstWhere((key) => key.publicKey == publicKey);
+    final updateKeyInput = switch (key.signerType) {
+      KeySignerType.encrypted => EncryptedKeyUpdateParams.rename(
+          EncryptedKeyUpdateParamsRename(
+            publicKey: publicKey,
+            name: name,
+          ),
+        ),
+      KeySignerType.derived => DerivedKeyUpdateParams.renameKey(
+          DerivedKeyUpdateParamsRenameKey(
+            masterKey: masterKey,
+            publicKey: publicKey,
+            name: name,
+          ),
+        ),
+      KeySignerType.ledger => LedgerUpdateKeyInput.rename(
+          LedgerUpdateKeyInputRename(
+            publicKey: publicKey,
+            name: name,
+          ),
+        ),
+    };
 
     await keyStore.updateKey(updateKeyInput);
   }
@@ -518,12 +553,12 @@ mixin SeedKeyRepositoryImpl implements SeedKeyRepository {
 
   @override
   Future<String> sign({
-    required String data,
+    required UnsignedMessageImpl message,
     required SignInput signInput,
     required int? signatureId,
   }) =>
       keyStore.sign(
-        data: data,
+        message: message,
         input: signInput,
         signatureId: signatureId,
       );
