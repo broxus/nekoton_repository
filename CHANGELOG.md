@@ -3,6 +3,31 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## 2025-07-18
+
+### Changes
+
+---
+
+Packages with breaking changes:
+
+ - There are no breaking changes in this release.
+
+Packages with other changes:
+
+ - [`nekoton_repository` - `v1.3.3`](#nekoton_repository---v133)
+
+---
+
+#### `nekoton_repository` - `v1.3.3`
+
+ - **FIX**: implement read-write mutex for token wallet and ton wallet subscriptions.
+
+## 1.3.3
+
+ - **FIX**: implement read-write mutex for token wallet and ton wallet subscriptions.
+
+
 ## 2025-07-11
 
 ### Changes
