@@ -4,6 +4,7 @@ import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
 import 'package:get_it/get_it.dart';
 import 'package:logging/logging.dart';
+import 'package:mutex/mutex.dart';
 import 'package:nekoton_repository/nekoton_repository.dart';
 import 'package:nekoton_repository/src/repositories/ton_wallet_repository/ton_wallet_gql_block_poller.dart';
 import 'package:nekoton_repository/src/utils/utils.dart';
@@ -20,6 +21,7 @@ mixin TonWalletRepositoryImpl implements TonWalletRepository {
   final List<RefreshPollingQueue> _sendPollingQueues = [];
   final BehaviorSubject<bool> _isPollingPaused =
       BehaviorSubject.seeded(false, sync: true);
+  final _mutexes = <Address, ReadWriteMutex>{};
 
   KeyStore get keyStore;
 
@@ -91,27 +93,54 @@ mixin TonWalletRepositoryImpl implements TonWalletRepository {
     }
 
     final transport = currentTransport.transport;
-
-    final wallet = await TonWallet.subscribe(
-      transport: transport,
-      workchainId: asset.workchain,
-      publicKey: asset.publicKey,
-      walletType: asset.contract,
+    final mutex = _mutexes.putIfAbsent(
+      computeTonWalletAddress(
+        publicKey: asset.publicKey,
+        walletType: asset.contract,
+        workchain: asset.workchain,
+      ),
+      ReadWriteMutex.new,
     );
 
-    return addWalletInst(wallet);
+    await mutex.acquireWrite();
+
+    try {
+      final wallet = await TonWallet.subscribe(
+        transport: transport,
+        workchainId: asset.workchain,
+        publicKey: asset.publicKey,
+        walletType: asset.contract,
+      );
+
+      return addWalletInst(wallet);
+    } finally {
+      mutex.release();
+      if (!mutex.isLocked) {
+        _mutexes.remove(asset.address);
+      }
+    }
   }
 
   @override
   Future<TonWalletState> subscribeByAddress(Address address) async {
     final transport = currentTransport.transport;
+    final mutex = _mutexes.putIfAbsent(address, ReadWriteMutex.new);
 
-    final wallet = await TonWallet.subscribeByAddress(
-      transport: transport,
-      address: address,
-    );
+    await mutex.acquireWrite();
 
-    return addWalletInst(wallet);
+    try {
+      final wallet = await TonWallet.subscribeByAddress(
+        transport: transport,
+        address: address,
+      );
+
+      return addWalletInst(wallet);
+    } finally {
+      mutex.release();
+      if (!mutex.isLocked) {
+        _mutexes.remove(address);
+      }
+    }
   }
 
   @override
@@ -119,13 +148,26 @@ mixin TonWalletRepositoryImpl implements TonWalletRepository {
     ExistingWalletInfo existingWallet,
   ) async {
     final transport = currentTransport.transport;
-
-    final wallet = await TonWallet.subscribeByExistingWallet(
-      transport: transport,
-      existingWallet: existingWallet,
+    final mutex = _mutexes.putIfAbsent(
+      existingWallet.address,
+      ReadWriteMutex.new,
     );
 
-    return addWalletInst(wallet);
+    await mutex.acquireWrite();
+
+    try {
+      final wallet = await TonWallet.subscribeByExistingWallet(
+        transport: transport,
+        existingWallet: existingWallet,
+      );
+
+      return addWalletInst(wallet);
+    } finally {
+      mutex.release();
+      if (!mutex.isLocked) {
+        _mutexes.remove(existingWallet.address);
+      }
+    }
   }
 
   @override
@@ -206,10 +248,20 @@ mixin TonWalletRepositoryImpl implements TonWalletRepository {
   }
 
   @override
-  void unsubscribe(Address address) {
-    final wallet = removeWalletInst(address);
-    pollingQueues.remove(address)?.stop();
-    wallet?.wallet?.dispose();
+  Future<void> unsubscribe(Address address) async {
+    final mutex = _mutexes[address];
+    await mutex?.acquireWrite();
+
+    try {
+      final wallet = removeWalletInst(address);
+      pollingQueues.remove(address)?.stop();
+      wallet?.wallet?.dispose();
+    } finally {
+      mutex?.release();
+      if (mutex?.isLocked == false) {
+        _mutexes.remove(address);
+      }
+    }
   }
 
   @override
@@ -220,6 +272,7 @@ mixin TonWalletRepositoryImpl implements TonWalletRepository {
       wallet.wallet?.dispose();
     }
     _walletsSubject.add({});
+    _mutexes.clear();
 
     GetIt.instance<TokenWalletRepository>().closeAllTokenSubscriptions();
   }
@@ -250,9 +303,9 @@ mixin TonWalletRepositoryImpl implements TonWalletRepository {
       assets.where((a) => !wallets.any((w) => w.address == a.$1.address)),
     );
 
-    for (final asset in toUnsubscribe) {
-      unsubscribe(asset.address);
-    }
+    await Future.wait(
+      toUnsubscribe.map((e) => unsubscribe(e.address)),
+    );
 
     lastUpdatedAssets = assets;
 
@@ -613,8 +666,20 @@ mixin TonWalletRepositoryImpl implements TonWalletRepository {
 
   @override
   Future<TonWalletState> getWallet(Address address) async {
-    final wallet = walletsMap[address] ?? await subscribeByAddress(address);
-    return wallet;
+    final mutex = _mutexes[address];
+    await mutex?.acquireRead();
+
+    try {
+      final wallet = walletsMap[address];
+      if (wallet != null) return wallet;
+    } finally {
+      mutex?.release();
+      if (mutex?.isLocked == false) {
+        _mutexes.remove(address);
+      }
+    }
+
+    return subscribeByAddress(address);
   }
 
   @override

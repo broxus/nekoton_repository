@@ -1,6 +1,7 @@
 import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
 import 'package:logging/logging.dart';
+import 'package:mutex/mutex.dart';
 import 'package:nekoton_repository/nekoton_repository.dart';
 import 'package:quiver/iterables.dart';
 import 'package:rxdart/rxdart.dart';
@@ -16,6 +17,7 @@ mixin TokenWalletRepositoryImpl implements TokenWalletRepository {
   /// Key - pair where first item is owner address, second is rootTokenContract
   final _tokenWalletsSubject =
       BehaviorSubject<Map<(Address, Address), TokenWalletState>>.seeded({});
+  final _mutexes = <(Address, Address), ReadWriteMutex>{};
 
   /// How many tokens can be subscribed at time for one cycle in
   /// [TokenWalletRepositoryImpl._updateTokenSubscriptionsPairs].
@@ -81,12 +83,26 @@ mixin TokenWalletRepositoryImpl implements TokenWalletRepository {
     required Address owner,
     required Address rootTokenContract,
   }) async {
-    final wallet = await currentTransport.subscribeToken(
-      owner: owner,
-      rootTokenContract: rootTokenContract,
+    final mutex = _mutexes.putIfAbsent(
+      (owner, rootTokenContract),
+      ReadWriteMutex.new,
     );
 
-    return addTokenWalletInst(wallet);
+    await mutex.acquireWrite();
+
+    try {
+      final wallet = await currentTransport.subscribeToken(
+        owner: owner,
+        rootTokenContract: rootTokenContract,
+      );
+
+      return addTokenWalletInst(wallet);
+    } finally {
+      mutex.release();
+      if (mutex.isLocked == false) {
+        _mutexes.remove((owner, rootTokenContract));
+      }
+    }
   }
 
   @override
@@ -170,10 +186,23 @@ mixin TokenWalletRepositoryImpl implements TokenWalletRepository {
   }
 
   @override
-  void unsubscribeToken(Address owner, Address rootTokenContract) {
-    final wallet = removeTokenWalletInst(owner, rootTokenContract);
-    tokenPollingQueues.remove((owner, rootTokenContract))?.stop();
-    wallet?.wallet?.dispose();
+  Future<void> unsubscribeToken(
+    Address owner,
+    Address rootTokenContract,
+  ) async {
+    final mutex = _mutexes[(owner, rootTokenContract)];
+    await mutex?.acquireWrite();
+
+    try {
+      final wallet = removeTokenWalletInst(owner, rootTokenContract);
+      tokenPollingQueues.remove((owner, rootTokenContract))?.stop();
+      wallet?.wallet?.dispose();
+    } finally {
+      mutex?.release();
+      if (mutex?.isLocked == false) {
+        _mutexes.remove((owner, rootTokenContract));
+      }
+    }
   }
 
   @override
@@ -185,6 +214,7 @@ mixin TokenWalletRepositoryImpl implements TokenWalletRepository {
     }
 
     _tokenWalletsSubject.add({});
+    _mutexes.clear();
   }
 
   @override
@@ -243,9 +273,9 @@ mixin TokenWalletRepositoryImpl implements TokenWalletRepository {
       ),
     );
 
-    for (final asset in toUnsubscribe) {
-      unsubscribeToken(asset.owner, asset.rootTokenContract);
-    }
+    await Future.wait(
+      toUnsubscribe.map((e) => unsubscribeToken(e.owner, e.rootTokenContract)),
+    );
 
     late CancelableOperationAwaited<void> operation;
     operation = CancelableOperationAwaited.fromFuture(() async {
@@ -393,12 +423,20 @@ mixin TokenWalletRepositoryImpl implements TokenWalletRepository {
     Address owner,
     Address rootTokenContract,
   ) async {
-    final wallet = tokenWalletsMap[(owner, rootTokenContract)] ??
-        await subscribeToken(
-          owner: owner,
-          rootTokenContract: rootTokenContract,
-        );
-    return wallet;
+    final mutex = _mutexes[(owner, rootTokenContract)];
+    await mutex?.acquireRead();
+
+    try {
+      final wallet = tokenWalletsMap[(owner, rootTokenContract)];
+      if (wallet != null) return wallet;
+    } finally {
+      mutex?.release();
+      if (mutex?.isLocked == false) {
+        _mutexes.remove((owner, rootTokenContract));
+      }
+    }
+
+    return subscribeToken(owner: owner, rootTokenContract: rootTokenContract);
   }
 
   /// This is internal method to add wallet to cache.

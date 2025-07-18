@@ -243,7 +243,7 @@ void main() {
       expect(repository.walletSubscriptions[address], isNull);
     });
 
-    test('unsubscribe', () {
+    test('unsubscribe', () async {
       when(() => wallet.onMessageExpiredStream)
           .thenAnswer((_) => expiredStream);
       when(() => wallet.onMessageSentStream)
@@ -263,9 +263,8 @@ void main() {
 
       repository.pollingQueues[address] = poller;
 
-      repository
-        ..addWalletInst(wallet)
-        ..unsubscribe(address);
+      repository.addWalletInst(wallet);
+      await repository.unsubscribe(address);
 
       expect(repository.walletsMap[address]?.wallet, isNull);
       expect(repository.walletSubscriptions[address], isNull);
@@ -1325,6 +1324,19 @@ void main() {
       when(() => proto.transportBox).thenReturn(box);
 
       when(
+        () => bridge.crateApiMergedNtComputeTonWalletAddress(
+          publicKey: any(named: 'publicKey'),
+          walletType: any(named: 'walletType'),
+          workchain: any(named: 'workchain'),
+        ),
+      ).thenAnswer((_) => '12345');
+      when(
+        () => bridge.crateApiMergedNtRepackAddress(
+          address: any(named: 'address'),
+        ),
+      ).thenAnswer((_) => '12345');
+
+      when(
         () => bridge.crateApiMergedTonWalletDartWrapperSubscribe(
           publicKey: any(named: 'publicKey'),
           instanceHash: any(named: 'instanceHash'),
@@ -1364,6 +1376,19 @@ void main() {
       when(() => proto.disposed).thenReturn(false);
       when(() => wallet.address).thenReturn(multisigAddress);
       when(() => proto.transportBox).thenReturn(box);
+
+      when(
+        () => bridge.crateApiMergedNtComputeTonWalletAddress(
+          publicKey: any(named: 'publicKey'),
+          walletType: any(named: 'walletType'),
+          workchain: any(named: 'workchain'),
+        ),
+      ).thenAnswer((_) => '12345');
+      when(
+        () => bridge.crateApiMergedNtRepackAddress(
+          address: any(named: 'address'),
+        ),
+      ).thenAnswer((_) => '12345');
 
       when(
         () => bridge.crateApiMergedTonWalletDartWrapperSubscribe(
@@ -1452,6 +1477,19 @@ void main() {
       when(() => proto.disposed).thenReturn(false);
       when(() => wallet.address).thenReturn(multisigAddress);
       when(() => proto.transportBox).thenReturn(box);
+
+      when(
+        () => bridge.crateApiMergedNtComputeTonWalletAddress(
+          publicKey: any(named: 'publicKey'),
+          walletType: any(named: 'walletType'),
+          workchain: any(named: 'workchain'),
+        ),
+      ).thenAnswer((_) => '12345');
+      when(
+        () => bridge.crateApiMergedNtRepackAddress(
+          address: any(named: 'address'),
+        ),
+      ).thenAnswer((_) => '12345');
 
       when(
         () => bridge.crateApiMergedTonWalletDartWrapperSubscribe(
