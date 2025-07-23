@@ -47,33 +47,49 @@ class SeedKey extends SeedKeyBase {
         publicKey: key.publicKey,
         masterKey: key.masterKey,
         name: name,
-        isLegacy: isLegacy,
       );
 
   /// Input that can be used to decrypt/encrypt methods.
-  /// [password] is the password of the seed
-  SignInput signInput(String password) => isLegacy
-      ? EncryptedKeyPassword(
+  ///
+  /// **Note:** Throws [ArgumentError] if the [signerType] is not
+  /// matching [signInputAuth].
+  SignInput signInput(SignInputAuth signInputAuth) {
+    return switch (signerType) {
+      KeySignerType.encrypted when signInputAuth is SignInputAuthPassword =>
+        EncryptedKeyPassword(
           publicKey: key.publicKey,
           password: Password.explicit(
             PasswordExplicit(
-              password: password,
+              password: signInputAuth.password,
               cacheBehavior: const PasswordCacheBehavior.nop(),
             ),
           ),
-        )
-      : DerivedKeyPassword.byAccountId(
+        ),
+      KeySignerType.derived when signInputAuth is SignInputAuthPassword =>
+        DerivedKeyPassword.byAccountId(
           DerivedKeyPasswordByAccountId(
             masterKey: key.masterKey,
             accountId: key.accountId,
             password: Password.explicit(
               PasswordExplicit(
-                password: password,
+                password: signInputAuth.password,
                 cacheBehavior: const PasswordCacheBehavior.nop(),
               ),
             ),
           ),
-        );
+        ),
+      KeySignerType.ledger when signInputAuth is SignInputAuthLedger =>
+        LedgerSignInput(
+          publicKey: key.publicKey,
+          wallet: signInputAuth.wallet,
+          context: signInputAuth.context,
+        ),
+      _ => throw ArgumentError(
+          'Cannot create sign input for key with type $signerType. '
+          'SignInputAuth type mismatch.',
+        ),
+    };
+  }
 
   /// Returns list of Accounts that were already created for this key.
   /// !!! Returns not sorted for UI list.

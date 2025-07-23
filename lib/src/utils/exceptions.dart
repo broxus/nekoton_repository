@@ -5,7 +5,7 @@ final class OperationCanceledException implements Exception {
 
   @override
   String toString() {
-    return 'SubscriptionCanceledException: $message';
+    return 'OperationCanceledException: $message';
   }
 }
 
