@@ -6,17 +6,15 @@ part of 'multitoken_transfer.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-_$MultitokenTransferImpl _$$MultitokenTransferImplFromJson(
-        Map<String, dynamic> json) =>
-    _$MultitokenTransferImpl(
+_MultitokenTransfer _$MultitokenTransferFromJson(Map<String, dynamic> json) =>
+    _MultitokenTransfer(
       tokenId: json['tokenId'] as String,
       collection: Address.fromJson(json['collection'] as String),
       sender: Address.fromJson(json['sender'] as String),
       count: amountJsonConverter.fromJson(json['count'] as String),
     );
 
-Map<String, dynamic> _$$MultitokenTransferImplToJson(
-        _$MultitokenTransferImpl instance) =>
+Map<String, dynamic> _$MultitokenTransferToJson(_MultitokenTransfer instance) =>
     <String, dynamic>{
       'tokenId': instance.tokenId,
       'collection': instance.collection.toJson(),

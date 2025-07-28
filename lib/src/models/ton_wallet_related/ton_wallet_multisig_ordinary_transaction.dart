@@ -7,7 +7,7 @@ part 'ton_wallet_multisig_ordinary_transaction.freezed.dart';
 /// Transaction for TonWallet that is created by
 /// [TonWalletRepository.mapMultisigOrdinaryTransactions].
 @freezed
-class TonWalletMultisigOrdinaryTransaction
+abstract class TonWalletMultisigOrdinaryTransaction
     with _$TonWalletMultisigOrdinaryTransaction {
   const factory TonWalletMultisigOrdinaryTransaction({
     required String lt,

@@ -6,7 +6,7 @@ part 'ton_wallet_expired_transaction.freezed.dart';
 /// Transaction for TonWallet that is created by
 /// [TonWalletRepository.mapExpiredTransactions].
 @freezed
-class TonWalletExpiredTransaction with _$TonWalletExpiredTransaction {
+abstract class TonWalletExpiredTransaction with _$TonWalletExpiredTransaction {
   const factory TonWalletExpiredTransaction({
     // address of wallet for which this transaction found
     required Address address,

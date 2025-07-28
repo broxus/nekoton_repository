@@ -201,7 +201,7 @@ void main() {
       expect(repository.tokenWalletSubscriptions[(owner, root1)], isNull);
     });
 
-    test('unsubscribe', () {
+    test('unsubscribe', () async {
       when(() => wallet.onBalanceChangedStream)
           .thenAnswer((_) => balanceStream);
       when(() => wallet.onTransactionsFoundStream)
@@ -219,9 +219,8 @@ void main() {
 
       repository.tokenPollingQueues[(owner, root1)] = poller;
 
-      repository
-        ..addTokenWalletInst(tokenWallet)
-        ..unsubscribeToken(owner, root1);
+      repository.addTokenWalletInst(tokenWallet);
+      await repository.unsubscribeToken(owner, root1);
 
       expect(repository.tokenWalletsMap[(owner, root1)], isNull);
       expect(repository.tokenWalletSubscriptions[(owner, root1)], isNull);

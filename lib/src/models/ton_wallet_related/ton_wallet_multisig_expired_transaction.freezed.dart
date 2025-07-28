@@ -1,3 +1,4 @@
+// dart format width=80
 // coverage:ignore-file
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // ignore_for_file: type=lint
@@ -9,57 +10,111 @@ part of 'ton_wallet_multisig_expired_transaction.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// dart format off
 T _$identity<T>(T value) => value;
-
-final _privateConstructorUsedError = UnsupportedError(
-    'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models');
 
 /// @nodoc
 mixin _$TonWalletMultisigExpiredTransaction {
-  String get lt =>
-      throw _privateConstructorUsedError; // initiator of transactions
-  PublicKey get creator =>
-      throw _privateConstructorUsedError; // custodians who accepted this transaction
-  List<PublicKey> get confirmations =>
-      throw _privateConstructorUsedError; // list of possible custodians
-  List<PublicKey> get custodians =>
-      throw _privateConstructorUsedError; // if this transaction was sent from this wallet
-  bool get isOutgoing => throw _privateConstructorUsedError;
+  String get lt; // initiator of transactions
+  PublicKey get creator; // custodians who accepted this transaction
+  List<PublicKey> get confirmations; // list of possible custodians
+  List<PublicKey>
+      get custodians; // if this transaction was sent from this wallet
+  bool get isOutgoing;
   @amountJsonConverter
-  BigInt get value =>
-      throw _privateConstructorUsedError; // address of destination or source depends on isOutgoing
-  Address get address => throw _privateConstructorUsedError;
+  BigInt get value; // address of destination or source depends on isOutgoing
+  Address get address;
   @dateSecondsSinceEpochJsonConverter
-  DateTime get date => throw _privateConstructorUsedError;
+  DateTime get date;
   @amountJsonConverter
-  BigInt get fees => throw _privateConstructorUsedError;
-  String get hash => throw _privateConstructorUsedError;
-  String? get prevTransactionLt => throw _privateConstructorUsedError;
-  String? get comment => throw _privateConstructorUsedError;
-  DePoolOnRoundCompleteNotification? get dePoolOnRoundCompleteNotification =>
-      throw _privateConstructorUsedError;
-  DePoolReceiveAnswerNotification? get dePoolReceiveAnswerNotification =>
-      throw _privateConstructorUsedError;
-  TokenWalletDeployedNotification? get tokenWalletDeployedNotification =>
-      throw _privateConstructorUsedError;
-  WalletInteractionInfo? get walletInteractionInfo =>
-      throw _privateConstructorUsedError;
+  BigInt get fees;
+  String get hash;
+  String? get prevTransactionLt;
+  String? get comment;
+  DePoolOnRoundCompleteNotification? get dePoolOnRoundCompleteNotification;
+  DePoolReceiveAnswerNotification? get dePoolReceiveAnswerNotification;
+  TokenWalletDeployedNotification? get tokenWalletDeployedNotification;
+  WalletInteractionInfo? get walletInteractionInfo;
 
   /// Create a copy of TonWalletMultisigExpiredTransaction
   /// with the given fields replaced by the non-null parameter values.
   @JsonKey(includeFromJson: false, includeToJson: false)
+  @pragma('vm:prefer-inline')
   $TonWalletMultisigExpiredTransactionCopyWith<
           TonWalletMultisigExpiredTransaction>
-      get copyWith => throw _privateConstructorUsedError;
+      get copyWith => _$TonWalletMultisigExpiredTransactionCopyWithImpl<
+              TonWalletMultisigExpiredTransaction>(
+          this as TonWalletMultisigExpiredTransaction, _$identity);
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is TonWalletMultisigExpiredTransaction &&
+            (identical(other.lt, lt) || other.lt == lt) &&
+            (identical(other.creator, creator) || other.creator == creator) &&
+            const DeepCollectionEquality()
+                .equals(other.confirmations, confirmations) &&
+            const DeepCollectionEquality()
+                .equals(other.custodians, custodians) &&
+            (identical(other.isOutgoing, isOutgoing) ||
+                other.isOutgoing == isOutgoing) &&
+            (identical(other.value, value) || other.value == value) &&
+            (identical(other.address, address) || other.address == address) &&
+            (identical(other.date, date) || other.date == date) &&
+            (identical(other.fees, fees) || other.fees == fees) &&
+            (identical(other.hash, hash) || other.hash == hash) &&
+            (identical(other.prevTransactionLt, prevTransactionLt) ||
+                other.prevTransactionLt == prevTransactionLt) &&
+            (identical(other.comment, comment) || other.comment == comment) &&
+            (identical(other.dePoolOnRoundCompleteNotification,
+                    dePoolOnRoundCompleteNotification) ||
+                other.dePoolOnRoundCompleteNotification ==
+                    dePoolOnRoundCompleteNotification) &&
+            (identical(other.dePoolReceiveAnswerNotification,
+                    dePoolReceiveAnswerNotification) ||
+                other.dePoolReceiveAnswerNotification ==
+                    dePoolReceiveAnswerNotification) &&
+            (identical(other.tokenWalletDeployedNotification,
+                    tokenWalletDeployedNotification) ||
+                other.tokenWalletDeployedNotification ==
+                    tokenWalletDeployedNotification) &&
+            (identical(other.walletInteractionInfo, walletInteractionInfo) ||
+                other.walletInteractionInfo == walletInteractionInfo));
+  }
+
+  @override
+  int get hashCode => Object.hash(
+      runtimeType,
+      lt,
+      creator,
+      const DeepCollectionEquality().hash(confirmations),
+      const DeepCollectionEquality().hash(custodians),
+      isOutgoing,
+      value,
+      address,
+      date,
+      fees,
+      hash,
+      prevTransactionLt,
+      comment,
+      dePoolOnRoundCompleteNotification,
+      dePoolReceiveAnswerNotification,
+      tokenWalletDeployedNotification,
+      walletInteractionInfo);
+
+  @override
+  String toString() {
+    return 'TonWalletMultisigExpiredTransaction(lt: $lt, creator: $creator, confirmations: $confirmations, custodians: $custodians, isOutgoing: $isOutgoing, value: $value, address: $address, date: $date, fees: $fees, hash: $hash, prevTransactionLt: $prevTransactionLt, comment: $comment, dePoolOnRoundCompleteNotification: $dePoolOnRoundCompleteNotification, dePoolReceiveAnswerNotification: $dePoolReceiveAnswerNotification, tokenWalletDeployedNotification: $tokenWalletDeployedNotification, walletInteractionInfo: $walletInteractionInfo)';
+  }
 }
 
 /// @nodoc
-abstract class $TonWalletMultisigExpiredTransactionCopyWith<$Res> {
+abstract mixin class $TonWalletMultisigExpiredTransactionCopyWith<$Res> {
   factory $TonWalletMultisigExpiredTransactionCopyWith(
           TonWalletMultisigExpiredTransaction value,
-          $Res Function(TonWalletMultisigExpiredTransaction) then) =
-      _$TonWalletMultisigExpiredTransactionCopyWithImpl<$Res,
-          TonWalletMultisigExpiredTransaction>;
+          $Res Function(TonWalletMultisigExpiredTransaction) _then) =
+      _$TonWalletMultisigExpiredTransactionCopyWithImpl;
   @useResult
   $Res call(
       {String lt,
@@ -91,15 +146,12 @@ abstract class $TonWalletMultisigExpiredTransactionCopyWith<$Res> {
 }
 
 /// @nodoc
-class _$TonWalletMultisigExpiredTransactionCopyWithImpl<$Res,
-        $Val extends TonWalletMultisigExpiredTransaction>
+class _$TonWalletMultisigExpiredTransactionCopyWithImpl<$Res>
     implements $TonWalletMultisigExpiredTransactionCopyWith<$Res> {
-  _$TonWalletMultisigExpiredTransactionCopyWithImpl(this._value, this._then);
+  _$TonWalletMultisigExpiredTransactionCopyWithImpl(this._self, this._then);
 
-  // ignore: unused_field
-  final $Val _value;
-  // ignore: unused_field
-  final $Res Function($Val) _then;
+  final TonWalletMultisigExpiredTransaction _self;
+  final $Res Function(TonWalletMultisigExpiredTransaction) _then;
 
   /// Create a copy of TonWalletMultisigExpiredTransaction
   /// with the given fields replaced by the non-null parameter values.
@@ -123,75 +175,75 @@ class _$TonWalletMultisigExpiredTransactionCopyWithImpl<$Res,
     Object? tokenWalletDeployedNotification = freezed,
     Object? walletInteractionInfo = freezed,
   }) {
-    return _then(_value.copyWith(
+    return _then(_self.copyWith(
       lt: null == lt
-          ? _value.lt
+          ? _self.lt
           : lt // ignore: cast_nullable_to_non_nullable
               as String,
       creator: null == creator
-          ? _value.creator
+          ? _self.creator
           : creator // ignore: cast_nullable_to_non_nullable
               as PublicKey,
       confirmations: null == confirmations
-          ? _value.confirmations
+          ? _self.confirmations
           : confirmations // ignore: cast_nullable_to_non_nullable
               as List<PublicKey>,
       custodians: null == custodians
-          ? _value.custodians
+          ? _self.custodians
           : custodians // ignore: cast_nullable_to_non_nullable
               as List<PublicKey>,
       isOutgoing: null == isOutgoing
-          ? _value.isOutgoing
+          ? _self.isOutgoing
           : isOutgoing // ignore: cast_nullable_to_non_nullable
               as bool,
       value: null == value
-          ? _value.value
+          ? _self.value
           : value // ignore: cast_nullable_to_non_nullable
               as BigInt,
       address: null == address
-          ? _value.address
+          ? _self.address
           : address // ignore: cast_nullable_to_non_nullable
               as Address,
       date: null == date
-          ? _value.date
+          ? _self.date
           : date // ignore: cast_nullable_to_non_nullable
               as DateTime,
       fees: null == fees
-          ? _value.fees
+          ? _self.fees
           : fees // ignore: cast_nullable_to_non_nullable
               as BigInt,
       hash: null == hash
-          ? _value.hash
+          ? _self.hash
           : hash // ignore: cast_nullable_to_non_nullable
               as String,
       prevTransactionLt: freezed == prevTransactionLt
-          ? _value.prevTransactionLt
+          ? _self.prevTransactionLt
           : prevTransactionLt // ignore: cast_nullable_to_non_nullable
               as String?,
       comment: freezed == comment
-          ? _value.comment
+          ? _self.comment
           : comment // ignore: cast_nullable_to_non_nullable
               as String?,
       dePoolOnRoundCompleteNotification: freezed ==
               dePoolOnRoundCompleteNotification
-          ? _value.dePoolOnRoundCompleteNotification
+          ? _self.dePoolOnRoundCompleteNotification
           : dePoolOnRoundCompleteNotification // ignore: cast_nullable_to_non_nullable
               as DePoolOnRoundCompleteNotification?,
       dePoolReceiveAnswerNotification: freezed ==
               dePoolReceiveAnswerNotification
-          ? _value.dePoolReceiveAnswerNotification
+          ? _self.dePoolReceiveAnswerNotification
           : dePoolReceiveAnswerNotification // ignore: cast_nullable_to_non_nullable
               as DePoolReceiveAnswerNotification?,
       tokenWalletDeployedNotification: freezed ==
               tokenWalletDeployedNotification
-          ? _value.tokenWalletDeployedNotification
+          ? _self.tokenWalletDeployedNotification
           : tokenWalletDeployedNotification // ignore: cast_nullable_to_non_nullable
               as TokenWalletDeployedNotification?,
       walletInteractionInfo: freezed == walletInteractionInfo
-          ? _value.walletInteractionInfo
+          ? _self.walletInteractionInfo
           : walletInteractionInfo // ignore: cast_nullable_to_non_nullable
               as WalletInteractionInfo?,
-    ) as $Val);
+    ));
   }
 
   /// Create a copy of TonWalletMultisigExpiredTransaction
@@ -199,8 +251,8 @@ class _$TonWalletMultisigExpiredTransactionCopyWithImpl<$Res,
   @override
   @pragma('vm:prefer-inline')
   $PublicKeyCopyWith<$Res> get creator {
-    return $PublicKeyCopyWith<$Res>(_value.creator, (value) {
-      return _then(_value.copyWith(creator: value) as $Val);
+    return $PublicKeyCopyWith<$Res>(_self.creator, (value) {
+      return _then(_self.copyWith(creator: value));
     });
   }
 
@@ -209,8 +261,8 @@ class _$TonWalletMultisigExpiredTransactionCopyWithImpl<$Res,
   @override
   @pragma('vm:prefer-inline')
   $AddressCopyWith<$Res> get address {
-    return $AddressCopyWith<$Res>(_value.address, (value) {
-      return _then(_value.copyWith(address: value) as $Val);
+    return $AddressCopyWith<$Res>(_self.address, (value) {
+      return _then(_self.copyWith(address: value));
     });
   }
 
@@ -220,14 +272,13 @@ class _$TonWalletMultisigExpiredTransactionCopyWithImpl<$Res,
   @pragma('vm:prefer-inline')
   $DePoolOnRoundCompleteNotificationCopyWith<$Res>?
       get dePoolOnRoundCompleteNotification {
-    if (_value.dePoolOnRoundCompleteNotification == null) {
+    if (_self.dePoolOnRoundCompleteNotification == null) {
       return null;
     }
 
     return $DePoolOnRoundCompleteNotificationCopyWith<$Res>(
-        _value.dePoolOnRoundCompleteNotification!, (value) {
-      return _then(
-          _value.copyWith(dePoolOnRoundCompleteNotification: value) as $Val);
+        _self.dePoolOnRoundCompleteNotification!, (value) {
+      return _then(_self.copyWith(dePoolOnRoundCompleteNotification: value));
     });
   }
 
@@ -237,14 +288,13 @@ class _$TonWalletMultisigExpiredTransactionCopyWithImpl<$Res,
   @pragma('vm:prefer-inline')
   $DePoolReceiveAnswerNotificationCopyWith<$Res>?
       get dePoolReceiveAnswerNotification {
-    if (_value.dePoolReceiveAnswerNotification == null) {
+    if (_self.dePoolReceiveAnswerNotification == null) {
       return null;
     }
 
     return $DePoolReceiveAnswerNotificationCopyWith<$Res>(
-        _value.dePoolReceiveAnswerNotification!, (value) {
-      return _then(
-          _value.copyWith(dePoolReceiveAnswerNotification: value) as $Val);
+        _self.dePoolReceiveAnswerNotification!, (value) {
+      return _then(_self.copyWith(dePoolReceiveAnswerNotification: value));
     });
   }
 
@@ -254,14 +304,13 @@ class _$TonWalletMultisigExpiredTransactionCopyWithImpl<$Res,
   @pragma('vm:prefer-inline')
   $TokenWalletDeployedNotificationCopyWith<$Res>?
       get tokenWalletDeployedNotification {
-    if (_value.tokenWalletDeployedNotification == null) {
+    if (_self.tokenWalletDeployedNotification == null) {
       return null;
     }
 
     return $TokenWalletDeployedNotificationCopyWith<$Res>(
-        _value.tokenWalletDeployedNotification!, (value) {
-      return _then(
-          _value.copyWith(tokenWalletDeployedNotification: value) as $Val);
+        _self.tokenWalletDeployedNotification!, (value) {
+      return _then(_self.copyWith(tokenWalletDeployedNotification: value));
     });
   }
 
@@ -270,170 +319,22 @@ class _$TonWalletMultisigExpiredTransactionCopyWithImpl<$Res,
   @override
   @pragma('vm:prefer-inline')
   $WalletInteractionInfoCopyWith<$Res>? get walletInteractionInfo {
-    if (_value.walletInteractionInfo == null) {
+    if (_self.walletInteractionInfo == null) {
       return null;
     }
 
-    return $WalletInteractionInfoCopyWith<$Res>(_value.walletInteractionInfo!,
+    return $WalletInteractionInfoCopyWith<$Res>(_self.walletInteractionInfo!,
         (value) {
-      return _then(_value.copyWith(walletInteractionInfo: value) as $Val);
+      return _then(_self.copyWith(walletInteractionInfo: value));
     });
   }
 }
 
 /// @nodoc
-abstract class _$$TonWalletMultisigExpiredTransactionImplCopyWith<$Res>
-    implements $TonWalletMultisigExpiredTransactionCopyWith<$Res> {
-  factory _$$TonWalletMultisigExpiredTransactionImplCopyWith(
-          _$TonWalletMultisigExpiredTransactionImpl value,
-          $Res Function(_$TonWalletMultisigExpiredTransactionImpl) then) =
-      __$$TonWalletMultisigExpiredTransactionImplCopyWithImpl<$Res>;
-  @override
-  @useResult
-  $Res call(
-      {String lt,
-      PublicKey creator,
-      List<PublicKey> confirmations,
-      List<PublicKey> custodians,
-      bool isOutgoing,
-      @amountJsonConverter BigInt value,
-      Address address,
-      @dateSecondsSinceEpochJsonConverter DateTime date,
-      @amountJsonConverter BigInt fees,
-      String hash,
-      String? prevTransactionLt,
-      String? comment,
-      DePoolOnRoundCompleteNotification? dePoolOnRoundCompleteNotification,
-      DePoolReceiveAnswerNotification? dePoolReceiveAnswerNotification,
-      TokenWalletDeployedNotification? tokenWalletDeployedNotification,
-      WalletInteractionInfo? walletInteractionInfo});
 
-  @override
-  $PublicKeyCopyWith<$Res> get creator;
-  @override
-  $AddressCopyWith<$Res> get address;
-  @override
-  $DePoolOnRoundCompleteNotificationCopyWith<$Res>?
-      get dePoolOnRoundCompleteNotification;
-  @override
-  $DePoolReceiveAnswerNotificationCopyWith<$Res>?
-      get dePoolReceiveAnswerNotification;
-  @override
-  $TokenWalletDeployedNotificationCopyWith<$Res>?
-      get tokenWalletDeployedNotification;
-  @override
-  $WalletInteractionInfoCopyWith<$Res>? get walletInteractionInfo;
-}
-
-/// @nodoc
-class __$$TonWalletMultisigExpiredTransactionImplCopyWithImpl<$Res>
-    extends _$TonWalletMultisigExpiredTransactionCopyWithImpl<$Res,
-        _$TonWalletMultisigExpiredTransactionImpl>
-    implements _$$TonWalletMultisigExpiredTransactionImplCopyWith<$Res> {
-  __$$TonWalletMultisigExpiredTransactionImplCopyWithImpl(
-      _$TonWalletMultisigExpiredTransactionImpl _value,
-      $Res Function(_$TonWalletMultisigExpiredTransactionImpl) _then)
-      : super(_value, _then);
-
-  /// Create a copy of TonWalletMultisigExpiredTransaction
-  /// with the given fields replaced by the non-null parameter values.
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? lt = null,
-    Object? creator = null,
-    Object? confirmations = null,
-    Object? custodians = null,
-    Object? isOutgoing = null,
-    Object? value = null,
-    Object? address = null,
-    Object? date = null,
-    Object? fees = null,
-    Object? hash = null,
-    Object? prevTransactionLt = freezed,
-    Object? comment = freezed,
-    Object? dePoolOnRoundCompleteNotification = freezed,
-    Object? dePoolReceiveAnswerNotification = freezed,
-    Object? tokenWalletDeployedNotification = freezed,
-    Object? walletInteractionInfo = freezed,
-  }) {
-    return _then(_$TonWalletMultisigExpiredTransactionImpl(
-      lt: null == lt
-          ? _value.lt
-          : lt // ignore: cast_nullable_to_non_nullable
-              as String,
-      creator: null == creator
-          ? _value.creator
-          : creator // ignore: cast_nullable_to_non_nullable
-              as PublicKey,
-      confirmations: null == confirmations
-          ? _value._confirmations
-          : confirmations // ignore: cast_nullable_to_non_nullable
-              as List<PublicKey>,
-      custodians: null == custodians
-          ? _value._custodians
-          : custodians // ignore: cast_nullable_to_non_nullable
-              as List<PublicKey>,
-      isOutgoing: null == isOutgoing
-          ? _value.isOutgoing
-          : isOutgoing // ignore: cast_nullable_to_non_nullable
-              as bool,
-      value: null == value
-          ? _value.value
-          : value // ignore: cast_nullable_to_non_nullable
-              as BigInt,
-      address: null == address
-          ? _value.address
-          : address // ignore: cast_nullable_to_non_nullable
-              as Address,
-      date: null == date
-          ? _value.date
-          : date // ignore: cast_nullable_to_non_nullable
-              as DateTime,
-      fees: null == fees
-          ? _value.fees
-          : fees // ignore: cast_nullable_to_non_nullable
-              as BigInt,
-      hash: null == hash
-          ? _value.hash
-          : hash // ignore: cast_nullable_to_non_nullable
-              as String,
-      prevTransactionLt: freezed == prevTransactionLt
-          ? _value.prevTransactionLt
-          : prevTransactionLt // ignore: cast_nullable_to_non_nullable
-              as String?,
-      comment: freezed == comment
-          ? _value.comment
-          : comment // ignore: cast_nullable_to_non_nullable
-              as String?,
-      dePoolOnRoundCompleteNotification: freezed ==
-              dePoolOnRoundCompleteNotification
-          ? _value.dePoolOnRoundCompleteNotification
-          : dePoolOnRoundCompleteNotification // ignore: cast_nullable_to_non_nullable
-              as DePoolOnRoundCompleteNotification?,
-      dePoolReceiveAnswerNotification: freezed ==
-              dePoolReceiveAnswerNotification
-          ? _value.dePoolReceiveAnswerNotification
-          : dePoolReceiveAnswerNotification // ignore: cast_nullable_to_non_nullable
-              as DePoolReceiveAnswerNotification?,
-      tokenWalletDeployedNotification: freezed ==
-              tokenWalletDeployedNotification
-          ? _value.tokenWalletDeployedNotification
-          : tokenWalletDeployedNotification // ignore: cast_nullable_to_non_nullable
-              as TokenWalletDeployedNotification?,
-      walletInteractionInfo: freezed == walletInteractionInfo
-          ? _value.walletInteractionInfo
-          : walletInteractionInfo // ignore: cast_nullable_to_non_nullable
-              as WalletInteractionInfo?,
-    ));
-  }
-}
-
-/// @nodoc
-
-class _$TonWalletMultisigExpiredTransactionImpl
-    implements _TonWalletMultisigExpiredTransaction {
-  const _$TonWalletMultisigExpiredTransactionImpl(
+class _TonWalletMultisigExpiredTransaction
+    implements TonWalletMultisigExpiredTransaction {
+  const _TonWalletMultisigExpiredTransaction(
       {required this.lt,
       required this.creator,
       required final List<PublicKey> confirmations,
@@ -508,16 +409,21 @@ class _$TonWalletMultisigExpiredTransactionImpl
   @override
   final WalletInteractionInfo? walletInteractionInfo;
 
+  /// Create a copy of TonWalletMultisigExpiredTransaction
+  /// with the given fields replaced by the non-null parameter values.
   @override
-  String toString() {
-    return 'TonWalletMultisigExpiredTransaction(lt: $lt, creator: $creator, confirmations: $confirmations, custodians: $custodians, isOutgoing: $isOutgoing, value: $value, address: $address, date: $date, fees: $fees, hash: $hash, prevTransactionLt: $prevTransactionLt, comment: $comment, dePoolOnRoundCompleteNotification: $dePoolOnRoundCompleteNotification, dePoolReceiveAnswerNotification: $dePoolReceiveAnswerNotification, tokenWalletDeployedNotification: $tokenWalletDeployedNotification, walletInteractionInfo: $walletInteractionInfo)';
-  }
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @pragma('vm:prefer-inline')
+  _$TonWalletMultisigExpiredTransactionCopyWith<
+          _TonWalletMultisigExpiredTransaction>
+      get copyWith => __$TonWalletMultisigExpiredTransactionCopyWithImpl<
+          _TonWalletMultisigExpiredTransaction>(this, _$identity);
 
   @override
   bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$TonWalletMultisigExpiredTransactionImpl &&
+            other is _TonWalletMultisigExpiredTransaction &&
             (identical(other.lt, lt) || other.lt == lt) &&
             (identical(other.creator, creator) || other.creator == creator) &&
             const DeepCollectionEquality()
@@ -570,81 +476,239 @@ class _$TonWalletMultisigExpiredTransactionImpl
       tokenWalletDeployedNotification,
       walletInteractionInfo);
 
+  @override
+  String toString() {
+    return 'TonWalletMultisigExpiredTransaction(lt: $lt, creator: $creator, confirmations: $confirmations, custodians: $custodians, isOutgoing: $isOutgoing, value: $value, address: $address, date: $date, fees: $fees, hash: $hash, prevTransactionLt: $prevTransactionLt, comment: $comment, dePoolOnRoundCompleteNotification: $dePoolOnRoundCompleteNotification, dePoolReceiveAnswerNotification: $dePoolReceiveAnswerNotification, tokenWalletDeployedNotification: $tokenWalletDeployedNotification, walletInteractionInfo: $walletInteractionInfo)';
+  }
+}
+
+/// @nodoc
+abstract mixin class _$TonWalletMultisigExpiredTransactionCopyWith<$Res>
+    implements $TonWalletMultisigExpiredTransactionCopyWith<$Res> {
+  factory _$TonWalletMultisigExpiredTransactionCopyWith(
+          _TonWalletMultisigExpiredTransaction value,
+          $Res Function(_TonWalletMultisigExpiredTransaction) _then) =
+      __$TonWalletMultisigExpiredTransactionCopyWithImpl;
+  @override
+  @useResult
+  $Res call(
+      {String lt,
+      PublicKey creator,
+      List<PublicKey> confirmations,
+      List<PublicKey> custodians,
+      bool isOutgoing,
+      @amountJsonConverter BigInt value,
+      Address address,
+      @dateSecondsSinceEpochJsonConverter DateTime date,
+      @amountJsonConverter BigInt fees,
+      String hash,
+      String? prevTransactionLt,
+      String? comment,
+      DePoolOnRoundCompleteNotification? dePoolOnRoundCompleteNotification,
+      DePoolReceiveAnswerNotification? dePoolReceiveAnswerNotification,
+      TokenWalletDeployedNotification? tokenWalletDeployedNotification,
+      WalletInteractionInfo? walletInteractionInfo});
+
+  @override
+  $PublicKeyCopyWith<$Res> get creator;
+  @override
+  $AddressCopyWith<$Res> get address;
+  @override
+  $DePoolOnRoundCompleteNotificationCopyWith<$Res>?
+      get dePoolOnRoundCompleteNotification;
+  @override
+  $DePoolReceiveAnswerNotificationCopyWith<$Res>?
+      get dePoolReceiveAnswerNotification;
+  @override
+  $TokenWalletDeployedNotificationCopyWith<$Res>?
+      get tokenWalletDeployedNotification;
+  @override
+  $WalletInteractionInfoCopyWith<$Res>? get walletInteractionInfo;
+}
+
+/// @nodoc
+class __$TonWalletMultisigExpiredTransactionCopyWithImpl<$Res>
+    implements _$TonWalletMultisigExpiredTransactionCopyWith<$Res> {
+  __$TonWalletMultisigExpiredTransactionCopyWithImpl(this._self, this._then);
+
+  final _TonWalletMultisigExpiredTransaction _self;
+  final $Res Function(_TonWalletMultisigExpiredTransaction) _then;
+
   /// Create a copy of TonWalletMultisigExpiredTransaction
   /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   @pragma('vm:prefer-inline')
-  _$$TonWalletMultisigExpiredTransactionImplCopyWith<
-          _$TonWalletMultisigExpiredTransactionImpl>
-      get copyWith => __$$TonWalletMultisigExpiredTransactionImplCopyWithImpl<
-          _$TonWalletMultisigExpiredTransactionImpl>(this, _$identity);
-}
-
-abstract class _TonWalletMultisigExpiredTransaction
-    implements TonWalletMultisigExpiredTransaction {
-  const factory _TonWalletMultisigExpiredTransaction(
-      {required final String lt,
-      required final PublicKey creator,
-      required final List<PublicKey> confirmations,
-      required final List<PublicKey> custodians,
-      required final bool isOutgoing,
-      @amountJsonConverter required final BigInt value,
-      required final Address address,
-      @dateSecondsSinceEpochJsonConverter required final DateTime date,
-      @amountJsonConverter required final BigInt fees,
-      required final String hash,
-      final String? prevTransactionLt,
-      final String? comment,
-      final DePoolOnRoundCompleteNotification?
-          dePoolOnRoundCompleteNotification,
-      final DePoolReceiveAnswerNotification? dePoolReceiveAnswerNotification,
-      final TokenWalletDeployedNotification? tokenWalletDeployedNotification,
-      final WalletInteractionInfo?
-          walletInteractionInfo}) = _$TonWalletMultisigExpiredTransactionImpl;
-
-  @override
-  String get lt; // initiator of transactions
-  @override
-  PublicKey get creator; // custodians who accepted this transaction
-  @override
-  List<PublicKey> get confirmations; // list of possible custodians
-  @override
-  List<PublicKey>
-      get custodians; // if this transaction was sent from this wallet
-  @override
-  bool get isOutgoing;
-  @override
-  @amountJsonConverter
-  BigInt get value; // address of destination or source depends on isOutgoing
-  @override
-  Address get address;
-  @override
-  @dateSecondsSinceEpochJsonConverter
-  DateTime get date;
-  @override
-  @amountJsonConverter
-  BigInt get fees;
-  @override
-  String get hash;
-  @override
-  String? get prevTransactionLt;
-  @override
-  String? get comment;
-  @override
-  DePoolOnRoundCompleteNotification? get dePoolOnRoundCompleteNotification;
-  @override
-  DePoolReceiveAnswerNotification? get dePoolReceiveAnswerNotification;
-  @override
-  TokenWalletDeployedNotification? get tokenWalletDeployedNotification;
-  @override
-  WalletInteractionInfo? get walletInteractionInfo;
+  $Res call({
+    Object? lt = null,
+    Object? creator = null,
+    Object? confirmations = null,
+    Object? custodians = null,
+    Object? isOutgoing = null,
+    Object? value = null,
+    Object? address = null,
+    Object? date = null,
+    Object? fees = null,
+    Object? hash = null,
+    Object? prevTransactionLt = freezed,
+    Object? comment = freezed,
+    Object? dePoolOnRoundCompleteNotification = freezed,
+    Object? dePoolReceiveAnswerNotification = freezed,
+    Object? tokenWalletDeployedNotification = freezed,
+    Object? walletInteractionInfo = freezed,
+  }) {
+    return _then(_TonWalletMultisigExpiredTransaction(
+      lt: null == lt
+          ? _self.lt
+          : lt // ignore: cast_nullable_to_non_nullable
+              as String,
+      creator: null == creator
+          ? _self.creator
+          : creator // ignore: cast_nullable_to_non_nullable
+              as PublicKey,
+      confirmations: null == confirmations
+          ? _self._confirmations
+          : confirmations // ignore: cast_nullable_to_non_nullable
+              as List<PublicKey>,
+      custodians: null == custodians
+          ? _self._custodians
+          : custodians // ignore: cast_nullable_to_non_nullable
+              as List<PublicKey>,
+      isOutgoing: null == isOutgoing
+          ? _self.isOutgoing
+          : isOutgoing // ignore: cast_nullable_to_non_nullable
+              as bool,
+      value: null == value
+          ? _self.value
+          : value // ignore: cast_nullable_to_non_nullable
+              as BigInt,
+      address: null == address
+          ? _self.address
+          : address // ignore: cast_nullable_to_non_nullable
+              as Address,
+      date: null == date
+          ? _self.date
+          : date // ignore: cast_nullable_to_non_nullable
+              as DateTime,
+      fees: null == fees
+          ? _self.fees
+          : fees // ignore: cast_nullable_to_non_nullable
+              as BigInt,
+      hash: null == hash
+          ? _self.hash
+          : hash // ignore: cast_nullable_to_non_nullable
+              as String,
+      prevTransactionLt: freezed == prevTransactionLt
+          ? _self.prevTransactionLt
+          : prevTransactionLt // ignore: cast_nullable_to_non_nullable
+              as String?,
+      comment: freezed == comment
+          ? _self.comment
+          : comment // ignore: cast_nullable_to_non_nullable
+              as String?,
+      dePoolOnRoundCompleteNotification: freezed ==
+              dePoolOnRoundCompleteNotification
+          ? _self.dePoolOnRoundCompleteNotification
+          : dePoolOnRoundCompleteNotification // ignore: cast_nullable_to_non_nullable
+              as DePoolOnRoundCompleteNotification?,
+      dePoolReceiveAnswerNotification: freezed ==
+              dePoolReceiveAnswerNotification
+          ? _self.dePoolReceiveAnswerNotification
+          : dePoolReceiveAnswerNotification // ignore: cast_nullable_to_non_nullable
+              as DePoolReceiveAnswerNotification?,
+      tokenWalletDeployedNotification: freezed ==
+              tokenWalletDeployedNotification
+          ? _self.tokenWalletDeployedNotification
+          : tokenWalletDeployedNotification // ignore: cast_nullable_to_non_nullable
+              as TokenWalletDeployedNotification?,
+      walletInteractionInfo: freezed == walletInteractionInfo
+          ? _self.walletInteractionInfo
+          : walletInteractionInfo // ignore: cast_nullable_to_non_nullable
+              as WalletInteractionInfo?,
+    ));
+  }
 
   /// Create a copy of TonWalletMultisigExpiredTransaction
   /// with the given fields replaced by the non-null parameter values.
   @override
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  _$$TonWalletMultisigExpiredTransactionImplCopyWith<
-          _$TonWalletMultisigExpiredTransactionImpl>
-      get copyWith => throw _privateConstructorUsedError;
+  @pragma('vm:prefer-inline')
+  $PublicKeyCopyWith<$Res> get creator {
+    return $PublicKeyCopyWith<$Res>(_self.creator, (value) {
+      return _then(_self.copyWith(creator: value));
+    });
+  }
+
+  /// Create a copy of TonWalletMultisigExpiredTransaction
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @pragma('vm:prefer-inline')
+  $AddressCopyWith<$Res> get address {
+    return $AddressCopyWith<$Res>(_self.address, (value) {
+      return _then(_self.copyWith(address: value));
+    });
+  }
+
+  /// Create a copy of TonWalletMultisigExpiredTransaction
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @pragma('vm:prefer-inline')
+  $DePoolOnRoundCompleteNotificationCopyWith<$Res>?
+      get dePoolOnRoundCompleteNotification {
+    if (_self.dePoolOnRoundCompleteNotification == null) {
+      return null;
+    }
+
+    return $DePoolOnRoundCompleteNotificationCopyWith<$Res>(
+        _self.dePoolOnRoundCompleteNotification!, (value) {
+      return _then(_self.copyWith(dePoolOnRoundCompleteNotification: value));
+    });
+  }
+
+  /// Create a copy of TonWalletMultisigExpiredTransaction
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @pragma('vm:prefer-inline')
+  $DePoolReceiveAnswerNotificationCopyWith<$Res>?
+      get dePoolReceiveAnswerNotification {
+    if (_self.dePoolReceiveAnswerNotification == null) {
+      return null;
+    }
+
+    return $DePoolReceiveAnswerNotificationCopyWith<$Res>(
+        _self.dePoolReceiveAnswerNotification!, (value) {
+      return _then(_self.copyWith(dePoolReceiveAnswerNotification: value));
+    });
+  }
+
+  /// Create a copy of TonWalletMultisigExpiredTransaction
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @pragma('vm:prefer-inline')
+  $TokenWalletDeployedNotificationCopyWith<$Res>?
+      get tokenWalletDeployedNotification {
+    if (_self.tokenWalletDeployedNotification == null) {
+      return null;
+    }
+
+    return $TokenWalletDeployedNotificationCopyWith<$Res>(
+        _self.tokenWalletDeployedNotification!, (value) {
+      return _then(_self.copyWith(tokenWalletDeployedNotification: value));
+    });
+  }
+
+  /// Create a copy of TonWalletMultisigExpiredTransaction
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @pragma('vm:prefer-inline')
+  $WalletInteractionInfoCopyWith<$Res>? get walletInteractionInfo {
+    if (_self.walletInteractionInfo == null) {
+      return null;
+    }
+
+    return $WalletInteractionInfoCopyWith<$Res>(_self.walletInteractionInfo!,
+        (value) {
+      return _then(_self.copyWith(walletInteractionInfo: value));
+    });
+  }
 }
+
+// dart format on

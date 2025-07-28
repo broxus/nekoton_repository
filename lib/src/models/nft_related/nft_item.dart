@@ -6,7 +6,7 @@ part 'nft_item.freezed.dart';
 /// Represents an [Nft] item with its associated [MultitokenWallet]
 /// information (VEP-1155).
 @freezed
-class NftItem with _$NftItem {
+abstract class NftItem with _$NftItem {
   const factory NftItem({
     required Nft nft,
     MultitokenWallet? wallet,

@@ -4,6 +4,7 @@ import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
 import 'package:get_it/get_it.dart';
 import 'package:logging/logging.dart';
+import 'package:mutex/mutex.dart';
 import 'package:nekoton_repository/nekoton_repository.dart';
 import 'package:nekoton_repository/src/repositories/ton_wallet_repository/ton_wallet_gql_block_poller.dart';
 import 'package:nekoton_repository/src/utils/utils.dart';
@@ -20,6 +21,7 @@ mixin TonWalletRepositoryImpl implements TonWalletRepository {
   final List<RefreshPollingQueue> _sendPollingQueues = [];
   final BehaviorSubject<bool> _isPollingPaused =
       BehaviorSubject.seeded(false, sync: true);
+  final _mutexes = <Address, ReadWriteMutex>{};
 
   KeyStore get keyStore;
 
@@ -91,27 +93,54 @@ mixin TonWalletRepositoryImpl implements TonWalletRepository {
     }
 
     final transport = currentTransport.transport;
-
-    final wallet = await TonWallet.subscribe(
-      transport: transport,
-      workchainId: asset.workchain,
-      publicKey: asset.publicKey,
-      walletType: asset.contract,
+    final mutex = _mutexes.putIfAbsent(
+      computeTonWalletAddress(
+        publicKey: asset.publicKey,
+        walletType: asset.contract,
+        workchain: asset.workchain,
+      ),
+      ReadWriteMutex.new,
     );
 
-    return addWalletInst(wallet);
+    await mutex.acquireWrite();
+
+    try {
+      final wallet = await TonWallet.subscribe(
+        transport: transport,
+        workchainId: asset.workchain,
+        publicKey: asset.publicKey,
+        walletType: asset.contract,
+      );
+
+      return addWalletInst(wallet);
+    } finally {
+      mutex.release();
+      if (!mutex.isLocked) {
+        _mutexes.remove(asset.address);
+      }
+    }
   }
 
   @override
   Future<TonWalletState> subscribeByAddress(Address address) async {
     final transport = currentTransport.transport;
+    final mutex = _mutexes.putIfAbsent(address, ReadWriteMutex.new);
 
-    final wallet = await TonWallet.subscribeByAddress(
-      transport: transport,
-      address: address,
-    );
+    await mutex.acquireWrite();
 
-    return addWalletInst(wallet);
+    try {
+      final wallet = await TonWallet.subscribeByAddress(
+        transport: transport,
+        address: address,
+      );
+
+      return addWalletInst(wallet);
+    } finally {
+      mutex.release();
+      if (!mutex.isLocked) {
+        _mutexes.remove(address);
+      }
+    }
   }
 
   @override
@@ -119,13 +148,26 @@ mixin TonWalletRepositoryImpl implements TonWalletRepository {
     ExistingWalletInfo existingWallet,
   ) async {
     final transport = currentTransport.transport;
-
-    final wallet = await TonWallet.subscribeByExistingWallet(
-      transport: transport,
-      existingWallet: existingWallet,
+    final mutex = _mutexes.putIfAbsent(
+      existingWallet.address,
+      ReadWriteMutex.new,
     );
 
-    return addWalletInst(wallet);
+    await mutex.acquireWrite();
+
+    try {
+      final wallet = await TonWallet.subscribeByExistingWallet(
+        transport: transport,
+        existingWallet: existingWallet,
+      );
+
+      return addWalletInst(wallet);
+    } finally {
+      mutex.release();
+      if (!mutex.isLocked) {
+        _mutexes.remove(existingWallet.address);
+      }
+    }
   }
 
   @override
@@ -206,10 +248,20 @@ mixin TonWalletRepositoryImpl implements TonWalletRepository {
   }
 
   @override
-  void unsubscribe(Address address) {
-    final wallet = removeWalletInst(address);
-    pollingQueues.remove(address)?.stop();
-    wallet?.wallet?.dispose();
+  Future<void> unsubscribe(Address address) async {
+    final mutex = _mutexes[address];
+    await mutex?.acquireWrite();
+
+    try {
+      final wallet = removeWalletInst(address);
+      pollingQueues.remove(address)?.stop();
+      wallet?.wallet?.dispose();
+    } finally {
+      mutex?.release();
+      if (mutex?.isLocked == false) {
+        _mutexes.remove(address);
+      }
+    }
   }
 
   @override
@@ -220,6 +272,7 @@ mixin TonWalletRepositoryImpl implements TonWalletRepository {
       wallet.wallet?.dispose();
     }
     _walletsSubject.add({});
+    _mutexes.clear();
 
     GetIt.instance<TokenWalletRepository>().closeAllTokenSubscriptions();
   }
@@ -250,9 +303,9 @@ mixin TonWalletRepositoryImpl implements TonWalletRepository {
       assets.where((a) => !wallets.any((w) => w.address == a.$1.address)),
     );
 
-    for (final asset in toUnsubscribe) {
-      unsubscribe(asset.address);
-    }
+    await Future.wait(
+      toUnsubscribe.map((e) => unsubscribe(e.address)),
+    );
 
     lastUpdatedAssets = assets;
 
@@ -613,8 +666,20 @@ mixin TonWalletRepositoryImpl implements TonWalletRepository {
 
   @override
   Future<TonWalletState> getWallet(Address address) async {
-    final wallet = walletsMap[address] ?? await subscribeByAddress(address);
-    return wallet;
+    final mutex = _mutexes[address];
+    await mutex?.acquireRead();
+
+    try {
+      final wallet = walletsMap[address];
+      if (wallet != null) return wallet;
+    } finally {
+      mutex?.release();
+      if (mutex?.isLocked == false) {
+        _mutexes.remove(address);
+      }
+    }
+
+    return subscribeByAddress(address);
   }
 
   @override
@@ -734,43 +799,11 @@ mixin TonWalletRepositoryImpl implements TonWalletRepository {
       transactions.where((e) => !e.isMultisigTransaction).map(
         (e) {
           final lt = e.transaction.id.lt;
-
           final prevTransactionLt = e.transaction.prevTransactionId?.lt;
-
           final msgSender = e.transaction.inMessage.src;
-
-          final dataSender = e.data?.maybeWhen(
-            walletInteraction: (data) => data.knownPayload?.maybeWhen(
-              tokenSwapBack: (data) => data.callbackAddress,
-              orElse: () => null,
-            ),
-            orElse: () => null,
-          );
-
-          final sender = dataSender ?? msgSender;
-
+          final sender = e.dataSender ?? msgSender;
           final msgRecipient = e.transaction.outMessages.firstOrNull?.dst;
-
-          final dataRecipient = e.data?.maybeWhen(
-            walletInteraction: (data) =>
-                data.knownPayload?.maybeWhen(
-                  tokenOutgoingTransfer: (data) => data.to.data,
-                  orElse: () => null,
-                ) ??
-                data.method.maybeWhen(
-                  multisig: (data) => data.maybeWhen(
-                    send: (data) => data.dest,
-                    submit: (data) => data.dest,
-                    orElse: () => null,
-                  ),
-                  orElse: () => null,
-                ) ??
-                data.recipient,
-            orElse: () => null,
-          );
-
-          final recipient = dataRecipient ?? msgRecipient;
-
+          final recipient = e.dataRecipient ?? msgRecipient;
           final isOutgoing = recipient != null;
 
           final msgValue = (isOutgoing
@@ -778,53 +811,11 @@ mixin TonWalletRepositoryImpl implements TonWalletRepository {
                   : e.transaction.inMessage.value) ??
               e.transaction.inMessage.value;
 
-          final dataValue = e.data?.maybeWhen(
-            dePoolOnRoundComplete: (data) => data.reward,
-            walletInteraction: (data) => data.method.maybeWhen(
-              multisig: (data) => data.maybeWhen(
-                send: (data) => data.value,
-                submit: (data) => data.value,
-                orElse: () => null,
-              ),
-              orElse: () => null,
-            ),
-            orElse: () => null,
-          );
-
-          final value = dataValue ?? msgValue;
-
+          final value = e.dataValue ?? msgValue;
           final address = (isOutgoing ? recipient : sender) ?? walletAddress;
-
           final date = e.transaction.createdAt;
-
           final fees = e.transaction.totalFees;
-
           final hash = e.transaction.id.hash;
-
-          final comment = e.data?.maybeWhen(
-            comment: (data) => data,
-            orElse: () => null,
-          );
-
-          final dePoolOnRoundCompleteNotification = e.data?.maybeWhen(
-            dePoolOnRoundComplete: (data) => data,
-            orElse: () => null,
-          );
-
-          final dePoolReceiveAnswerNotification = e.data?.maybeWhen(
-            dePoolReceiveAnswer: (data) => data,
-            orElse: () => null,
-          );
-
-          final tokenWalletDeployedNotification = e.data?.maybeWhen(
-            tokenWalletDeployed: (data) => data,
-            orElse: () => null,
-          );
-
-          final walletInteractionInfo = e.data?.maybeWhen(
-            walletInteraction: (data) => data,
-            orElse: () => null,
-          );
 
           return TonWalletOrdinaryTransaction(
             lt: lt,
@@ -835,12 +826,12 @@ mixin TonWalletRepositoryImpl implements TonWalletRepository {
             date: date,
             fees: fees,
             hash: hash,
-            comment: comment,
+            comment: e.comment,
             dePoolOnRoundCompleteNotification:
-                dePoolOnRoundCompleteNotification,
-            dePoolReceiveAnswerNotification: dePoolReceiveAnswerNotification,
-            tokenWalletDeployedNotification: tokenWalletDeployedNotification,
-            walletInteractionInfo: walletInteractionInfo,
+                e.dePoolOnRoundCompleteNotification,
+            dePoolReceiveAnswerNotification: e.dePoolReceiveAnswerNotification,
+            tokenWalletDeployedNotification: e.tokenWalletDeployedNotification,
+            walletInteractionInfo: e.walletInteractionInfo,
           );
         },
       ).toList();
@@ -915,55 +906,19 @@ mixin TonWalletRepositoryImpl implements TonWalletRepository {
         .map(
       (e) {
         final lt = e.transaction.id.lt;
-
         final prevTransactionLt = e.transaction.prevTransactionId?.lt;
-
-        final multisigSubmitTransaction = e.multisigSubmitTransaction;
-
+        final multisigSubmitTransaction = e.multisigSubmitTransaction!;
         final creator = multisigSubmitTransaction.custodian;
-
         final transactionId = multisigSubmitTransaction.transId;
-
         final confirmations = transactions
             .where((e) => e.isSubmitOrConfirmTransaction(transactionId))
             .map((e) => e.custodian)
             .nonNulls
             .toList();
-
         final msgSender = e.transaction.inMessage.src;
-
-        final dataSender = e.data?.maybeWhen(
-          walletInteraction: (data) => data.knownPayload?.maybeWhen(
-            tokenSwapBack: (data) => data.callbackAddress,
-            orElse: () => null,
-          ),
-          orElse: () => null,
-        );
-
-        final sender = dataSender ?? msgSender;
-
+        final sender = e.dataSender ?? msgSender;
         final msgRecipient = e.transaction.outMessages.firstOrNull?.dst;
-
-        final dataRecipient = e.data?.maybeWhen(
-          walletInteraction: (data) =>
-              data.knownPayload?.maybeWhen(
-                tokenOutgoingTransfer: (data) => data.to.data,
-                orElse: () => null,
-              ) ??
-              data.method.maybeWhen(
-                multisig: (data) => data.maybeWhen(
-                  send: (data) => data.dest,
-                  submit: (data) => data.dest,
-                  orElse: () => null,
-                ),
-                orElse: () => null,
-              ) ??
-              data.recipient,
-          orElse: () => null,
-        );
-
-        final recipient = dataRecipient ?? msgRecipient;
-
+        final recipient = e.dataRecipient ?? msgRecipient;
         final isOutgoing = recipient != null;
 
         final msgValue = (isOutgoing
@@ -971,53 +926,11 @@ mixin TonWalletRepositoryImpl implements TonWalletRepository {
                 : e.transaction.inMessage.value) ??
             e.transaction.inMessage.value;
 
-        final dataValue = e.data?.maybeWhen(
-          dePoolOnRoundComplete: (data) => data.reward,
-          walletInteraction: (data) => data.method.maybeWhen(
-            multisig: (data) => data.maybeWhen(
-              send: (data) => data.value,
-              submit: (data) => data.value,
-              orElse: () => null,
-            ),
-            orElse: () => null,
-          ),
-          orElse: () => null,
-        );
-
-        final value = dataValue ?? msgValue;
-
+        final value = e.dataValue ?? msgValue;
         final address = (isOutgoing ? recipient : sender) ?? wallet.address;
-
         final date = e.transaction.createdAt;
-
         final fees = e.transaction.totalFees;
-
         final hash = e.transaction.id.hash;
-
-        final comment = e.data?.maybeWhen(
-          comment: (data) => data,
-          orElse: () => null,
-        );
-
-        final dePoolOnRoundCompleteNotification = e.data?.maybeWhen(
-          dePoolOnRoundComplete: (data) => data,
-          orElse: () => null,
-        );
-
-        final dePoolReceiveAnswerNotification = e.data?.maybeWhen(
-          dePoolReceiveAnswer: (data) => data,
-          orElse: () => null,
-        );
-
-        final tokenWalletDeployedNotification = e.data?.maybeWhen(
-          tokenWalletDeployed: (data) => data,
-          orElse: () => null,
-        );
-
-        final walletInteractionInfo = e.data?.maybeWhen(
-          walletInteraction: (data) => data,
-          orElse: () => null,
-        );
 
         return TonWalletMultisigOrdinaryTransaction(
           lt: lt,
@@ -1031,11 +944,12 @@ mixin TonWalletRepositoryImpl implements TonWalletRepository {
           date: date,
           fees: fees,
           hash: hash,
-          comment: comment,
-          dePoolOnRoundCompleteNotification: dePoolOnRoundCompleteNotification,
-          dePoolReceiveAnswerNotification: dePoolReceiveAnswerNotification,
-          tokenWalletDeployedNotification: tokenWalletDeployedNotification,
-          walletInteractionInfo: walletInteractionInfo,
+          comment: e.comment,
+          dePoolOnRoundCompleteNotification:
+              e.dePoolOnRoundCompleteNotification,
+          dePoolReceiveAnswerNotification: e.dePoolReceiveAnswerNotification,
+          tokenWalletDeployedNotification: e.tokenWalletDeployedNotification,
+          walletInteractionInfo: e.walletInteractionInfo,
         );
       },
     ).toList();
@@ -1064,48 +978,14 @@ mixin TonWalletRepositoryImpl implements TonWalletRepository {
         .map(
       (e) {
         final lt = e.transaction.id.lt;
-
         final prevTransactionLt = e.transaction.prevTransactionId?.lt;
-
         final multisigPendingTransaction = multisigPendingTransactions
-            .firstWhere((el) => el.id == e.multisigSubmitTransaction.transId);
-
+            .firstWhere((el) => el.id == e.multisigSubmitTransaction!.transId);
         final creator = multisigPendingTransaction.creator;
-
         final msgSender = e.transaction.inMessage.src;
-
-        final dataSender = e.data?.maybeWhen(
-          walletInteraction: (data) => data.knownPayload?.maybeWhen(
-            tokenSwapBack: (data) => data.callbackAddress,
-            orElse: () => null,
-          ),
-          orElse: () => null,
-        );
-
-        final sender = dataSender ?? msgSender;
-
+        final sender = e.dataSender ?? msgSender;
         final msgRecipient = e.transaction.outMessages.firstOrNull?.dst;
-
-        final dataRecipient = e.data?.maybeWhen(
-          walletInteraction: (data) =>
-              data.knownPayload?.maybeWhen(
-                tokenOutgoingTransfer: (data) => data.to.data,
-                orElse: () => null,
-              ) ??
-              data.method.maybeWhen(
-                multisig: (data) => data.maybeWhen(
-                  send: (data) => data.dest,
-                  submit: (data) => data.dest,
-                  orElse: () => null,
-                ),
-                orElse: () => null,
-              ) ??
-              data.recipient,
-          orElse: () => null,
-        );
-
-        final recipient = dataRecipient ?? msgRecipient;
-
+        final recipient = e.dataRecipient ?? msgRecipient;
         final isOutgoing = recipient != null;
 
         final msgValue = (isOutgoing
@@ -1113,60 +993,14 @@ mixin TonWalletRepositoryImpl implements TonWalletRepository {
                 : e.transaction.inMessage.value) ??
             e.transaction.inMessage.value;
 
-        final dataValue = e.data?.maybeWhen(
-          dePoolOnRoundComplete: (data) => data.reward,
-          walletInteraction: (data) => data.method.maybeWhen(
-            multisig: (data) => data.maybeWhen(
-              send: (data) => data.value,
-              submit: (data) => data.value,
-              orElse: () => null,
-            ),
-            orElse: () => null,
-          ),
-          orElse: () => null,
-        );
-
-        final value = dataValue ?? msgValue;
-
+        final value = e.dataValue ?? msgValue;
         final address = (isOutgoing ? recipient : sender) ?? walletAddress;
-
         final date = e.transaction.createdAt;
-
         final fees = e.transaction.totalFees;
-
         final hash = e.transaction.id.hash;
-
-        final comment = e.data?.maybeWhen(
-          comment: (data) => data,
-          orElse: () => null,
-        );
-
-        final dePoolOnRoundCompleteNotification = e.data?.maybeWhen(
-          dePoolOnRoundComplete: (data) => data,
-          orElse: () => null,
-        );
-
-        final dePoolReceiveAnswerNotification = e.data?.maybeWhen(
-          dePoolReceiveAnswer: (data) => data,
-          orElse: () => null,
-        );
-
-        final tokenWalletDeployedNotification = e.data?.maybeWhen(
-          tokenWalletDeployed: (data) => data,
-          orElse: () => null,
-        );
-
-        final walletInteractionInfo = e.data?.maybeWhen(
-          walletInteraction: (data) => data,
-          orElse: () => null,
-        );
-
         final signsReceived = multisigPendingTransaction.signsReceived;
-
         final signsRequired = multisigPendingTransaction.signsRequired;
-
         final confirmations = multisigPendingTransaction.confirmations;
-
         final transactionId = multisigPendingTransaction.id;
 
         final localCustodians = keyStore.keys
@@ -1210,11 +1044,12 @@ mixin TonWalletRepositoryImpl implements TonWalletRepository {
           date: date,
           fees: fees,
           hash: hash,
-          comment: comment,
-          dePoolOnRoundCompleteNotification: dePoolOnRoundCompleteNotification,
-          dePoolReceiveAnswerNotification: dePoolReceiveAnswerNotification,
-          tokenWalletDeployedNotification: tokenWalletDeployedNotification,
-          walletInteractionInfo: walletInteractionInfo,
+          comment: e.comment,
+          dePoolOnRoundCompleteNotification:
+              e.dePoolOnRoundCompleteNotification,
+          dePoolReceiveAnswerNotification: e.dePoolReceiveAnswerNotification,
+          tokenWalletDeployedNotification: e.tokenWalletDeployedNotification,
+          walletInteractionInfo: e.walletInteractionInfo,
           signsReceived: signsReceived,
           signsRequired: signsRequired,
           transactionId: transactionId,
@@ -1247,55 +1082,19 @@ mixin TonWalletRepositoryImpl implements TonWalletRepository {
         .map(
       (e) {
         final lt = e.transaction.id.lt;
-
         final prevTransactionLt = e.transaction.prevTransactionId?.lt;
-
-        final multisigSubmitTransaction = e.multisigSubmitTransaction;
-
+        final multisigSubmitTransaction = e.multisigSubmitTransaction!;
         final creator = multisigSubmitTransaction.custodian;
-
         final transactionId = multisigSubmitTransaction.transId;
-
         final confirmations = transactions
             .where((e) => e.isSubmitOrConfirmTransaction(transactionId))
             .map((e) => e.custodian)
             .nonNulls
             .toList();
-
         final msgSender = e.transaction.inMessage.src;
-
-        final dataSender = e.data?.maybeWhen(
-          walletInteraction: (data) => data.knownPayload?.maybeWhen(
-            tokenSwapBack: (data) => data.callbackAddress,
-            orElse: () => null,
-          ),
-          orElse: () => null,
-        );
-
-        final sender = dataSender ?? msgSender;
-
+        final sender = e.dataSender ?? msgSender;
         final msgRecipient = e.transaction.outMessages.firstOrNull?.dst;
-
-        final dataRecipient = e.data?.maybeWhen(
-          walletInteraction: (data) =>
-              data.knownPayload?.maybeWhen(
-                tokenOutgoingTransfer: (data) => data.to.data,
-                orElse: () => null,
-              ) ??
-              data.method.maybeWhen(
-                multisig: (data) => data.maybeWhen(
-                  send: (data) => data.dest,
-                  submit: (data) => data.dest,
-                  orElse: () => null,
-                ),
-                orElse: () => null,
-              ) ??
-              data.recipient,
-          orElse: () => null,
-        );
-
-        final recipient = dataRecipient ?? msgRecipient;
-
+        final recipient = e.dataRecipient ?? msgRecipient;
         final isOutgoing = recipient != null;
 
         final msgValue = (isOutgoing
@@ -1303,53 +1102,11 @@ mixin TonWalletRepositoryImpl implements TonWalletRepository {
                 : e.transaction.inMessage.value) ??
             e.transaction.inMessage.value;
 
-        final dataValue = e.data?.maybeWhen(
-          dePoolOnRoundComplete: (data) => data.reward,
-          walletInteraction: (data) => data.method.maybeWhen(
-            multisig: (data) => data.maybeWhen(
-              send: (data) => data.value,
-              submit: (data) => data.value,
-              orElse: () => null,
-            ),
-            orElse: () => null,
-          ),
-          orElse: () => null,
-        );
-
-        final value = dataValue ?? msgValue;
-
+        final value = e.dataValue ?? msgValue;
         final address = (isOutgoing ? recipient : sender) ?? walletAddress;
-
         final date = e.transaction.createdAt;
-
         final fees = e.transaction.totalFees;
-
         final hash = e.transaction.id.hash;
-
-        final comment = e.data?.maybeWhen(
-          comment: (data) => data,
-          orElse: () => null,
-        );
-
-        final dePoolOnRoundCompleteNotification = e.data?.maybeWhen(
-          dePoolOnRoundComplete: (data) => data,
-          orElse: () => null,
-        );
-
-        final dePoolReceiveAnswerNotification = e.data?.maybeWhen(
-          dePoolReceiveAnswer: (data) => data,
-          orElse: () => null,
-        );
-
-        final tokenWalletDeployedNotification = e.data?.maybeWhen(
-          tokenWalletDeployed: (data) => data,
-          orElse: () => null,
-        );
-
-        final walletInteractionInfo = e.data?.maybeWhen(
-          walletInteraction: (data) => data,
-          orElse: () => null,
-        );
 
         return TonWalletMultisigExpiredTransaction(
           lt: lt,
@@ -1363,11 +1120,12 @@ mixin TonWalletRepositoryImpl implements TonWalletRepository {
           date: date,
           fees: fees,
           hash: hash,
-          comment: comment,
-          dePoolOnRoundCompleteNotification: dePoolOnRoundCompleteNotification,
-          dePoolReceiveAnswerNotification: dePoolReceiveAnswerNotification,
-          tokenWalletDeployedNotification: tokenWalletDeployedNotification,
-          walletInteractionInfo: walletInteractionInfo,
+          comment: e.comment,
+          dePoolOnRoundCompleteNotification:
+              e.dePoolOnRoundCompleteNotification,
+          dePoolReceiveAnswerNotification: e.dePoolReceiveAnswerNotification,
+          tokenWalletDeployedNotification: e.tokenWalletDeployedNotification,
+          walletInteractionInfo: e.walletInteractionInfo,
         );
       },
     ).toList();
@@ -1443,100 +1201,167 @@ mixin TonWalletRepositoryImpl implements TonWalletRepository {
 
 extension TonWalletTransactionExtension
     on TransactionWithData<TransactionAdditionalInfo?> {
-  bool get isMultisigTransaction =>
-      data != null &&
-      data!.maybeWhen(
-        walletInteraction: (data) => data.method.maybeWhen(
-          multisig: (data) => data.maybeWhen(
-            submit: (data) => true,
-            confirm: (data) => true,
-            // TODO(alex-a4): why send not used here
-            orElse: () => false,
-          ),
-          orElse: () => false,
-        ),
-        orElse: () => false,
-      );
+  Address? get dataSender {
+    return switch (data) {
+      TransactionAdditionalInfoWalletInteraction(:final data) => switch (
+            data.knownPayload) {
+          KnownPayloadTokenSwapBack(:final data) => data.callbackAddress,
+          _ => null,
+        },
+      _ => null,
+    };
+  }
+
+  Address? get dataRecipient {
+    final data = switch (this.data) {
+      TransactionAdditionalInfoWalletInteraction(:final data) => data,
+      _ => null,
+    };
+
+    if (data == null) return null;
+
+    if (data.knownPayload != null &&
+        data.knownPayload is KnownPayloadTokenOutgoingTransfer) {
+      final knownPayload =
+          data.knownPayload! as KnownPayloadTokenOutgoingTransfer;
+
+      return knownPayload.data.to.data;
+    }
+
+    if (data.method is WalletInteractionMethodMultisig) {
+      final method = data.method as WalletInteractionMethodMultisig;
+      final dest = switch (method.data) {
+        MultisigTransactionSend(:final data) => data.dest,
+        MultisigTransactionSubmit(:final data) => data.dest,
+        _ => null,
+      };
+
+      if (dest != null) return dest;
+    }
+
+    return data.recipient;
+  }
+
+  BigInt? get dataValue {
+    return switch (data) {
+      TransactionAdditionalInfoDePoolOnRoundComplete(:final data) =>
+        data.reward,
+      TransactionAdditionalInfoWalletInteraction(:final data) => switch (
+            data.method) {
+          WalletInteractionMethodMultisig(:final data) => switch (data) {
+              MultisigTransactionSend(:final data) => data.value,
+              MultisigTransactionSubmit(:final data) => data.value,
+              _ => null,
+            },
+          _ => null,
+        },
+      _ => null,
+    };
+  }
+
+  String? get comment => switch (data) {
+        TransactionAdditionalInfoComment(:final data) => data,
+        _ => null,
+      };
+
+  DePoolOnRoundCompleteNotification? get dePoolOnRoundCompleteNotification =>
+      switch (data) {
+        TransactionAdditionalInfoDePoolOnRoundComplete(:final data) => data,
+        _ => null,
+      };
+
+  DePoolReceiveAnswerNotification? get dePoolReceiveAnswerNotification =>
+      switch (data) {
+        TransactionAdditionalInfoDePoolReceiveAnswer(:final data) => data,
+        _ => null,
+      };
+
+  TokenWalletDeployedNotification? get tokenWalletDeployedNotification =>
+      switch (data) {
+        TransactionAdditionalInfoTokenWalletDeployed(:final data) => data,
+        _ => null,
+      };
+
+  WalletInteractionInfo? get walletInteractionInfo => switch (data) {
+        TransactionAdditionalInfoWalletInteraction(:final data) => data,
+        _ => null,
+      };
+
+  bool get isMultisigTransaction {
+    return switch (walletInteractionInfo?.method) {
+      WalletInteractionMethodMultisig(:final data) => switch (data) {
+          MultisigTransactionSubmit() => true,
+          MultisigTransactionConfirm() => true,
+          _ => false,
+        },
+      _ => false,
+    };
+  }
 
   bool isOrdinaryTransaction({
     required TonWalletDetails details,
     required List<TransactionWithData<TransactionAdditionalInfo?>> transactions,
     required List<MultisigPendingTransaction> pendingTransactions,
-  }) =>
-      data != null &&
-      data!.maybeWhen(
-        walletInteraction: (data) => data.method.maybeWhen(
-          multisig: (data) => data.maybeWhen(
-            submit: (data) =>
-                pendingTransactions.every((e) => e.id != data.transId) &&
+  }) {
+    return switch (walletInteractionInfo?.method) {
+      WalletInteractionMethodMultisig(:final data) => switch (data) {
+          MultisigTransactionSubmit(:final data) =>
+            pendingTransactions.every((e) => e.id != data.transId) &&
                 isEnoughSubscribers(data.transId, details, transactions),
-            orElse: () => false,
-          ),
-          orElse: () => false,
-        ),
-        orElse: () => false,
-      );
+          _ => false,
+        },
+      _ => false,
+    };
+  }
 
-  bool isConfirmTransaction(String id) =>
-      data != null &&
-      data!.maybeWhen(
-        walletInteraction: (data) => data.method.maybeWhen(
-          multisig: (data) => data.maybeWhen(
-            confirm: (data) => data.transactionId == id,
-            orElse: () => false,
-          ),
-          orElse: () => false,
-        ),
-        orElse: () => false,
-      );
+  bool isConfirmTransaction(String id) {
+    return switch (walletInteractionInfo?.method) {
+      WalletInteractionMethodMultisig(:final data) => switch (data) {
+          MultisigTransactionConfirm(:final data) => data.transactionId == id,
+          _ => false,
+        },
+      _ => false,
+    };
+  }
 
-  bool isSubmitOrConfirmTransaction(String id) =>
-      data != null &&
-      data!.maybeWhen(
-        walletInteraction: (data) => data.method.maybeWhen(
-          multisig: (data) => data.maybeWhen(
-            submit: (data) => data.transId == id,
-            confirm: (data) => data.transactionId == id,
-            orElse: () => false,
-          ),
-          orElse: () => false,
-        ),
-        orElse: () => false,
-      );
+  bool isSubmitOrConfirmTransaction(String id) {
+    return switch (walletInteractionInfo?.method) {
+      WalletInteractionMethodMultisig(:final data) => switch (data) {
+          MultisigTransactionSubmit(:final data) => data.transId == id,
+          MultisigTransactionConfirm(:final data) => data.transactionId == id,
+          _ => false,
+        },
+      _ => false,
+    };
+  }
 
   bool isPendingTransaction(
     List<MultisigPendingTransaction> pendingTransactions,
-  ) =>
-      data != null &&
-      data!.maybeWhen(
-        walletInteraction: (data) => data.method.maybeWhen(
-          multisig: (data) => data.maybeWhen(
-            submit: (data) =>
-                pendingTransactions.any((e) => e.id == data.transId),
-            orElse: () => false,
-          ),
-          orElse: () => false,
-        ),
-        orElse: () => false,
-      );
+  ) {
+    return switch (walletInteractionInfo?.method) {
+      WalletInteractionMethodMultisig(:final data) => switch (data) {
+          MultisigTransactionSubmit(:final data) =>
+            pendingTransactions.any((e) => e.id == data.transId),
+          _ => false,
+        },
+      _ => false,
+    };
+  }
 
   bool isExpiredTransaction({
     required TonWalletDetails details,
     required List<TransactionWithData<TransactionAdditionalInfo?>> transactions,
-  }) =>
-      data != null &&
-      data!.maybeWhen(
-        walletInteraction: (data) => data.method.maybeWhen(
-          multisig: (data) => data.maybeWhen(
-            submit: (data) =>
-                !isEnoughSubscribers(data.transId, details, transactions) &&
+  }) {
+    return switch (walletInteractionInfo?.method) {
+      WalletInteractionMethodMultisig(:final data) => switch (data) {
+          MultisigTransactionSubmit(:final data) =>
+            !isEnoughSubscribers(data.transId, details, transactions) &&
                 isExpiredByTime(details),
-            orElse: () => false,
-          ),
-          orElse: () => false,
-        ),
-        orElse: () => false,
-      );
+          _ => false,
+        },
+      _ => false,
+    };
+  }
 
   /// More or equals to required confirmations were achieved
   bool isEnoughSubscribers(
@@ -1559,26 +1384,24 @@ extension TonWalletTransactionExtension
         .isBefore(NtpTime.now());
   }
 
-  MultisigSubmitTransaction get multisigSubmitTransaction => data!.maybeWhen(
-        walletInteraction: (data) => data.method.maybeWhen(
-          multisig: (data) => data.maybeWhen(
-            submit: (data) => data,
-            orElse: () => null,
-          ),
-          orElse: () => null,
-        ),
-        orElse: () => null,
-      )!;
+  MultisigSubmitTransaction? get multisigSubmitTransaction {
+    return switch (walletInteractionInfo?.method) {
+      WalletInteractionMethodMultisig(:final data) => switch (data) {
+          MultisigTransactionSubmit(:final data) => data,
+          _ => null,
+        },
+      _ => null,
+    };
+  }
 
-  PublicKey? get custodian => data!.maybeWhen(
-        walletInteraction: (data) => data.method.maybeWhen<PublicKey?>(
-          multisig: (data) => data.maybeWhen(
-            submit: (data) => data.custodian,
-            confirm: (data) => data.custodian,
-            orElse: () => null,
-          ),
-          orElse: () => null,
-        ),
-        orElse: () => null,
-      )!;
+  PublicKey? get custodian {
+    return switch (walletInteractionInfo?.method) {
+      WalletInteractionMethodMultisig(:final data) => switch (data) {
+          MultisigTransactionSubmit(:final data) => data.custodian,
+          MultisigTransactionConfirm(:final data) => data.custodian,
+          _ => null,
+        },
+      _ => null,
+    };
+  }
 }

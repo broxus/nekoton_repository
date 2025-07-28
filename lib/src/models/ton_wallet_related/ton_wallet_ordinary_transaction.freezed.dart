@@ -1,3 +1,4 @@
+// dart format width=80
 // coverage:ignore-file
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // ignore_for_file: type=lint
@@ -9,427 +10,42 @@ part of 'ton_wallet_ordinary_transaction.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// dart format off
 T _$identity<T>(T value) => value;
-
-final _privateConstructorUsedError = UnsupportedError(
-    'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models');
 
 /// @nodoc
 mixin _$TonWalletOrdinaryTransaction {
-  String get lt => throw _privateConstructorUsedError;
-  bool get isOutgoing => throw _privateConstructorUsedError;
+  String get lt;
+  bool get isOutgoing;
   @amountJsonConverter
-  BigInt get value => throw _privateConstructorUsedError;
-  Address get address => throw _privateConstructorUsedError;
+  BigInt get value;
+  Address get address;
   @dateSecondsSinceEpochJsonConverter
-  DateTime get date => throw _privateConstructorUsedError;
+  DateTime get date;
   @amountJsonConverter
-  BigInt get fees => throw _privateConstructorUsedError;
-  String get hash => throw _privateConstructorUsedError;
-  String? get prevTransactionLt => throw _privateConstructorUsedError;
-  String? get comment => throw _privateConstructorUsedError;
-  DePoolOnRoundCompleteNotification? get dePoolOnRoundCompleteNotification =>
-      throw _privateConstructorUsedError;
-  DePoolReceiveAnswerNotification? get dePoolReceiveAnswerNotification =>
-      throw _privateConstructorUsedError;
-  TokenWalletDeployedNotification? get tokenWalletDeployedNotification =>
-      throw _privateConstructorUsedError;
-  WalletInteractionInfo? get walletInteractionInfo =>
-      throw _privateConstructorUsedError;
+  BigInt get fees;
+  String get hash;
+  String? get prevTransactionLt;
+  String? get comment;
+  DePoolOnRoundCompleteNotification? get dePoolOnRoundCompleteNotification;
+  DePoolReceiveAnswerNotification? get dePoolReceiveAnswerNotification;
+  TokenWalletDeployedNotification? get tokenWalletDeployedNotification;
+  WalletInteractionInfo? get walletInteractionInfo;
 
   /// Create a copy of TonWalletOrdinaryTransaction
   /// with the given fields replaced by the non-null parameter values.
   @JsonKey(includeFromJson: false, includeToJson: false)
+  @pragma('vm:prefer-inline')
   $TonWalletOrdinaryTransactionCopyWith<TonWalletOrdinaryTransaction>
-      get copyWith => throw _privateConstructorUsedError;
-}
-
-/// @nodoc
-abstract class $TonWalletOrdinaryTransactionCopyWith<$Res> {
-  factory $TonWalletOrdinaryTransactionCopyWith(
-          TonWalletOrdinaryTransaction value,
-          $Res Function(TonWalletOrdinaryTransaction) then) =
-      _$TonWalletOrdinaryTransactionCopyWithImpl<$Res,
-          TonWalletOrdinaryTransaction>;
-  @useResult
-  $Res call(
-      {String lt,
-      bool isOutgoing,
-      @amountJsonConverter BigInt value,
-      Address address,
-      @dateSecondsSinceEpochJsonConverter DateTime date,
-      @amountJsonConverter BigInt fees,
-      String hash,
-      String? prevTransactionLt,
-      String? comment,
-      DePoolOnRoundCompleteNotification? dePoolOnRoundCompleteNotification,
-      DePoolReceiveAnswerNotification? dePoolReceiveAnswerNotification,
-      TokenWalletDeployedNotification? tokenWalletDeployedNotification,
-      WalletInteractionInfo? walletInteractionInfo});
-
-  $AddressCopyWith<$Res> get address;
-  $DePoolOnRoundCompleteNotificationCopyWith<$Res>?
-      get dePoolOnRoundCompleteNotification;
-  $DePoolReceiveAnswerNotificationCopyWith<$Res>?
-      get dePoolReceiveAnswerNotification;
-  $TokenWalletDeployedNotificationCopyWith<$Res>?
-      get tokenWalletDeployedNotification;
-  $WalletInteractionInfoCopyWith<$Res>? get walletInteractionInfo;
-}
-
-/// @nodoc
-class _$TonWalletOrdinaryTransactionCopyWithImpl<$Res,
-        $Val extends TonWalletOrdinaryTransaction>
-    implements $TonWalletOrdinaryTransactionCopyWith<$Res> {
-  _$TonWalletOrdinaryTransactionCopyWithImpl(this._value, this._then);
-
-  // ignore: unused_field
-  final $Val _value;
-  // ignore: unused_field
-  final $Res Function($Val) _then;
-
-  /// Create a copy of TonWalletOrdinaryTransaction
-  /// with the given fields replaced by the non-null parameter values.
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? lt = null,
-    Object? isOutgoing = null,
-    Object? value = null,
-    Object? address = null,
-    Object? date = null,
-    Object? fees = null,
-    Object? hash = null,
-    Object? prevTransactionLt = freezed,
-    Object? comment = freezed,
-    Object? dePoolOnRoundCompleteNotification = freezed,
-    Object? dePoolReceiveAnswerNotification = freezed,
-    Object? tokenWalletDeployedNotification = freezed,
-    Object? walletInteractionInfo = freezed,
-  }) {
-    return _then(_value.copyWith(
-      lt: null == lt
-          ? _value.lt
-          : lt // ignore: cast_nullable_to_non_nullable
-              as String,
-      isOutgoing: null == isOutgoing
-          ? _value.isOutgoing
-          : isOutgoing // ignore: cast_nullable_to_non_nullable
-              as bool,
-      value: null == value
-          ? _value.value
-          : value // ignore: cast_nullable_to_non_nullable
-              as BigInt,
-      address: null == address
-          ? _value.address
-          : address // ignore: cast_nullable_to_non_nullable
-              as Address,
-      date: null == date
-          ? _value.date
-          : date // ignore: cast_nullable_to_non_nullable
-              as DateTime,
-      fees: null == fees
-          ? _value.fees
-          : fees // ignore: cast_nullable_to_non_nullable
-              as BigInt,
-      hash: null == hash
-          ? _value.hash
-          : hash // ignore: cast_nullable_to_non_nullable
-              as String,
-      prevTransactionLt: freezed == prevTransactionLt
-          ? _value.prevTransactionLt
-          : prevTransactionLt // ignore: cast_nullable_to_non_nullable
-              as String?,
-      comment: freezed == comment
-          ? _value.comment
-          : comment // ignore: cast_nullable_to_non_nullable
-              as String?,
-      dePoolOnRoundCompleteNotification: freezed ==
-              dePoolOnRoundCompleteNotification
-          ? _value.dePoolOnRoundCompleteNotification
-          : dePoolOnRoundCompleteNotification // ignore: cast_nullable_to_non_nullable
-              as DePoolOnRoundCompleteNotification?,
-      dePoolReceiveAnswerNotification: freezed ==
-              dePoolReceiveAnswerNotification
-          ? _value.dePoolReceiveAnswerNotification
-          : dePoolReceiveAnswerNotification // ignore: cast_nullable_to_non_nullable
-              as DePoolReceiveAnswerNotification?,
-      tokenWalletDeployedNotification: freezed ==
-              tokenWalletDeployedNotification
-          ? _value.tokenWalletDeployedNotification
-          : tokenWalletDeployedNotification // ignore: cast_nullable_to_non_nullable
-              as TokenWalletDeployedNotification?,
-      walletInteractionInfo: freezed == walletInteractionInfo
-          ? _value.walletInteractionInfo
-          : walletInteractionInfo // ignore: cast_nullable_to_non_nullable
-              as WalletInteractionInfo?,
-    ) as $Val);
-  }
-
-  /// Create a copy of TonWalletOrdinaryTransaction
-  /// with the given fields replaced by the non-null parameter values.
-  @override
-  @pragma('vm:prefer-inline')
-  $AddressCopyWith<$Res> get address {
-    return $AddressCopyWith<$Res>(_value.address, (value) {
-      return _then(_value.copyWith(address: value) as $Val);
-    });
-  }
-
-  /// Create a copy of TonWalletOrdinaryTransaction
-  /// with the given fields replaced by the non-null parameter values.
-  @override
-  @pragma('vm:prefer-inline')
-  $DePoolOnRoundCompleteNotificationCopyWith<$Res>?
-      get dePoolOnRoundCompleteNotification {
-    if (_value.dePoolOnRoundCompleteNotification == null) {
-      return null;
-    }
-
-    return $DePoolOnRoundCompleteNotificationCopyWith<$Res>(
-        _value.dePoolOnRoundCompleteNotification!, (value) {
-      return _then(
-          _value.copyWith(dePoolOnRoundCompleteNotification: value) as $Val);
-    });
-  }
-
-  /// Create a copy of TonWalletOrdinaryTransaction
-  /// with the given fields replaced by the non-null parameter values.
-  @override
-  @pragma('vm:prefer-inline')
-  $DePoolReceiveAnswerNotificationCopyWith<$Res>?
-      get dePoolReceiveAnswerNotification {
-    if (_value.dePoolReceiveAnswerNotification == null) {
-      return null;
-    }
-
-    return $DePoolReceiveAnswerNotificationCopyWith<$Res>(
-        _value.dePoolReceiveAnswerNotification!, (value) {
-      return _then(
-          _value.copyWith(dePoolReceiveAnswerNotification: value) as $Val);
-    });
-  }
-
-  /// Create a copy of TonWalletOrdinaryTransaction
-  /// with the given fields replaced by the non-null parameter values.
-  @override
-  @pragma('vm:prefer-inline')
-  $TokenWalletDeployedNotificationCopyWith<$Res>?
-      get tokenWalletDeployedNotification {
-    if (_value.tokenWalletDeployedNotification == null) {
-      return null;
-    }
-
-    return $TokenWalletDeployedNotificationCopyWith<$Res>(
-        _value.tokenWalletDeployedNotification!, (value) {
-      return _then(
-          _value.copyWith(tokenWalletDeployedNotification: value) as $Val);
-    });
-  }
-
-  /// Create a copy of TonWalletOrdinaryTransaction
-  /// with the given fields replaced by the non-null parameter values.
-  @override
-  @pragma('vm:prefer-inline')
-  $WalletInteractionInfoCopyWith<$Res>? get walletInteractionInfo {
-    if (_value.walletInteractionInfo == null) {
-      return null;
-    }
-
-    return $WalletInteractionInfoCopyWith<$Res>(_value.walletInteractionInfo!,
-        (value) {
-      return _then(_value.copyWith(walletInteractionInfo: value) as $Val);
-    });
-  }
-}
-
-/// @nodoc
-abstract class _$$TonWalletOrdinaryTransactionImplCopyWith<$Res>
-    implements $TonWalletOrdinaryTransactionCopyWith<$Res> {
-  factory _$$TonWalletOrdinaryTransactionImplCopyWith(
-          _$TonWalletOrdinaryTransactionImpl value,
-          $Res Function(_$TonWalletOrdinaryTransactionImpl) then) =
-      __$$TonWalletOrdinaryTransactionImplCopyWithImpl<$Res>;
-  @override
-  @useResult
-  $Res call(
-      {String lt,
-      bool isOutgoing,
-      @amountJsonConverter BigInt value,
-      Address address,
-      @dateSecondsSinceEpochJsonConverter DateTime date,
-      @amountJsonConverter BigInt fees,
-      String hash,
-      String? prevTransactionLt,
-      String? comment,
-      DePoolOnRoundCompleteNotification? dePoolOnRoundCompleteNotification,
-      DePoolReceiveAnswerNotification? dePoolReceiveAnswerNotification,
-      TokenWalletDeployedNotification? tokenWalletDeployedNotification,
-      WalletInteractionInfo? walletInteractionInfo});
-
-  @override
-  $AddressCopyWith<$Res> get address;
-  @override
-  $DePoolOnRoundCompleteNotificationCopyWith<$Res>?
-      get dePoolOnRoundCompleteNotification;
-  @override
-  $DePoolReceiveAnswerNotificationCopyWith<$Res>?
-      get dePoolReceiveAnswerNotification;
-  @override
-  $TokenWalletDeployedNotificationCopyWith<$Res>?
-      get tokenWalletDeployedNotification;
-  @override
-  $WalletInteractionInfoCopyWith<$Res>? get walletInteractionInfo;
-}
-
-/// @nodoc
-class __$$TonWalletOrdinaryTransactionImplCopyWithImpl<$Res>
-    extends _$TonWalletOrdinaryTransactionCopyWithImpl<$Res,
-        _$TonWalletOrdinaryTransactionImpl>
-    implements _$$TonWalletOrdinaryTransactionImplCopyWith<$Res> {
-  __$$TonWalletOrdinaryTransactionImplCopyWithImpl(
-      _$TonWalletOrdinaryTransactionImpl _value,
-      $Res Function(_$TonWalletOrdinaryTransactionImpl) _then)
-      : super(_value, _then);
-
-  /// Create a copy of TonWalletOrdinaryTransaction
-  /// with the given fields replaced by the non-null parameter values.
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? lt = null,
-    Object? isOutgoing = null,
-    Object? value = null,
-    Object? address = null,
-    Object? date = null,
-    Object? fees = null,
-    Object? hash = null,
-    Object? prevTransactionLt = freezed,
-    Object? comment = freezed,
-    Object? dePoolOnRoundCompleteNotification = freezed,
-    Object? dePoolReceiveAnswerNotification = freezed,
-    Object? tokenWalletDeployedNotification = freezed,
-    Object? walletInteractionInfo = freezed,
-  }) {
-    return _then(_$TonWalletOrdinaryTransactionImpl(
-      lt: null == lt
-          ? _value.lt
-          : lt // ignore: cast_nullable_to_non_nullable
-              as String,
-      isOutgoing: null == isOutgoing
-          ? _value.isOutgoing
-          : isOutgoing // ignore: cast_nullable_to_non_nullable
-              as bool,
-      value: null == value
-          ? _value.value
-          : value // ignore: cast_nullable_to_non_nullable
-              as BigInt,
-      address: null == address
-          ? _value.address
-          : address // ignore: cast_nullable_to_non_nullable
-              as Address,
-      date: null == date
-          ? _value.date
-          : date // ignore: cast_nullable_to_non_nullable
-              as DateTime,
-      fees: null == fees
-          ? _value.fees
-          : fees // ignore: cast_nullable_to_non_nullable
-              as BigInt,
-      hash: null == hash
-          ? _value.hash
-          : hash // ignore: cast_nullable_to_non_nullable
-              as String,
-      prevTransactionLt: freezed == prevTransactionLt
-          ? _value.prevTransactionLt
-          : prevTransactionLt // ignore: cast_nullable_to_non_nullable
-              as String?,
-      comment: freezed == comment
-          ? _value.comment
-          : comment // ignore: cast_nullable_to_non_nullable
-              as String?,
-      dePoolOnRoundCompleteNotification: freezed ==
-              dePoolOnRoundCompleteNotification
-          ? _value.dePoolOnRoundCompleteNotification
-          : dePoolOnRoundCompleteNotification // ignore: cast_nullable_to_non_nullable
-              as DePoolOnRoundCompleteNotification?,
-      dePoolReceiveAnswerNotification: freezed ==
-              dePoolReceiveAnswerNotification
-          ? _value.dePoolReceiveAnswerNotification
-          : dePoolReceiveAnswerNotification // ignore: cast_nullable_to_non_nullable
-              as DePoolReceiveAnswerNotification?,
-      tokenWalletDeployedNotification: freezed ==
-              tokenWalletDeployedNotification
-          ? _value.tokenWalletDeployedNotification
-          : tokenWalletDeployedNotification // ignore: cast_nullable_to_non_nullable
-              as TokenWalletDeployedNotification?,
-      walletInteractionInfo: freezed == walletInteractionInfo
-          ? _value.walletInteractionInfo
-          : walletInteractionInfo // ignore: cast_nullable_to_non_nullable
-              as WalletInteractionInfo?,
-    ));
-  }
-}
-
-/// @nodoc
-
-class _$TonWalletOrdinaryTransactionImpl
-    implements _TonWalletOrdinaryTransaction {
-  const _$TonWalletOrdinaryTransactionImpl(
-      {required this.lt,
-      required this.isOutgoing,
-      @amountJsonConverter required this.value,
-      required this.address,
-      @dateSecondsSinceEpochJsonConverter required this.date,
-      @amountJsonConverter required this.fees,
-      required this.hash,
-      this.prevTransactionLt,
-      this.comment,
-      this.dePoolOnRoundCompleteNotification,
-      this.dePoolReceiveAnswerNotification,
-      this.tokenWalletDeployedNotification,
-      this.walletInteractionInfo});
-
-  @override
-  final String lt;
-  @override
-  final bool isOutgoing;
-  @override
-  @amountJsonConverter
-  final BigInt value;
-  @override
-  final Address address;
-  @override
-  @dateSecondsSinceEpochJsonConverter
-  final DateTime date;
-  @override
-  @amountJsonConverter
-  final BigInt fees;
-  @override
-  final String hash;
-  @override
-  final String? prevTransactionLt;
-  @override
-  final String? comment;
-  @override
-  final DePoolOnRoundCompleteNotification? dePoolOnRoundCompleteNotification;
-  @override
-  final DePoolReceiveAnswerNotification? dePoolReceiveAnswerNotification;
-  @override
-  final TokenWalletDeployedNotification? tokenWalletDeployedNotification;
-  @override
-  final WalletInteractionInfo? walletInteractionInfo;
-
-  @override
-  String toString() {
-    return 'TonWalletOrdinaryTransaction(lt: $lt, isOutgoing: $isOutgoing, value: $value, address: $address, date: $date, fees: $fees, hash: $hash, prevTransactionLt: $prevTransactionLt, comment: $comment, dePoolOnRoundCompleteNotification: $dePoolOnRoundCompleteNotification, dePoolReceiveAnswerNotification: $dePoolReceiveAnswerNotification, tokenWalletDeployedNotification: $tokenWalletDeployedNotification, walletInteractionInfo: $walletInteractionInfo)';
-  }
+      get copyWith => _$TonWalletOrdinaryTransactionCopyWithImpl<
+              TonWalletOrdinaryTransaction>(
+          this as TonWalletOrdinaryTransaction, _$identity);
 
   @override
   bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$TonWalletOrdinaryTransactionImpl &&
+            other is TonWalletOrdinaryTransaction &&
             (identical(other.lt, lt) || other.lt == lt) &&
             (identical(other.isOutgoing, isOutgoing) ||
                 other.isOutgoing == isOutgoing) &&
@@ -474,71 +90,513 @@ class _$TonWalletOrdinaryTransactionImpl
       tokenWalletDeployedNotification,
       walletInteractionInfo);
 
+  @override
+  String toString() {
+    return 'TonWalletOrdinaryTransaction(lt: $lt, isOutgoing: $isOutgoing, value: $value, address: $address, date: $date, fees: $fees, hash: $hash, prevTransactionLt: $prevTransactionLt, comment: $comment, dePoolOnRoundCompleteNotification: $dePoolOnRoundCompleteNotification, dePoolReceiveAnswerNotification: $dePoolReceiveAnswerNotification, tokenWalletDeployedNotification: $tokenWalletDeployedNotification, walletInteractionInfo: $walletInteractionInfo)';
+  }
+}
+
+/// @nodoc
+abstract mixin class $TonWalletOrdinaryTransactionCopyWith<$Res> {
+  factory $TonWalletOrdinaryTransactionCopyWith(
+          TonWalletOrdinaryTransaction value,
+          $Res Function(TonWalletOrdinaryTransaction) _then) =
+      _$TonWalletOrdinaryTransactionCopyWithImpl;
+  @useResult
+  $Res call(
+      {String lt,
+      bool isOutgoing,
+      @amountJsonConverter BigInt value,
+      Address address,
+      @dateSecondsSinceEpochJsonConverter DateTime date,
+      @amountJsonConverter BigInt fees,
+      String hash,
+      String? prevTransactionLt,
+      String? comment,
+      DePoolOnRoundCompleteNotification? dePoolOnRoundCompleteNotification,
+      DePoolReceiveAnswerNotification? dePoolReceiveAnswerNotification,
+      TokenWalletDeployedNotification? tokenWalletDeployedNotification,
+      WalletInteractionInfo? walletInteractionInfo});
+
+  $AddressCopyWith<$Res> get address;
+  $DePoolOnRoundCompleteNotificationCopyWith<$Res>?
+      get dePoolOnRoundCompleteNotification;
+  $DePoolReceiveAnswerNotificationCopyWith<$Res>?
+      get dePoolReceiveAnswerNotification;
+  $TokenWalletDeployedNotificationCopyWith<$Res>?
+      get tokenWalletDeployedNotification;
+  $WalletInteractionInfoCopyWith<$Res>? get walletInteractionInfo;
+}
+
+/// @nodoc
+class _$TonWalletOrdinaryTransactionCopyWithImpl<$Res>
+    implements $TonWalletOrdinaryTransactionCopyWith<$Res> {
+  _$TonWalletOrdinaryTransactionCopyWithImpl(this._self, this._then);
+
+  final TonWalletOrdinaryTransaction _self;
+  final $Res Function(TonWalletOrdinaryTransaction) _then;
+
   /// Create a copy of TonWalletOrdinaryTransaction
   /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? lt = null,
+    Object? isOutgoing = null,
+    Object? value = null,
+    Object? address = null,
+    Object? date = null,
+    Object? fees = null,
+    Object? hash = null,
+    Object? prevTransactionLt = freezed,
+    Object? comment = freezed,
+    Object? dePoolOnRoundCompleteNotification = freezed,
+    Object? dePoolReceiveAnswerNotification = freezed,
+    Object? tokenWalletDeployedNotification = freezed,
+    Object? walletInteractionInfo = freezed,
+  }) {
+    return _then(_self.copyWith(
+      lt: null == lt
+          ? _self.lt
+          : lt // ignore: cast_nullable_to_non_nullable
+              as String,
+      isOutgoing: null == isOutgoing
+          ? _self.isOutgoing
+          : isOutgoing // ignore: cast_nullable_to_non_nullable
+              as bool,
+      value: null == value
+          ? _self.value
+          : value // ignore: cast_nullable_to_non_nullable
+              as BigInt,
+      address: null == address
+          ? _self.address
+          : address // ignore: cast_nullable_to_non_nullable
+              as Address,
+      date: null == date
+          ? _self.date
+          : date // ignore: cast_nullable_to_non_nullable
+              as DateTime,
+      fees: null == fees
+          ? _self.fees
+          : fees // ignore: cast_nullable_to_non_nullable
+              as BigInt,
+      hash: null == hash
+          ? _self.hash
+          : hash // ignore: cast_nullable_to_non_nullable
+              as String,
+      prevTransactionLt: freezed == prevTransactionLt
+          ? _self.prevTransactionLt
+          : prevTransactionLt // ignore: cast_nullable_to_non_nullable
+              as String?,
+      comment: freezed == comment
+          ? _self.comment
+          : comment // ignore: cast_nullable_to_non_nullable
+              as String?,
+      dePoolOnRoundCompleteNotification: freezed ==
+              dePoolOnRoundCompleteNotification
+          ? _self.dePoolOnRoundCompleteNotification
+          : dePoolOnRoundCompleteNotification // ignore: cast_nullable_to_non_nullable
+              as DePoolOnRoundCompleteNotification?,
+      dePoolReceiveAnswerNotification: freezed ==
+              dePoolReceiveAnswerNotification
+          ? _self.dePoolReceiveAnswerNotification
+          : dePoolReceiveAnswerNotification // ignore: cast_nullable_to_non_nullable
+              as DePoolReceiveAnswerNotification?,
+      tokenWalletDeployedNotification: freezed ==
+              tokenWalletDeployedNotification
+          ? _self.tokenWalletDeployedNotification
+          : tokenWalletDeployedNotification // ignore: cast_nullable_to_non_nullable
+              as TokenWalletDeployedNotification?,
+      walletInteractionInfo: freezed == walletInteractionInfo
+          ? _self.walletInteractionInfo
+          : walletInteractionInfo // ignore: cast_nullable_to_non_nullable
+              as WalletInteractionInfo?,
+    ));
+  }
+
+  /// Create a copy of TonWalletOrdinaryTransaction
+  /// with the given fields replaced by the non-null parameter values.
   @override
   @pragma('vm:prefer-inline')
-  _$$TonWalletOrdinaryTransactionImplCopyWith<
-          _$TonWalletOrdinaryTransactionImpl>
-      get copyWith => __$$TonWalletOrdinaryTransactionImplCopyWithImpl<
-          _$TonWalletOrdinaryTransactionImpl>(this, _$identity);
+  $AddressCopyWith<$Res> get address {
+    return $AddressCopyWith<$Res>(_self.address, (value) {
+      return _then(_self.copyWith(address: value));
+    });
+  }
+
+  /// Create a copy of TonWalletOrdinaryTransaction
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @pragma('vm:prefer-inline')
+  $DePoolOnRoundCompleteNotificationCopyWith<$Res>?
+      get dePoolOnRoundCompleteNotification {
+    if (_self.dePoolOnRoundCompleteNotification == null) {
+      return null;
+    }
+
+    return $DePoolOnRoundCompleteNotificationCopyWith<$Res>(
+        _self.dePoolOnRoundCompleteNotification!, (value) {
+      return _then(_self.copyWith(dePoolOnRoundCompleteNotification: value));
+    });
+  }
+
+  /// Create a copy of TonWalletOrdinaryTransaction
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @pragma('vm:prefer-inline')
+  $DePoolReceiveAnswerNotificationCopyWith<$Res>?
+      get dePoolReceiveAnswerNotification {
+    if (_self.dePoolReceiveAnswerNotification == null) {
+      return null;
+    }
+
+    return $DePoolReceiveAnswerNotificationCopyWith<$Res>(
+        _self.dePoolReceiveAnswerNotification!, (value) {
+      return _then(_self.copyWith(dePoolReceiveAnswerNotification: value));
+    });
+  }
+
+  /// Create a copy of TonWalletOrdinaryTransaction
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @pragma('vm:prefer-inline')
+  $TokenWalletDeployedNotificationCopyWith<$Res>?
+      get tokenWalletDeployedNotification {
+    if (_self.tokenWalletDeployedNotification == null) {
+      return null;
+    }
+
+    return $TokenWalletDeployedNotificationCopyWith<$Res>(
+        _self.tokenWalletDeployedNotification!, (value) {
+      return _then(_self.copyWith(tokenWalletDeployedNotification: value));
+    });
+  }
+
+  /// Create a copy of TonWalletOrdinaryTransaction
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @pragma('vm:prefer-inline')
+  $WalletInteractionInfoCopyWith<$Res>? get walletInteractionInfo {
+    if (_self.walletInteractionInfo == null) {
+      return null;
+    }
+
+    return $WalletInteractionInfoCopyWith<$Res>(_self.walletInteractionInfo!,
+        (value) {
+      return _then(_self.copyWith(walletInteractionInfo: value));
+    });
+  }
 }
 
-abstract class _TonWalletOrdinaryTransaction
-    implements TonWalletOrdinaryTransaction {
-  const factory _TonWalletOrdinaryTransaction(
-      {required final String lt,
-      required final bool isOutgoing,
-      @amountJsonConverter required final BigInt value,
-      required final Address address,
-      @dateSecondsSinceEpochJsonConverter required final DateTime date,
-      @amountJsonConverter required final BigInt fees,
-      required final String hash,
-      final String? prevTransactionLt,
-      final String? comment,
-      final DePoolOnRoundCompleteNotification?
-          dePoolOnRoundCompleteNotification,
-      final DePoolReceiveAnswerNotification? dePoolReceiveAnswerNotification,
-      final TokenWalletDeployedNotification? tokenWalletDeployedNotification,
-      final WalletInteractionInfo?
-          walletInteractionInfo}) = _$TonWalletOrdinaryTransactionImpl;
+/// @nodoc
+
+class _TonWalletOrdinaryTransaction implements TonWalletOrdinaryTransaction {
+  const _TonWalletOrdinaryTransaction(
+      {required this.lt,
+      required this.isOutgoing,
+      @amountJsonConverter required this.value,
+      required this.address,
+      @dateSecondsSinceEpochJsonConverter required this.date,
+      @amountJsonConverter required this.fees,
+      required this.hash,
+      this.prevTransactionLt,
+      this.comment,
+      this.dePoolOnRoundCompleteNotification,
+      this.dePoolReceiveAnswerNotification,
+      this.tokenWalletDeployedNotification,
+      this.walletInteractionInfo});
 
   @override
-  String get lt;
+  final String lt;
   @override
-  bool get isOutgoing;
+  final bool isOutgoing;
   @override
   @amountJsonConverter
-  BigInt get value;
+  final BigInt value;
   @override
-  Address get address;
+  final Address address;
   @override
   @dateSecondsSinceEpochJsonConverter
-  DateTime get date;
+  final DateTime date;
   @override
   @amountJsonConverter
-  BigInt get fees;
+  final BigInt fees;
   @override
-  String get hash;
+  final String hash;
   @override
-  String? get prevTransactionLt;
+  final String? prevTransactionLt;
   @override
-  String? get comment;
+  final String? comment;
   @override
-  DePoolOnRoundCompleteNotification? get dePoolOnRoundCompleteNotification;
+  final DePoolOnRoundCompleteNotification? dePoolOnRoundCompleteNotification;
   @override
-  DePoolReceiveAnswerNotification? get dePoolReceiveAnswerNotification;
+  final DePoolReceiveAnswerNotification? dePoolReceiveAnswerNotification;
   @override
-  TokenWalletDeployedNotification? get tokenWalletDeployedNotification;
+  final TokenWalletDeployedNotification? tokenWalletDeployedNotification;
   @override
-  WalletInteractionInfo? get walletInteractionInfo;
+  final WalletInteractionInfo? walletInteractionInfo;
 
   /// Create a copy of TonWalletOrdinaryTransaction
   /// with the given fields replaced by the non-null parameter values.
   @override
   @JsonKey(includeFromJson: false, includeToJson: false)
-  _$$TonWalletOrdinaryTransactionImplCopyWith<
-          _$TonWalletOrdinaryTransactionImpl>
-      get copyWith => throw _privateConstructorUsedError;
+  @pragma('vm:prefer-inline')
+  _$TonWalletOrdinaryTransactionCopyWith<_TonWalletOrdinaryTransaction>
+      get copyWith => __$TonWalletOrdinaryTransactionCopyWithImpl<
+          _TonWalletOrdinaryTransaction>(this, _$identity);
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _TonWalletOrdinaryTransaction &&
+            (identical(other.lt, lt) || other.lt == lt) &&
+            (identical(other.isOutgoing, isOutgoing) ||
+                other.isOutgoing == isOutgoing) &&
+            (identical(other.value, value) || other.value == value) &&
+            (identical(other.address, address) || other.address == address) &&
+            (identical(other.date, date) || other.date == date) &&
+            (identical(other.fees, fees) || other.fees == fees) &&
+            (identical(other.hash, hash) || other.hash == hash) &&
+            (identical(other.prevTransactionLt, prevTransactionLt) ||
+                other.prevTransactionLt == prevTransactionLt) &&
+            (identical(other.comment, comment) || other.comment == comment) &&
+            (identical(other.dePoolOnRoundCompleteNotification,
+                    dePoolOnRoundCompleteNotification) ||
+                other.dePoolOnRoundCompleteNotification ==
+                    dePoolOnRoundCompleteNotification) &&
+            (identical(other.dePoolReceiveAnswerNotification,
+                    dePoolReceiveAnswerNotification) ||
+                other.dePoolReceiveAnswerNotification ==
+                    dePoolReceiveAnswerNotification) &&
+            (identical(other.tokenWalletDeployedNotification,
+                    tokenWalletDeployedNotification) ||
+                other.tokenWalletDeployedNotification ==
+                    tokenWalletDeployedNotification) &&
+            (identical(other.walletInteractionInfo, walletInteractionInfo) ||
+                other.walletInteractionInfo == walletInteractionInfo));
+  }
+
+  @override
+  int get hashCode => Object.hash(
+      runtimeType,
+      lt,
+      isOutgoing,
+      value,
+      address,
+      date,
+      fees,
+      hash,
+      prevTransactionLt,
+      comment,
+      dePoolOnRoundCompleteNotification,
+      dePoolReceiveAnswerNotification,
+      tokenWalletDeployedNotification,
+      walletInteractionInfo);
+
+  @override
+  String toString() {
+    return 'TonWalletOrdinaryTransaction(lt: $lt, isOutgoing: $isOutgoing, value: $value, address: $address, date: $date, fees: $fees, hash: $hash, prevTransactionLt: $prevTransactionLt, comment: $comment, dePoolOnRoundCompleteNotification: $dePoolOnRoundCompleteNotification, dePoolReceiveAnswerNotification: $dePoolReceiveAnswerNotification, tokenWalletDeployedNotification: $tokenWalletDeployedNotification, walletInteractionInfo: $walletInteractionInfo)';
+  }
 }
+
+/// @nodoc
+abstract mixin class _$TonWalletOrdinaryTransactionCopyWith<$Res>
+    implements $TonWalletOrdinaryTransactionCopyWith<$Res> {
+  factory _$TonWalletOrdinaryTransactionCopyWith(
+          _TonWalletOrdinaryTransaction value,
+          $Res Function(_TonWalletOrdinaryTransaction) _then) =
+      __$TonWalletOrdinaryTransactionCopyWithImpl;
+  @override
+  @useResult
+  $Res call(
+      {String lt,
+      bool isOutgoing,
+      @amountJsonConverter BigInt value,
+      Address address,
+      @dateSecondsSinceEpochJsonConverter DateTime date,
+      @amountJsonConverter BigInt fees,
+      String hash,
+      String? prevTransactionLt,
+      String? comment,
+      DePoolOnRoundCompleteNotification? dePoolOnRoundCompleteNotification,
+      DePoolReceiveAnswerNotification? dePoolReceiveAnswerNotification,
+      TokenWalletDeployedNotification? tokenWalletDeployedNotification,
+      WalletInteractionInfo? walletInteractionInfo});
+
+  @override
+  $AddressCopyWith<$Res> get address;
+  @override
+  $DePoolOnRoundCompleteNotificationCopyWith<$Res>?
+      get dePoolOnRoundCompleteNotification;
+  @override
+  $DePoolReceiveAnswerNotificationCopyWith<$Res>?
+      get dePoolReceiveAnswerNotification;
+  @override
+  $TokenWalletDeployedNotificationCopyWith<$Res>?
+      get tokenWalletDeployedNotification;
+  @override
+  $WalletInteractionInfoCopyWith<$Res>? get walletInteractionInfo;
+}
+
+/// @nodoc
+class __$TonWalletOrdinaryTransactionCopyWithImpl<$Res>
+    implements _$TonWalletOrdinaryTransactionCopyWith<$Res> {
+  __$TonWalletOrdinaryTransactionCopyWithImpl(this._self, this._then);
+
+  final _TonWalletOrdinaryTransaction _self;
+  final $Res Function(_TonWalletOrdinaryTransaction) _then;
+
+  /// Create a copy of TonWalletOrdinaryTransaction
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @pragma('vm:prefer-inline')
+  $Res call({
+    Object? lt = null,
+    Object? isOutgoing = null,
+    Object? value = null,
+    Object? address = null,
+    Object? date = null,
+    Object? fees = null,
+    Object? hash = null,
+    Object? prevTransactionLt = freezed,
+    Object? comment = freezed,
+    Object? dePoolOnRoundCompleteNotification = freezed,
+    Object? dePoolReceiveAnswerNotification = freezed,
+    Object? tokenWalletDeployedNotification = freezed,
+    Object? walletInteractionInfo = freezed,
+  }) {
+    return _then(_TonWalletOrdinaryTransaction(
+      lt: null == lt
+          ? _self.lt
+          : lt // ignore: cast_nullable_to_non_nullable
+              as String,
+      isOutgoing: null == isOutgoing
+          ? _self.isOutgoing
+          : isOutgoing // ignore: cast_nullable_to_non_nullable
+              as bool,
+      value: null == value
+          ? _self.value
+          : value // ignore: cast_nullable_to_non_nullable
+              as BigInt,
+      address: null == address
+          ? _self.address
+          : address // ignore: cast_nullable_to_non_nullable
+              as Address,
+      date: null == date
+          ? _self.date
+          : date // ignore: cast_nullable_to_non_nullable
+              as DateTime,
+      fees: null == fees
+          ? _self.fees
+          : fees // ignore: cast_nullable_to_non_nullable
+              as BigInt,
+      hash: null == hash
+          ? _self.hash
+          : hash // ignore: cast_nullable_to_non_nullable
+              as String,
+      prevTransactionLt: freezed == prevTransactionLt
+          ? _self.prevTransactionLt
+          : prevTransactionLt // ignore: cast_nullable_to_non_nullable
+              as String?,
+      comment: freezed == comment
+          ? _self.comment
+          : comment // ignore: cast_nullable_to_non_nullable
+              as String?,
+      dePoolOnRoundCompleteNotification: freezed ==
+              dePoolOnRoundCompleteNotification
+          ? _self.dePoolOnRoundCompleteNotification
+          : dePoolOnRoundCompleteNotification // ignore: cast_nullable_to_non_nullable
+              as DePoolOnRoundCompleteNotification?,
+      dePoolReceiveAnswerNotification: freezed ==
+              dePoolReceiveAnswerNotification
+          ? _self.dePoolReceiveAnswerNotification
+          : dePoolReceiveAnswerNotification // ignore: cast_nullable_to_non_nullable
+              as DePoolReceiveAnswerNotification?,
+      tokenWalletDeployedNotification: freezed ==
+              tokenWalletDeployedNotification
+          ? _self.tokenWalletDeployedNotification
+          : tokenWalletDeployedNotification // ignore: cast_nullable_to_non_nullable
+              as TokenWalletDeployedNotification?,
+      walletInteractionInfo: freezed == walletInteractionInfo
+          ? _self.walletInteractionInfo
+          : walletInteractionInfo // ignore: cast_nullable_to_non_nullable
+              as WalletInteractionInfo?,
+    ));
+  }
+
+  /// Create a copy of TonWalletOrdinaryTransaction
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @pragma('vm:prefer-inline')
+  $AddressCopyWith<$Res> get address {
+    return $AddressCopyWith<$Res>(_self.address, (value) {
+      return _then(_self.copyWith(address: value));
+    });
+  }
+
+  /// Create a copy of TonWalletOrdinaryTransaction
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @pragma('vm:prefer-inline')
+  $DePoolOnRoundCompleteNotificationCopyWith<$Res>?
+      get dePoolOnRoundCompleteNotification {
+    if (_self.dePoolOnRoundCompleteNotification == null) {
+      return null;
+    }
+
+    return $DePoolOnRoundCompleteNotificationCopyWith<$Res>(
+        _self.dePoolOnRoundCompleteNotification!, (value) {
+      return _then(_self.copyWith(dePoolOnRoundCompleteNotification: value));
+    });
+  }
+
+  /// Create a copy of TonWalletOrdinaryTransaction
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @pragma('vm:prefer-inline')
+  $DePoolReceiveAnswerNotificationCopyWith<$Res>?
+      get dePoolReceiveAnswerNotification {
+    if (_self.dePoolReceiveAnswerNotification == null) {
+      return null;
+    }
+
+    return $DePoolReceiveAnswerNotificationCopyWith<$Res>(
+        _self.dePoolReceiveAnswerNotification!, (value) {
+      return _then(_self.copyWith(dePoolReceiveAnswerNotification: value));
+    });
+  }
+
+  /// Create a copy of TonWalletOrdinaryTransaction
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @pragma('vm:prefer-inline')
+  $TokenWalletDeployedNotificationCopyWith<$Res>?
+      get tokenWalletDeployedNotification {
+    if (_self.tokenWalletDeployedNotification == null) {
+      return null;
+    }
+
+    return $TokenWalletDeployedNotificationCopyWith<$Res>(
+        _self.tokenWalletDeployedNotification!, (value) {
+      return _then(_self.copyWith(tokenWalletDeployedNotification: value));
+    });
+  }
+
+  /// Create a copy of TonWalletOrdinaryTransaction
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @pragma('vm:prefer-inline')
+  $WalletInteractionInfoCopyWith<$Res>? get walletInteractionInfo {
+    if (_self.walletInteractionInfo == null) {
+      return null;
+    }
+
+    return $WalletInteractionInfoCopyWith<$Res>(_self.walletInteractionInfo!,
+        (value) {
+      return _then(_self.copyWith(walletInteractionInfo: value));
+    });
+  }
+}
+
+// dart format on

@@ -1,3 +1,4 @@
+// dart format width=80
 // coverage:ignore-file
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // ignore_for_file: type=lint
@@ -9,78 +10,55 @@ part of 'nft_list.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// dart format off
 T _$identity<T>(T value) => value;
-
-final _privateConstructorUsedError = UnsupportedError(
-    'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models');
 
 /// @nodoc
 mixin _$NftList {
-  List<NftItem> get items => throw _privateConstructorUsedError;
-  String? get continuation => throw _privateConstructorUsedError;
+  List<NftItem> get items;
+  String? get continuation;
 
   /// Create a copy of NftList
   /// with the given fields replaced by the non-null parameter values.
   @JsonKey(includeFromJson: false, includeToJson: false)
-  $NftListCopyWith<NftList> get copyWith => throw _privateConstructorUsedError;
-}
-
-/// @nodoc
-abstract class $NftListCopyWith<$Res> {
-  factory $NftListCopyWith(NftList value, $Res Function(NftList) then) =
-      _$NftListCopyWithImpl<$Res, NftList>;
-  @useResult
-  $Res call({List<NftItem> items, String? continuation});
-}
-
-/// @nodoc
-class _$NftListCopyWithImpl<$Res, $Val extends NftList>
-    implements $NftListCopyWith<$Res> {
-  _$NftListCopyWithImpl(this._value, this._then);
-
-  // ignore: unused_field
-  final $Val _value;
-  // ignore: unused_field
-  final $Res Function($Val) _then;
-
-  /// Create a copy of NftList
-  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
+  $NftListCopyWith<NftList> get copyWith =>
+      _$NftListCopyWithImpl<NftList>(this as NftList, _$identity);
+
   @override
-  $Res call({
-    Object? items = null,
-    Object? continuation = freezed,
-  }) {
-    return _then(_value.copyWith(
-      items: null == items
-          ? _value.items
-          : items // ignore: cast_nullable_to_non_nullable
-              as List<NftItem>,
-      continuation: freezed == continuation
-          ? _value.continuation
-          : continuation // ignore: cast_nullable_to_non_nullable
-              as String?,
-    ) as $Val);
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is NftList &&
+            const DeepCollectionEquality().equals(other.items, items) &&
+            (identical(other.continuation, continuation) ||
+                other.continuation == continuation));
+  }
+
+  @override
+  int get hashCode => Object.hash(
+      runtimeType, const DeepCollectionEquality().hash(items), continuation);
+
+  @override
+  String toString() {
+    return 'NftList(items: $items, continuation: $continuation)';
   }
 }
 
 /// @nodoc
-abstract class _$$NftListImplCopyWith<$Res> implements $NftListCopyWith<$Res> {
-  factory _$$NftListImplCopyWith(
-          _$NftListImpl value, $Res Function(_$NftListImpl) then) =
-      __$$NftListImplCopyWithImpl<$Res>;
-  @override
+abstract mixin class $NftListCopyWith<$Res> {
+  factory $NftListCopyWith(NftList value, $Res Function(NftList) _then) =
+      _$NftListCopyWithImpl;
   @useResult
   $Res call({List<NftItem> items, String? continuation});
 }
 
 /// @nodoc
-class __$$NftListImplCopyWithImpl<$Res>
-    extends _$NftListCopyWithImpl<$Res, _$NftListImpl>
-    implements _$$NftListImplCopyWith<$Res> {
-  __$$NftListImplCopyWithImpl(
-      _$NftListImpl _value, $Res Function(_$NftListImpl) _then)
-      : super(_value, _then);
+class _$NftListCopyWithImpl<$Res> implements $NftListCopyWith<$Res> {
+  _$NftListCopyWithImpl(this._self, this._then);
+
+  final NftList _self;
+  final $Res Function(NftList) _then;
 
   /// Create a copy of NftList
   /// with the given fields replaced by the non-null parameter values.
@@ -90,13 +68,13 @@ class __$$NftListImplCopyWithImpl<$Res>
     Object? items = null,
     Object? continuation = freezed,
   }) {
-    return _then(_$NftListImpl(
+    return _then(_self.copyWith(
       items: null == items
-          ? _value._items
+          ? _self.items
           : items // ignore: cast_nullable_to_non_nullable
               as List<NftItem>,
       continuation: freezed == continuation
-          ? _value.continuation
+          ? _self.continuation
           : continuation // ignore: cast_nullable_to_non_nullable
               as String?,
     ));
@@ -105,8 +83,8 @@ class __$$NftListImplCopyWithImpl<$Res>
 
 /// @nodoc
 
-class _$NftListImpl implements _NftList {
-  const _$NftListImpl({required final List<NftItem> items, this.continuation})
+class _NftList implements NftList {
+  const _NftList({required final List<NftItem> items, this.continuation})
       : _items = items;
 
   final List<NftItem> _items;
@@ -120,16 +98,19 @@ class _$NftListImpl implements _NftList {
   @override
   final String? continuation;
 
+  /// Create a copy of NftList
+  /// with the given fields replaced by the non-null parameter values.
   @override
-  String toString() {
-    return 'NftList(items: $items, continuation: $continuation)';
-  }
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @pragma('vm:prefer-inline')
+  _$NftListCopyWith<_NftList> get copyWith =>
+      __$NftListCopyWithImpl<_NftList>(this, _$identity);
 
   @override
   bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$NftListImpl &&
+            other is _NftList &&
             const DeepCollectionEquality().equals(other._items, _items) &&
             (identical(other.continuation, continuation) ||
                 other.continuation == continuation));
@@ -139,29 +120,47 @@ class _$NftListImpl implements _NftList {
   int get hashCode => Object.hash(
       runtimeType, const DeepCollectionEquality().hash(_items), continuation);
 
+  @override
+  String toString() {
+    return 'NftList(items: $items, continuation: $continuation)';
+  }
+}
+
+/// @nodoc
+abstract mixin class _$NftListCopyWith<$Res> implements $NftListCopyWith<$Res> {
+  factory _$NftListCopyWith(_NftList value, $Res Function(_NftList) _then) =
+      __$NftListCopyWithImpl;
+  @override
+  @useResult
+  $Res call({List<NftItem> items, String? continuation});
+}
+
+/// @nodoc
+class __$NftListCopyWithImpl<$Res> implements _$NftListCopyWith<$Res> {
+  __$NftListCopyWithImpl(this._self, this._then);
+
+  final _NftList _self;
+  final $Res Function(_NftList) _then;
+
   /// Create a copy of NftList
   /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   @pragma('vm:prefer-inline')
-  _$$NftListImplCopyWith<_$NftListImpl> get copyWith =>
-      __$$NftListImplCopyWithImpl<_$NftListImpl>(this, _$identity);
+  $Res call({
+    Object? items = null,
+    Object? continuation = freezed,
+  }) {
+    return _then(_NftList(
+      items: null == items
+          ? _self._items
+          : items // ignore: cast_nullable_to_non_nullable
+              as List<NftItem>,
+      continuation: freezed == continuation
+          ? _self.continuation
+          : continuation // ignore: cast_nullable_to_non_nullable
+              as String?,
+    ));
+  }
 }
 
-abstract class _NftList implements NftList {
-  const factory _NftList(
-      {required final List<NftItem> items,
-      final String? continuation}) = _$NftListImpl;
-
-  @override
-  List<NftItem> get items;
-  @override
-  String? get continuation;
-
-  /// Create a copy of NftList
-  /// with the given fields replaced by the non-null parameter values.
-  @override
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  _$$NftListImplCopyWith<_$NftListImpl> get copyWith =>
-      throw _privateConstructorUsedError;
-}
+// dart format on

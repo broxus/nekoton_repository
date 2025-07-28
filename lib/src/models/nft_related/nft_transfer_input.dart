@@ -4,7 +4,7 @@ import 'package:nekoton_repository/nekoton_repository.dart';
 part 'nft_transfer_input.freezed.dart';
 
 @freezed
-class NftTransferInput with _$NftTransferInput {
+abstract class NftTransferInput with _$NftTransferInput {
   const factory NftTransferInput({
     required Address to,
     required Address sendGasTo,

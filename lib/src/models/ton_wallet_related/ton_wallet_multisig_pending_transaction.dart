@@ -6,7 +6,7 @@ part 'ton_wallet_multisig_pending_transaction.freezed.dart';
 /// Transaction for TonWallet that is created by
 /// [TonWalletRepository.mapMultisigPendingTransactions].
 @freezed
-class TonWalletMultisigPendingTransaction
+abstract class TonWalletMultisigPendingTransaction
     with _$TonWalletMultisigPendingTransaction {
   const factory TonWalletMultisigPendingTransaction({
     required String lt,
