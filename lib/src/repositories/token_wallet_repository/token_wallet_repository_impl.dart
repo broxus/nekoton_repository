@@ -368,9 +368,16 @@ mixin TokenWalletRepositoryImpl implements TokenWalletRepository {
     BigInt? attachedAmount,
     String? payload,
   }) async {
-    final tokenWallet = (await getTokenWallet(owner, rootTokenContract)).wallet;
+    final tokenWalletState = await getTokenWallet(owner, rootTokenContract);
+    final tokenWallet = tokenWalletState.wallet;
 
-    if (tokenWallet == null) throw TokenWalletStateNotInitializedException();
+    if (tokenWallet == null) {
+      throw TokenWalletStateNotInitializedException(
+        owner: owner,
+        rootTokenContract: rootTokenContract,
+        subscriptionError: tokenWalletState.error,
+      );
+    }
 
     try {
       attachedAmount ??= await switch (tokenWallet) {
@@ -411,9 +418,16 @@ mixin TokenWalletRepositoryImpl implements TokenWalletRepository {
     required Address rootTokenContract,
     String? fromLt,
   }) async {
-    final tokenWallet = (await getTokenWallet(owner, rootTokenContract)).wallet;
+    final tokenWalletState = await getTokenWallet(owner, rootTokenContract);
+    final tokenWallet = tokenWalletState.wallet;
 
-    if (tokenWallet == null) throw TokenWalletStateNotInitializedException();
+    if (tokenWallet == null) {
+      throw TokenWalletStateNotInitializedException(
+        owner: owner,
+        rootTokenContract: rootTokenContract,
+        subscriptionError: tokenWalletState.error,
+      );
+    }
 
     return tokenWallet.preloadTransactions(fromLt);
   }

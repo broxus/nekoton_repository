@@ -382,9 +382,15 @@ mixin TonWalletRepositoryImpl implements TonWalletRepository {
     Address address,
     Expiration expiration,
   ) async {
-    final wallet = (await getWallet(address)).wallet;
+    final walletState = await getWallet(address);
+    final wallet = walletState.wallet;
 
-    if (wallet == null) throw TonWalletStateNotInitializedException();
+    if (wallet == null) {
+      throw TonWalletStateNotInitializedException(
+        address: address,
+        subscriptionError: walletState.error,
+      );
+    }
 
     return wallet.prepareDeploy(expiration: expiration);
   }
@@ -397,9 +403,15 @@ mixin TonWalletRepositoryImpl implements TonWalletRepository {
     required Expiration expiration,
     required int? expirationTime,
   }) async {
-    final wallet = (await getWallet(address)).wallet;
+    final walletState = await getWallet(address);
+    final wallet = walletState.wallet;
 
-    if (wallet == null) throw TonWalletStateNotInitializedException();
+    if (wallet == null) {
+      throw TonWalletStateNotInitializedException(
+        address: address,
+        subscriptionError: walletState.error,
+      );
+    }
 
     return wallet.prepareDeployWithMultipleOwners(
       expiration: expiration,
@@ -416,17 +428,23 @@ mixin TonWalletRepositoryImpl implements TonWalletRepository {
     required List<TonWalletTransferParams> params,
     PublicKey? publicKey,
   }) async {
-    final tonWallet = (await getWallet(address)).wallet;
+    final walletState = await getWallet(address);
+    final wallet = walletState.wallet;
 
-    if (tonWallet == null) throw TonWalletStateNotInitializedException();
+    if (wallet == null) {
+      throw TonWalletStateNotInitializedException(
+        address: address,
+        subscriptionError: walletState.error,
+      );
+    }
 
-    final contractState = await tonWallet.transport.getContractState(address);
+    final contractState = await wallet.transport.getContractState(address);
 
     if (!contractState.isExists()) throw ContractNotExistsException(address);
 
-    return tonWallet.prepareTransfer(
+    return wallet.prepareTransfer(
       contractState: contractState,
-      publicKey: publicKey ?? tonWallet.publicKey,
+      publicKey: publicKey ?? wallet.publicKey,
       expiration: expiration,
       params: params,
     );
@@ -439,13 +457,19 @@ mixin TonWalletRepositoryImpl implements TonWalletRepository {
     required String transactionId,
     required Expiration expiration,
   }) async {
-    final tonWallet = (await getWallet(address)).wallet;
+    final walletState = await getWallet(address);
+    final wallet = walletState.wallet;
 
-    if (tonWallet == null) throw TonWalletStateNotInitializedException();
+    if (wallet == null) {
+      throw TonWalletStateNotInitializedException(
+        address: address,
+        subscriptionError: walletState.error,
+      );
+    }
 
-    final contractState = await tonWallet.transport.getContractState(address);
+    final contractState = await wallet.transport.getContractState(address);
 
-    return tonWallet.prepareConfirmTransaction(
+    return wallet.prepareConfirmTransaction(
       contractState: contractState,
       publicKey: publicKey,
       transactionId: transactionId,
@@ -458,14 +482,20 @@ mixin TonWalletRepositoryImpl implements TonWalletRepository {
     required Address address,
     required UnsignedMessage message,
   }) async {
-    final tonWallet = (await getWallet(address)).wallet;
+    final walletState = await getWallet(address);
+    final wallet = walletState.wallet;
 
-    if (tonWallet == null) throw TonWalletStateNotInitializedException();
+    if (wallet == null) {
+      throw TonWalletStateNotInitializedException(
+        address: address,
+        subscriptionError: walletState.error,
+      );
+    }
 
     await message.refreshTimeout();
     final signedMessage = await message.sign(signature: fakeSignature());
 
-    return tonWallet.estimateFees(signedMessage: signedMessage);
+    return wallet.estimateFees(signedMessage: signedMessage);
   }
 
   @override
@@ -473,13 +503,19 @@ mixin TonWalletRepositoryImpl implements TonWalletRepository {
     required Address address,
     required UnsignedMessage message,
   }) async {
-    final tonWallet = (await getWallet(address)).wallet;
+    final walletState = await getWallet(address);
+    final wallet = walletState.wallet;
 
-    if (tonWallet == null) throw TonWalletStateNotInitializedException();
+    if (wallet == null) {
+      throw TonWalletStateNotInitializedException(
+        address: address,
+        subscriptionError: walletState.error,
+      );
+    }
 
     await message.refreshTimeout();
 
-    return tonWallet.estimateFees(
+    return wallet.estimateFees(
       signedMessage: await message.signFake(),
       executionOptions: TransactionExecutionOptions(
         disableSignatureCheck: true,
@@ -497,13 +533,18 @@ mixin TonWalletRepositoryImpl implements TonWalletRepository {
     required Address destination,
     required BigInt amount,
   }) async {
-    final tonWallet = (await getWallet(address)).wallet;
+    final walletState = await getWallet(address);
+    final wallet = walletState.wallet;
 
-    if (tonWallet == null) throw TonWalletStateNotInitializedException();
+    if (wallet == null) {
+      throw TonWalletStateNotInitializedException(
+        address: address,
+        subscriptionError: walletState.error,
+      );
+    }
 
-    final transport = tonWallet.transport;
-    final pendingTransaction =
-        await tonWallet.send(signedMessage: signedMessage);
+    final transport = wallet.transport;
+    final pendingTransaction = await wallet.send(signedMessage: signedMessage);
 
     await tonWalletStorage.addPendingTransaction(
       networkId: transport.networkId,
@@ -526,11 +567,17 @@ mixin TonWalletRepositoryImpl implements TonWalletRepository {
     required PendingTransaction pending,
     required Address address,
   }) async {
-    final tonWallet = (await getWallet(address)).wallet;
+    final walletState = await getWallet(address);
+    final wallet = walletState.wallet;
 
-    if (tonWallet == null) throw TonWalletStateNotInitializedException();
+    if (wallet == null) {
+      throw TonWalletStateNotInitializedException(
+        address: address,
+        subscriptionError: walletState.error,
+      );
+    }
 
-    final transport = tonWallet.transport;
+    final transport = wallet.transport;
     final completer = Completer<Transaction>();
 
     // stop polling existed poller for this wallet to avoid multiple duplicate
@@ -564,7 +611,7 @@ mixin TonWalletRepositoryImpl implements TonWalletRepository {
             completePolling();
             if (!completer.isCompleted) completer.completeError(err.$1, err.$2);
           }
-          if (tonWallet.pollingMethod != PollingMethod.reliable) {
+          if (wallet.pollingMethod != PollingMethod.reliable) {
             // Being here means, that onMessageSentStream got data
             completePolling();
           }
@@ -577,10 +624,10 @@ mixin TonWalletRepositoryImpl implements TonWalletRepository {
 
     if (transport is GqlTransport) {
       createPoller(
-        TonWalletGqlBlockPoller(tonWallet: tonWallet, transport: transport),
+        TonWalletGqlBlockPoller(tonWallet: wallet, transport: transport),
       );
     } else if (transport is ProtoTransport || transport is JrpcTransport) {
-      createPoller(tonWallet);
+      createPoller(wallet);
     } else {
       completer.completeError(Exception('Invalid transport'));
 
@@ -608,7 +655,7 @@ mixin TonWalletRepositoryImpl implements TonWalletRepository {
       completePolling();
     }
 
-    final sentTransactionFuture = tonWallet.onMessageSentStream.firstWhere(
+    final sentTransactionFuture = wallet.onMessageSentStream.firstWhere(
       (e) => e.$1 == pending && e.$2 != null,
       orElse: () => throw const OperationCanceledException(),
     );
@@ -657,9 +704,15 @@ mixin TonWalletRepositoryImpl implements TonWalletRepository {
     required Address address,
     required String fromLt,
   }) async {
-    final wallet = (await getWallet(address)).wallet;
+    final walletState = await getWallet(address);
+    final wallet = walletState.wallet;
 
-    if (wallet == null) throw TonWalletStateNotInitializedException();
+    if (wallet == null) {
+      throw TonWalletStateNotInitializedException(
+        address: address,
+        subscriptionError: walletState.error,
+      );
+    }
 
     return wallet.preloadTransactions(fromLt: fromLt);
   }
@@ -684,8 +737,15 @@ mixin TonWalletRepositoryImpl implements TonWalletRepository {
 
   @override
   Future<List<PublicKey>?> getLocalCustodians(Address address) async {
-    final wallet = (await getWallet(address)).wallet;
-    if (wallet == null) throw TonWalletStateNotInitializedException();
+    final walletState = await getWallet(address);
+    final wallet = walletState.wallet;
+
+    if (wallet == null) {
+      throw TonWalletStateNotInitializedException(
+        address: address,
+        subscriptionError: walletState.error,
+      );
+    }
 
     final custodians = wallet.custodians;
 
@@ -1138,9 +1198,15 @@ mixin TonWalletRepositoryImpl implements TonWalletRepository {
     List<IgnoreTransactionTreeSimulationError>? ignoredComputePhaseCodes,
     List<IgnoreTransactionTreeSimulationError>? ignoredActionPhaseCodes,
   }) async {
-    final tonWallet = (await getWallet(address)).wallet;
+    final walletState = await getWallet(address);
+    final wallet = walletState.wallet;
 
-    if (tonWallet == null) throw TonWalletStateNotInitializedException();
+    if (wallet == null) {
+      throw TonWalletStateNotInitializedException(
+        address: address,
+        subscriptionError: walletState.error,
+      );
+    }
 
     await message.refreshTimeout();
 
@@ -1154,7 +1220,7 @@ mixin TonWalletRepositoryImpl implements TonWalletRepository {
     try {
       final signedMessage = await message.signFake();
       Iterable<TxTreeSimulationErrorItem> errors =
-          await tonWallet.transport.simulateTransactionTree(
+          await wallet.transport.simulateTransactionTree(
         signedMessage: signedMessage,
         ignoredComputePhaseCodes: Int32List.fromList(
           [

@@ -47,10 +47,21 @@ class TokenWalletState extends Equatable {
 /// Exception that will be thrown from any methods when user outside package
 /// called method without making sure that state was initialized.
 class TokenWalletStateNotInitializedException implements Exception {
+  const TokenWalletStateNotInitializedException({
+    required this.owner,
+    required this.rootTokenContract,
+    this.subscriptionError,
+  });
+
+  final Address owner;
+  final Address rootTokenContract;
+  final Object? subscriptionError;
+
   @override
   String toString() => '''
-`TokenWalletState.wallet` was not initialized.
-Try calling `TokenWalletRepository.retrySubscriptions`
+`TokenWalletState.wallet` was not initialized. Owner: $owner.
+Root Token Contract: $rootTokenContract.
+${subscriptionError != null ? 'Subscription error: $subscriptionError.' : ''}
 ''';
 }
 

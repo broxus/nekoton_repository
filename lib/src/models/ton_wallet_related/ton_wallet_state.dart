@@ -44,10 +44,18 @@ class TonWalletState extends Equatable {
 /// Exception that will be thrown from any methods when user outside package
 /// called method without making sure that state was initialized.
 class TonWalletStateNotInitializedException implements Exception {
+  const TonWalletStateNotInitializedException({
+    required this.address,
+    this.subscriptionError,
+  });
+
+  final Address address;
+  final Object? subscriptionError;
+
   @override
   String toString() => '''
-`TonWalletState.wallet` was not initialized.
-Try calling `TonWalletRepository.retrySubscriptions`
+`TonWalletState.wallet` was not initialized. Address: $address.
+${subscriptionError != null ? 'Subscription error: $subscriptionError.' : ''}
 ''';
 }
 
