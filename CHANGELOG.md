@@ -15,6 +15,27 @@ Packages with breaking changes:
 
 Packages with other changes:
 
+ - [`nekoton_repository` - `v1.4.0-dev.2`](#nekoton_repository---v140-dev2)
+
+---
+
+#### `nekoton_repository` - `v1.4.0-dev.2`
+
+## 1.4.0-dev.2
+
+
+## 2025-08-04
+
+### Changes
+
+---
+
+Packages with breaking changes:
+
+ - There are no breaking changes in this release.
+
+Packages with other changes:
+
  - [`nekoton_repository` - `v1.4.0-dev.1`](#nekoton_repository---v140-dev1)
 
 ---
