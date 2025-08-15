@@ -55,15 +55,10 @@ class Seed extends SeedBase {
   SeedKey? findKeyByPublicKey(PublicKey publicKey) =>
       allKeys.firstWhereOrNull((key) => key.publicKey == publicKey);
 
-  /// Returns list of public keys that can be used in [deriveKeys] from
-  /// seed with [masterKey] and [password].
-  /// Returns list of up to 100 public keys, that could be displayed by pages.
+  /// Returns list of public keys that can be used in [deriveKeys] from [params]
   /// !!! Seed should not be legacy.
-  Future<List<PublicKey>> getKeysToDerive(String password) =>
-      GetIt.instance<SeedKeyRepository>().getKeysToDerive(
-        masterKey: masterKey.publicKey,
-        password: password,
-      );
+  Future<List<PublicKey>> getKeysToDerive(GetPublicKeysParams params) =>
+      GetIt.instance<SeedKeyRepository>().getKeysToDerive(params);
 
   /// Derive keys from [masterKey] this call adds list of sub keys to
   /// [subKeys].
@@ -74,9 +69,13 @@ class Seed extends SeedBase {
     required String password,
   }) =>
       GetIt.instance<SeedKeyRepository>().deriveKeys(
-        accountIds: accountIds,
-        password: password,
-        masterKey: masterKey.publicKey,
+        params: accountIds.map(
+          (accountId) => DeriveKeysParams.derived(
+            accountId: accountId,
+            masterKey: masterKey.publicKey,
+            password: password,
+          ),
+        ),
       );
 
   /// Derive key from [masterKey] this call adds list of sub keys to
@@ -87,9 +86,11 @@ class Seed extends SeedBase {
     required String password,
   }) =>
       GetIt.instance<SeedKeyRepository>().deriveKey(
-        accountId: accountId,
-        password: password,
-        masterKey: masterKey.publicKey,
+        params: DeriveKeysParams.derived(
+          accountId: accountId,
+          masterKey: masterKey.publicKey,
+          password: password,
+        ),
       );
 
   /// Change password of seed phrase.

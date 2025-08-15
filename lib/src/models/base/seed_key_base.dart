@@ -26,6 +26,12 @@ class SeedKeyBase extends Equatable {
   /// Proxy getter of legacy flag of key
   bool get isLegacy => key.isLegacy;
 
+  /// Proxy getter of ledger flag of key
+  bool get isLedger => key.isLedger;
+
+  /// Proxy getter of signer type of key
+  KeySignerType get signerType => key.signerType;
+
   @override
   List<Object?> get props => [key];
 }

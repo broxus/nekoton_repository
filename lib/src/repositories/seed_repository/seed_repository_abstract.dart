@@ -17,33 +17,27 @@ abstract class SeedKeyRepository {
   /// Stream to listen for changes in [findingDerivedKeys].
   Stream<Set<String>> get findingDerivedKeysStream;
 
-  /// Returns list of public keys that can be used in [deriveKeys] from
-  /// seed with [masterKey] and [password].
-  /// Returns list of up to 100 public keys, that could be displayed by pages.
+  /// Returns list of public keys that can be used in [deriveKeys] from [params]
   /// !!! Seed should not be legacy.
-  Future<List<PublicKey>> getKeysToDerive({
-    required PublicKey masterKey,
-    required String password,
-  });
+  Future<List<PublicKey>> getKeysToDerive(GetPublicKeysParams params);
 
-  /// Derive keys from [masterKey] which is key of seed.
+  /// Streamed version of [getKeysToDerive] optimized for Ledger.
+  Stream<PublicKey> getKeysToDeriveStream(GetPublicKeysParams params);
+
+  /// Derive keys from [params].
   /// !!! This method won't work for legacy keys.
   /// This method returns list of public keys that allows add additional logic
   /// related to newly added keys.
   Future<List<PublicKey>> deriveKeys({
-    required List<int> accountIds,
-    required String password,
-    required PublicKey masterKey,
+    required Iterable<DeriveKeysParams> params,
     bool addActiveAccounts,
   });
 
-  /// Derive key from [masterKey] which is key of seed.
+  /// Derive key from [params].
   /// !!! This method won't work for legacy keys.
   /// This method do not triggers accounts adding
   Future<PublicKey> deriveKey({
-    required int accountId,
-    required String password,
-    required PublicKey masterKey,
+    required DeriveKeysParams params,
     bool addActiveAccounts,
   });
 
@@ -57,9 +51,12 @@ abstract class SeedKeyRepository {
     SeedAddType addType,
   });
 
+  Future<PublicKey> addLedgerKey({
+    required int accountId,
+    String? name,
+  });
+
   /// Change password of seed phrase.
-  // TODO(alex-a4): verify accepting this action to master key, recursively
-  //   change password of all sub keys.
   Future<void> changeSeedPassword({
     required PublicKey publicKey,
     required String oldPassword,
@@ -72,7 +69,6 @@ abstract class SeedKeyRepository {
     required PublicKey publicKey,
     required PublicKey masterKey,
     required String name,
-    required bool isLegacy,
   });
 
   /// Rename seed with [masterKey] to [name].
@@ -106,11 +102,11 @@ abstract class SeedKeyRepository {
     required SignInput signInput,
   });
 
-  /// Sign [data] message with key it was called on.
+  /// Sign [message] with key it was called on.
   /// [signatureId] is [Transport.getSignatureId].
   /// [signInput] can be get from [SeedKey.signInput].
   Future<String> sign({
-    required String data,
+    required UnsignedMessageImpl message,
     required SignInput signInput,
     required int? signatureId,
   });

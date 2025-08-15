@@ -3,6 +3,73 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## 2025-08-04
+
+### Changes
+
+---
+
+Packages with breaking changes:
+
+ - There are no breaking changes in this release.
+
+Packages with other changes:
+
+ - [`nekoton_repository` - `v1.4.0-dev.2`](#nekoton_repository---v140-dev2)
+
+---
+
+#### `nekoton_repository` - `v1.4.0-dev.2`
+
+## 1.4.0-dev.2
+
+
+## 2025-08-04
+
+### Changes
+
+---
+
+Packages with breaking changes:
+
+ - There are no breaking changes in this release.
+
+Packages with other changes:
+
+ - [`nekoton_repository` - `v1.4.0-dev.1`](#nekoton_repository---v140-dev1)
+
+---
+
+#### `nekoton_repository` - `v1.4.0-dev.1`
+
+## 1.4.0-dev.1
+
+
+## 2025-07-23
+
+### Changes
+
+---
+
+Packages with breaking changes:
+
+ - There are no breaking changes in this release.
+
+Packages with other changes:
+
+ - [`nekoton_repository` - `v1.4.0-dev.0`](#nekoton_repository---v140-dev0)
+
+---
+
+#### `nekoton_repository` - `v1.4.0-dev.0`
+
+ - **FEAT**: ledger.
+
+## 1.4.0-dev.0
+
+ - **FEAT**: ledger.
+
+
 ## 2025-07-18
 
 ### Changes

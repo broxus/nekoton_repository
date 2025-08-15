@@ -75,8 +75,7 @@ class NekotonRepository
   @override
   AbiLoader get abiLoader => _abiLoader;
 
-  // TODO(alex-a4): uncomment when ledger will be implemented
-  // late final fnb.LedgerConnection _ledgerConnection;
+  late final fnb.LedgerConnection _ledgerConnection;
 
   /// Setup nekoton bridge logger
   Future<void> setupLogger({
@@ -98,6 +97,7 @@ class NekotonRepository
     required NekotonStorageRepository storage,
     required TonWalletTransactionsStorage tonWalletStorage,
     required TokenWalletTransactionsStorage tokenWalletStorage,
+    required LedgerConnectionHandler ledgerConnectionHandler,
     AssetBundle? bundle,
   }) async {
     _storageRepository = storage;
@@ -112,23 +112,15 @@ class NekotonRepository
       remove: storage.removeStorageData,
       removeUnchecked: storage.removeStorageData,
     );
-    // TODO(alex-a4): uncomment ledger when it will be implemented
-    // _ledgerConnection = await LedgerConnection.create(
-    //   getPublicKey: (_) => Future.value(''),
-    //   connectionSign: ({
-    //     required int account,
-    //     required List<int> message,
-    //     Object? context,
-    //   }) =>
-    //       Future.value(''),
-    // );
+    _ledgerConnection = LedgerConnection.create(ledgerConnectionHandler);
     _keyStore = await KeyStore.create(
       storage: _nekotonStorage,
       signers: [
         const KeySigner.encrypted(),
         const KeySigner.derived(),
-        // const KeySigner.ledger(),
+        const KeySigner.ledger(),
       ],
+      ledgerConnection: _ledgerConnection,
     );
     _accountsStorage = await AccountsStorage.create(storage: _nekotonStorage);
     _abiLoader = AbiLoader(bundle ?? rootBundle);

@@ -154,8 +154,12 @@ void main() {
             .thenAnswer((_) async => publicKeys);
 
         final result = await repository.getKeysToDerive(
-          masterKey: masterKey,
-          password: password,
+          const GetPublicKeysParams.derived(
+            masterKey: masterKey,
+            password: password,
+            limit: 100,
+            offset: 0,
+          ),
         );
 
         expect(result, equals(publicKeys));
@@ -168,6 +172,32 @@ void main() {
                     input.masterKey == masterKey &&
                     input.offset == 0 &&
                     input.limit == 100,
+              ),
+            ),
+          ),
+        );
+      });
+
+      test('calls keystore with correct parameters (ledger)', () async {
+        const publicKeys = [
+          PublicKey(publicKey: 'key1'),
+          PublicKey(publicKey: 'key2'),
+        ];
+
+        when(() => keyStore.getPublicKeys(any()))
+            .thenAnswer((_) async => publicKeys);
+
+        final result = await repository.getKeysToDerive(
+          const GetPublicKeysParams.ledger(limit: 100, offset: 0),
+        );
+
+        expect(result, equals(publicKeys));
+
+        verify(
+          () => keyStore.getPublicKeys(
+            any(
+              that: predicate<LedgerKeyGetPublicKeys>(
+                (input) => input.offset == 0 && input.limit == 100,
               ),
             ),
           ),
@@ -196,9 +226,18 @@ void main() {
         ).thenAnswer((_) => Future.value('[]'));
 
         final result = await repository.deriveKeys(
-          accountIds: [0, 1],
-          password: password,
-          masterKey: masterKey,
+          params: const [
+            DeriveKeysParams.derived(
+              accountId: 0,
+              masterKey: masterKey,
+              password: password,
+            ),
+            DeriveKeysParams.derived(
+              accountId: 1,
+              masterKey: masterKey,
+              password: password,
+            ),
+          ],
         );
 
         expect(result, equals(publicKeys));
