@@ -51,10 +51,6 @@ abstract class TransportStrategy {
   /// This must return URL link to load manifest of network assets.
   String get manifestUrl;
 
-  /// This must return URL link to load information about currency and its
-  /// prices by [currencyAddress].
-  String currencyUrl(String currencyAddress);
-
   /// This must return default name of account for specified [walletType].
   /// Method depends on transport because this same [walletType] may has
   /// different names in different networks.
