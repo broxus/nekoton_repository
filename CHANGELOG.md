@@ -3,6 +3,33 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## 2025-08-22
+
+### Changes
+
+---
+
+Packages with breaking changes:
+
+ - [`nekoton_repository` - `v1.5.0`](#nekoton_repository---v150)
+
+Packages with other changes:
+
+ - There are no other changes in this release.
+
+---
+
+#### `nekoton_repository` - `v1.5.0`
+
+ - **BREAKING** **REFACTOR**(EWM-493): remove currencyUrl method from TransportStrategy.
+
+## 1.5.0
+
+> Note: This release has breaking changes.
+
+ - **BREAKING** **REFACTOR**(EWM-493): remove currencyUrl method from TransportStrategy.
+
+
 ## 2025-08-15
 
 ### Changes
