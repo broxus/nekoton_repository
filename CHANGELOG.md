@@ -3,6 +3,33 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## 2025-08-28
+
+### Changes
+
+---
+
+Packages with breaking changes:
+
+ - [`nekoton_repository` - `v2.0.0-dev.0`](#nekoton_repository---v200-dev0)
+
+Packages with other changes:
+
+ - There are no other changes in this release.
+
+---
+
+#### `nekoton_repository` - `v2.0.0-dev.0`
+
+ - **BREAKING** **CHORE**: update `flutter_nekoton_bridge` to version 4.0.0; update `freezed_annotation`;.
+
+## 2.0.0-dev.0
+
+> Note: This release has breaking changes.
+
+ - **BREAKING** **CHORE**: update `flutter_nekoton_bridge` to version 4.0.0; update `freezed_annotation`;.
+
+
 ## 2025-08-22
 
 ### Changes
