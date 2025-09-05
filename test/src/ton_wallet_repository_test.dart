@@ -1251,10 +1251,17 @@ void main() {
       when(
         () => bridge.crateApiMergedTonWalletDartWrapperSubscribe(
           publicKey: any(named: 'publicKey'),
-          instanceHash: any(named: 'instanceHash'),
           transport: any(named: 'transport'),
           walletType: any(named: 'walletType'),
           workchainId: any(named: 'workchainId'),
+          onCustodiansChanged: any(named: 'onCustodiansChanged'),
+          onTransactionsFound: any(named: 'onTransactionsFound'),
+          onDetailsChanged: any(named: 'onDetailsChanged'),
+          onMessageExpired: any(named: 'onMessageExpired'),
+          onMessageSent: any(named: 'onMessageSent'),
+          onStateChanged: any(named: 'onStateChanged'),
+          onUnconfirmedTransactionsChanged:
+              any(named: 'onUnconfirmedTransactionsChanged'),
         ),
       ).thenAnswer((call) {
         if (call.namedArguments[const Symbol('walletType')] ==
@@ -1288,17 +1295,31 @@ void main() {
       when(
         () => bridge.crateApiMergedTonWalletDartWrapperSubscribe(
           publicKey: any(named: 'publicKey'),
-          instanceHash: any(named: 'instanceHash'),
           transport: any(named: 'transport'),
           walletType: any(named: 'walletType'),
           workchainId: any(named: 'workchainId'),
+          onCustodiansChanged: any(named: 'onCustodiansChanged'),
+          onTransactionsFound: any(named: 'onTransactionsFound'),
+          onDetailsChanged: any(named: 'onDetailsChanged'),
+          onMessageExpired: any(named: 'onMessageExpired'),
+          onMessageSent: any(named: 'onMessageSent'),
+          onStateChanged: any(named: 'onStateChanged'),
+          onUnconfirmedTransactionsChanged:
+              any(named: 'onUnconfirmedTransactionsChanged'),
         ),
       ).thenAnswer((_) => Future.value(tonWrapper2));
       when(
         () => bridge.crateApiMergedTonWalletDartWrapperSubscribeByAddress(
           address: any(named: 'address'),
-          instanceHash: any(named: 'instanceHash'),
           transport: any(named: 'transport'),
+          onCustodiansChanged: any(named: 'onCustodiansChanged'),
+          onTransactionsFound: any(named: 'onTransactionsFound'),
+          onDetailsChanged: any(named: 'onDetailsChanged'),
+          onMessageExpired: any(named: 'onMessageExpired'),
+          onMessageSent: any(named: 'onMessageSent'),
+          onStateChanged: any(named: 'onStateChanged'),
+          onUnconfirmedTransactionsChanged:
+              any(named: 'onUnconfirmedTransactionsChanged'),
         ),
       ).thenAnswer((_) => Future.value(tonWrapper1));
       mockTonWallet(tonWrapper1, asset1);
@@ -1339,10 +1360,17 @@ void main() {
       when(
         () => bridge.crateApiMergedTonWalletDartWrapperSubscribe(
           publicKey: any(named: 'publicKey'),
-          instanceHash: any(named: 'instanceHash'),
           transport: any(named: 'transport'),
           walletType: any(named: 'walletType'),
           workchainId: any(named: 'workchainId'),
+          onCustodiansChanged: any(named: 'onCustodiansChanged'),
+          onTransactionsFound: any(named: 'onTransactionsFound'),
+          onDetailsChanged: any(named: 'onDetailsChanged'),
+          onMessageExpired: any(named: 'onMessageExpired'),
+          onMessageSent: any(named: 'onMessageSent'),
+          onStateChanged: any(named: 'onStateChanged'),
+          onUnconfirmedTransactionsChanged:
+              any(named: 'onUnconfirmedTransactionsChanged'),
         ),
       ).thenAnswer((call) {
         if (call.namedArguments[const Symbol('walletType')] ==
@@ -1393,10 +1421,17 @@ void main() {
       when(
         () => bridge.crateApiMergedTonWalletDartWrapperSubscribe(
           publicKey: any(named: 'publicKey'),
-          instanceHash: any(named: 'instanceHash'),
           transport: any(named: 'transport'),
           walletType: any(named: 'walletType'),
           workchainId: any(named: 'workchainId'),
+          onCustodiansChanged: any(named: 'onCustodiansChanged'),
+          onTransactionsFound: any(named: 'onTransactionsFound'),
+          onDetailsChanged: any(named: 'onDetailsChanged'),
+          onMessageExpired: any(named: 'onMessageExpired'),
+          onMessageSent: any(named: 'onMessageSent'),
+          onStateChanged: any(named: 'onStateChanged'),
+          onUnconfirmedTransactionsChanged:
+              any(named: 'onUnconfirmedTransactionsChanged'),
         ),
       ).thenAnswer((_) => throwError());
       mockTonWallet(tonWrapper1, asset1);
@@ -1411,10 +1446,17 @@ void main() {
       when(
         () => bridge.crateApiMergedTonWalletDartWrapperSubscribe(
           publicKey: any(named: 'publicKey'),
-          instanceHash: any(named: 'instanceHash'),
           transport: any(named: 'transport'),
           walletType: any(named: 'walletType'),
           workchainId: any(named: 'workchainId'),
+          onCustodiansChanged: any(named: 'onCustodiansChanged'),
+          onTransactionsFound: any(named: 'onTransactionsFound'),
+          onDetailsChanged: any(named: 'onDetailsChanged'),
+          onMessageExpired: any(named: 'onMessageExpired'),
+          onMessageSent: any(named: 'onMessageSent'),
+          onStateChanged: any(named: 'onStateChanged'),
+          onUnconfirmedTransactionsChanged:
+              any(named: 'onUnconfirmedTransactionsChanged'),
         ),
       ).thenAnswer((_) => Future.value(tonWrapper1));
 
@@ -1442,10 +1484,17 @@ void main() {
       when(
         () => bridge.crateApiMergedTonWalletDartWrapperSubscribe(
           publicKey: any(named: 'publicKey'),
-          instanceHash: any(named: 'instanceHash'),
           transport: any(named: 'transport'),
           walletType: any(named: 'walletType'),
           workchainId: any(named: 'workchainId'),
+          onCustodiansChanged: any(named: 'onCustodiansChanged'),
+          onTransactionsFound: any(named: 'onTransactionsFound'),
+          onDetailsChanged: any(named: 'onDetailsChanged'),
+          onMessageExpired: any(named: 'onMessageExpired'),
+          onMessageSent: any(named: 'onMessageSent'),
+          onStateChanged: any(named: 'onStateChanged'),
+          onUnconfirmedTransactionsChanged:
+              any(named: 'onUnconfirmedTransactionsChanged'),
         ),
       ).thenAnswer((_) => throwError());
       mockTonWallet(tonWrapper1, asset1);
@@ -1494,10 +1543,17 @@ void main() {
       when(
         () => bridge.crateApiMergedTonWalletDartWrapperSubscribe(
           publicKey: any(named: 'publicKey'),
-          instanceHash: any(named: 'instanceHash'),
           transport: any(named: 'transport'),
           walletType: any(named: 'walletType'),
           workchainId: any(named: 'workchainId'),
+          onCustodiansChanged: any(named: 'onCustodiansChanged'),
+          onTransactionsFound: any(named: 'onTransactionsFound'),
+          onDetailsChanged: any(named: 'onDetailsChanged'),
+          onMessageExpired: any(named: 'onMessageExpired'),
+          onMessageSent: any(named: 'onMessageSent'),
+          onStateChanged: any(named: 'onStateChanged'),
+          onUnconfirmedTransactionsChanged:
+              any(named: 'onUnconfirmedTransactionsChanged'),
         ),
       ).thenAnswer((call) {
         if (call.namedArguments[const Symbol('walletType')] ==
@@ -1517,19 +1573,33 @@ void main() {
       verify(
         () => bridge.crateApiMergedTonWalletDartWrapperSubscribe(
           publicKey: any(named: 'publicKey'),
-          instanceHash: any(named: 'instanceHash'),
           transport: any(named: 'transport'),
           walletType: jsonEncode(asset1.contract.toJson()),
           workchainId: any(named: 'workchainId'),
+          onCustodiansChanged: any(named: 'onCustodiansChanged'),
+          onTransactionsFound: any(named: 'onTransactionsFound'),
+          onDetailsChanged: any(named: 'onDetailsChanged'),
+          onMessageExpired: any(named: 'onMessageExpired'),
+          onMessageSent: any(named: 'onMessageSent'),
+          onStateChanged: any(named: 'onStateChanged'),
+          onUnconfirmedTransactionsChanged:
+              any(named: 'onUnconfirmedTransactionsChanged'),
         ),
       ).called(1);
       verify(
         () => bridge.crateApiMergedTonWalletDartWrapperSubscribe(
           publicKey: any(named: 'publicKey'),
-          instanceHash: any(named: 'instanceHash'),
           transport: any(named: 'transport'),
           walletType: jsonEncode(asset2.contract.toJson()),
           workchainId: any(named: 'workchainId'),
+          onCustodiansChanged: any(named: 'onCustodiansChanged'),
+          onTransactionsFound: any(named: 'onTransactionsFound'),
+          onDetailsChanged: any(named: 'onDetailsChanged'),
+          onMessageExpired: any(named: 'onMessageExpired'),
+          onMessageSent: any(named: 'onMessageSent'),
+          onStateChanged: any(named: 'onStateChanged'),
+          onUnconfirmedTransactionsChanged:
+              any(named: 'onUnconfirmedTransactionsChanged'),
         ),
       ).called(1);
     });
@@ -1557,10 +1627,17 @@ void main() {
       when(
         () => bridge.crateApiMergedTonWalletDartWrapperSubscribe(
           publicKey: any(named: 'publicKey'),
-          instanceHash: any(named: 'instanceHash'),
           transport: any(named: 'transport'),
           walletType: any(named: 'walletType'),
           workchainId: any(named: 'workchainId'),
+          onCustodiansChanged: any(named: 'onCustodiansChanged'),
+          onTransactionsFound: any(named: 'onTransactionsFound'),
+          onDetailsChanged: any(named: 'onDetailsChanged'),
+          onMessageExpired: any(named: 'onMessageExpired'),
+          onMessageSent: any(named: 'onMessageSent'),
+          onStateChanged: any(named: 'onStateChanged'),
+          onUnconfirmedTransactionsChanged:
+              any(named: 'onUnconfirmedTransactionsChanged'),
         ),
       ).thenAnswer((call) {
         if (call.namedArguments[const Symbol('walletType')] ==

@@ -104,7 +104,6 @@ class NekotonRepository
     _tonWalletStorage = tonWalletStorage;
     _tokenWalletStorage = tokenWalletStorage;
 
-    await fnb.initRustToDartCaller();
     _nekotonStorage = Storage.create(
       get: storage.getStorageData,
       set: storage.setStorageData,

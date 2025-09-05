@@ -351,11 +351,12 @@ void main() {
 
       when(
         () => bridge.crateApiMergedTokenWalletDartWrapperSubscribe(
-          instanceHash: any(named: 'instanceHash'),
           transport: any(named: 'transport'),
           rootTokenContract: any(named: 'rootTokenContract'),
           owner: any(named: 'owner'),
           preloadTransactions: any(named: 'preloadTransactions'),
+          onBalanceChanged: any(named: 'onBalanceChanged'),
+          onTransactionsFound: any(named: 'onTransactionsFound'),
         ),
       ).thenAnswer((call) {
         if (call.namedArguments[const Symbol('rootTokenContract')] ==
@@ -391,11 +392,12 @@ void main() {
 
       when(
         () => bridge.crateApiMergedTokenWalletDartWrapperSubscribe(
-          instanceHash: any(named: 'instanceHash'),
           transport: any(named: 'transport'),
           rootTokenContract: any(named: 'rootTokenContract'),
           owner: any(named: 'owner'),
           preloadTransactions: any(named: 'preloadTransactions'),
+          onBalanceChanged: any(named: 'onBalanceChanged'),
+          onTransactionsFound: any(named: 'onTransactionsFound'),
         ),
       ).thenAnswer((call) {
         if (call.namedArguments[const Symbol('rootTokenContract')] ==
@@ -431,11 +433,12 @@ void main() {
 
       when(
         () => bridge.crateApiMergedTokenWalletDartWrapperSubscribe(
-          instanceHash: any(named: 'instanceHash'),
           transport: any(named: 'transport'),
           rootTokenContract: any(named: 'rootTokenContract'),
           owner: any(named: 'owner'),
           preloadTransactions: any(named: 'preloadTransactions'),
+          onBalanceChanged: any(named: 'onBalanceChanged'),
+          onTransactionsFound: any(named: 'onTransactionsFound'),
         ),
       ).thenAnswer((_) => throwError());
       mockTokenWallet(tokenWrapper1, asset1, symbol1);
@@ -446,11 +449,12 @@ void main() {
 
       when(
         () => bridge.crateApiMergedTokenWalletDartWrapperSubscribe(
-          instanceHash: any(named: 'instanceHash'),
           transport: any(named: 'transport'),
           rootTokenContract: any(named: 'rootTokenContract'),
           owner: any(named: 'owner'),
           preloadTransactions: any(named: 'preloadTransactions'),
+          onBalanceChanged: any(named: 'onBalanceChanged'),
+          onTransactionsFound: any(named: 'onTransactionsFound'),
         ),
       ).thenAnswer((_) => Future.value(tokenWrapper1));
 
@@ -477,11 +481,12 @@ void main() {
 
       when(
         () => bridge.crateApiMergedTokenWalletDartWrapperSubscribe(
-          instanceHash: any(named: 'instanceHash'),
           transport: any(named: 'transport'),
           rootTokenContract: any(named: 'rootTokenContract'),
           owner: any(named: 'owner'),
           preloadTransactions: any(named: 'preloadTransactions'),
+          onBalanceChanged: any(named: 'onBalanceChanged'),
+          onTransactionsFound: any(named: 'onTransactionsFound'),
         ),
       ).thenAnswer((_) => throwError());
       mockTokenWallet(tokenWrapper1, asset1, symbol1);
@@ -515,11 +520,12 @@ void main() {
 
       when(
         () => bridge.crateApiMergedTokenWalletDartWrapperSubscribe(
-          instanceHash: any(named: 'instanceHash'),
           transport: any(named: 'transport'),
           rootTokenContract: any(named: 'rootTokenContract'),
           owner: any(named: 'owner'),
           preloadTransactions: any(named: 'preloadTransactions'),
+          onBalanceChanged: any(named: 'onBalanceChanged'),
+          onTransactionsFound: any(named: 'onTransactionsFound'),
         ),
       ).thenAnswer((call) {
         if (call.namedArguments[const Symbol('rootTokenContract')] ==
@@ -538,20 +544,22 @@ void main() {
       expect(repository.tokenWallets.length, 2);
       verify(
         () => bridge.crateApiMergedTokenWalletDartWrapperSubscribe(
-          instanceHash: any(named: 'instanceHash'),
           transport: any(named: 'transport'),
           rootTokenContract: root1.address,
           owner: any(named: 'owner'),
           preloadTransactions: any(named: 'preloadTransactions'),
+          onBalanceChanged: any(named: 'onBalanceChanged'),
+          onTransactionsFound: any(named: 'onTransactionsFound'),
         ),
       ).called(1);
       verify(
         () => bridge.crateApiMergedTokenWalletDartWrapperSubscribe(
-          instanceHash: any(named: 'instanceHash'),
           transport: any(named: 'transport'),
           rootTokenContract: root2.address,
           owner: any(named: 'owner'),
           preloadTransactions: any(named: 'preloadTransactions'),
+          onBalanceChanged: any(named: 'onBalanceChanged'),
+          onTransactionsFound: any(named: 'onTransactionsFound'),
         ),
       ).called(1);
       expect(Currencies()[symbol1.name], isNotNull);
@@ -573,11 +581,12 @@ void main() {
 
       when(
         () => bridge.crateApiMergedTokenWalletDartWrapperSubscribe(
-          instanceHash: any(named: 'instanceHash'),
           transport: any(named: 'transport'),
           rootTokenContract: any(named: 'rootTokenContract'),
           owner: any(named: 'owner'),
           preloadTransactions: any(named: 'preloadTransactions'),
+          onBalanceChanged: any(named: 'onBalanceChanged'),
+          onTransactionsFound: any(named: 'onTransactionsFound'),
         ),
       ).thenAnswer((call) {
         if (call.namedArguments[const Symbol('rootTokenContract')] ==
