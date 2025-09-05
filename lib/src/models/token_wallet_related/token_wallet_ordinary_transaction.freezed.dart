@@ -17,23 +17,18 @@ T _$identity<T>(T value) => value;
 mixin _$TokenWalletOrdinaryTransaction {
   String get lt;
   bool get isOutgoing;
-  @amountJsonConverter
   BigInt get value;
   Address get address;
   @dateSecondsSinceEpochJsonConverter
   DateTime get date;
-  @amountJsonConverter
   BigInt get fees;
   String get hash;
   String? get prevTransactionLt;
   TokenIncomingTransfer? get incomingTransfer;
   TokenOutgoingTransfer? get outgoingTransfer;
   TokenSwapBack? get swapBack;
-  @amountJsonConverter
   BigInt? get accept;
-  @amountJsonConverter
   BigInt? get transferBounced;
-  @amountJsonConverter
   BigInt? get swapBackBounced;
   JettonIncomingTransfer? get jettonIncomingTransfer;
   JettonOutgoingTransfer? get jettonOutgoingTransfer;
@@ -115,18 +110,18 @@ abstract mixin class $TokenWalletOrdinaryTransactionCopyWith<$Res> {
   $Res call(
       {String lt,
       bool isOutgoing,
-      @amountJsonConverter BigInt value,
+      BigInt value,
       Address address,
       @dateSecondsSinceEpochJsonConverter DateTime date,
-      @amountJsonConverter BigInt fees,
+      BigInt fees,
       String hash,
       String? prevTransactionLt,
       TokenIncomingTransfer? incomingTransfer,
       TokenOutgoingTransfer? outgoingTransfer,
       TokenSwapBack? swapBack,
-      @amountJsonConverter BigInt? accept,
-      @amountJsonConverter BigInt? transferBounced,
-      @amountJsonConverter BigInt? swapBackBounced,
+      BigInt? accept,
+      BigInt? transferBounced,
+      BigInt? swapBackBounced,
       JettonIncomingTransfer? jettonIncomingTransfer,
       JettonOutgoingTransfer? jettonOutgoingTransfer});
 
@@ -328,18 +323,18 @@ class _TokenWalletOrdinaryTransaction
   const _TokenWalletOrdinaryTransaction(
       {required this.lt,
       required this.isOutgoing,
-      @amountJsonConverter required this.value,
+      required this.value,
       required this.address,
       @dateSecondsSinceEpochJsonConverter required this.date,
-      @amountJsonConverter required this.fees,
+      required this.fees,
       required this.hash,
       this.prevTransactionLt,
       this.incomingTransfer,
       this.outgoingTransfer,
       this.swapBack,
-      @amountJsonConverter this.accept,
-      @amountJsonConverter this.transferBounced,
-      @amountJsonConverter this.swapBackBounced,
+      this.accept,
+      this.transferBounced,
+      this.swapBackBounced,
       this.jettonIncomingTransfer,
       this.jettonOutgoingTransfer});
 
@@ -348,7 +343,6 @@ class _TokenWalletOrdinaryTransaction
   @override
   final bool isOutgoing;
   @override
-  @amountJsonConverter
   final BigInt value;
   @override
   final Address address;
@@ -356,7 +350,6 @@ class _TokenWalletOrdinaryTransaction
   @dateSecondsSinceEpochJsonConverter
   final DateTime date;
   @override
-  @amountJsonConverter
   final BigInt fees;
   @override
   final String hash;
@@ -369,13 +362,10 @@ class _TokenWalletOrdinaryTransaction
   @override
   final TokenSwapBack? swapBack;
   @override
-  @amountJsonConverter
   final BigInt? accept;
   @override
-  @amountJsonConverter
   final BigInt? transferBounced;
   @override
-  @amountJsonConverter
   final BigInt? swapBackBounced;
   @override
   final JettonIncomingTransfer? jettonIncomingTransfer;
@@ -461,18 +451,18 @@ abstract mixin class _$TokenWalletOrdinaryTransactionCopyWith<$Res>
   $Res call(
       {String lt,
       bool isOutgoing,
-      @amountJsonConverter BigInt value,
+      BigInt value,
       Address address,
       @dateSecondsSinceEpochJsonConverter DateTime date,
-      @amountJsonConverter BigInt fees,
+      BigInt fees,
       String hash,
       String? prevTransactionLt,
       TokenIncomingTransfer? incomingTransfer,
       TokenOutgoingTransfer? outgoingTransfer,
       TokenSwapBack? swapBack,
-      @amountJsonConverter BigInt? accept,
-      @amountJsonConverter BigInt? transferBounced,
-      @amountJsonConverter BigInt? swapBackBounced,
+      BigInt? accept,
+      BigInt? transferBounced,
+      BigInt? swapBackBounced,
       JettonIncomingTransfer? jettonIncomingTransfer,
       JettonOutgoingTransfer? jettonOutgoingTransfer});
 

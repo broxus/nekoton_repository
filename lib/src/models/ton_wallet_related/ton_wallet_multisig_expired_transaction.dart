@@ -18,11 +18,11 @@ abstract class TonWalletMultisigExpiredTransaction
     required List<PublicKey> custodians,
     // if this transaction was sent from this wallet
     required bool isOutgoing,
-    @amountJsonConverter required BigInt value,
+    required BigInt value,
     // address of destination or source depends on isOutgoing
     required Address address,
     @dateSecondsSinceEpochJsonConverter required DateTime date,
-    @amountJsonConverter required BigInt fees,
+    required BigInt fees,
     required String hash,
     String? prevTransactionLt,
     String? comment,

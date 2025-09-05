@@ -17,12 +17,10 @@ T _$identity<T>(T value) => value;
 mixin _$TonWalletOrdinaryTransaction {
   String get lt;
   bool get isOutgoing;
-  @amountJsonConverter
   BigInt get value;
   Address get address;
   @dateSecondsSinceEpochJsonConverter
   DateTime get date;
-  @amountJsonConverter
   BigInt get fees;
   String get hash;
   String? get prevTransactionLt;
@@ -106,10 +104,10 @@ abstract mixin class $TonWalletOrdinaryTransactionCopyWith<$Res> {
   $Res call(
       {String lt,
       bool isOutgoing,
-      @amountJsonConverter BigInt value,
+      BigInt value,
       Address address,
       @dateSecondsSinceEpochJsonConverter DateTime date,
-      @amountJsonConverter BigInt fees,
+      BigInt fees,
       String hash,
       String? prevTransactionLt,
       String? comment,
@@ -294,10 +292,10 @@ class _TonWalletOrdinaryTransaction implements TonWalletOrdinaryTransaction {
   const _TonWalletOrdinaryTransaction(
       {required this.lt,
       required this.isOutgoing,
-      @amountJsonConverter required this.value,
+      required this.value,
       required this.address,
       @dateSecondsSinceEpochJsonConverter required this.date,
-      @amountJsonConverter required this.fees,
+      required this.fees,
       required this.hash,
       this.prevTransactionLt,
       this.comment,
@@ -311,7 +309,6 @@ class _TonWalletOrdinaryTransaction implements TonWalletOrdinaryTransaction {
   @override
   final bool isOutgoing;
   @override
-  @amountJsonConverter
   final BigInt value;
   @override
   final Address address;
@@ -319,7 +316,6 @@ class _TonWalletOrdinaryTransaction implements TonWalletOrdinaryTransaction {
   @dateSecondsSinceEpochJsonConverter
   final DateTime date;
   @override
-  @amountJsonConverter
   final BigInt fees;
   @override
   final String hash;
@@ -412,10 +408,10 @@ abstract mixin class _$TonWalletOrdinaryTransactionCopyWith<$Res>
   $Res call(
       {String lt,
       bool isOutgoing,
-      @amountJsonConverter BigInt value,
+      BigInt value,
       Address address,
       @dateSecondsSinceEpochJsonConverter DateTime date,
-      @amountJsonConverter BigInt fees,
+      BigInt fees,
       String hash,
       String? prevTransactionLt,
       String? comment,

@@ -15,9 +15,7 @@ T _$identity<T>(T value) => value;
 
 /// @nodoc
 mixin _$NftTokenTransferInput {
-  @amountJsonConverter
   BigInt get count;
-  @amountJsonConverter
   BigInt get deployTokenWalletValue;
   Address get recipient;
   Address get remainingGasTo;
@@ -69,8 +67,8 @@ abstract mixin class $NftTokenTransferInputCopyWith<$Res> {
       _$NftTokenTransferInputCopyWithImpl;
   @useResult
   $Res call(
-      {@amountJsonConverter BigInt count,
-      @amountJsonConverter BigInt deployTokenWalletValue,
+      {BigInt count,
+      BigInt deployTokenWalletValue,
       Address recipient,
       Address remainingGasTo,
       String payload,
@@ -153,8 +151,8 @@ class _$NftTokenTransferInputCopyWithImpl<$Res>
 @JsonSerializable()
 class _NftTokenTransferInput implements NftTokenTransferInput {
   const _NftTokenTransferInput(
-      {@amountJsonConverter required this.count,
-      @amountJsonConverter required this.deployTokenWalletValue,
+      {required this.count,
+      required this.deployTokenWalletValue,
       required this.recipient,
       required this.remainingGasTo,
       required this.payload,
@@ -163,10 +161,8 @@ class _NftTokenTransferInput implements NftTokenTransferInput {
       _$NftTokenTransferInputFromJson(json);
 
   @override
-  @amountJsonConverter
   final BigInt count;
   @override
-  @amountJsonConverter
   final BigInt deployTokenWalletValue;
   @override
   final Address recipient;
@@ -229,8 +225,8 @@ abstract mixin class _$NftTokenTransferInputCopyWith<$Res>
   @override
   @useResult
   $Res call(
-      {@amountJsonConverter BigInt count,
-      @amountJsonConverter BigInt deployTokenWalletValue,
+      {BigInt count,
+      BigInt deployTokenWalletValue,
       Address recipient,
       Address remainingGasTo,
       String payload,

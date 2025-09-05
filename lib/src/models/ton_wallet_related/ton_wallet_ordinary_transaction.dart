@@ -11,10 +11,10 @@ abstract class TonWalletOrdinaryTransaction
   const factory TonWalletOrdinaryTransaction({
     required String lt,
     required bool isOutgoing,
-    @amountJsonConverter required BigInt value,
+    required BigInt value,
     required Address address,
     @dateSecondsSinceEpochJsonConverter required DateTime date,
-    @amountJsonConverter required BigInt fees,
+    required BigInt fees,
     required String hash,
     String? prevTransactionLt,
     String? comment,

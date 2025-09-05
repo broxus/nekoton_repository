@@ -19,6 +19,6 @@ sealed class NftTransferEvent with _$NftTransferEvent {
     required Address collection,
     required Address sender,
     required Address recipient,
-    @amountJsonConverter required BigInt count,
+    required BigInt count,
   }) = NftTokenTransferEvent;
 }

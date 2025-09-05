@@ -21,7 +21,6 @@ PendingTransactionWithData _$PendingTransactionWithDataFromJson(
 mixin _$PendingTransactionWithData {
   PendingTransaction get transaction;
   Address get destination;
-  @amountJsonConverter
   BigInt get amount;
   DateTime get createdAt;
 
@@ -71,7 +70,7 @@ abstract mixin class $PendingTransactionWithDataCopyWith<$Res> {
   $Res call(
       {PendingTransaction transaction,
       Address destination,
-      @amountJsonConverter BigInt amount,
+      BigInt amount,
       DateTime createdAt});
 
   $PendingTransactionCopyWith<$Res> get transaction;
@@ -143,7 +142,7 @@ class _PendingTransactionWithAdditionalInfo extends PendingTransactionWithData {
   const _PendingTransactionWithAdditionalInfo(
       {required this.transaction,
       required this.destination,
-      @amountJsonConverter required this.amount,
+      required this.amount,
       required this.createdAt})
       : super._();
   factory _PendingTransactionWithAdditionalInfo.fromJson(
@@ -155,7 +154,6 @@ class _PendingTransactionWithAdditionalInfo extends PendingTransactionWithData {
   @override
   final Address destination;
   @override
-  @amountJsonConverter
   final BigInt amount;
   @override
   final DateTime createdAt;
@@ -214,7 +212,7 @@ abstract mixin class _$PendingTransactionWithAdditionalInfoCopyWith<$Res>
   $Res call(
       {PendingTransaction transaction,
       Address destination,
-      @amountJsonConverter BigInt amount,
+      BigInt amount,
       DateTime createdAt});
 
   @override

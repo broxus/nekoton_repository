@@ -20,7 +20,6 @@ mixin _$TonWalletPendingTransaction {
   DateTime get date;
   DateTime get expireAt; // address for which tokens was sent
   Address get destination;
-  @amountJsonConverter
   BigInt get amount;
   String get messageHash; // flag if this transaction was sent to this wallet
   bool get isIncoming;
@@ -74,7 +73,7 @@ abstract mixin class $TonWalletPendingTransactionCopyWith<$Res> {
       DateTime date,
       DateTime expireAt,
       Address destination,
-      @amountJsonConverter BigInt amount,
+      BigInt amount,
       String messageHash,
       bool isIncoming});
 
@@ -164,7 +163,7 @@ class _TonWalletPendingTransaction implements TonWalletPendingTransaction {
       required this.date,
       required this.expireAt,
       required this.destination,
-      @amountJsonConverter required this.amount,
+      required this.amount,
       required this.messageHash,
       required this.isIncoming});
 
@@ -180,7 +179,6 @@ class _TonWalletPendingTransaction implements TonWalletPendingTransaction {
   @override
   final Address destination;
   @override
-  @amountJsonConverter
   final BigInt amount;
   @override
   final String messageHash;
@@ -239,7 +237,7 @@ abstract mixin class _$TonWalletPendingTransactionCopyWith<$Res>
       DateTime date,
       DateTime expireAt,
       Address destination,
-      @amountJsonConverter BigInt amount,
+      BigInt amount,
       String messageHash,
       bool isIncoming});
 

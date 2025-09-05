@@ -18,7 +18,6 @@ mixin _$MultitokenTransfer {
   String get tokenId;
   Address get collection;
   Address get sender;
-  @amountJsonConverter
   BigInt get count;
 
   /// Create a copy of MultitokenTransfer
@@ -61,11 +60,7 @@ abstract mixin class $MultitokenTransferCopyWith<$Res> {
           MultitokenTransfer value, $Res Function(MultitokenTransfer) _then) =
       _$MultitokenTransferCopyWithImpl;
   @useResult
-  $Res call(
-      {String tokenId,
-      Address collection,
-      Address sender,
-      @amountJsonConverter BigInt count});
+  $Res call({String tokenId, Address collection, Address sender, BigInt count});
 
   $AddressCopyWith<$Res> get collection;
   $AddressCopyWith<$Res> get sender;
@@ -137,7 +132,7 @@ class _MultitokenTransfer implements MultitokenTransfer {
       {required this.tokenId,
       required this.collection,
       required this.sender,
-      @amountJsonConverter required this.count});
+      required this.count});
   factory _MultitokenTransfer.fromJson(Map<String, dynamic> json) =>
       _$MultitokenTransferFromJson(json);
 
@@ -148,7 +143,6 @@ class _MultitokenTransfer implements MultitokenTransfer {
   @override
   final Address sender;
   @override
-  @amountJsonConverter
   final BigInt count;
 
   /// Create a copy of MultitokenTransfer
@@ -197,11 +191,7 @@ abstract mixin class _$MultitokenTransferCopyWith<$Res>
       __$MultitokenTransferCopyWithImpl;
   @override
   @useResult
-  $Res call(
-      {String tokenId,
-      Address collection,
-      Address sender,
-      @amountJsonConverter BigInt count});
+  $Res call({String tokenId, Address collection, Address sender, BigInt count});
 
   @override
   $AddressCopyWith<$Res> get collection;

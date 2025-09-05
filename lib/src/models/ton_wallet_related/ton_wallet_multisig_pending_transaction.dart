@@ -18,13 +18,13 @@ abstract class TonWalletMultisigPendingTransaction
     required List<PublicKey> custodians,
     // if this transaction was sent from this wallet
     required bool isOutgoing,
-    @amountJsonConverter required BigInt value,
+    required BigInt value,
     // address of destination or source depends on isOutgoing
     required Address address,
     // address of account for which this transaction was found
     required Address walletAddress,
     required DateTime date,
-    @amountJsonConverter required BigInt fees,
+    required BigInt fees,
     required String hash,
     required int signsReceived,
     required int signsRequired,

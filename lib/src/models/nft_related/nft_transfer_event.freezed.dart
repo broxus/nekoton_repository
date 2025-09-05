@@ -307,7 +307,7 @@ class NftTokenTransferEvent implements NftTransferEvent {
       required this.collection,
       required this.sender,
       required this.recipient,
-      @amountJsonConverter required this.count});
+      required this.count});
 
   @override
   final TransferDirection direction;
@@ -319,7 +319,6 @@ class NftTokenTransferEvent implements NftTransferEvent {
   final Address sender;
   @override
   final Address recipient;
-  @amountJsonConverter
   final BigInt count;
 
   /// Create a copy of NftTransferEvent
@@ -371,7 +370,7 @@ abstract mixin class $NftTokenTransferEventCopyWith<$Res>
       Address collection,
       Address sender,
       Address recipient,
-      @amountJsonConverter BigInt count});
+      BigInt count});
 
   @override
   $AddressCopyWith<$Res> get collection;

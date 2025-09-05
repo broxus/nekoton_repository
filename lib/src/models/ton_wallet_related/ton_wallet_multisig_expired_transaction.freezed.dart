@@ -21,12 +21,10 @@ mixin _$TonWalletMultisigExpiredTransaction {
   List<PublicKey>
       get custodians; // if this transaction was sent from this wallet
   bool get isOutgoing;
-  @amountJsonConverter
   BigInt get value; // address of destination or source depends on isOutgoing
   Address get address;
   @dateSecondsSinceEpochJsonConverter
   DateTime get date;
-  @amountJsonConverter
   BigInt get fees;
   String get hash;
   String? get prevTransactionLt;
@@ -122,10 +120,10 @@ abstract mixin class $TonWalletMultisigExpiredTransactionCopyWith<$Res> {
       List<PublicKey> confirmations,
       List<PublicKey> custodians,
       bool isOutgoing,
-      @amountJsonConverter BigInt value,
+      BigInt value,
       Address address,
       @dateSecondsSinceEpochJsonConverter DateTime date,
-      @amountJsonConverter BigInt fees,
+      BigInt fees,
       String hash,
       String? prevTransactionLt,
       String? comment,
@@ -340,10 +338,10 @@ class _TonWalletMultisigExpiredTransaction
       required final List<PublicKey> confirmations,
       required final List<PublicKey> custodians,
       required this.isOutgoing,
-      @amountJsonConverter required this.value,
+      required this.value,
       required this.address,
       @dateSecondsSinceEpochJsonConverter required this.date,
-      @amountJsonConverter required this.fees,
+      required this.fees,
       required this.hash,
       this.prevTransactionLt,
       this.comment,
@@ -383,7 +381,6 @@ class _TonWalletMultisigExpiredTransaction
   @override
   final bool isOutgoing;
   @override
-  @amountJsonConverter
   final BigInt value;
 // address of destination or source depends on isOutgoing
   @override
@@ -392,7 +389,6 @@ class _TonWalletMultisigExpiredTransaction
   @dateSecondsSinceEpochJsonConverter
   final DateTime date;
   @override
-  @amountJsonConverter
   final BigInt fees;
   @override
   final String hash;
@@ -497,10 +493,10 @@ abstract mixin class _$TonWalletMultisigExpiredTransactionCopyWith<$Res>
       List<PublicKey> confirmations,
       List<PublicKey> custodians,
       bool isOutgoing,
-      @amountJsonConverter BigInt value,
+      BigInt value,
       Address address,
       @dateSecondsSinceEpochJsonConverter DateTime date,
-      @amountJsonConverter BigInt fees,
+      BigInt fees,
       String hash,
       String? prevTransactionLt,
       String? comment,

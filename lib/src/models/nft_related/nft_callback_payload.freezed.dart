@@ -15,7 +15,6 @@ T _$identity<T>(T value) => value;
 
 /// @nodoc
 mixin _$NftCallbackPayload {
-  @amountJsonConverter
   BigInt get value;
   String get payload;
 
@@ -55,7 +54,7 @@ abstract mixin class $NftCallbackPayloadCopyWith<$Res> {
           NftCallbackPayload value, $Res Function(NftCallbackPayload) _then) =
       _$NftCallbackPayloadCopyWithImpl;
   @useResult
-  $Res call({@amountJsonConverter BigInt value, String payload});
+  $Res call({BigInt value, String payload});
 }
 
 /// @nodoc
@@ -90,13 +89,11 @@ class _$NftCallbackPayloadCopyWithImpl<$Res>
 /// @nodoc
 @JsonSerializable()
 class _NftCallbackPayload implements NftCallbackPayload {
-  const _NftCallbackPayload(
-      {@amountJsonConverter required this.value, required this.payload});
+  const _NftCallbackPayload({required this.value, required this.payload});
   factory _NftCallbackPayload.fromJson(Map<String, dynamic> json) =>
       _$NftCallbackPayloadFromJson(json);
 
   @override
-  @amountJsonConverter
   final BigInt value;
   @override
   final String payload;
@@ -143,7 +140,7 @@ abstract mixin class _$NftCallbackPayloadCopyWith<$Res>
       __$NftCallbackPayloadCopyWithImpl;
   @override
   @useResult
-  $Res call({@amountJsonConverter BigInt value, String payload});
+  $Res call({BigInt value, String payload});
 }
 
 /// @nodoc

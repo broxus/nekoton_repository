@@ -21,13 +21,11 @@ mixin _$TonWalletMultisigPendingTransaction {
   List<PublicKey>
       get custodians; // if this transaction was sent from this wallet
   bool get isOutgoing;
-  @amountJsonConverter
   BigInt get value; // address of destination or source depends on isOutgoing
   Address
       get address; // address of account for which this transaction was found
   Address get walletAddress;
   DateTime get date;
-  @amountJsonConverter
   BigInt get fees;
   String get hash;
   int get signsReceived;
@@ -153,11 +151,11 @@ abstract mixin class $TonWalletMultisigPendingTransactionCopyWith<$Res> {
       List<PublicKey> confirmations,
       List<PublicKey> custodians,
       bool isOutgoing,
-      @amountJsonConverter BigInt value,
+      BigInt value,
       Address address,
       Address walletAddress,
       DateTime date,
-      @amountJsonConverter BigInt fees,
+      BigInt fees,
       String hash,
       int signsReceived,
       int signsRequired,
@@ -424,11 +422,11 @@ class _TonWalletMultisigPendingTransaction
       required final List<PublicKey> confirmations,
       required final List<PublicKey> custodians,
       required this.isOutgoing,
-      @amountJsonConverter required this.value,
+      required this.value,
       required this.address,
       required this.walletAddress,
       required this.date,
-      @amountJsonConverter required this.fees,
+      required this.fees,
       required this.hash,
       required this.signsReceived,
       required this.signsRequired,
@@ -475,7 +473,6 @@ class _TonWalletMultisigPendingTransaction
   @override
   final bool isOutgoing;
   @override
-  @amountJsonConverter
   final BigInt value;
 // address of destination or source depends on isOutgoing
   @override
@@ -486,7 +483,6 @@ class _TonWalletMultisigPendingTransaction
   @override
   final DateTime date;
   @override
-  @amountJsonConverter
   final BigInt fees;
   @override
   final String hash;
@@ -637,11 +633,11 @@ abstract mixin class _$TonWalletMultisigPendingTransactionCopyWith<$Res>
       List<PublicKey> confirmations,
       List<PublicKey> custodians,
       bool isOutgoing,
-      @amountJsonConverter BigInt value,
+      BigInt value,
       Address address,
       Address walletAddress,
       DateTime date,
-      @amountJsonConverter BigInt fees,
+      BigInt fees,
       String hash,
       int signsReceived,
       int signsRequired,
