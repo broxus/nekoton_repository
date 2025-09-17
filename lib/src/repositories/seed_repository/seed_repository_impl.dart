@@ -609,7 +609,7 @@ mixin SeedKeyRepositoryImpl implements SeedKeyRepository {
       );
 
   @override
-  Future<SignedDataRaw> signRawData({
+  Future<SignedDataRaw> signDataRaw({
     required String data,
     required SignInput signInput,
     required int? signatureId,

@@ -177,7 +177,7 @@ class SeedList extends Equatable {
   ///
   /// **Note:** Throws [ArgumentError] if the password is not provided for
   /// encrypted/derived key.
-  Future<SignedDataRaw> signRawData({
+  Future<SignedDataRaw> signDataRaw({
     required String data,
     required PublicKey publicKey,
     required SignInputAuth signInputAuth,
@@ -185,7 +185,7 @@ class SeedList extends Equatable {
   }) {
     final key = _allKeys.firstWhere((k) => k.publicKey == publicKey);
 
-    return GetIt.instance<SeedKeyRepository>().signRawData(
+    return GetIt.instance<SeedKeyRepository>().signDataRaw(
       data: data,
       signatureId: signatureId,
       signInput: key.signInput(signInputAuth),
