@@ -3,6 +3,35 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## 2025-09-17
+
+### Changes
+
+---
+
+Packages with breaking changes:
+
+ - There are no breaking changes in this release.
+
+Packages with other changes:
+
+ - [`nekoton_repository` - `v1.5.1`](#nekoton_repository---v151)
+
+---
+
+#### `nekoton_repository` - `v1.5.1`
+
+ - **REFACTOR**: rename signRawData to signDataRaw for consistency.
+ - **REFACTOR**: remove redundant json converters.
+ - **FIX**: calc out messages total value; update flutter_nekoton_bridge dependency to version 3.4.0.
+
+## 1.5.1
+
+ - **REFACTOR**: rename signRawData to signDataRaw for consistency.
+ - **REFACTOR**: remove redundant json converters.
+ - **FIX**: calc out messages total value; update flutter_nekoton_bridge dependency to version 3.4.0.
+
+
 ## 2025-08-22
 
 ### Changes
