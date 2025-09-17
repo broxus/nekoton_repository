@@ -866,10 +866,12 @@ mixin TonWalletRepositoryImpl implements TonWalletRepository {
           final recipient = e.dataRecipient ?? msgRecipient;
           final isOutgoing = recipient != null;
 
-          final msgValue = (isOutgoing
-                  ? e.transaction.outMessages.firstOrNull?.value
-                  : e.transaction.inMessage.value) ??
-              e.transaction.inMessage.value;
+          final msgValue = isOutgoing
+              ? e.transaction.outMessages.fold(
+                  BigInt.zero,
+                  (acc, msg) => acc + msg.value,
+                )
+              : e.transaction.inMessage.value;
 
           final value = e.dataValue ?? msgValue;
           final address = (isOutgoing ? recipient : sender) ?? walletAddress;
@@ -981,10 +983,12 @@ mixin TonWalletRepositoryImpl implements TonWalletRepository {
         final recipient = e.dataRecipient ?? msgRecipient;
         final isOutgoing = recipient != null;
 
-        final msgValue = (isOutgoing
-                ? e.transaction.outMessages.firstOrNull?.value
-                : e.transaction.inMessage.value) ??
-            e.transaction.inMessage.value;
+        final msgValue = isOutgoing
+            ? e.transaction.outMessages.fold(
+                BigInt.zero,
+                (acc, msg) => acc + msg.value,
+              )
+            : e.transaction.inMessage.value;
 
         final value = e.dataValue ?? msgValue;
         final address = (isOutgoing ? recipient : sender) ?? wallet.address;
@@ -1048,10 +1052,12 @@ mixin TonWalletRepositoryImpl implements TonWalletRepository {
         final recipient = e.dataRecipient ?? msgRecipient;
         final isOutgoing = recipient != null;
 
-        final msgValue = (isOutgoing
-                ? e.transaction.outMessages.firstOrNull?.value
-                : e.transaction.inMessage.value) ??
-            e.transaction.inMessage.value;
+        final msgValue = isOutgoing
+            ? e.transaction.outMessages.fold(
+                BigInt.zero,
+                (acc, msg) => acc + msg.value,
+              )
+            : e.transaction.inMessage.value;
 
         final value = e.dataValue ?? msgValue;
         final address = (isOutgoing ? recipient : sender) ?? walletAddress;
@@ -1157,10 +1163,12 @@ mixin TonWalletRepositoryImpl implements TonWalletRepository {
         final recipient = e.dataRecipient ?? msgRecipient;
         final isOutgoing = recipient != null;
 
-        final msgValue = (isOutgoing
-                ? e.transaction.outMessages.firstOrNull?.value
-                : e.transaction.inMessage.value) ??
-            e.transaction.inMessage.value;
+        final msgValue = isOutgoing
+            ? e.transaction.outMessages.fold(
+                BigInt.zero,
+                (acc, msg) => acc + msg.value,
+              )
+            : e.transaction.inMessage.value;
 
         final value = e.dataValue ?? msgValue;
         final address = (isOutgoing ? recipient : sender) ?? walletAddress;
