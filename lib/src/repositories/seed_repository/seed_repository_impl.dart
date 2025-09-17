@@ -40,16 +40,16 @@ mixin SeedKeyRepositoryImpl implements SeedKeyRepository {
   Future<List<PublicKey>> getKeysToDerive(GetPublicKeysParams params) {
     final input = switch (params) {
       final GetPublicKeysParamsDerived p => DerivedKeyGetPublicKeys(
-          masterKey: p.masterKey,
-          password: Password.explicit(
-            PasswordExplicit(
-              password: p.password,
-              cacheBehavior: const PasswordCacheBehavior.nop(),
-            ),
+        masterKey: p.masterKey,
+        password: Password.explicit(
+          PasswordExplicit(
+            password: p.password,
+            cacheBehavior: const PasswordCacheBehavior.nop(),
           ),
-          offset: p.offset,
-          limit: p.limit,
         ),
+        offset: p.offset,
+        limit: p.limit,
+      ),
       GetPublicKeysParamsLedger(:final limit, :final offset) =>
         LedgerKeyGetPublicKeys(limit: limit, offset: offset),
     };
@@ -68,10 +68,7 @@ mixin SeedKeyRepositoryImpl implements SeedKeyRepository {
     var offset = params.offset;
     while (offset < (params.offset + params.limit)) {
       final keys = await getKeysToDerive(
-        GetPublicKeysParams.ledger(
-          limit: 1,
-          offset: offset,
-        ),
+        GetPublicKeysParams.ledger(limit: 1, offset: offset),
       );
 
       yield* Stream.fromIterable(keys);
@@ -88,19 +85,20 @@ mixin SeedKeyRepositoryImpl implements SeedKeyRepository {
     final inputs = params.map((p) {
       return switch (p) {
         final DeriveKeysParamsDerived d => DerivedKeyCreateInput.derive(
-            DerivedKeyCreateInputDerive(
-              masterKey: d.masterKey,
-              accountId: d.accountId,
-              password: Password.explicit(
-                PasswordExplicit(
-                  password: d.password,
-                  cacheBehavior: const PasswordCacheBehavior.nop(),
-                ),
+          DerivedKeyCreateInputDerive(
+            masterKey: d.masterKey,
+            accountId: d.accountId,
+            password: Password.explicit(
+              PasswordExplicit(
+                password: d.password,
+                cacheBehavior: const PasswordCacheBehavior.nop(),
               ),
             ),
           ),
-        DeriveKeysParamsLedger(:final accountId) =>
-          LedgerKeyCreateInput(accountId: accountId),
+        ),
+        DeriveKeysParamsLedger(:final accountId) => LedgerKeyCreateInput(
+          accountId: accountId,
+        ),
       };
     }).toList();
     final publicKeys = await keyStore.addKeys(inputs);
@@ -119,19 +117,20 @@ mixin SeedKeyRepositoryImpl implements SeedKeyRepository {
   }) async {
     final input = switch (params) {
       final DeriveKeysParamsDerived p => DerivedKeyCreateInput.derive(
-          DerivedKeyCreateInputDerive(
-            masterKey: p.masterKey,
-            accountId: p.accountId,
-            password: Password.explicit(
-              PasswordExplicit(
-                password: p.password,
-                cacheBehavior: const PasswordCacheBehavior.nop(),
-              ),
+        DerivedKeyCreateInputDerive(
+          masterKey: p.masterKey,
+          accountId: p.accountId,
+          password: Password.explicit(
+            PasswordExplicit(
+              password: p.password,
+              cacheBehavior: const PasswordCacheBehavior.nop(),
             ),
           ),
         ),
-      DeriveKeysParamsLedger(:final accountId) =>
-        LedgerKeyCreateInput(accountId: accountId),
+      ),
+      DeriveKeysParamsLedger(:final accountId) => LedgerKeyCreateInput(
+        accountId: accountId,
+      ),
     };
     final publicKey = await keyStore.addKey(input);
 
@@ -216,15 +215,9 @@ mixin SeedKeyRepositoryImpl implements SeedKeyRepository {
   }
 
   @override
-  Future<PublicKey> addLedgerKey({
-    required int accountId,
-    String? name,
-  }) async {
+  Future<PublicKey> addLedgerKey({required int accountId, String? name}) async {
     final publicKey = await keyStore.addKey(
-      LedgerKeyCreateInput(
-        accountId: accountId,
-        name: name,
-      ),
+      LedgerKeyCreateInput(accountId: accountId, name: name),
     );
 
     await storageRepository.updateSeedMetadata(
@@ -348,10 +341,7 @@ mixin SeedKeyRepositoryImpl implements SeedKeyRepository {
               : DeriveKeysParams.ledger(accountId: id),
         );
 
-        await deriveKeys(
-          params: params,
-          addActiveAccounts: false,
-        );
+        await deriveKeys(params: params, addActiveAccounts: false);
       }
 
       if (accountsToAdd.isNotEmpty) {
@@ -491,24 +481,18 @@ mixin SeedKeyRepositoryImpl implements SeedKeyRepository {
     final key = keyStore.keys.firstWhere((key) => key.publicKey == publicKey);
     final updateKeyInput = switch (key.signerType) {
       KeySignerType.encrypted => EncryptedKeyUpdateParams.rename(
-          EncryptedKeyUpdateParamsRename(
-            publicKey: publicKey,
-            name: name,
-          ),
-        ),
+        EncryptedKeyUpdateParamsRename(publicKey: publicKey, name: name),
+      ),
       KeySignerType.derived => DerivedKeyUpdateParams.renameKey(
-          DerivedKeyUpdateParamsRenameKey(
-            masterKey: masterKey,
-            publicKey: publicKey,
-            name: name,
-          ),
+        DerivedKeyUpdateParamsRenameKey(
+          masterKey: masterKey,
+          publicKey: publicKey,
+          name: name,
         ),
+      ),
       KeySignerType.ledger => LedgerUpdateKeyInput.rename(
-          LedgerUpdateKeyInputRename(
-            publicKey: publicKey,
-            name: name,
-          ),
-        ),
+        LedgerUpdateKeyInputRename(publicKey: publicKey, name: name),
+      ),
     };
 
     await keyStore.updateKey(updateKeyInput);
@@ -518,8 +502,7 @@ mixin SeedKeyRepositoryImpl implements SeedKeyRepository {
   Future<void> renameSeed({
     required PublicKey masterKey,
     required String name,
-  }) =>
-      storageRepository.updateSeedName(masterKey: masterKey, name: name);
+  }) => storageRepository.updateSeedName(masterKey: masterKey, name: name);
 
   @override
   Future<List<String>> exportSeed({
@@ -552,8 +535,9 @@ mixin SeedKeyRepositoryImpl implements SeedKeyRepository {
     final List<String> phrase;
 
     if (exportKeyInput is EncryptedKeyPassword) {
-      phrase =
-          (exportKeyOutput as EncryptedKeyExportSeedOutput).phrase.split(' ');
+      phrase = (exportKeyOutput as EncryptedKeyExportSeedOutput).phrase.split(
+        ' ',
+      );
     } else if (exportKeyInput is DerivedKeyExportSeedParams) {
       phrase = (exportKeyOutput as DerivedKeyExportOutput).phrase.split(' ');
     } else {
@@ -569,32 +553,29 @@ mixin SeedKeyRepositoryImpl implements SeedKeyRepository {
     required List<PublicKey> publicKeys,
     required EncryptionAlgorithm algorithm,
     required SignInput signInput,
-  }) =>
-      keyStore.encrypt(
-        data: data,
-        publicKeys: publicKeys,
-        algorithm: algorithm,
-        input: signInput,
-      );
+  }) => keyStore.encrypt(
+    data: data,
+    publicKeys: publicKeys,
+    algorithm: algorithm,
+    input: signInput,
+  );
 
   @override
   Future<String> decrypt({
     required EncryptedData data,
     required SignInput signInput,
-  }) =>
-      keyStore.decrypt(data: data, input: signInput);
+  }) => keyStore.decrypt(data: data, input: signInput);
 
   @override
   Future<String> sign({
     required UnsignedMessageImpl message,
     required SignInput signInput,
     required int? signatureId,
-  }) =>
-      keyStore.sign(
-        message: message,
-        input: signInput,
-        signatureId: signatureId,
-      );
+  }) => keyStore.sign(
+    message: message,
+    input: signInput,
+    signatureId: signatureId,
+  );
 
   @override
   Future<SignedData> signData({
@@ -602,23 +583,18 @@ mixin SeedKeyRepositoryImpl implements SeedKeyRepository {
     required SignInput signInput,
     required int? signatureId,
   }) =>
-      keyStore.signData(
-        data: data,
-        input: signInput,
-        signatureId: signatureId,
-      );
+      keyStore.signData(data: data, input: signInput, signatureId: signatureId);
 
   @override
   Future<SignedDataRaw> signRawData({
     required String data,
     required SignInput signInput,
     required int? signatureId,
-  }) =>
-      keyStore.signDataRaw(
-        data: data,
-        input: signInput,
-        signatureId: signatureId,
-      );
+  }) => keyStore.signDataRaw(
+    data: data,
+    input: signInput,
+    signatureId: signatureId,
+  );
 
   @override
   Future<List<PublicKey>> removeKeys(List<SeedKey> keys) async {
@@ -626,9 +602,7 @@ mixin SeedKeyRepositoryImpl implements SeedKeyRepository {
       publicKeys: keys.map((e) => e.publicKey).toList(),
     );
     unawaited(
-      triggerRemovingAccounts(
-        keys.where((k) => removed.contains(k.publicKey)),
-      ),
+      triggerRemovingAccounts(keys.where((k) => removed.contains(k.publicKey))),
     );
 
     return removed;

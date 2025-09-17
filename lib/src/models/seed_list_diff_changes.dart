@@ -56,8 +56,9 @@ class SeedListDiffChange extends Equatable {
     required bool isDeleted,
   }) {
     final keyDiff = SeedKeyBase.fromKey(key);
-    final accounts =
-        key.accountList.allAccounts.map(KeyAccountBase.fromAccount).toList();
+    final accounts = key.accountList.allAccounts
+        .map(KeyAccountBase.fromAccount)
+        .toList();
 
     return SeedListDiffChange(
       deletedSeeds: const [],
@@ -123,22 +124,10 @@ class SeedListDiffChange extends Equatable {
   /// Expand this diff by adding unique elements from [other].
   SeedListDiffChange expand(SeedListDiffChange other) {
     return SeedListDiffChange(
-      deletedSeeds: <SeedBase>{
-        ...other.deletedSeeds,
-        ...deletedSeeds,
-      }.toList(),
-      addedSeeds: <SeedBase>{
-        ...other.addedSeeds,
-        ...addedSeeds,
-      }.toList(),
-      deletedKeys: <SeedKeyBase>{
-        ...other.deletedKeys,
-        ...deletedKeys,
-      }.toList(),
-      addedKeys: <SeedKeyBase>{
-        ...other.addedKeys,
-        ...addedKeys,
-      }.toList(),
+      deletedSeeds: <SeedBase>{...other.deletedSeeds, ...deletedSeeds}.toList(),
+      addedSeeds: <SeedBase>{...other.addedSeeds, ...addedSeeds}.toList(),
+      deletedKeys: <SeedKeyBase>{...other.deletedKeys, ...deletedKeys}.toList(),
+      addedKeys: <SeedKeyBase>{...other.addedKeys, ...addedKeys}.toList(),
       deletedAccounts: <KeyAccountBase>{
         ...other.deletedAccounts,
         ...deletedAccounts,
@@ -182,11 +171,11 @@ class SeedListDiffChange extends Equatable {
 
   @override
   List<Object?> get props => [
-        deletedSeeds,
-        addedSeeds,
-        deletedKeys,
-        addedKeys,
-        deletedAccounts,
-        addedAccounts,
-      ];
+    deletedSeeds,
+    addedSeeds,
+    deletedKeys,
+    addedKeys,
+    deletedAccounts,
+    addedAccounts,
+  ];
 }

@@ -5,10 +5,7 @@ const nextBlockTimeout = Duration(seconds: 30);
 /// This is a wrapper above TonWallet that lets us using RefreshPollingQueue
 /// without crutches in [TonWallet.refresh] for GQL.
 class TonWalletGqlBlockPoller implements RefreshingInterface {
-  TonWalletGqlBlockPoller({
-    required this.tonWallet,
-    required this.transport,
-  });
+  TonWalletGqlBlockPoller({required this.tonWallet, required this.transport});
 
   final TonWallet tonWallet;
   final GqlTransport transport;
@@ -17,8 +14,9 @@ class TonWalletGqlBlockPoller implements RefreshingInterface {
 
   @override
   Future<void> refresh() async {
-    currentBlockId ??=
-        (await transport.getLatestBlock(address: tonWallet.address)).id;
+    currentBlockId ??= (await transport.getLatestBlock(
+      address: tonWallet.address,
+    )).id;
 
     final nextBlockId = await transport.waitForNextBlock(
       currentBlockId: currentBlockId!,

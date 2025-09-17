@@ -80,10 +80,12 @@ void main() {
   late Stream<PendingTransaction> expiredStream;
   late Stream<ContractState> stateStream;
   late Stream<
-      (
-        List<TransactionWithData<TransactionAdditionalInfo?>>,
-        TransactionsBatchInfo
-      )> transactionsFoundStream;
+    (
+      List<TransactionWithData<TransactionAdditionalInfo?>>,
+      TransactionsBatchInfo,
+    )
+  >
+  transactionsFoundStream;
 
   const address = Address(address: '0:1111111111111');
   const duplicateAddress = Address(address: '0:22222222222');
@@ -205,12 +207,15 @@ void main() {
 
   group('TonWalletRepository', () {
     test('addWallet', () {
-      when(() => wallet.onMessageExpiredStream)
-          .thenAnswer((_) => expiredStream);
-      when(() => wallet.onMessageSentStream)
-          .thenAnswer((_) => messageSentStream);
-      when(() => wallet.onTransactionsFoundStream)
-          .thenAnswer((_) => transactionsFoundStream);
+      when(
+        () => wallet.onMessageExpiredStream,
+      ).thenAnswer((_) => expiredStream);
+      when(
+        () => wallet.onMessageSentStream,
+      ).thenAnswer((_) => messageSentStream);
+      when(
+        () => wallet.onTransactionsFoundStream,
+      ).thenAnswer((_) => transactionsFoundStream);
       when(() => wallet.onStateChangedStream).thenAnswer((_) => stateStream);
       when(() => wallet.address).thenReturn(address);
 
@@ -226,12 +231,15 @@ void main() {
     });
 
     test('removeWallet', () {
-      when(() => wallet.onMessageExpiredStream)
-          .thenAnswer((_) => expiredStream);
-      when(() => wallet.onMessageSentStream)
-          .thenAnswer((_) => messageSentStream);
-      when(() => wallet.onTransactionsFoundStream)
-          .thenAnswer((_) => transactionsFoundStream);
+      when(
+        () => wallet.onMessageExpiredStream,
+      ).thenAnswer((_) => expiredStream);
+      when(
+        () => wallet.onMessageSentStream,
+      ).thenAnswer((_) => messageSentStream);
+      when(
+        () => wallet.onTransactionsFoundStream,
+      ).thenAnswer((_) => transactionsFoundStream);
       when(() => wallet.onStateChangedStream).thenAnswer((_) => stateStream);
       when(() => wallet.address).thenReturn(address);
 
@@ -244,12 +252,15 @@ void main() {
     });
 
     test('unsubscribe', () async {
-      when(() => wallet.onMessageExpiredStream)
-          .thenAnswer((_) => expiredStream);
-      when(() => wallet.onMessageSentStream)
-          .thenAnswer((_) => messageSentStream);
-      when(() => wallet.onTransactionsFoundStream)
-          .thenAnswer((_) => transactionsFoundStream);
+      when(
+        () => wallet.onMessageExpiredStream,
+      ).thenAnswer((_) => expiredStream);
+      when(
+        () => wallet.onMessageSentStream,
+      ).thenAnswer((_) => messageSentStream);
+      when(
+        () => wallet.onTransactionsFoundStream,
+      ).thenAnswer((_) => transactionsFoundStream);
       when(() => wallet.onStateChangedStream).thenAnswer((_) => stateStream);
       when(() => wallet.address).thenReturn(address);
       when(wallet.dispose).thenReturn(null);
@@ -275,12 +286,15 @@ void main() {
     });
 
     test('stopPolling', () {
-      when(() => wallet.onMessageExpiredStream)
-          .thenAnswer((_) => expiredStream);
-      when(() => wallet.onMessageSentStream)
-          .thenAnswer((_) => messageSentStream);
-      when(() => wallet.onTransactionsFoundStream)
-          .thenAnswer((_) => transactionsFoundStream);
+      when(
+        () => wallet.onMessageExpiredStream,
+      ).thenAnswer((_) => expiredStream);
+      when(
+        () => wallet.onMessageSentStream,
+      ).thenAnswer((_) => messageSentStream);
+      when(
+        () => wallet.onTransactionsFoundStream,
+      ).thenAnswer((_) => transactionsFoundStream);
       when(() => wallet.onStateChangedStream).thenAnswer((_) => stateStream);
       when(() => wallet.address).thenReturn(address);
       when(wallet.refresh).thenAnswer((_) => Future<void>.value());
@@ -309,12 +323,15 @@ void main() {
     });
 
     test('startPolling with clearing previous', () async {
-      when(() => wallet.onMessageExpiredStream)
-          .thenAnswer((_) => expiredStream);
-      when(() => wallet.onMessageSentStream)
-          .thenAnswer((_) => messageSentStream);
-      when(() => wallet.onTransactionsFoundStream)
-          .thenAnswer((_) => transactionsFoundStream);
+      when(
+        () => wallet.onMessageExpiredStream,
+      ).thenAnswer((_) => expiredStream);
+      when(
+        () => wallet.onMessageSentStream,
+      ).thenAnswer((_) => messageSentStream);
+      when(
+        () => wallet.onTransactionsFoundStream,
+      ).thenAnswer((_) => transactionsFoundStream);
       when(() => wallet.onStateChangedStream).thenAnswer((_) => stateStream);
       when(() => wallet.address).thenReturn(address);
 
@@ -338,12 +355,15 @@ void main() {
     });
 
     test('startPolling without clearing previous', () async {
-      when(() => wallet.onMessageExpiredStream)
-          .thenAnswer((_) => expiredStream);
-      when(() => wallet.onMessageSentStream)
-          .thenAnswer((_) => messageSentStream);
-      when(() => wallet.onTransactionsFoundStream)
-          .thenAnswer((_) => transactionsFoundStream);
+      when(
+        () => wallet.onMessageExpiredStream,
+      ).thenAnswer((_) => expiredStream);
+      when(
+        () => wallet.onMessageSentStream,
+      ).thenAnswer((_) => messageSentStream);
+      when(
+        () => wallet.onTransactionsFoundStream,
+      ).thenAnswer((_) => transactionsFoundStream);
       when(() => wallet.onStateChangedStream).thenAnswer((_) => stateStream);
       when(() => wallet.address).thenReturn(address);
 
@@ -420,20 +440,19 @@ void main() {
 
     test('send GQL success', () async {
       // default settings for subscription
-      when(() => wallet.onMessageExpiredStream)
-          .thenAnswer((_) => expiredStream);
+      when(
+        () => wallet.onMessageExpiredStream,
+      ).thenAnswer((_) => expiredStream);
       when(() => wallet.onMessageSentStream).thenAnswer(
         (_) => Stream.fromFuture(
           Future.delayed(sendDuration, () {
-            return (
-              pendingTransaction,
-              transaction,
-            );
+            return (pendingTransaction, transaction);
           }),
         ),
       );
-      when(() => wallet.onTransactionsFoundStream)
-          .thenAnswer((_) => transactionsFoundStream);
+      when(
+        () => wallet.onTransactionsFoundStream,
+      ).thenAnswer((_) => transactionsFoundStream);
       when(() => wallet.onStateChangedStream).thenAnswer((_) => stateStream);
       when(() => wallet.address).thenReturn(address);
       when(wallet.refresh).thenAnswer((_) => Future<void>.value());
@@ -451,8 +470,9 @@ void main() {
       when(() => gql.group).thenReturn(group);
 
       /// Gql refresh flow
-      when(() => gql.getLatestBlock(address: any(named: 'address')))
-          .thenAnswer((_) => Future.value(latestBlock));
+      when(
+        () => gql.getLatestBlock(address: any(named: 'address')),
+      ).thenAnswer((_) => Future.value(latestBlock));
       when(
         () => gql.waitForNextBlock(
           currentBlockId: any(named: 'currentBlockId'),
@@ -460,10 +480,12 @@ void main() {
           timeout: any(named: 'timeout'),
         ),
       ).thenAnswer((_) => Future.value(nextBlockId));
-      when(() => gql.getBlock(id: any(named: 'id')))
-          .thenAnswer((_) => Future.value(block));
-      when(() => wallet.handleBlock(block: any(named: 'block')))
-          .thenAnswer((_) => Future<void>.value());
+      when(
+        () => gql.getBlock(id: any(named: 'id')),
+      ).thenAnswer((_) => Future.value(block));
+      when(
+        () => wallet.handleBlock(block: any(named: 'block')),
+      ).thenAnswer((_) => Future<void>.value());
 
       // storage flow
       when(
@@ -548,16 +570,17 @@ void main() {
 
     test('send GQL failed', () async {
       // default settings for subscription
-      when(() => wallet.onMessageExpiredStream)
-          .thenAnswer((_) => expiredStream);
+      when(
+        () => wallet.onMessageExpiredStream,
+      ).thenAnswer((_) => expiredStream);
       // this should be avoided
       when(() => wallet.onMessageSentStream).thenAnswer(
-        (_) => Stream.fromFuture(
-          Future.delayed(transactionExpiring, throwError),
-        ),
+        (_) =>
+            Stream.fromFuture(Future.delayed(transactionExpiring, throwError)),
       );
-      when(() => wallet.onTransactionsFoundStream)
-          .thenAnswer((_) => transactionsFoundStream);
+      when(
+        () => wallet.onTransactionsFoundStream,
+      ).thenAnswer((_) => transactionsFoundStream);
       when(() => wallet.onStateChangedStream).thenAnswer((_) => stateStream);
       when(() => wallet.address).thenReturn(address);
       when(wallet.refresh).thenAnswer((_) => Future<void>.value());
@@ -576,10 +599,8 @@ void main() {
 
       /// Gql refresh flow
       when(() => gql.getLatestBlock(address: any(named: 'address'))).thenAnswer(
-        (_) => Future<LatestBlock>.delayed(
-          const Duration(seconds: 1),
-          throwError,
-        ),
+        (_) =>
+            Future<LatestBlock>.delayed(const Duration(seconds: 1), throwError),
       );
 
       // storage flow
@@ -665,24 +686,24 @@ void main() {
 
     test('send PROTO success', () async {
       // default settings for subscription
-      when(() => wallet.onMessageExpiredStream)
-          .thenAnswer((_) => expiredStream);
+      when(
+        () => wallet.onMessageExpiredStream,
+      ).thenAnswer((_) => expiredStream);
       when(() => wallet.onMessageSentStream).thenAnswer(
         (_) => Stream.fromFuture(
           Future.delayed(sendDuration, () {
-            return (
-              pendingTransaction,
-              transaction,
-            );
+            return (pendingTransaction, transaction);
           }),
         ),
       );
-      when(() => wallet.onTransactionsFoundStream)
-          .thenAnswer((_) => transactionsFoundStream);
+      when(
+        () => wallet.onTransactionsFoundStream,
+      ).thenAnswer((_) => transactionsFoundStream);
       when(() => wallet.onStateChangedStream).thenAnswer((_) => stateStream);
       when(() => wallet.address).thenReturn(address);
-      when(() => wallet.refresh())
-          .thenAnswer((_) => Future<void>.delayed(sendDuration));
+      when(
+        () => wallet.refresh(),
+      ).thenAnswer((_) => Future<void>.delayed(sendDuration));
       when(() => wallet.refreshDescription).thenReturn('');
 
       when(() => wallet.transport).thenReturn(proto);
@@ -761,23 +782,22 @@ void main() {
 
     test('send PROTO failed', () async {
       // default settings for subscription
-      when(() => wallet.onMessageExpiredStream)
-          .thenAnswer((_) => expiredStream);
+      when(
+        () => wallet.onMessageExpiredStream,
+      ).thenAnswer((_) => expiredStream);
       // this should be avoided
       when(() => wallet.onMessageSentStream).thenAnswer(
-        (_) => Stream.fromFuture(
-          Future.delayed(transactionExpiring, throwError),
-        ),
+        (_) =>
+            Stream.fromFuture(Future.delayed(transactionExpiring, throwError)),
       );
-      when(() => wallet.onTransactionsFoundStream)
-          .thenAnswer((_) => transactionsFoundStream);
+      when(
+        () => wallet.onTransactionsFoundStream,
+      ).thenAnswer((_) => transactionsFoundStream);
       when(() => wallet.onStateChangedStream).thenAnswer((_) => stateStream);
       when(() => wallet.address).thenReturn(address);
       when(() => wallet.refresh()).thenAnswer(
-        (_) => Future<LatestBlock>.delayed(
-          const Duration(seconds: 1),
-          throwError,
-        ),
+        (_) =>
+            Future<LatestBlock>.delayed(const Duration(seconds: 1), throwError),
       );
       when(() => wallet.refreshDescription).thenReturn('');
 
@@ -858,24 +878,24 @@ void main() {
 
     test('send JRPC success', () async {
       // default settings for subscription
-      when(() => wallet.onMessageExpiredStream)
-          .thenAnswer((_) => expiredStream);
+      when(
+        () => wallet.onMessageExpiredStream,
+      ).thenAnswer((_) => expiredStream);
       when(() => wallet.onMessageSentStream).thenAnswer(
         (_) => Stream.fromFuture(
           Future.delayed(sendDuration, () {
-            return (
-              pendingTransaction,
-              transaction,
-            );
+            return (pendingTransaction, transaction);
           }),
         ),
       );
-      when(() => wallet.onTransactionsFoundStream)
-          .thenAnswer((_) => transactionsFoundStream);
+      when(
+        () => wallet.onTransactionsFoundStream,
+      ).thenAnswer((_) => transactionsFoundStream);
       when(() => wallet.onStateChangedStream).thenAnswer((_) => stateStream);
       when(() => wallet.address).thenReturn(address);
-      when(() => wallet.refresh())
-          .thenAnswer((_) => Future<void>.delayed(sendDuration));
+      when(
+        () => wallet.refresh(),
+      ).thenAnswer((_) => Future<void>.delayed(sendDuration));
       when(() => wallet.refreshDescription).thenReturn('');
 
       when(() => wallet.transport).thenReturn(jrpc);
@@ -954,23 +974,22 @@ void main() {
 
     test('send JRPC failed', () async {
       // default settings for subscription
-      when(() => wallet.onMessageExpiredStream)
-          .thenAnswer((_) => expiredStream);
+      when(
+        () => wallet.onMessageExpiredStream,
+      ).thenAnswer((_) => expiredStream);
       // this should be avoided
       when(() => wallet.onMessageSentStream).thenAnswer(
-        (_) => Stream.fromFuture(
-          Future.delayed(transactionExpiring, throwError),
-        ),
+        (_) =>
+            Stream.fromFuture(Future.delayed(transactionExpiring, throwError)),
       );
-      when(() => wallet.onTransactionsFoundStream)
-          .thenAnswer((_) => transactionsFoundStream);
+      when(
+        () => wallet.onTransactionsFoundStream,
+      ).thenAnswer((_) => transactionsFoundStream);
       when(() => wallet.onStateChangedStream).thenAnswer((_) => stateStream);
       when(() => wallet.address).thenReturn(address);
       when(() => wallet.refresh()).thenAnswer(
-        (_) => Future<LatestBlock>.delayed(
-          const Duration(seconds: 1),
-          throwError,
-        ),
+        (_) =>
+            Future<LatestBlock>.delayed(const Duration(seconds: 1), throwError),
       );
       when(() => wallet.refreshDescription).thenReturn('');
 
@@ -1048,12 +1067,15 @@ void main() {
 
   group('TonWalletRepository.getLocalCustodians', () {
     test('Get only one local custodian', () async {
-      when(() => wallet.onMessageExpiredStream)
-          .thenAnswer((_) => expiredStream);
-      when(() => wallet.onMessageSentStream)
-          .thenAnswer((_) => messageSentStream);
-      when(() => wallet.onTransactionsFoundStream)
-          .thenAnswer((_) => transactionsFoundStream);
+      when(
+        () => wallet.onMessageExpiredStream,
+      ).thenAnswer((_) => expiredStream);
+      when(
+        () => wallet.onMessageSentStream,
+      ).thenAnswer((_) => messageSentStream);
+      when(
+        () => wallet.onTransactionsFoundStream,
+      ).thenAnswer((_) => transactionsFoundStream);
       when(() => wallet.onStateChangedStream).thenAnswer((_) => stateStream);
 
       when(() => transport.transport).thenReturn(proto);
@@ -1067,17 +1089,21 @@ void main() {
     });
 
     test('Get several local custodian', () async {
-      when(() => wallet.onMessageExpiredStream)
-          .thenAnswer((_) => expiredStream);
-      when(() => wallet.onMessageSentStream)
-          .thenAnswer((_) => messageSentStream);
-      when(() => wallet.onTransactionsFoundStream)
-          .thenAnswer((_) => transactionsFoundStream);
+      when(
+        () => wallet.onMessageExpiredStream,
+      ).thenAnswer((_) => expiredStream);
+      when(
+        () => wallet.onMessageSentStream,
+      ).thenAnswer((_) => messageSentStream);
+      when(
+        () => wallet.onTransactionsFoundStream,
+      ).thenAnswer((_) => transactionsFoundStream);
       when(() => wallet.onStateChangedStream).thenAnswer((_) => stateStream);
 
       when(() => transport.transport).thenReturn(proto);
-      when(() => keystore.keys)
-          .thenReturn([multisigKey1Entry, multisigKey2Entry]);
+      when(
+        () => keystore.keys,
+      ).thenReturn([multisigKey1Entry, multisigKey2Entry]);
       when(() => wallet.custodians).thenReturn([multisigKey1, multisigKey2]);
       when(() => wallet.address).thenReturn(multisigAddress);
 
@@ -1087,12 +1113,15 @@ void main() {
     });
 
     test('Return single-item custodians for not multisig', () async {
-      when(() => wallet.onMessageExpiredStream)
-          .thenAnswer((_) => expiredStream);
-      when(() => wallet.onMessageSentStream)
-          .thenAnswer((_) => messageSentStream);
-      when(() => wallet.onTransactionsFoundStream)
-          .thenAnswer((_) => transactionsFoundStream);
+      when(
+        () => wallet.onMessageExpiredStream,
+      ).thenAnswer((_) => expiredStream);
+      when(
+        () => wallet.onMessageSentStream,
+      ).thenAnswer((_) => messageSentStream);
+      when(
+        () => wallet.onTransactionsFoundStream,
+      ).thenAnswer((_) => transactionsFoundStream);
       when(() => wallet.onStateChangedStream).thenAnswer((_) => stateStream);
 
       when(() => transport.transport).thenReturn(proto);
@@ -1106,12 +1135,15 @@ void main() {
     });
 
     test('Return null for not multisig if no local found', () async {
-      when(() => wallet.onMessageExpiredStream)
-          .thenAnswer((_) => expiredStream);
-      when(() => wallet.onMessageSentStream)
-          .thenAnswer((_) => messageSentStream);
-      when(() => wallet.onTransactionsFoundStream)
-          .thenAnswer((_) => transactionsFoundStream);
+      when(
+        () => wallet.onMessageExpiredStream,
+      ).thenAnswer((_) => expiredStream);
+      when(
+        () => wallet.onMessageSentStream,
+      ).thenAnswer((_) => messageSentStream);
+      when(
+        () => wallet.onTransactionsFoundStream,
+      ).thenAnswer((_) => transactionsFoundStream);
       when(() => wallet.onStateChangedStream).thenAnswer((_) => stateStream);
 
       when(() => transport.transport).thenReturn(proto);
@@ -1158,8 +1190,9 @@ void main() {
 
       when(() => transport.transport).thenReturn(proto);
       when(() => proto.disposed).thenReturn(false);
-      when(() => keystore.keys)
-          .thenReturn([multisigKey1Entry, multisigKey2Entry]);
+      when(
+        () => keystore.keys,
+      ).thenReturn([multisigKey1Entry, multisigKey2Entry]);
 
       final local = await repository.getLocalCustodiansAsync(multisigAddress);
       expect(local, [multisigKey1, multisigKey2]);
@@ -1178,8 +1211,9 @@ void main() {
       when(() => proto.disposed).thenReturn(false);
       when(() => keystore.keys).thenReturn([notMultisigKeyEntry]);
 
-      final local =
-          await repository.getLocalCustodiansAsync(notMultisigAddress);
+      final local = await repository.getLocalCustodiansAsync(
+        notMultisigAddress,
+      );
       expect(local, [notMultisigKey]);
     });
 
@@ -1196,51 +1230,55 @@ void main() {
       when(() => proto.disposed).thenReturn(false);
       when(() => keystore.keys).thenReturn([]);
 
-      final local =
-          await repository.getLocalCustodiansAsync(notMultisigAddress);
+      final local = await repository.getLocalCustodiansAsync(
+        notMultisigAddress,
+      );
       expect(local, isNull);
     });
   });
 
   void mockTonWallet(TonWalletDartWrapper box, TonWalletAsset asset) {
-    when(() => box.walletType()).thenAnswer(
-      (_) => Future.value(jsonEncode(asset.contract.toJson())),
-    );
+    when(
+      () => box.walletType(),
+    ).thenAnswer((_) => Future.value(jsonEncode(asset.contract.toJson())));
     when(() => box.workchain()).thenAnswer((_) => Future.value(1));
-    when(() => box.publicKey()).thenAnswer(
-      (_) => Future.value(asset.publicKey.publicKey),
-    );
-    when(() => box.address()).thenAnswer(
-      (_) => Future.value(asset.address.address),
-    );
-    when(() => box.details()).thenAnswer(
-      (_) => Future.value(jsonEncode(details.toJson())),
-    );
-    when(() => box.contractState()).thenAnswer(
-      (_) => Future.value(jsonEncode(contract.toJson())),
-    );
-    when(() => box.pendingTransactions()).thenAnswer(
-      (_) => Future.value(jsonEncode([])),
-    );
-    when(() => box.unconfirmedTransactions()).thenAnswer(
-      (_) => Future.value(jsonEncode([])),
-    );
-    when(() => box.pollingMethod()).thenAnswer(
-      (_) => Future.value(PollingMethod.manual),
-    );
-    when(() => box.custodians()).thenAnswer(
-      (_) => Future.value([asset.publicKey.publicKey]),
-    );
+    when(
+      () => box.publicKey(),
+    ).thenAnswer((_) => Future.value(asset.publicKey.publicKey));
+    when(
+      () => box.address(),
+    ).thenAnswer((_) => Future.value(asset.address.address));
+    when(
+      () => box.details(),
+    ).thenAnswer((_) => Future.value(jsonEncode(details.toJson())));
+    when(
+      () => box.contractState(),
+    ).thenAnswer((_) => Future.value(jsonEncode(contract.toJson())));
+    when(
+      () => box.pendingTransactions(),
+    ).thenAnswer((_) => Future.value(jsonEncode([])));
+    when(
+      () => box.unconfirmedTransactions(),
+    ).thenAnswer((_) => Future.value(jsonEncode([])));
+    when(
+      () => box.pollingMethod(),
+    ).thenAnswer((_) => Future.value(PollingMethod.manual));
+    when(
+      () => box.custodians(),
+    ).thenAnswer((_) => Future.value([asset.publicKey.publicKey]));
   }
 
   group('TonWalletRepository', () {
     test('updateSubscriptions without side effects', () async {
-      when(() => wallet.onMessageExpiredStream)
-          .thenAnswer((_) => expiredStream);
-      when(() => wallet.onMessageSentStream)
-          .thenAnswer((_) => messageSentStream);
-      when(() => wallet.onTransactionsFoundStream)
-          .thenAnswer((_) => transactionsFoundStream);
+      when(
+        () => wallet.onMessageExpiredStream,
+      ).thenAnswer((_) => expiredStream);
+      when(
+        () => wallet.onMessageSentStream,
+      ).thenAnswer((_) => messageSentStream);
+      when(
+        () => wallet.onTransactionsFoundStream,
+      ).thenAnswer((_) => transactionsFoundStream);
       when(() => wallet.onStateChangedStream).thenAnswer((_) => stateStream);
 
       when(() => transport.transport).thenReturn(proto);
@@ -1260,8 +1298,9 @@ void main() {
           onMessageExpired: any(named: 'onMessageExpired'),
           onMessageSent: any(named: 'onMessageSent'),
           onStateChanged: any(named: 'onStateChanged'),
-          onUnconfirmedTransactionsChanged:
-              any(named: 'onUnconfirmedTransactionsChanged'),
+          onUnconfirmedTransactionsChanged: any(
+            named: 'onUnconfirmedTransactionsChanged',
+          ),
         ),
       ).thenAnswer((call) {
         if (call.namedArguments[const Symbol('walletType')] ==
@@ -1279,12 +1318,15 @@ void main() {
     });
 
     test('updateSubscriptions without side effects by address metod', () async {
-      when(() => wallet.onMessageExpiredStream)
-          .thenAnswer((_) => expiredStream);
-      when(() => wallet.onMessageSentStream)
-          .thenAnswer((_) => messageSentStream);
-      when(() => wallet.onTransactionsFoundStream)
-          .thenAnswer((_) => transactionsFoundStream);
+      when(
+        () => wallet.onMessageExpiredStream,
+      ).thenAnswer((_) => expiredStream);
+      when(
+        () => wallet.onMessageSentStream,
+      ).thenAnswer((_) => messageSentStream);
+      when(
+        () => wallet.onTransactionsFoundStream,
+      ).thenAnswer((_) => transactionsFoundStream);
       when(() => wallet.onStateChangedStream).thenAnswer((_) => stateStream);
 
       when(() => transport.transport).thenReturn(proto);
@@ -1304,8 +1346,9 @@ void main() {
           onMessageExpired: any(named: 'onMessageExpired'),
           onMessageSent: any(named: 'onMessageSent'),
           onStateChanged: any(named: 'onStateChanged'),
-          onUnconfirmedTransactionsChanged:
-              any(named: 'onUnconfirmedTransactionsChanged'),
+          onUnconfirmedTransactionsChanged: any(
+            named: 'onUnconfirmedTransactionsChanged',
+          ),
         ),
       ).thenAnswer((_) => Future.value(tonWrapper2));
       when(
@@ -1318,8 +1361,9 @@ void main() {
           onMessageExpired: any(named: 'onMessageExpired'),
           onMessageSent: any(named: 'onMessageSent'),
           onStateChanged: any(named: 'onStateChanged'),
-          onUnconfirmedTransactionsChanged:
-              any(named: 'onUnconfirmedTransactionsChanged'),
+          onUnconfirmedTransactionsChanged: any(
+            named: 'onUnconfirmedTransactionsChanged',
+          ),
         ),
       ).thenAnswer((_) => Future.value(tonWrapper1));
       mockTonWallet(tonWrapper1, asset1);
@@ -1331,12 +1375,15 @@ void main() {
     });
 
     test('updateSubscriptions with failed subscribe of one wallet', () async {
-      when(() => wallet.onMessageExpiredStream)
-          .thenAnswer((_) => expiredStream);
-      when(() => wallet.onMessageSentStream)
-          .thenAnswer((_) => messageSentStream);
-      when(() => wallet.onTransactionsFoundStream)
-          .thenAnswer((_) => transactionsFoundStream);
+      when(
+        () => wallet.onMessageExpiredStream,
+      ).thenAnswer((_) => expiredStream);
+      when(
+        () => wallet.onMessageSentStream,
+      ).thenAnswer((_) => messageSentStream);
+      when(
+        () => wallet.onTransactionsFoundStream,
+      ).thenAnswer((_) => transactionsFoundStream);
       when(() => wallet.onStateChangedStream).thenAnswer((_) => stateStream);
 
       when(() => transport.transport).thenReturn(proto);
@@ -1369,8 +1416,9 @@ void main() {
           onMessageExpired: any(named: 'onMessageExpired'),
           onMessageSent: any(named: 'onMessageSent'),
           onStateChanged: any(named: 'onStateChanged'),
-          onUnconfirmedTransactionsChanged:
-              any(named: 'onUnconfirmedTransactionsChanged'),
+          onUnconfirmedTransactionsChanged: any(
+            named: 'onUnconfirmedTransactionsChanged',
+          ),
         ),
       ).thenAnswer((call) {
         if (call.namedArguments[const Symbol('walletType')] ==
@@ -1392,12 +1440,15 @@ void main() {
     });
 
     test('retrySubscriptions successfully', () async {
-      when(() => wallet.onMessageExpiredStream)
-          .thenAnswer((_) => expiredStream);
-      when(() => wallet.onMessageSentStream)
-          .thenAnswer((_) => messageSentStream);
-      when(() => wallet.onTransactionsFoundStream)
-          .thenAnswer((_) => transactionsFoundStream);
+      when(
+        () => wallet.onMessageExpiredStream,
+      ).thenAnswer((_) => expiredStream);
+      when(
+        () => wallet.onMessageSentStream,
+      ).thenAnswer((_) => messageSentStream);
+      when(
+        () => wallet.onTransactionsFoundStream,
+      ).thenAnswer((_) => transactionsFoundStream);
       when(() => wallet.onStateChangedStream).thenAnswer((_) => stateStream);
 
       when(() => transport.transport).thenReturn(proto);
@@ -1430,8 +1481,9 @@ void main() {
           onMessageExpired: any(named: 'onMessageExpired'),
           onMessageSent: any(named: 'onMessageSent'),
           onStateChanged: any(named: 'onStateChanged'),
-          onUnconfirmedTransactionsChanged:
-              any(named: 'onUnconfirmedTransactionsChanged'),
+          onUnconfirmedTransactionsChanged: any(
+            named: 'onUnconfirmedTransactionsChanged',
+          ),
         ),
       ).thenAnswer((_) => throwError());
       mockTonWallet(tonWrapper1, asset1);
@@ -1455,8 +1507,9 @@ void main() {
           onMessageExpired: any(named: 'onMessageExpired'),
           onMessageSent: any(named: 'onMessageSent'),
           onStateChanged: any(named: 'onStateChanged'),
-          onUnconfirmedTransactionsChanged:
-              any(named: 'onUnconfirmedTransactionsChanged'),
+          onUnconfirmedTransactionsChanged: any(
+            named: 'onUnconfirmedTransactionsChanged',
+          ),
         ),
       ).thenAnswer((_) => Future.value(tonWrapper1));
 
@@ -1469,12 +1522,15 @@ void main() {
     });
 
     test('retrySubscriptions no cached asset', () async {
-      when(() => wallet.onMessageExpiredStream)
-          .thenAnswer((_) => expiredStream);
-      when(() => wallet.onMessageSentStream)
-          .thenAnswer((_) => messageSentStream);
-      when(() => wallet.onTransactionsFoundStream)
-          .thenAnswer((_) => transactionsFoundStream);
+      when(
+        () => wallet.onMessageExpiredStream,
+      ).thenAnswer((_) => expiredStream);
+      when(
+        () => wallet.onMessageSentStream,
+      ).thenAnswer((_) => messageSentStream);
+      when(
+        () => wallet.onTransactionsFoundStream,
+      ).thenAnswer((_) => transactionsFoundStream);
       when(() => wallet.onStateChangedStream).thenAnswer((_) => stateStream);
 
       when(() => transport.transport).thenReturn(proto);
@@ -1493,8 +1549,9 @@ void main() {
           onMessageExpired: any(named: 'onMessageExpired'),
           onMessageSent: any(named: 'onMessageSent'),
           onStateChanged: any(named: 'onStateChanged'),
-          onUnconfirmedTransactionsChanged:
-              any(named: 'onUnconfirmedTransactionsChanged'),
+          onUnconfirmedTransactionsChanged: any(
+            named: 'onUnconfirmedTransactionsChanged',
+          ),
         ),
       ).thenAnswer((_) => throwError());
       mockTonWallet(tonWrapper1, asset1);
@@ -1514,12 +1571,15 @@ void main() {
     test('updateSubscriptions with expanding assets list', () async {
       reset(bridge);
 
-      when(() => wallet.onMessageExpiredStream)
-          .thenAnswer((_) => expiredStream);
-      when(() => wallet.onMessageSentStream)
-          .thenAnswer((_) => messageSentStream);
-      when(() => wallet.onTransactionsFoundStream)
-          .thenAnswer((_) => transactionsFoundStream);
+      when(
+        () => wallet.onMessageExpiredStream,
+      ).thenAnswer((_) => expiredStream);
+      when(
+        () => wallet.onMessageSentStream,
+      ).thenAnswer((_) => messageSentStream);
+      when(
+        () => wallet.onTransactionsFoundStream,
+      ).thenAnswer((_) => transactionsFoundStream);
       when(() => wallet.onStateChangedStream).thenAnswer((_) => stateStream);
 
       when(() => transport.transport).thenReturn(proto);
@@ -1552,8 +1612,9 @@ void main() {
           onMessageExpired: any(named: 'onMessageExpired'),
           onMessageSent: any(named: 'onMessageSent'),
           onStateChanged: any(named: 'onStateChanged'),
-          onUnconfirmedTransactionsChanged:
-              any(named: 'onUnconfirmedTransactionsChanged'),
+          onUnconfirmedTransactionsChanged: any(
+            named: 'onUnconfirmedTransactionsChanged',
+          ),
         ),
       ).thenAnswer((call) {
         if (call.namedArguments[const Symbol('walletType')] ==
@@ -1582,8 +1643,9 @@ void main() {
           onMessageExpired: any(named: 'onMessageExpired'),
           onMessageSent: any(named: 'onMessageSent'),
           onStateChanged: any(named: 'onStateChanged'),
-          onUnconfirmedTransactionsChanged:
-              any(named: 'onUnconfirmedTransactionsChanged'),
+          onUnconfirmedTransactionsChanged: any(
+            named: 'onUnconfirmedTransactionsChanged',
+          ),
         ),
       ).called(1);
       verify(
@@ -1598,19 +1660,23 @@ void main() {
           onMessageExpired: any(named: 'onMessageExpired'),
           onMessageSent: any(named: 'onMessageSent'),
           onStateChanged: any(named: 'onStateChanged'),
-          onUnconfirmedTransactionsChanged:
-              any(named: 'onUnconfirmedTransactionsChanged'),
+          onUnconfirmedTransactionsChanged: any(
+            named: 'onUnconfirmedTransactionsChanged',
+          ),
         ),
       ).called(1);
     });
 
     test('updateTransportSubscriptions without side effects', () async {
-      when(() => wallet.onMessageExpiredStream)
-          .thenAnswer((_) => expiredStream);
-      when(() => wallet.onMessageSentStream)
-          .thenAnswer((_) => messageSentStream);
-      when(() => wallet.onTransactionsFoundStream)
-          .thenAnswer((_) => transactionsFoundStream);
+      when(
+        () => wallet.onMessageExpiredStream,
+      ).thenAnswer((_) => expiredStream);
+      when(
+        () => wallet.onMessageSentStream,
+      ).thenAnswer((_) => messageSentStream);
+      when(
+        () => wallet.onTransactionsFoundStream,
+      ).thenAnswer((_) => transactionsFoundStream);
       when(() => wallet.onStateChangedStream).thenAnswer((_) => stateStream);
 
       when(() => transport.transport).thenReturn(proto);
@@ -1636,8 +1702,9 @@ void main() {
           onMessageExpired: any(named: 'onMessageExpired'),
           onMessageSent: any(named: 'onMessageSent'),
           onStateChanged: any(named: 'onStateChanged'),
-          onUnconfirmedTransactionsChanged:
-              any(named: 'onUnconfirmedTransactionsChanged'),
+          onUnconfirmedTransactionsChanged: any(
+            named: 'onUnconfirmedTransactionsChanged',
+          ),
         ),
       ).thenAnswer((call) {
         if (call.namedArguments[const Symbol('walletType')] ==
@@ -1682,12 +1749,15 @@ void main() {
       ];
       final message = MockUnsignedMessage();
 
-      when(() => wallet.onMessageExpiredStream)
-          .thenAnswer((_) => expiredStream);
-      when(() => wallet.onMessageSentStream)
-          .thenAnswer((_) => messageSentStream);
-      when(() => wallet.onTransactionsFoundStream)
-          .thenAnswer((_) => transactionsFoundStream);
+      when(
+        () => wallet.onMessageExpiredStream,
+      ).thenAnswer((_) => expiredStream);
+      when(
+        () => wallet.onMessageSentStream,
+      ).thenAnswer((_) => messageSentStream);
+      when(
+        () => wallet.onTransactionsFoundStream,
+      ).thenAnswer((_) => transactionsFoundStream);
       when(() => wallet.onStateChangedStream).thenAnswer((_) => stateStream);
 
       when(() => transport.transport).thenReturn(proto);
@@ -1740,10 +1810,7 @@ void main() {
         address: wallet.address,
         message: message,
         ignoredComputePhaseCodes: const [
-          IgnoreTransactionTreeSimulationError(
-            code: 1000,
-            address: address,
-          ),
+          IgnoreTransactionTreeSimulationError(code: 1000, address: address),
         ],
       );
       expect(result3.length, 1);
@@ -1753,10 +1820,7 @@ void main() {
         address: wallet.address,
         message: message,
         ignoredActionPhaseCodes: const [
-          IgnoreTransactionTreeSimulationError(
-            code: 1000,
-            address: address,
-          ),
+          IgnoreTransactionTreeSimulationError(code: 1000, address: address),
         ],
       );
       expect(result4.length, 1);

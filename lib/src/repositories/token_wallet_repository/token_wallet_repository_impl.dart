@@ -83,10 +83,10 @@ mixin TokenWalletRepositoryImpl implements TokenWalletRepository {
     required Address owner,
     required Address rootTokenContract,
   }) async {
-    final mutex = _mutexes.putIfAbsent(
-      (owner, rootTokenContract),
-      ReadWriteMutex.new,
-    );
+    final mutex = _mutexes.putIfAbsent((
+      owner,
+      rootTokenContract,
+    ), ReadWriteMutex.new);
 
     await mutex.acquireWrite();
 
@@ -112,8 +112,9 @@ mixin TokenWalletRepositoryImpl implements TokenWalletRepository {
   ) async {
     final asset = lastUpdatedTokenAssets
         ?.map(
-          (e) => e.additionalAssets[lastUpdatedNetworkGroup]?.tokenWallets
-              .map((el) => (e.tonWallet.address, el.rootTokenContract)),
+          (e) => e.additionalAssets[lastUpdatedNetworkGroup]?.tokenWallets.map(
+            (el) => (e.tonWallet.address, el.rootTokenContract),
+          ),
         )
         .nonNulls
         .expand((e) => e)
@@ -157,7 +158,8 @@ mixin TokenWalletRepositoryImpl implements TokenWalletRepository {
     if (wallet == null) return;
 
     tokenPollingQueues[pair] = RefreshPollingQueue(
-      refreshInterval: refreshInterval ??
+      refreshInterval:
+          refreshInterval ??
           currentTransport.pollingConfig.tokenWalletRefreshInterval,
       refresher: wallet.inner,
     )..start();
@@ -222,8 +224,9 @@ mixin TokenWalletRepositoryImpl implements TokenWalletRepository {
     final networkGroup = currentTransport.transport.group;
     final tokenWallets = accounts
         .map(
-          (e) => e.additionalAssets[networkGroup]?.tokenWallets
-              .map((el) => (e.tonWallet.address, el.rootTokenContract)),
+          (e) => e.additionalAssets[networkGroup]?.tokenWallets.map(
+            (el) => (e.tonWallet.address, el.rootTokenContract),
+          ),
         )
         .nonNulls
         .expand((e) => e)
@@ -261,15 +264,17 @@ mixin TokenWalletRepositoryImpl implements TokenWalletRepository {
     toUnsubscribe.addAll(
       // pick all elements from old list, which is not contains in a new list
       tokenWallets.where(
-        (w) => !newWallets
-            .any((a) => a.$1 == w.owner && a.$2 == w.rootTokenContract),
+        (w) => !newWallets.any(
+          (a) => a.$1 == w.owner && a.$2 == w.rootTokenContract,
+        ),
       ),
     );
     toSubscribe.addAll(
       // pick all elements from new list, which is not contains in old list
       newWallets.where(
-        (a) => !tokenWallets
-            .any((w) => w.owner == a.$1 && w.rootTokenContract == a.$2),
+        (a) => !tokenWallets.any(
+          (w) => w.owner == a.$1 && w.rootTokenContract == a.$2,
+        ),
       ),
     );
 
@@ -304,10 +309,7 @@ mixin TokenWalletRepositoryImpl implements TokenWalletRepository {
     if (currentTransport.transport.disposed) return;
 
     try {
-      await subscribeToken(
-        owner: wallet.$1,
-        rootTokenContract: wallet.$2,
-      );
+      await subscribeToken(owner: wallet.$1, rootTokenContract: wallet.$2);
     } catch (e, t) {
       _logger.severe('_subscribeTokenAsset', e, t);
 
@@ -343,8 +345,9 @@ mixin TokenWalletRepositoryImpl implements TokenWalletRepository {
     final networkGroup = lastUpdatedNetworkGroup!;
     final newWallets = last
         .map(
-          (e) => e.additionalAssets[networkGroup]?.tokenWallets
-              .map((el) => (e.tonWallet.address, el.rootTokenContract)),
+          (e) => e.additionalAssets[networkGroup]?.tokenWallets.map(
+            (el) => (e.tonWallet.address, el.rootTokenContract),
+          ),
         )
         .nonNulls
         .expand((e) => e)
@@ -382,33 +385,33 @@ mixin TokenWalletRepositoryImpl implements TokenWalletRepository {
     try {
       attachedAmount ??= await switch (tokenWallet) {
         Tip3TokenWallet() => tokenWallet.inner.estimateMinAttachedAmount(
-            destination: destination,
-            amount: amount,
-            notifyReceiver: notifyReceiver,
-            payload: payload,
-          ),
+          destination: destination,
+          amount: amount,
+          notifyReceiver: notifyReceiver,
+          payload: payload,
+        ),
         JettonTokenWallet() => tokenWallet.inner.estimateMinAttachedAmount(
-            destination: destination,
-          ),
+          destination: destination,
+        ),
       };
     } catch (_) {}
 
     return switch (tokenWallet) {
       Tip3TokenWallet() => tokenWallet.inner.prepareTransfer(
-          destination: destination,
-          amount: amount,
-          payload: payload,
-          notifyReceiver: notifyReceiver,
-          attachedAmount: attachedAmount,
-        ),
+        destination: destination,
+        amount: amount,
+        payload: payload,
+        notifyReceiver: notifyReceiver,
+        attachedAmount: attachedAmount,
+      ),
       JettonTokenWallet() => tokenWallet.inner.prepareTransfer(
-          destination: destination,
-          amount: amount,
-          remainingGasTo: tokenWallet.owner,
-          callbackValue: BigInt.one,
-          callbackPayload: payload,
-          attachedAmount: attachedAmount,
-        ),
+        destination: destination,
+        amount: amount,
+        remainingGasTo: tokenWallet.owner,
+        callbackValue: BigInt.one,
+        callbackPayload: payload,
+        attachedAmount: attachedAmount,
+      ),
     };
   }
 
@@ -487,128 +490,124 @@ mixin TokenWalletRepositoryImpl implements TokenWalletRepository {
 
   TokenWalletSubscription _createWalletSubscription(
     GenericTokenWallet wallet,
-  ) =>
-      TokenWalletSubscription(
-        wallet: wallet,
-        onBalanceChanged: (event) =>
-            tokenWalletStorage.updateTokenWalletDetails(
-          owner: wallet.owner,
-          rootTokenContract: wallet.rootTokenContract,
-          group: wallet.transport.group,
-          networkId: wallet.transport.networkId,
-          symbol: wallet.symbol,
-          version: switch (wallet) {
-            Tip3TokenWallet() => wallet.inner.version,
-            _ => null,
-          },
-          balance: wallet.balance,
-          contractState: wallet.contractState,
-        ),
-        onTransactionsFound: (event) => tokenWalletStorage.addFoundTransactions(
-          owner: wallet.owner,
-          rootTokenContract: wallet.rootTokenContract,
-          group: wallet.transport.group,
-          networkId: wallet.transport.networkId,
-          transaction: event.$1,
-        ),
-      );
+  ) => TokenWalletSubscription(
+    wallet: wallet,
+    onBalanceChanged: (event) => tokenWalletStorage.updateTokenWalletDetails(
+      owner: wallet.owner,
+      rootTokenContract: wallet.rootTokenContract,
+      group: wallet.transport.group,
+      networkId: wallet.transport.networkId,
+      symbol: wallet.symbol,
+      version: switch (wallet) {
+        Tip3TokenWallet() => wallet.inner.version,
+        _ => null,
+      },
+      balance: wallet.balance,
+      contractState: wallet.contractState,
+    ),
+    onTransactionsFound: (event) => tokenWalletStorage.addFoundTransactions(
+      owner: wallet.owner,
+      rootTokenContract: wallet.rootTokenContract,
+      group: wallet.transport.group,
+      networkId: wallet.transport.networkId,
+      transaction: event.$1,
+    ),
+  );
 
   @override
-// ignore: long-method
+  // ignore: long-method
   List<TokenWalletOrdinaryTransaction> mapOrdinaryTokenTransactions({
     required Address rootTokenContract,
     required List<TransactionWithData<TokenWalletTransaction?>> transactions,
   }) {
-    return transactions.where((e) => e.data != null).map(
-      (e) {
-        final data = e.data!;
-        final lt = e.transaction.id.lt;
-        final prevTransactionLt = e.transaction.prevTransactionId?.lt;
+    return transactions.where((e) => e.data != null).map((e) {
+      final data = e.data!;
+      final lt = e.transaction.id.lt;
+      final prevTransactionLt = e.transaction.prevTransactionId?.lt;
 
-        final sender = switch (data) {
-          TokenWalletTransactionIncomingTransfer(:final data) =>
-            data.senderAddress,
-          _ => e.transaction.inMessage.src,
-        };
+      final sender = switch (data) {
+        TokenWalletTransactionIncomingTransfer(:final data) =>
+          data.senderAddress,
+        _ => e.transaction.inMessage.src,
+      };
 
-        final recipient = switch (data) {
-          TokenWalletTransactionOutgoingTransfer(:final data) => data.to.data,
-          _ => e.transaction.outMessages.firstOrNull?.dst,
-        };
+      final recipient = switch (data) {
+        TokenWalletTransactionOutgoingTransfer(:final data) => data.to.data,
+        _ => e.transaction.outMessages.firstOrNull?.dst,
+      };
 
-        final value = switch (data) {
-          TokenWalletTransactionIncomingTransfer(:final data) => data.tokens,
-          TokenWalletTransactionOutgoingTransfer(:final data) => data.tokens,
-          TokenWalletTransactionSwapBack(:final data) => data.tokens,
-          TokenWalletTransactionAccept(:final data) => data,
-          TokenWalletTransactionTransferBounced(:final data) => data,
-          TokenWalletTransactionSwapBackBounced(:final data) => data,
-          TokenWalletTransactionTransfer(:final data) => data.tokens,
-          TokenWalletTransactionInternalTransfer(:final data) => data.tokens,
-        };
+      final value = switch (data) {
+        TokenWalletTransactionIncomingTransfer(:final data) => data.tokens,
+        TokenWalletTransactionOutgoingTransfer(:final data) => data.tokens,
+        TokenWalletTransactionSwapBack(:final data) => data.tokens,
+        TokenWalletTransactionAccept(:final data) => data,
+        TokenWalletTransactionTransferBounced(:final data) => data,
+        TokenWalletTransactionSwapBackBounced(:final data) => data,
+        TokenWalletTransactionTransfer(:final data) => data.tokens,
+        TokenWalletTransactionInternalTransfer(:final data) => data.tokens,
+      };
 
-        final isOutgoing = switch (data) {
-          TokenWalletTransactionIncomingTransfer() => false,
-          TokenWalletTransactionOutgoingTransfer() => true,
-          TokenWalletTransactionSwapBack() => true,
-          TokenWalletTransactionAccept() => false,
-          TokenWalletTransactionTransferBounced() => false,
-          TokenWalletTransactionSwapBackBounced() => false,
-          TokenWalletTransactionTransfer() => true,
-          TokenWalletTransactionInternalTransfer() => false,
-        };
+      final isOutgoing = switch (data) {
+        TokenWalletTransactionIncomingTransfer() => false,
+        TokenWalletTransactionOutgoingTransfer() => true,
+        TokenWalletTransactionSwapBack() => true,
+        TokenWalletTransactionAccept() => false,
+        TokenWalletTransactionTransferBounced() => false,
+        TokenWalletTransactionSwapBackBounced() => false,
+        TokenWalletTransactionTransfer() => true,
+        TokenWalletTransactionInternalTransfer() => false,
+      };
 
-        final address = (isOutgoing ? recipient : sender) ?? rootTokenContract;
-        final date = e.transaction.createdAt;
-        final fees = e.transaction.totalFees;
-        final hash = e.transaction.id.hash;
+      final address = (isOutgoing ? recipient : sender) ?? rootTokenContract;
+      final date = e.transaction.createdAt;
+      final fees = e.transaction.totalFees;
+      final hash = e.transaction.id.hash;
 
-        TokenIncomingTransfer? incomingTransfer;
-        TokenOutgoingTransfer? outgoingTransfer;
-        TokenSwapBack? swapBack;
-        BigInt? accept;
-        BigInt? transferBounced;
-        BigInt? swapBackBounced;
-        JettonIncomingTransfer? jettonIncomingTransfer;
-        JettonOutgoingTransfer? jettonOutgoingTransfer;
+      TokenIncomingTransfer? incomingTransfer;
+      TokenOutgoingTransfer? outgoingTransfer;
+      TokenSwapBack? swapBack;
+      BigInt? accept;
+      BigInt? transferBounced;
+      BigInt? swapBackBounced;
+      JettonIncomingTransfer? jettonIncomingTransfer;
+      JettonOutgoingTransfer? jettonOutgoingTransfer;
 
-        if (data is TokenWalletTransactionIncomingTransfer) {
-          incomingTransfer = data.data;
-        } else if (data is TokenWalletTransactionOutgoingTransfer) {
-          outgoingTransfer = data.data;
-        } else if (data is TokenWalletTransactionSwapBack) {
-          swapBack = data.data;
-        } else if (data is TokenWalletTransactionAccept) {
-          accept = data.data;
-        } else if (data is TokenWalletTransactionTransferBounced) {
-          transferBounced = data.data;
-        } else if (data is TokenWalletTransactionSwapBackBounced) {
-          swapBackBounced = data.data;
-        } else if (data is TokenWalletTransactionTransfer) {
-          jettonOutgoingTransfer = data.data;
-        } else if (data is TokenWalletTransactionInternalTransfer) {
-          jettonIncomingTransfer = data.data;
-        }
+      if (data is TokenWalletTransactionIncomingTransfer) {
+        incomingTransfer = data.data;
+      } else if (data is TokenWalletTransactionOutgoingTransfer) {
+        outgoingTransfer = data.data;
+      } else if (data is TokenWalletTransactionSwapBack) {
+        swapBack = data.data;
+      } else if (data is TokenWalletTransactionAccept) {
+        accept = data.data;
+      } else if (data is TokenWalletTransactionTransferBounced) {
+        transferBounced = data.data;
+      } else if (data is TokenWalletTransactionSwapBackBounced) {
+        swapBackBounced = data.data;
+      } else if (data is TokenWalletTransactionTransfer) {
+        jettonOutgoingTransfer = data.data;
+      } else if (data is TokenWalletTransactionInternalTransfer) {
+        jettonIncomingTransfer = data.data;
+      }
 
-        return TokenWalletOrdinaryTransaction(
-          lt: lt,
-          prevTransactionLt: prevTransactionLt,
-          isOutgoing: isOutgoing,
-          value: value,
-          address: address,
-          date: date,
-          fees: fees,
-          hash: hash,
-          incomingTransfer: incomingTransfer,
-          outgoingTransfer: outgoingTransfer,
-          swapBack: swapBack,
-          accept: accept,
-          transferBounced: transferBounced,
-          swapBackBounced: swapBackBounced,
-          jettonIncomingTransfer: jettonIncomingTransfer,
-          jettonOutgoingTransfer: jettonOutgoingTransfer,
-        );
-      },
-    ).toList();
+      return TokenWalletOrdinaryTransaction(
+        lt: lt,
+        prevTransactionLt: prevTransactionLt,
+        isOutgoing: isOutgoing,
+        value: value,
+        address: address,
+        date: date,
+        fees: fees,
+        hash: hash,
+        incomingTransfer: incomingTransfer,
+        outgoingTransfer: outgoingTransfer,
+        swapBack: swapBack,
+        accept: accept,
+        transferBounced: transferBounced,
+        swapBackBounced: swapBackBounced,
+        jettonIncomingTransfer: jettonIncomingTransfer,
+        jettonOutgoingTransfer: jettonOutgoingTransfer,
+      );
+    }).toList();
   }
 }

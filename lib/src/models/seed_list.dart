@@ -80,13 +80,12 @@ class SeedList extends Equatable {
     required String password,
     MnemonicType? mnemonicType,
     String? name,
-  }) =>
-      GetIt.instance<SeedKeyRepository>().addSeed(
-        phrase: phrase,
-        password: password,
-        mnemonicType: mnemonicType,
-        name: name,
-      );
+  }) => GetIt.instance<SeedKeyRepository>().addSeed(
+    phrase: phrase,
+    password: password,
+    mnemonicType: mnemonicType,
+    name: name,
+  );
 
   /// Encrypt data for external usages.
   /// [publicKey] is key that must be used for signing.
@@ -253,22 +252,23 @@ class SeedList extends Equatable {
           addedAt: meta?.addedAt ?? 0,
           masterKey: SeedKey(
             key: keys.first,
-            accountList: mappedAccounts[keys.first.publicKey] ??
+            accountList:
+                mappedAccounts[keys.first.publicKey] ??
                 AccountList.empty(keys.first.publicKey),
           ),
-          subKeys: keys
-              .sublist(1)
-              .map(
-                (key) => SeedKey(
-                  key: key,
-                  accountList: mappedAccounts[key.publicKey] ??
-                      AccountList.empty(key.publicKey),
-                ),
-              )
-              .toList()
-            ..sort(
-              (a, b) => a.key.accountId.compareTo(b.key.accountId),
-            ),
+          subKeys:
+              keys
+                  .sublist(1)
+                  .map(
+                    (key) => SeedKey(
+                      key: key,
+                      accountList:
+                          mappedAccounts[key.publicKey] ??
+                          AccountList.empty(key.publicKey),
+                    ),
+                  )
+                  .toList()
+                ..sort((a, b) => a.key.accountId.compareTo(b.key.accountId)),
         ),
       );
     });

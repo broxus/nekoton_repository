@@ -6,10 +6,7 @@ import 'package:nekoton_repository/nekoton_repository.dart';
 /// with key.
 @immutable
 class SeedKey extends SeedKeyBase {
-  const SeedKey({
-    required super.key,
-    required this.accountList,
-  });
+  const SeedKey({required super.key, required this.accountList});
 
   /// List of accounts that specified for this [key]
   final AccountList accountList;
@@ -33,8 +30,9 @@ class SeedKey extends SeedKeyBase {
   /// If you need remove seed, use [Seed.remove].
   /// Returns true, if key was removed.
   Future<bool> remove() async {
-    final removed =
-        await GetIt.instance<SeedKeyRepository>().removeKeys([this]);
+    final removed = await GetIt.instance<SeedKeyRepository>().removeKeys([
+      this,
+    ]);
 
     return removed.isNotEmpty;
   }
@@ -85,9 +83,9 @@ class SeedKey extends SeedKeyBase {
           context: signInputAuth.context,
         ),
       _ => throw ArgumentError(
-          'Cannot create sign input for key with type $signerType. '
-          'SignInputAuth type mismatch.',
-        ),
+        'Cannot create sign input for key with type $signerType. '
+        'SignInputAuth type mismatch.',
+      ),
     };
   }
 

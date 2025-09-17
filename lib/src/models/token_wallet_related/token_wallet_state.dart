@@ -13,15 +13,15 @@ class TokenWalletState extends Equatable {
     required Object err,
     required this.owner,
     required this.rootTokenContract,
-  })  : wallet = null,
-        error = err;
+  }) : wallet = null,
+       error = err;
 
   /// Create state with wallet
   TokenWalletState.wallet(GenericTokenWallet w)
-      : error = null,
-        owner = w.owner,
-        rootTokenContract = w.rootTokenContract,
-        wallet = w;
+    : error = null,
+      owner = w.owner,
+      rootTokenContract = w.rootTokenContract,
+      wallet = w;
 
   /// Allows to track for which wallet this state was created.
   /// This can be useful when [wallet] is null and we cannot detect it.
@@ -58,7 +58,8 @@ class TokenWalletStateNotInitializedException implements Exception {
   final Object? subscriptionError;
 
   @override
-  String toString() => '''
+  String toString() =>
+      '''
 `TokenWalletState.wallet` was not initialized. Owner: $owner.
 Root Token Contract: $rootTokenContract.
 ${subscriptionError != null ? 'Subscription error: $subscriptionError.' : ''}

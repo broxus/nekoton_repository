@@ -286,15 +286,12 @@ void main() {
 
       final changes = NekotonRepository().findChanges(oldList, newList);
 
-      expect(
-        changes.addedSeeds,
-        [
-          SeedBase(
-            name: masterKey.publicKey.toEllipseString(),
-            masterPublicKey: masterKey.publicKey,
-          ),
-        ],
-      );
+      expect(changes.addedSeeds, [
+        SeedBase(
+          name: masterKey.publicKey.toEllipseString(),
+          masterPublicKey: masterKey.publicKey,
+        ),
+      ]);
       expect(changes.deletedSeeds.isEmpty, isTrue);
 
       expect(
@@ -309,34 +306,32 @@ void main() {
 
       expect(
         changes.addedAccounts,
-        unorderedEquals(
-          [
-            KeyAccountBase(
-              account: account1Pure.account,
-              publicKey: account1Pure.publicKey,
-              isExternal: account1Pure.isExternal,
-              isHidden: account1Pure.isHidden,
-            ),
-            KeyAccountBase(
-              account: account1ExternalHidden.account,
-              publicKey: account1ExternalHidden.publicKey,
-              isExternal: account1ExternalHidden.isExternal,
-              isHidden: account1ExternalHidden.isHidden,
-            ),
-            KeyAccountBase(
-              account: accountSub1Pure.account,
-              publicKey: accountSub1Pure.publicKey,
-              isExternal: accountSub1Pure.isExternal,
-              isHidden: accountSub1Pure.isHidden,
-            ),
-            KeyAccountBase(
-              account: accountSub2Hidden.account,
-              publicKey: accountSub2Hidden.publicKey,
-              isExternal: accountSub2Hidden.isExternal,
-              isHidden: accountSub2Hidden.isHidden,
-            ),
-          ],
-        ),
+        unorderedEquals([
+          KeyAccountBase(
+            account: account1Pure.account,
+            publicKey: account1Pure.publicKey,
+            isExternal: account1Pure.isExternal,
+            isHidden: account1Pure.isHidden,
+          ),
+          KeyAccountBase(
+            account: account1ExternalHidden.account,
+            publicKey: account1ExternalHidden.publicKey,
+            isExternal: account1ExternalHidden.isExternal,
+            isHidden: account1ExternalHidden.isHidden,
+          ),
+          KeyAccountBase(
+            account: accountSub1Pure.account,
+            publicKey: accountSub1Pure.publicKey,
+            isExternal: accountSub1Pure.isExternal,
+            isHidden: accountSub1Pure.isHidden,
+          ),
+          KeyAccountBase(
+            account: accountSub2Hidden.account,
+            publicKey: accountSub2Hidden.publicKey,
+            isExternal: accountSub2Hidden.isExternal,
+            isHidden: accountSub2Hidden.isHidden,
+          ),
+        ]),
       );
       expect(changes.deletedAccounts.isEmpty, isTrue);
     });
@@ -360,15 +355,12 @@ void main() {
 
       final changes = NekotonRepository().findChanges(oldList, newList);
 
-      expect(
-        changes.deletedSeeds,
-        [
-          SeedBase(
-            name: masterKey.publicKey.toEllipseString(),
-            masterPublicKey: masterKey.publicKey,
-          ),
-        ],
-      );
+      expect(changes.deletedSeeds, [
+        SeedBase(
+          name: masterKey.publicKey.toEllipseString(),
+          masterPublicKey: masterKey.publicKey,
+        ),
+      ]);
       expect(changes.addedSeeds.isEmpty, isTrue);
 
       expect(
@@ -383,34 +375,32 @@ void main() {
 
       expect(
         changes.deletedAccounts,
-        unorderedEquals(
-          [
-            KeyAccountBase(
-              account: account1Pure.account,
-              publicKey: account1Pure.publicKey,
-              isExternal: account1Pure.isExternal,
-              isHidden: account1Pure.isHidden,
-            ),
-            KeyAccountBase(
-              account: account1ExternalHidden.account,
-              publicKey: account1ExternalHidden.publicKey,
-              isExternal: account1ExternalHidden.isExternal,
-              isHidden: account1ExternalHidden.isHidden,
-            ),
-            KeyAccountBase(
-              account: accountSub1Pure.account,
-              publicKey: accountSub1Pure.publicKey,
-              isExternal: accountSub1Pure.isExternal,
-              isHidden: accountSub1Pure.isHidden,
-            ),
-            KeyAccountBase(
-              account: accountSub2Hidden.account,
-              publicKey: accountSub2Hidden.publicKey,
-              isExternal: accountSub2Hidden.isExternal,
-              isHidden: accountSub2Hidden.isHidden,
-            ),
-          ],
-        ),
+        unorderedEquals([
+          KeyAccountBase(
+            account: account1Pure.account,
+            publicKey: account1Pure.publicKey,
+            isExternal: account1Pure.isExternal,
+            isHidden: account1Pure.isHidden,
+          ),
+          KeyAccountBase(
+            account: account1ExternalHidden.account,
+            publicKey: account1ExternalHidden.publicKey,
+            isExternal: account1ExternalHidden.isExternal,
+            isHidden: account1ExternalHidden.isHidden,
+          ),
+          KeyAccountBase(
+            account: accountSub1Pure.account,
+            publicKey: accountSub1Pure.publicKey,
+            isExternal: accountSub1Pure.isExternal,
+            isHidden: accountSub1Pure.isHidden,
+          ),
+          KeyAccountBase(
+            account: accountSub2Hidden.account,
+            publicKey: accountSub2Hidden.publicKey,
+            isExternal: accountSub2Hidden.isExternal,
+            isHidden: accountSub2Hidden.isHidden,
+          ),
+        ]),
       );
       expect(changes.addedAccounts.isEmpty, isTrue);
     });
@@ -444,17 +434,14 @@ void main() {
       expect(changes.addedKeys, [SeedKeyBase(key: subKey2)]);
       expect(changes.deletedKeys.isEmpty, isTrue);
 
-      expect(
-        changes.addedAccounts,
-        [
-          KeyAccountBase(
-            account: accountSub2Hidden.account,
-            publicKey: accountSub2Hidden.publicKey,
-            isExternal: accountSub2Hidden.isExternal,
-            isHidden: accountSub2Hidden.isHidden,
-          ),
-        ],
-      );
+      expect(changes.addedAccounts, [
+        KeyAccountBase(
+          account: accountSub2Hidden.account,
+          publicKey: accountSub2Hidden.publicKey,
+          isExternal: accountSub2Hidden.isExternal,
+          isHidden: accountSub2Hidden.isHidden,
+        ),
+      ]);
       expect(changes.deletedAccounts.isEmpty, isTrue);
     });
 
@@ -487,17 +474,14 @@ void main() {
       expect(changes.deletedKeys, [SeedKeyBase(key: subKey2)]);
       expect(changes.addedKeys.isEmpty, isTrue);
 
-      expect(
-        changes.deletedAccounts,
-        [
-          KeyAccountBase(
-            account: accountSub2Hidden.account,
-            publicKey: accountSub2Hidden.publicKey,
-            isExternal: accountSub2Hidden.isExternal,
-            isHidden: accountSub2Hidden.isHidden,
-          ),
-        ],
-      );
+      expect(changes.deletedAccounts, [
+        KeyAccountBase(
+          account: accountSub2Hidden.account,
+          publicKey: accountSub2Hidden.publicKey,
+          isExternal: accountSub2Hidden.isExternal,
+          isHidden: accountSub2Hidden.isHidden,
+        ),
+      ]);
       expect(changes.addedAccounts.isEmpty, isTrue);
     });
 
@@ -532,22 +516,20 @@ void main() {
 
       expect(
         changes.addedAccounts,
-        unorderedEquals(
-          [
-            KeyAccountBase(
-              account: account1Pure.account,
-              publicKey: account1Pure.publicKey,
-              isExternal: account1Pure.isExternal,
-              isHidden: account1Pure.isHidden,
-            ),
-            KeyAccountBase(
-              account: account1ExternalHidden.account,
-              publicKey: account1ExternalHidden.publicKey,
-              isExternal: account1ExternalHidden.isExternal,
-              isHidden: account1ExternalHidden.isHidden,
-            ),
-          ],
-        ),
+        unorderedEquals([
+          KeyAccountBase(
+            account: account1Pure.account,
+            publicKey: account1Pure.publicKey,
+            isExternal: account1Pure.isExternal,
+            isHidden: account1Pure.isHidden,
+          ),
+          KeyAccountBase(
+            account: account1ExternalHidden.account,
+            publicKey: account1ExternalHidden.publicKey,
+            isExternal: account1ExternalHidden.isExternal,
+            isHidden: account1ExternalHidden.isHidden,
+          ),
+        ]),
       );
       expect(changes.deletedAccounts.isEmpty, isTrue);
     });
@@ -583,22 +565,20 @@ void main() {
 
       expect(
         changes.deletedAccounts,
-        unorderedEquals(
-          [
-            KeyAccountBase(
-              account: account1Pure.account,
-              publicKey: account1Pure.publicKey,
-              isExternal: account1Pure.isExternal,
-              isHidden: account1Pure.isHidden,
-            ),
-            KeyAccountBase(
-              account: account1ExternalHidden.account,
-              publicKey: account1ExternalHidden.publicKey,
-              isExternal: account1ExternalHidden.isExternal,
-              isHidden: account1ExternalHidden.isHidden,
-            ),
-          ],
-        ),
+        unorderedEquals([
+          KeyAccountBase(
+            account: account1Pure.account,
+            publicKey: account1Pure.publicKey,
+            isExternal: account1Pure.isExternal,
+            isHidden: account1Pure.isHidden,
+          ),
+          KeyAccountBase(
+            account: account1ExternalHidden.account,
+            publicKey: account1ExternalHidden.publicKey,
+            isExternal: account1ExternalHidden.isExternal,
+            isHidden: account1ExternalHidden.isHidden,
+          ),
+        ]),
       );
       expect(changes.addedAccounts.isEmpty, isTrue);
     });
@@ -621,24 +601,18 @@ void main() {
 
       final changes = NekotonRepository().findChanges(oldList, newList);
 
-      expect(
-        changes.addedSeeds,
-        [
-          SeedBase(
-            name: masterKey.publicKey.toEllipseString(),
-            masterPublicKey: masterKey.publicKey,
-          ),
-        ],
-      );
-      expect(
-        changes.deletedSeeds,
-        [
-          SeedBase(
-            name: masterKey2.publicKey.toEllipseString(),
-            masterPublicKey: masterKey2.publicKey,
-          ),
-        ],
-      );
+      expect(changes.addedSeeds, [
+        SeedBase(
+          name: masterKey.publicKey.toEllipseString(),
+          masterPublicKey: masterKey.publicKey,
+        ),
+      ]);
+      expect(changes.deletedSeeds, [
+        SeedBase(
+          name: masterKey2.publicKey.toEllipseString(),
+          masterPublicKey: masterKey2.publicKey,
+        ),
+      ]);
       expect(
         changes.addedKeys,
         unorderedEquals([
@@ -651,46 +625,41 @@ void main() {
 
       expect(
         changes.addedAccounts,
-        unorderedEquals(
-          [
-            KeyAccountBase(
-              account: account1Pure.account,
-              publicKey: account1Pure.publicKey,
-              isExternal: account1Pure.isExternal,
-              isHidden: account1Pure.isHidden,
-            ),
-            KeyAccountBase(
-              account: account1ExternalHidden.account,
-              publicKey: account1ExternalHidden.publicKey,
-              isExternal: account1ExternalHidden.isExternal,
-              isHidden: account1ExternalHidden.isHidden,
-            ),
-            KeyAccountBase(
-              account: accountSub1Pure.account,
-              publicKey: accountSub1Pure.publicKey,
-              isExternal: accountSub1Pure.isExternal,
-              isHidden: accountSub1Pure.isHidden,
-            ),
-            KeyAccountBase(
-              account: accountSub2Hidden.account,
-              publicKey: accountSub2Hidden.publicKey,
-              isExternal: accountSub2Hidden.isExternal,
-              isHidden: accountSub2Hidden.isHidden,
-            ),
-          ],
-        ),
-      );
-      expect(
-        changes.deletedAccounts,
-        [
+        unorderedEquals([
           KeyAccountBase(
-            account: account2External.account,
-            publicKey: account2External.publicKey,
-            isExternal: account2External.isExternal,
-            isHidden: account2External.isHidden,
+            account: account1Pure.account,
+            publicKey: account1Pure.publicKey,
+            isExternal: account1Pure.isExternal,
+            isHidden: account1Pure.isHidden,
           ),
-        ],
+          KeyAccountBase(
+            account: account1ExternalHidden.account,
+            publicKey: account1ExternalHidden.publicKey,
+            isExternal: account1ExternalHidden.isExternal,
+            isHidden: account1ExternalHidden.isHidden,
+          ),
+          KeyAccountBase(
+            account: accountSub1Pure.account,
+            publicKey: accountSub1Pure.publicKey,
+            isExternal: accountSub1Pure.isExternal,
+            isHidden: accountSub1Pure.isHidden,
+          ),
+          KeyAccountBase(
+            account: accountSub2Hidden.account,
+            publicKey: accountSub2Hidden.publicKey,
+            isExternal: accountSub2Hidden.isExternal,
+            isHidden: accountSub2Hidden.isHidden,
+          ),
+        ]),
       );
+      expect(changes.deletedAccounts, [
+        KeyAccountBase(
+          account: account2External.account,
+          publicKey: account2External.publicKey,
+          isExternal: account2External.isExternal,
+          isHidden: account2External.isHidden,
+        ),
+      ]);
     });
   });
 }

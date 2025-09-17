@@ -16,8 +16,7 @@ sealed class IgnoreTransactionTreeSimulationError
 
   factory IgnoreTransactionTreeSimulationError.fromJson(
     Map<String, dynamic> json,
-  ) =>
-      _$IgnoreTransactionTreeSimulationErrorFromJson(json);
+  ) => _$IgnoreTransactionTreeSimulationErrorFromJson(json);
 
   bool shouldIgnore(TxTreeSimulationErrorItem item) =>
       code == item.error.code && (address == null || address == item.address);

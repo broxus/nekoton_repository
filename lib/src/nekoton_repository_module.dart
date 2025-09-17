@@ -27,8 +27,7 @@ abstract class NekotonRepositoryModule {
   @singleton
   GenericContractRepository registerGenericContract(
     NekotonRepository repository,
-  ) =>
-      repository;
+  ) => repository;
 
   @singleton
   NftRepository registerNft(NekotonRepository repository) => repository;

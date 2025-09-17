@@ -14,71 +14,47 @@ T _$identity<T>(T value) => value;
 
 /// @nodoc
 mixin _$NftTokenTransferInput {
-  @amountJsonConverter
-  BigInt get count;
-  @amountJsonConverter
-  BigInt get deployTokenWalletValue;
-  Address get recipient;
-  Address get remainingGasTo;
-  String get payload;
-  bool get notify;
 
-  /// Create a copy of NftTokenTransferInput
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  @pragma('vm:prefer-inline')
-  $NftTokenTransferInputCopyWith<NftTokenTransferInput> get copyWith =>
-      _$NftTokenTransferInputCopyWithImpl<NftTokenTransferInput>(
-          this as NftTokenTransferInput, _$identity);
+@amountJsonConverter BigInt get count;@amountJsonConverter BigInt get deployTokenWalletValue; Address get recipient; Address get remainingGasTo; String get payload; bool get notify;
+/// Create a copy of NftTokenTransferInput
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$NftTokenTransferInputCopyWith<NftTokenTransferInput> get copyWith => _$NftTokenTransferInputCopyWithImpl<NftTokenTransferInput>(this as NftTokenTransferInput, _$identity);
 
   /// Serializes this NftTokenTransferInput to a JSON map.
   Map<String, dynamic> toJson();
 
-  @override
-  bool operator ==(Object other) {
-    return identical(this, other) ||
-        (other.runtimeType == runtimeType &&
-            other is NftTokenTransferInput &&
-            (identical(other.count, count) || other.count == count) &&
-            (identical(other.deployTokenWalletValue, deployTokenWalletValue) ||
-                other.deployTokenWalletValue == deployTokenWalletValue) &&
-            (identical(other.recipient, recipient) ||
-                other.recipient == recipient) &&
-            (identical(other.remainingGasTo, remainingGasTo) ||
-                other.remainingGasTo == remainingGasTo) &&
-            (identical(other.payload, payload) || other.payload == payload) &&
-            (identical(other.notify, notify) || other.notify == notify));
-  }
 
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  @override
-  int get hashCode => Object.hash(runtimeType, count, deployTokenWalletValue,
-      recipient, remainingGasTo, payload, notify);
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is NftTokenTransferInput&&(identical(other.count, count) || other.count == count)&&(identical(other.deployTokenWalletValue, deployTokenWalletValue) || other.deployTokenWalletValue == deployTokenWalletValue)&&(identical(other.recipient, recipient) || other.recipient == recipient)&&(identical(other.remainingGasTo, remainingGasTo) || other.remainingGasTo == remainingGasTo)&&(identical(other.payload, payload) || other.payload == payload)&&(identical(other.notify, notify) || other.notify == notify));
+}
 
-  @override
-  String toString() {
-    return 'NftTokenTransferInput(count: $count, deployTokenWalletValue: $deployTokenWalletValue, recipient: $recipient, remainingGasTo: $remainingGasTo, payload: $payload, notify: $notify)';
-  }
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,count,deployTokenWalletValue,recipient,remainingGasTo,payload,notify);
+
+@override
+String toString() {
+  return 'NftTokenTransferInput(count: $count, deployTokenWalletValue: $deployTokenWalletValue, recipient: $recipient, remainingGasTo: $remainingGasTo, payload: $payload, notify: $notify)';
+}
+
+
 }
 
 /// @nodoc
-abstract mixin class $NftTokenTransferInputCopyWith<$Res> {
-  factory $NftTokenTransferInputCopyWith(NftTokenTransferInput value,
-          $Res Function(NftTokenTransferInput) _then) =
-      _$NftTokenTransferInputCopyWithImpl;
-  @useResult
-  $Res call(
-      {@amountJsonConverter BigInt count,
-      @amountJsonConverter BigInt deployTokenWalletValue,
-      Address recipient,
-      Address remainingGasTo,
-      String payload,
-      bool notify});
+abstract mixin class $NftTokenTransferInputCopyWith<$Res>  {
+  factory $NftTokenTransferInputCopyWith(NftTokenTransferInput value, $Res Function(NftTokenTransferInput) _then) = _$NftTokenTransferInputCopyWithImpl;
+@useResult
+$Res call({
+@amountJsonConverter BigInt count,@amountJsonConverter BigInt deployTokenWalletValue, Address recipient, Address remainingGasTo, String payload, bool notify
+});
 
-  $AddressCopyWith<$Res> get recipient;
-  $AddressCopyWith<$Res> get remainingGasTo;
+
+$AddressCopyWith<$Res> get recipient;$AddressCopyWith<$Res> get remainingGasTo;
+
 }
-
 /// @nodoc
 class _$NftTokenTransferInputCopyWithImpl<$Res>
     implements $NftTokenTransferInputCopyWith<$Res> {
@@ -87,341 +63,225 @@ class _$NftTokenTransferInputCopyWithImpl<$Res>
   final NftTokenTransferInput _self;
   final $Res Function(NftTokenTransferInput) _then;
 
-  /// Create a copy of NftTokenTransferInput
-  /// with the given fields replaced by the non-null parameter values.
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? count = null,
-    Object? deployTokenWalletValue = null,
-    Object? recipient = null,
-    Object? remainingGasTo = null,
-    Object? payload = null,
-    Object? notify = null,
-  }) {
-    return _then(_self.copyWith(
-      count: null == count
-          ? _self.count
-          : count // ignore: cast_nullable_to_non_nullable
-              as BigInt,
-      deployTokenWalletValue: null == deployTokenWalletValue
-          ? _self.deployTokenWalletValue
-          : deployTokenWalletValue // ignore: cast_nullable_to_non_nullable
-              as BigInt,
-      recipient: null == recipient
-          ? _self.recipient
-          : recipient // ignore: cast_nullable_to_non_nullable
-              as Address,
-      remainingGasTo: null == remainingGasTo
-          ? _self.remainingGasTo
-          : remainingGasTo // ignore: cast_nullable_to_non_nullable
-              as Address,
-      payload: null == payload
-          ? _self.payload
-          : payload // ignore: cast_nullable_to_non_nullable
-              as String,
-      notify: null == notify
-          ? _self.notify
-          : notify // ignore: cast_nullable_to_non_nullable
-              as bool,
-    ));
-  }
-
-  /// Create a copy of NftTokenTransferInput
-  /// with the given fields replaced by the non-null parameter values.
-  @override
-  @pragma('vm:prefer-inline')
-  $AddressCopyWith<$Res> get recipient {
-    return $AddressCopyWith<$Res>(_self.recipient, (value) {
-      return _then(_self.copyWith(recipient: value));
-    });
-  }
-
-  /// Create a copy of NftTokenTransferInput
-  /// with the given fields replaced by the non-null parameter values.
-  @override
-  @pragma('vm:prefer-inline')
-  $AddressCopyWith<$Res> get remainingGasTo {
-    return $AddressCopyWith<$Res>(_self.remainingGasTo, (value) {
-      return _then(_self.copyWith(remainingGasTo: value));
-    });
-  }
+/// Create a copy of NftTokenTransferInput
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') @override $Res call({Object? count = null,Object? deployTokenWalletValue = null,Object? recipient = null,Object? remainingGasTo = null,Object? payload = null,Object? notify = null,}) {
+  return _then(_self.copyWith(
+count: null == count ? _self.count : count // ignore: cast_nullable_to_non_nullable
+as BigInt,deployTokenWalletValue: null == deployTokenWalletValue ? _self.deployTokenWalletValue : deployTokenWalletValue // ignore: cast_nullable_to_non_nullable
+as BigInt,recipient: null == recipient ? _self.recipient : recipient // ignore: cast_nullable_to_non_nullable
+as Address,remainingGasTo: null == remainingGasTo ? _self.remainingGasTo : remainingGasTo // ignore: cast_nullable_to_non_nullable
+as Address,payload: null == payload ? _self.payload : payload // ignore: cast_nullable_to_non_nullable
+as String,notify: null == notify ? _self.notify : notify // ignore: cast_nullable_to_non_nullable
+as bool,
+  ));
 }
+/// Create a copy of NftTokenTransferInput
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$AddressCopyWith<$Res> get recipient {
+  
+  return $AddressCopyWith<$Res>(_self.recipient, (value) {
+    return _then(_self.copyWith(recipient: value));
+  });
+}/// Create a copy of NftTokenTransferInput
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$AddressCopyWith<$Res> get remainingGasTo {
+  
+  return $AddressCopyWith<$Res>(_self.remainingGasTo, (value) {
+    return _then(_self.copyWith(remainingGasTo: value));
+  });
+}
+}
+
 
 /// Adds pattern-matching-related methods to [NftTokenTransferInput].
 extension NftTokenTransferInputPatterns on NftTokenTransferInput {
-  /// A variant of `map` that fallback to returning `orElse`.
-  ///
-  /// It is equivalent to doing:
-  /// ```dart
-  /// switch (sealedClass) {
-  ///   case final Subclass value:
-  ///     return ...;
-  ///   case _:
-  ///     return orElse();
-  /// }
-  /// ```
+/// A variant of `map` that fallback to returning `orElse`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
 
-  @optionalTypeArgs
-  TResult maybeMap<TResult extends Object?>(
-    TResult Function(_NftTokenTransferInput value)? $default, {
-    required TResult orElse(),
-  }) {
-    final _that = this;
-    switch (_that) {
-      case _NftTokenTransferInput() when $default != null:
-        return $default(_that);
-      case _:
-        return orElse();
-    }
-  }
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>(TResult Function( _NftTokenTransferInput value)?  $default,{required TResult orElse(),}){
+final _that = this;
+switch (_that) {
+case _NftTokenTransferInput() when $default != null:
+return $default(_that);case _:
+  return orElse();
 
-  /// A `switch`-like method, using callbacks.
-  ///
-  /// Callbacks receives the raw object, upcasted.
-  /// It is equivalent to doing:
-  /// ```dart
-  /// switch (sealedClass) {
-  ///   case final Subclass value:
-  ///     return ...;
-  ///   case final Subclass2 value:
-  ///     return ...;
-  /// }
-  /// ```
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// Callbacks receives the raw object, upcasted.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case final Subclass2 value:
+///     return ...;
+/// }
+/// ```
 
-  @optionalTypeArgs
-  TResult map<TResult extends Object?>(
-    TResult Function(_NftTokenTransferInput value) $default,
-  ) {
-    final _that = this;
-    switch (_that) {
-      case _NftTokenTransferInput():
-        return $default(_that);
-      case _:
-        throw StateError('Unexpected subclass');
-    }
-  }
+@optionalTypeArgs TResult map<TResult extends Object?>(TResult Function( _NftTokenTransferInput value)  $default,){
+final _that = this;
+switch (_that) {
+case _NftTokenTransferInput():
+return $default(_that);case _:
+  throw StateError('Unexpected subclass');
 
-  /// A variant of `map` that fallback to returning `null`.
-  ///
-  /// It is equivalent to doing:
-  /// ```dart
-  /// switch (sealedClass) {
-  ///   case final Subclass value:
-  ///     return ...;
-  ///   case _:
-  ///     return null;
-  /// }
-  /// ```
+}
+}
+/// A variant of `map` that fallback to returning `null`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
 
-  @optionalTypeArgs
-  TResult? mapOrNull<TResult extends Object?>(
-    TResult? Function(_NftTokenTransferInput value)? $default,
-  ) {
-    final _that = this;
-    switch (_that) {
-      case _NftTokenTransferInput() when $default != null:
-        return $default(_that);
-      case _:
-        return null;
-    }
-  }
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>(TResult? Function( _NftTokenTransferInput value)?  $default,){
+final _that = this;
+switch (_that) {
+case _NftTokenTransferInput() when $default != null:
+return $default(_that);case _:
+  return null;
 
-  /// A variant of `when` that fallback to an `orElse` callback.
-  ///
-  /// It is equivalent to doing:
-  /// ```dart
-  /// switch (sealedClass) {
-  ///   case Subclass(:final field):
-  ///     return ...;
-  ///   case _:
-  ///     return orElse();
-  /// }
-  /// ```
+}
+}
+/// A variant of `when` that fallback to an `orElse` callback.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
 
-  @optionalTypeArgs
-  TResult maybeWhen<TResult extends Object?>(
-    TResult Function(
-            @amountJsonConverter BigInt count,
-            @amountJsonConverter BigInt deployTokenWalletValue,
-            Address recipient,
-            Address remainingGasTo,
-            String payload,
-            bool notify)?
-        $default, {
-    required TResult orElse(),
-  }) {
-    final _that = this;
-    switch (_that) {
-      case _NftTokenTransferInput() when $default != null:
-        return $default(_that.count, _that.deployTokenWalletValue,
-            _that.recipient, _that.remainingGasTo, _that.payload, _that.notify);
-      case _:
-        return orElse();
-    }
-  }
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function(@amountJsonConverter  BigInt count, @amountJsonConverter  BigInt deployTokenWalletValue,  Address recipient,  Address remainingGasTo,  String payload,  bool notify)?  $default,{required TResult orElse(),}) {final _that = this;
+switch (_that) {
+case _NftTokenTransferInput() when $default != null:
+return $default(_that.count,_that.deployTokenWalletValue,_that.recipient,_that.remainingGasTo,_that.payload,_that.notify);case _:
+  return orElse();
 
-  /// A `switch`-like method, using callbacks.
-  ///
-  /// As opposed to `map`, this offers destructuring.
-  /// It is equivalent to doing:
-  /// ```dart
-  /// switch (sealedClass) {
-  ///   case Subclass(:final field):
-  ///     return ...;
-  ///   case Subclass2(:final field2):
-  ///     return ...;
-  /// }
-  /// ```
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// As opposed to `map`, this offers destructuring.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case Subclass2(:final field2):
+///     return ...;
+/// }
+/// ```
 
-  @optionalTypeArgs
-  TResult when<TResult extends Object?>(
-    TResult Function(
-            @amountJsonConverter BigInt count,
-            @amountJsonConverter BigInt deployTokenWalletValue,
-            Address recipient,
-            Address remainingGasTo,
-            String payload,
-            bool notify)
-        $default,
-  ) {
-    final _that = this;
-    switch (_that) {
-      case _NftTokenTransferInput():
-        return $default(_that.count, _that.deployTokenWalletValue,
-            _that.recipient, _that.remainingGasTo, _that.payload, _that.notify);
-      case _:
-        throw StateError('Unexpected subclass');
-    }
-  }
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function(@amountJsonConverter  BigInt count, @amountJsonConverter  BigInt deployTokenWalletValue,  Address recipient,  Address remainingGasTo,  String payload,  bool notify)  $default,) {final _that = this;
+switch (_that) {
+case _NftTokenTransferInput():
+return $default(_that.count,_that.deployTokenWalletValue,_that.recipient,_that.remainingGasTo,_that.payload,_that.notify);case _:
+  throw StateError('Unexpected subclass');
 
-  /// A variant of `when` that fallback to returning `null`
-  ///
-  /// It is equivalent to doing:
-  /// ```dart
-  /// switch (sealedClass) {
-  ///   case Subclass(:final field):
-  ///     return ...;
-  ///   case _:
-  ///     return null;
-  /// }
-  /// ```
+}
+}
+/// A variant of `when` that fallback to returning `null`
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
 
-  @optionalTypeArgs
-  TResult? whenOrNull<TResult extends Object?>(
-    TResult? Function(
-            @amountJsonConverter BigInt count,
-            @amountJsonConverter BigInt deployTokenWalletValue,
-            Address recipient,
-            Address remainingGasTo,
-            String payload,
-            bool notify)?
-        $default,
-  ) {
-    final _that = this;
-    switch (_that) {
-      case _NftTokenTransferInput() when $default != null:
-        return $default(_that.count, _that.deployTokenWalletValue,
-            _that.recipient, _that.remainingGasTo, _that.payload, _that.notify);
-      case _:
-        return null;
-    }
-  }
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function(@amountJsonConverter  BigInt count, @amountJsonConverter  BigInt deployTokenWalletValue,  Address recipient,  Address remainingGasTo,  String payload,  bool notify)?  $default,) {final _that = this;
+switch (_that) {
+case _NftTokenTransferInput() when $default != null:
+return $default(_that.count,_that.deployTokenWalletValue,_that.recipient,_that.remainingGasTo,_that.payload,_that.notify);case _:
+  return null;
+
+}
+}
+
 }
 
 /// @nodoc
 @JsonSerializable()
+
 class _NftTokenTransferInput implements NftTokenTransferInput {
-  const _NftTokenTransferInput(
-      {@amountJsonConverter required this.count,
-      @amountJsonConverter required this.deployTokenWalletValue,
-      required this.recipient,
-      required this.remainingGasTo,
-      required this.payload,
-      required this.notify});
-  factory _NftTokenTransferInput.fromJson(Map<String, dynamic> json) =>
-      _$NftTokenTransferInputFromJson(json);
+  const _NftTokenTransferInput({@amountJsonConverter required this.count, @amountJsonConverter required this.deployTokenWalletValue, required this.recipient, required this.remainingGasTo, required this.payload, required this.notify});
+  factory _NftTokenTransferInput.fromJson(Map<String, dynamic> json) => _$NftTokenTransferInputFromJson(json);
 
-  @override
-  @amountJsonConverter
-  final BigInt count;
-  @override
-  @amountJsonConverter
-  final BigInt deployTokenWalletValue;
-  @override
-  final Address recipient;
-  @override
-  final Address remainingGasTo;
-  @override
-  final String payload;
-  @override
-  final bool notify;
+@override@amountJsonConverter final  BigInt count;
+@override@amountJsonConverter final  BigInt deployTokenWalletValue;
+@override final  Address recipient;
+@override final  Address remainingGasTo;
+@override final  String payload;
+@override final  bool notify;
 
-  /// Create a copy of NftTokenTransferInput
-  /// with the given fields replaced by the non-null parameter values.
-  @override
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  @pragma('vm:prefer-inline')
-  _$NftTokenTransferInputCopyWith<_NftTokenTransferInput> get copyWith =>
-      __$NftTokenTransferInputCopyWithImpl<_NftTokenTransferInput>(
-          this, _$identity);
+/// Create a copy of NftTokenTransferInput
+/// with the given fields replaced by the non-null parameter values.
+@override @JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$NftTokenTransferInputCopyWith<_NftTokenTransferInput> get copyWith => __$NftTokenTransferInputCopyWithImpl<_NftTokenTransferInput>(this, _$identity);
 
-  @override
-  Map<String, dynamic> toJson() {
-    return _$NftTokenTransferInputToJson(
-      this,
-    );
-  }
+@override
+Map<String, dynamic> toJson() {
+  return _$NftTokenTransferInputToJson(this, );
+}
 
-  @override
-  bool operator ==(Object other) {
-    return identical(this, other) ||
-        (other.runtimeType == runtimeType &&
-            other is _NftTokenTransferInput &&
-            (identical(other.count, count) || other.count == count) &&
-            (identical(other.deployTokenWalletValue, deployTokenWalletValue) ||
-                other.deployTokenWalletValue == deployTokenWalletValue) &&
-            (identical(other.recipient, recipient) ||
-                other.recipient == recipient) &&
-            (identical(other.remainingGasTo, remainingGasTo) ||
-                other.remainingGasTo == remainingGasTo) &&
-            (identical(other.payload, payload) || other.payload == payload) &&
-            (identical(other.notify, notify) || other.notify == notify));
-  }
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _NftTokenTransferInput&&(identical(other.count, count) || other.count == count)&&(identical(other.deployTokenWalletValue, deployTokenWalletValue) || other.deployTokenWalletValue == deployTokenWalletValue)&&(identical(other.recipient, recipient) || other.recipient == recipient)&&(identical(other.remainingGasTo, remainingGasTo) || other.remainingGasTo == remainingGasTo)&&(identical(other.payload, payload) || other.payload == payload)&&(identical(other.notify, notify) || other.notify == notify));
+}
 
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  @override
-  int get hashCode => Object.hash(runtimeType, count, deployTokenWalletValue,
-      recipient, remainingGasTo, payload, notify);
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,count,deployTokenWalletValue,recipient,remainingGasTo,payload,notify);
 
-  @override
-  String toString() {
-    return 'NftTokenTransferInput(count: $count, deployTokenWalletValue: $deployTokenWalletValue, recipient: $recipient, remainingGasTo: $remainingGasTo, payload: $payload, notify: $notify)';
-  }
+@override
+String toString() {
+  return 'NftTokenTransferInput(count: $count, deployTokenWalletValue: $deployTokenWalletValue, recipient: $recipient, remainingGasTo: $remainingGasTo, payload: $payload, notify: $notify)';
+}
+
+
 }
 
 /// @nodoc
-abstract mixin class _$NftTokenTransferInputCopyWith<$Res>
-    implements $NftTokenTransferInputCopyWith<$Res> {
-  factory _$NftTokenTransferInputCopyWith(_NftTokenTransferInput value,
-          $Res Function(_NftTokenTransferInput) _then) =
-      __$NftTokenTransferInputCopyWithImpl;
-  @override
-  @useResult
-  $Res call(
-      {@amountJsonConverter BigInt count,
-      @amountJsonConverter BigInt deployTokenWalletValue,
-      Address recipient,
-      Address remainingGasTo,
-      String payload,
-      bool notify});
+abstract mixin class _$NftTokenTransferInputCopyWith<$Res> implements $NftTokenTransferInputCopyWith<$Res> {
+  factory _$NftTokenTransferInputCopyWith(_NftTokenTransferInput value, $Res Function(_NftTokenTransferInput) _then) = __$NftTokenTransferInputCopyWithImpl;
+@override @useResult
+$Res call({
+@amountJsonConverter BigInt count,@amountJsonConverter BigInt deployTokenWalletValue, Address recipient, Address remainingGasTo, String payload, bool notify
+});
 
-  @override
-  $AddressCopyWith<$Res> get recipient;
-  @override
-  $AddressCopyWith<$Res> get remainingGasTo;
+
+@override $AddressCopyWith<$Res> get recipient;@override $AddressCopyWith<$Res> get remainingGasTo;
+
 }
-
 /// @nodoc
 class __$NftTokenTransferInputCopyWithImpl<$Res>
     implements _$NftTokenTransferInputCopyWith<$Res> {
@@ -430,65 +290,39 @@ class __$NftTokenTransferInputCopyWithImpl<$Res>
   final _NftTokenTransferInput _self;
   final $Res Function(_NftTokenTransferInput) _then;
 
-  /// Create a copy of NftTokenTransferInput
-  /// with the given fields replaced by the non-null parameter values.
-  @override
-  @pragma('vm:prefer-inline')
-  $Res call({
-    Object? count = null,
-    Object? deployTokenWalletValue = null,
-    Object? recipient = null,
-    Object? remainingGasTo = null,
-    Object? payload = null,
-    Object? notify = null,
-  }) {
-    return _then(_NftTokenTransferInput(
-      count: null == count
-          ? _self.count
-          : count // ignore: cast_nullable_to_non_nullable
-              as BigInt,
-      deployTokenWalletValue: null == deployTokenWalletValue
-          ? _self.deployTokenWalletValue
-          : deployTokenWalletValue // ignore: cast_nullable_to_non_nullable
-              as BigInt,
-      recipient: null == recipient
-          ? _self.recipient
-          : recipient // ignore: cast_nullable_to_non_nullable
-              as Address,
-      remainingGasTo: null == remainingGasTo
-          ? _self.remainingGasTo
-          : remainingGasTo // ignore: cast_nullable_to_non_nullable
-              as Address,
-      payload: null == payload
-          ? _self.payload
-          : payload // ignore: cast_nullable_to_non_nullable
-              as String,
-      notify: null == notify
-          ? _self.notify
-          : notify // ignore: cast_nullable_to_non_nullable
-              as bool,
-    ));
-  }
+/// Create a copy of NftTokenTransferInput
+/// with the given fields replaced by the non-null parameter values.
+@override @pragma('vm:prefer-inline') $Res call({Object? count = null,Object? deployTokenWalletValue = null,Object? recipient = null,Object? remainingGasTo = null,Object? payload = null,Object? notify = null,}) {
+  return _then(_NftTokenTransferInput(
+count: null == count ? _self.count : count // ignore: cast_nullable_to_non_nullable
+as BigInt,deployTokenWalletValue: null == deployTokenWalletValue ? _self.deployTokenWalletValue : deployTokenWalletValue // ignore: cast_nullable_to_non_nullable
+as BigInt,recipient: null == recipient ? _self.recipient : recipient // ignore: cast_nullable_to_non_nullable
+as Address,remainingGasTo: null == remainingGasTo ? _self.remainingGasTo : remainingGasTo // ignore: cast_nullable_to_non_nullable
+as Address,payload: null == payload ? _self.payload : payload // ignore: cast_nullable_to_non_nullable
+as String,notify: null == notify ? _self.notify : notify // ignore: cast_nullable_to_non_nullable
+as bool,
+  ));
+}
 
-  /// Create a copy of NftTokenTransferInput
-  /// with the given fields replaced by the non-null parameter values.
-  @override
-  @pragma('vm:prefer-inline')
-  $AddressCopyWith<$Res> get recipient {
-    return $AddressCopyWith<$Res>(_self.recipient, (value) {
-      return _then(_self.copyWith(recipient: value));
-    });
-  }
-
-  /// Create a copy of NftTokenTransferInput
-  /// with the given fields replaced by the non-null parameter values.
-  @override
-  @pragma('vm:prefer-inline')
-  $AddressCopyWith<$Res> get remainingGasTo {
-    return $AddressCopyWith<$Res>(_self.remainingGasTo, (value) {
-      return _then(_self.copyWith(remainingGasTo: value));
-    });
-  }
+/// Create a copy of NftTokenTransferInput
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$AddressCopyWith<$Res> get recipient {
+  
+  return $AddressCopyWith<$Res>(_self.recipient, (value) {
+    return _then(_self.copyWith(recipient: value));
+  });
+}/// Create a copy of NftTokenTransferInput
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$AddressCopyWith<$Res> get remainingGasTo {
+  
+  return $AddressCopyWith<$Res>(_self.remainingGasTo, (value) {
+    return _then(_self.copyWith(remainingGasTo: value));
+  });
+}
 }
 
 // dart format on

@@ -51,10 +51,7 @@ abstract class SeedKeyRepository {
     SeedAddType addType,
   });
 
-  Future<PublicKey> addLedgerKey({
-    required int accountId,
-    String? name,
-  });
+  Future<PublicKey> addLedgerKey({required int accountId, String? name});
 
   /// Change password of seed phrase.
   Future<void> changeSeedPassword({
@@ -73,10 +70,7 @@ abstract class SeedKeyRepository {
 
   /// Rename seed with [masterKey] to [name].
   /// This changes name in storage, not in keystore.
-  Future<void> renameSeed({
-    required PublicKey masterKey,
-    required String name,
-  });
+  Future<void> renameSeed({required PublicKey masterKey, required String name});
 
   /// Return seeds phrase of [masterKey].
   /// Do not works for ledger key.

@@ -3,6 +3,7 @@ import 'dart:convert';
 
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
+import 'package:money2/money2.dart';
 import 'package:nekoton_repository/nekoton_repository.dart' hide Symbol;
 import 'package:nekoton_repository/nekoton_repository.dart' as nek show Symbol;
 
@@ -13,14 +14,13 @@ class MockTransport extends Mock implements TransportStrategy {
   Future<GenericTokenWallet> subscribeToken({
     required Address owner,
     required Address rootTokenContract,
-  }) async =>
-      Tip3TokenWallet(
-        await TokenWallet.subscribe(
-          transport: transport,
-          owner: owner,
-          rootTokenContract: rootTokenContract,
-        ),
-      );
+  }) async => Tip3TokenWallet(
+    await TokenWallet.subscribe(
+      transport: transport,
+      owner: owner,
+      rootTokenContract: rootTokenContract,
+    ),
+  );
 
   @override
   PollingConfig get pollingConfig => PollingConfig.defaultConfig;
@@ -45,10 +45,7 @@ class MockProtoTransport extends Mock implements ProtoTransport {
 }
 
 class TokenWalletRepoTest with TokenWalletRepositoryImpl {
-  TokenWalletRepoTest(
-    this.currentTransport,
-    this.tokenWalletStorage,
-  );
+  TokenWalletRepoTest(this.currentTransport, this.tokenWalletStorage);
 
   @override
   final MockTransport currentTransport;
@@ -68,10 +65,9 @@ void main() {
 
   late Stream<BigInt> balanceStream;
   late Stream<
-      (
-        List<TransactionWithData<TokenWalletTransaction?>>,
-        TransactionsBatchInfo
-      )> transactionsFoundStream;
+    (List<TransactionWithData<TokenWalletTransaction?>>, TransactionsBatchInfo)
+  >
+  transactionsFoundStream;
 
   const owner = Address(address: '0:1111111111111');
 
@@ -169,10 +165,12 @@ void main() {
 
   group('TonWalletRepository', () {
     test('addWallet', () {
-      when(() => wallet.onBalanceChangedStream)
-          .thenAnswer((_) => balanceStream);
-      when(() => wallet.onTransactionsFoundStream)
-          .thenAnswer((_) => transactionsFoundStream);
+      when(
+        () => wallet.onBalanceChangedStream,
+      ).thenAnswer((_) => balanceStream);
+      when(
+        () => wallet.onTransactionsFoundStream,
+      ).thenAnswer((_) => transactionsFoundStream);
       when(() => wallet.owner).thenReturn(owner);
       when(() => wallet.rootTokenContract).thenReturn(root1);
 
@@ -186,10 +184,12 @@ void main() {
     });
 
     test('removeWallet', () {
-      when(() => wallet.onBalanceChangedStream)
-          .thenAnswer((_) => balanceStream);
-      when(() => wallet.onTransactionsFoundStream)
-          .thenAnswer((_) => transactionsFoundStream);
+      when(
+        () => wallet.onBalanceChangedStream,
+      ).thenAnswer((_) => balanceStream);
+      when(
+        () => wallet.onTransactionsFoundStream,
+      ).thenAnswer((_) => transactionsFoundStream);
       when(() => wallet.owner).thenReturn(owner);
       when(() => wallet.rootTokenContract).thenReturn(root1);
 
@@ -202,10 +202,12 @@ void main() {
     });
 
     test('unsubscribe', () async {
-      when(() => wallet.onBalanceChangedStream)
-          .thenAnswer((_) => balanceStream);
-      when(() => wallet.onTransactionsFoundStream)
-          .thenAnswer((_) => transactionsFoundStream);
+      when(
+        () => wallet.onBalanceChangedStream,
+      ).thenAnswer((_) => balanceStream);
+      when(
+        () => wallet.onTransactionsFoundStream,
+      ).thenAnswer((_) => transactionsFoundStream);
       when(() => wallet.owner).thenReturn(owner);
       when(() => wallet.rootTokenContract).thenReturn(root1);
       when(wallet.dispose).thenReturn(null);
@@ -231,10 +233,12 @@ void main() {
     });
 
     test('stopPolling', () {
-      when(() => wallet.onBalanceChangedStream)
-          .thenAnswer((_) => balanceStream);
-      when(() => wallet.onTransactionsFoundStream)
-          .thenAnswer((_) => transactionsFoundStream);
+      when(
+        () => wallet.onBalanceChangedStream,
+      ).thenAnswer((_) => balanceStream);
+      when(
+        () => wallet.onTransactionsFoundStream,
+      ).thenAnswer((_) => transactionsFoundStream);
       when(() => wallet.owner).thenReturn(owner);
       when(() => wallet.rootTokenContract).thenReturn(root1);
       when(wallet.refresh).thenAnswer((_) => Future<void>.value());
@@ -263,10 +267,12 @@ void main() {
     });
 
     test('startPolling with clearing previous', () async {
-      when(() => wallet.onBalanceChangedStream)
-          .thenAnswer((_) => balanceStream);
-      when(() => wallet.onTransactionsFoundStream)
-          .thenAnswer((_) => transactionsFoundStream);
+      when(
+        () => wallet.onBalanceChangedStream,
+      ).thenAnswer((_) => balanceStream);
+      when(
+        () => wallet.onTransactionsFoundStream,
+      ).thenAnswer((_) => transactionsFoundStream);
       when(() => wallet.owner).thenReturn(owner);
       when(() => wallet.rootTokenContract).thenReturn(root1);
 
@@ -290,10 +296,12 @@ void main() {
     });
 
     test('startPolling without clearing previous', () async {
-      when(() => wallet.onBalanceChangedStream)
-          .thenAnswer((_) => balanceStream);
-      when(() => wallet.onTransactionsFoundStream)
-          .thenAnswer((_) => transactionsFoundStream);
+      when(
+        () => wallet.onBalanceChangedStream,
+      ).thenAnswer((_) => balanceStream);
+      when(
+        () => wallet.onTransactionsFoundStream,
+      ).thenAnswer((_) => transactionsFoundStream);
       when(() => wallet.owner).thenReturn(owner);
       when(() => wallet.rootTokenContract).thenReturn(root1);
 
@@ -319,28 +327,31 @@ void main() {
     TokenWalletAsset asset,
     nek.Symbol symbol,
   ) {
-    when(() => box.address())
-        .thenAnswer((_) => Future.value(tokenAddress.address));
+    when(
+      () => box.address(),
+    ).thenAnswer((_) => Future.value(tokenAddress.address));
     when(() => box.owner()).thenAnswer((_) => Future.value(owner.address));
     when(() => box.owner()).thenAnswer((_) => Future.value(owner.address));
-    when(() => box.symbol()).thenAnswer(
-      (_) => Future.value(jsonEncode(symbol.toJson())),
-    );
-    when(() => box.version()).thenAnswer(
-      (_) => Future.value(jsonEncode(version.toString())),
-    );
+    when(
+      () => box.symbol(),
+    ).thenAnswer((_) => Future.value(jsonEncode(symbol.toJson())));
+    when(
+      () => box.version(),
+    ).thenAnswer((_) => Future.value(jsonEncode(version.toString())));
     when(() => box.balance()).thenAnswer((_) => Future.value('100000000'));
-    when(() => box.contractState()).thenAnswer(
-      (_) => Future.value(jsonEncode(contract.toJson())),
-    );
+    when(
+      () => box.contractState(),
+    ).thenAnswer((_) => Future.value(jsonEncode(contract.toJson())));
   }
 
   group('TokenWalletRepository', () {
     test('updateTokenSubscriptions without side effects', () async {
-      when(() => wallet.onBalanceChangedStream)
-          .thenAnswer((_) => balanceStream);
-      when(() => wallet.onTransactionsFoundStream)
-          .thenAnswer((_) => transactionsFoundStream);
+      when(
+        () => wallet.onBalanceChangedStream,
+      ).thenAnswer((_) => balanceStream);
+      when(
+        () => wallet.onTransactionsFoundStream,
+      ).thenAnswer((_) => transactionsFoundStream);
       when(() => wallet.owner).thenReturn(owner);
       when(() => wallet.rootTokenContract).thenReturn(root1);
 
@@ -376,53 +387,59 @@ void main() {
       expect(Currencies()[symbol2.name], isNotNull);
     });
 
-    test('updateTokenSubscriptions with failed subscribe of one token',
-        () async {
-      when(() => wallet.onBalanceChangedStream)
-          .thenAnswer((_) => balanceStream);
-      when(() => wallet.onTransactionsFoundStream)
-          .thenAnswer((_) => transactionsFoundStream);
-      when(() => wallet.owner).thenReturn(owner);
-      when(() => wallet.rootTokenContract).thenReturn(root1);
+    test(
+      'updateTokenSubscriptions with failed subscribe of one token',
+      () async {
+        when(
+          () => wallet.onBalanceChangedStream,
+        ).thenAnswer((_) => balanceStream);
+        when(
+          () => wallet.onTransactionsFoundStream,
+        ).thenAnswer((_) => transactionsFoundStream);
+        when(() => wallet.owner).thenReturn(owner);
+        when(() => wallet.rootTokenContract).thenReturn(root1);
 
-      when(() => transport.transport).thenReturn(proto);
-      when(() => proto.disposed).thenReturn(false);
-      when(() => proto.transportBox).thenReturn(box);
-      when(() => proto.group).thenReturn(transportGroup);
+        when(() => transport.transport).thenReturn(proto);
+        when(() => proto.disposed).thenReturn(false);
+        when(() => proto.transportBox).thenReturn(box);
+        when(() => proto.group).thenReturn(transportGroup);
 
-      when(
-        () => bridge.crateApiMergedTokenWalletDartWrapperSubscribe(
-          transport: any(named: 'transport'),
-          rootTokenContract: any(named: 'rootTokenContract'),
-          owner: any(named: 'owner'),
-          preloadTransactions: any(named: 'preloadTransactions'),
-          onBalanceChanged: any(named: 'onBalanceChanged'),
-          onTransactionsFound: any(named: 'onTransactionsFound'),
-        ),
-      ).thenAnswer((call) {
-        if (call.namedArguments[const Symbol('rootTokenContract')] ==
-            root1.address) {
-          return Future.value(tokenWrapper1);
-        }
-        return throwError();
-      });
-      mockTokenWallet(tokenWrapper1, asset1, symbol1);
-      mockTokenWallet(tokenWrapper2, asset2, symbol2);
+        when(
+          () => bridge.crateApiMergedTokenWalletDartWrapperSubscribe(
+            transport: any(named: 'transport'),
+            rootTokenContract: any(named: 'rootTokenContract'),
+            owner: any(named: 'owner'),
+            preloadTransactions: any(named: 'preloadTransactions'),
+            onBalanceChanged: any(named: 'onBalanceChanged'),
+            onTransactionsFound: any(named: 'onTransactionsFound'),
+          ),
+        ).thenAnswer((call) {
+          if (call.namedArguments[const Symbol('rootTokenContract')] ==
+              root1.address) {
+            return Future.value(tokenWrapper1);
+          }
+          return throwError();
+        });
+        mockTokenWallet(tokenWrapper1, asset1, symbol1);
+        mockTokenWallet(tokenWrapper2, asset2, symbol2);
 
-      await repository.updateTokenSubscriptions([assetsBoth]);
+        await repository.updateTokenSubscriptions([assetsBoth]);
 
-      final wallets = repository.tokenWallets;
+        final wallets = repository.tokenWallets;
 
-      expect(wallets.length, 2);
-      expect(wallets.where((e) => e.hasError).length, 1);
-      expect(wallets.where((e) => e.hasWallet).length, 1);
-    });
+        expect(wallets.length, 2);
+        expect(wallets.where((e) => e.hasError).length, 1);
+        expect(wallets.where((e) => e.hasWallet).length, 1);
+      },
+    );
 
     test('retrySubscriptions successfully', () async {
-      when(() => wallet.onBalanceChangedStream)
-          .thenAnswer((_) => balanceStream);
-      when(() => wallet.onTransactionsFoundStream)
-          .thenAnswer((_) => transactionsFoundStream);
+      when(
+        () => wallet.onBalanceChangedStream,
+      ).thenAnswer((_) => balanceStream);
+      when(
+        () => wallet.onTransactionsFoundStream,
+      ).thenAnswer((_) => transactionsFoundStream);
       when(() => wallet.owner).thenReturn(owner);
       when(() => wallet.rootTokenContract).thenReturn(root1);
 
@@ -468,10 +485,12 @@ void main() {
     });
 
     test('retrySubscriptions no cached asset', () async {
-      when(() => wallet.onBalanceChangedStream)
-          .thenAnswer((_) => balanceStream);
-      when(() => wallet.onTransactionsFoundStream)
-          .thenAnswer((_) => transactionsFoundStream);
+      when(
+        () => wallet.onBalanceChangedStream,
+      ).thenAnswer((_) => balanceStream);
+      when(
+        () => wallet.onTransactionsFoundStream,
+      ).thenAnswer((_) => transactionsFoundStream);
       when(() => wallet.owner).thenReturn(owner);
       when(() => wallet.rootTokenContract).thenReturn(root1);
 
@@ -506,10 +525,12 @@ void main() {
     test('updateTokenSubscriptions with expanding assets list', () async {
       reset(bridge);
 
-      when(() => wallet.onBalanceChangedStream)
-          .thenAnswer((_) => balanceStream);
-      when(() => wallet.onTransactionsFoundStream)
-          .thenAnswer((_) => transactionsFoundStream);
+      when(
+        () => wallet.onBalanceChangedStream,
+      ).thenAnswer((_) => balanceStream);
+      when(
+        () => wallet.onTransactionsFoundStream,
+      ).thenAnswer((_) => transactionsFoundStream);
       when(() => wallet.owner).thenReturn(owner);
       when(() => wallet.rootTokenContract).thenReturn(root1);
 
@@ -567,10 +588,12 @@ void main() {
     });
 
     test('updateTokenTransportSubscriptions without side effects', () async {
-      when(() => wallet.onBalanceChangedStream)
-          .thenAnswer((_) => balanceStream);
-      when(() => wallet.onTransactionsFoundStream)
-          .thenAnswer((_) => transactionsFoundStream);
+      when(
+        () => wallet.onBalanceChangedStream,
+      ).thenAnswer((_) => balanceStream);
+      when(
+        () => wallet.onTransactionsFoundStream,
+      ).thenAnswer((_) => transactionsFoundStream);
       when(() => wallet.owner).thenReturn(owner);
       when(() => wallet.rootTokenContract).thenReturn(root1);
 

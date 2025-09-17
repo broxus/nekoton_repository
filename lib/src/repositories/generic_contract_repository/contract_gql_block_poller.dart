@@ -16,8 +16,9 @@ class GenericContractGqlBlockPoller implements RefreshingInterface {
 
   @override
   Future<void> refresh() async {
-    currentBlockId ??=
-        (await transport.getLatestBlock(address: contract.address)).id;
+    currentBlockId ??= (await transport.getLatestBlock(
+      address: contract.address,
+    )).id;
 
     final nextBlockId = await transport.waitForNextBlock(
       currentBlockId: currentBlockId!,

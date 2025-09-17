@@ -17,11 +17,11 @@ class Seed extends SeedBase {
     required this.addType,
     required this.addedAt,
     required String? name,
-  })  : _name = name,
-        super(
-          name: name ?? masterKey.key.masterKey.toEllipseString(),
-          masterPublicKey: masterKey.publicKey,
-        );
+  }) : _name = name,
+       super(
+         name: name ?? masterKey.key.masterKey.toEllipseString(),
+         masterPublicKey: masterKey.publicKey,
+       );
 
   /// Master key of seed.
   /// This key is derived directly from seed phrase.
@@ -67,16 +67,15 @@ class Seed extends SeedBase {
   Future<List<PublicKey>> deriveKeys({
     required List<int> accountIds,
     required String password,
-  }) =>
-      GetIt.instance<SeedKeyRepository>().deriveKeys(
-        params: accountIds.map(
-          (accountId) => DeriveKeysParams.derived(
-            accountId: accountId,
-            masterKey: masterKey.publicKey,
-            password: password,
-          ),
-        ),
-      );
+  }) => GetIt.instance<SeedKeyRepository>().deriveKeys(
+    params: accountIds.map(
+      (accountId) => DeriveKeysParams.derived(
+        accountId: accountId,
+        masterKey: masterKey.publicKey,
+        password: password,
+      ),
+    ),
+  );
 
   /// Derive key from [masterKey] this call adds list of sub keys to
   /// [subKeys].
@@ -84,26 +83,24 @@ class Seed extends SeedBase {
   Future<PublicKey> deriveKey({
     required int accountId,
     required String password,
-  }) =>
-      GetIt.instance<SeedKeyRepository>().deriveKey(
-        params: DeriveKeysParams.derived(
-          accountId: accountId,
-          masterKey: masterKey.publicKey,
-          password: password,
-        ),
-      );
+  }) => GetIt.instance<SeedKeyRepository>().deriveKey(
+    params: DeriveKeysParams.derived(
+      accountId: accountId,
+      masterKey: masterKey.publicKey,
+      password: password,
+    ),
+  );
 
   /// Change password of seed phrase.
   Future<void> changePassword({
     required String oldPassword,
     required String newPassword,
-  }) =>
-      GetIt.instance<SeedKeyRepository>().changeSeedPassword(
-        publicKey: masterKey.publicKey,
-        oldPassword: oldPassword,
-        newPassword: newPassword,
-        isLegacy: masterKey.isLegacy,
-      );
+  }) => GetIt.instance<SeedKeyRepository>().changeSeedPassword(
+    publicKey: masterKey.publicKey,
+    oldPassword: oldPassword,
+    newPassword: newPassword,
+    isLegacy: masterKey.isLegacy,
+  );
 
   /// Return seeds phrase of this seed.
   /// Do not works for ledger key.
@@ -124,9 +121,9 @@ class Seed extends SeedBase {
 
   /// This method allows remove full seed and all related keys (master and sub)
   Future<void> remove() {
-    GetIt.instance<NekotonRepository>()
-        .storageRepository
-        .removeSeedMetadata(publicKey);
+    GetIt.instance<NekotonRepository>().storageRepository.removeSeedMetadata(
+      publicKey,
+    );
 
     return GetIt.instance<SeedKeyRepository>().removeKeys(allKeys);
   }

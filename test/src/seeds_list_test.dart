@@ -7,10 +7,10 @@ class MockBridge extends Mock implements NekotonBridgeApi {}
 class AllWalletTypeSupports extends Fake implements TransportStrategy {
   @override
   List<WalletType> get availableWalletTypes => const [
-        WalletType.everWallet(),
-        WalletType.walletV3(),
-        WalletType.multisig(MultisigType.multisig2_1),
-      ];
+    WalletType.everWallet(),
+    WalletType.walletV3(),
+    WalletType.multisig(MultisigType.multisig2_1),
+  ];
 }
 
 class OnlyV3WalletTypeSupports extends Fake implements TransportStrategy {
@@ -21,9 +21,7 @@ class OnlyV3WalletTypeSupports extends Fake implements TransportStrategy {
 void main() {
   final bridge = MockBridge();
   const superMasterName = 'SUPER MASTER';
-  const superMasterMeta = SeedMetadata(
-    name: superMasterName,
-  );
+  const superMasterMeta = SeedMetadata(name: superMasterName);
   const key1 = PublicKey(publicKey: '1111111111111111111');
   final key1Ellipse = key1.toEllipseString();
   const key2 = PublicKey(publicKey: '2222222222222222222');
@@ -160,12 +158,7 @@ void main() {
     test('SeedList only keys creation', () {
       final seedsList = SeedList(
         seedMeta: {masterKey.publicKey: superMasterMeta},
-        allKeys: [
-          subKey2,
-          subKey1,
-          masterKey,
-          masterKey2,
-        ],
+        allKeys: [subKey2, subKey1, masterKey, masterKey2],
         mappedAccounts: const {},
       );
 
@@ -223,23 +216,13 @@ void main() {
       expect(seedsList.seeds.length, 2);
       final seed1 = seedsList.findSeed(key1)!;
       expect(seed1.name, key1Ellipse);
-      expect(
-        seed1.masterKey,
-        SeedKey(key: masterKey, accountList: accounts1),
-      );
+      expect(seed1.masterKey, SeedKey(key: masterKey, accountList: accounts1));
       expect(seed1.masterKey.accountList.allAccounts.length, 2);
-      expect(
-        seed1.masterKey.accountList.externalAccounts,
-        [account1ExternalHidden],
-      );
-      expect(
-        seed1.masterKey.accountList.displayAccounts,
-        [account1Pure],
-      );
-      expect(
-        seed1.masterKey.accountList.localAccounts,
-        [account1Pure],
-      );
+      expect(seed1.masterKey.accountList.externalAccounts, [
+        account1ExternalHidden,
+      ]);
+      expect(seed1.masterKey.accountList.displayAccounts, [account1Pure]);
+      expect(seed1.masterKey.accountList.localAccounts, [account1Pure]);
       expect(
         seed1.subKeys,
         equals([
@@ -254,10 +237,7 @@ void main() {
 
       final seed2 = seedsList.findSeed(key4)!;
       expect(seed2.name, key4Ellipse);
-      expect(
-        seed2.masterKey,
-        SeedKey(key: masterKey2, accountList: accounts2),
-      );
+      expect(seed2.masterKey, SeedKey(key: masterKey2, accountList: accounts2));
       expect(seed2.subKeys, equals([]));
     });
 
@@ -278,8 +258,9 @@ void main() {
       expect(seedKey!.publicKey, key2);
       expect(seedKey.key, subKey1);
 
-      final notExisted =
-          seedsList.findSeedKey(const PublicKey(publicKey: '000000'));
+      final notExisted = seedsList.findSeedKey(
+        const PublicKey(publicKey: '000000'),
+      );
       expect(notExisted, isNull);
     });
 
@@ -300,8 +281,9 @@ void main() {
       expect(seed!.masterKey.key, masterKey);
       expect(seed.subKeys.length, 2);
 
-      final notExisted = seedsList
-          .findSeedByAnyPublicKey(const PublicKey(publicKey: '000000'));
+      final notExisted = seedsList.findSeedByAnyPublicKey(
+        const PublicKey(publicKey: '000000'),
+      );
       expect(notExisted, isNull);
     });
 
@@ -321,8 +303,9 @@ void main() {
       expect(account, isNotNull);
       expect(account!.address, account1Pure.address);
 
-      final notExisted =
-          seedsList.findAccountByAddress(const Address(address: '0:0000'));
+      final notExisted = seedsList.findAccountByAddress(
+        const Address(address: '0:0000'),
+      );
       expect(notExisted, isNull);
     });
   });
@@ -354,28 +337,18 @@ void main() {
       expect(seedsList.seeds.length, 2);
       final seed1 = seedsList.findSeed(key1)!;
       expect(seed1.name, superMasterName);
-      expect(
-        seed1.masterKey,
-        SeedKey(key: masterKey, accountList: accounts1),
-      );
+      expect(seed1.masterKey, SeedKey(key: masterKey, accountList: accounts1));
       final masterAccounts = seed1.masterKey.accountList.allAccounts;
       expect(masterAccounts.length, 2);
       expect(
         masterAccounts.map((e) => e.name),
         orderedEquals([account1Pure.name, account1ExternalHidden.name]),
       );
-      expect(
-        seed1.masterKey.accountList.externalAccounts,
-        [account1ExternalHidden],
-      );
-      expect(
-        seed1.masterKey.accountList.displayAccounts,
-        [account1Pure],
-      );
-      expect(
-        seed1.masterKey.accountList.localAccounts,
-        [account1Pure],
-      );
+      expect(seed1.masterKey.accountList.externalAccounts, [
+        account1ExternalHidden,
+      ]);
+      expect(seed1.masterKey.accountList.displayAccounts, [account1Pure]);
+      expect(seed1.masterKey.accountList.localAccounts, [account1Pure]);
       expect(
         seed1.subKeys,
         equals([
@@ -385,10 +358,7 @@ void main() {
       );
       final seed2 = seedsList.findSeed(key4)!;
       expect(seed2.name, key4Ellipse);
-      expect(
-        seed2.masterKey,
-        SeedKey(key: masterKey2, accountList: accounts2),
-      );
+      expect(seed2.masterKey, SeedKey(key: masterKey2, accountList: accounts2));
       expect(seed2.subKeys, equals([]));
     });
   });
