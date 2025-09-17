@@ -3,6 +3,33 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## 2025-09-17
+
+### Changes
+
+---
+
+Packages with breaking changes:
+
+ - [`nekoton_repository` - `v2.0.0-dev.1`](#nekoton_repository---v200-dev1)
+
+Packages with other changes:
+
+ - There are no other changes in this release.
+
+---
+
+#### `nekoton_repository` - `v2.0.0-dev.1`
+
+ - **BREAKING** **CHORE**: sdk >=3.9.0; flutter >=3.35.0. ([1bdfc8a4](https://github.com/broxus/nekoton_repository/commit/1bdfc8a434b124afb5bfc54d1db127a01a03c5e1))
+
+## 2.0.0-dev.1
+
+> Note: This release has breaking changes.
+
+ - **BREAKING** **CHORE**: sdk >=3.9.0; flutter >=3.35.0. ([1bdfc8a4](https://github.com/broxus/nekoton_repository/commit/1bdfc8a434b124afb5bfc54d1db127a01a03c5e1))
+
+
 ## 2025-08-28
 
 ### Changes
