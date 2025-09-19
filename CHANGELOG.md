@@ -3,6 +3,31 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## 2025-09-19
+
+### Changes
+
+---
+
+Packages with breaking changes:
+
+ - There are no breaking changes in this release.
+
+Packages with other changes:
+
+ - [`nekoton_repository` - `v1.5.2`](#nekoton_repository---v152)
+
+---
+
+#### `nekoton_repository` - `v1.5.2`
+
+ - **FIX**: correct message value calculation for outgoing transactions.
+
+## 1.5.2
+
+ - **FIX**: correct message value calculation for outgoing transactions.
+
+
 ## 2025-09-17
 
 ### Changes
