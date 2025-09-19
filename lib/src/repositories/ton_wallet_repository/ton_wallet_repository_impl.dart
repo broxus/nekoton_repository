@@ -868,7 +868,7 @@ mixin TonWalletRepositoryImpl implements TonWalletRepository {
 
           final msgValue = isOutgoing
               ? e.transaction.outMessages.fold(
-                  BigInt.zero,
+                  -e.transaction.inMessage.value,
                   (acc, msg) => acc + msg.value,
                 )
               : e.transaction.inMessage.value;
@@ -985,7 +985,7 @@ mixin TonWalletRepositoryImpl implements TonWalletRepository {
 
         final msgValue = isOutgoing
             ? e.transaction.outMessages.fold(
-                BigInt.zero,
+                -e.transaction.inMessage.value,
                 (acc, msg) => acc + msg.value,
               )
             : e.transaction.inMessage.value;
@@ -1054,7 +1054,7 @@ mixin TonWalletRepositoryImpl implements TonWalletRepository {
 
         final msgValue = isOutgoing
             ? e.transaction.outMessages.fold(
-                BigInt.zero,
+                -e.transaction.inMessage.value,
                 (acc, msg) => acc + msg.value,
               )
             : e.transaction.inMessage.value;
@@ -1165,7 +1165,7 @@ mixin TonWalletRepositoryImpl implements TonWalletRepository {
 
         final msgValue = isOutgoing
             ? e.transaction.outMessages.fold(
-                BigInt.zero,
+                -e.transaction.inMessage.value,
                 (acc, msg) => acc + msg.value,
               )
             : e.transaction.inMessage.value;
