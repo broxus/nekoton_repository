@@ -109,6 +109,7 @@ abstract class TokenWalletRepository {
     required bool notifyReceiver,
     BigInt? attachedAmount,
     String? payload,
+    Address? remainingGasTo,
   });
 
   /// Preload transaction for wallet
