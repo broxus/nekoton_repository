@@ -3,6 +3,31 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## 2025-10-02
+
+### Changes
+
+---
+
+Packages with breaking changes:
+
+ - There are no breaking changes in this release.
+
+Packages with other changes:
+
+ - [`nekoton_repository` - `v1.7.0`](#nekoton_repository---v170)
+
+---
+
+#### `nekoton_repository` - `v1.7.0`
+
+ - **FEAT**: update `flutter_nekoton_bridge` dependency to version 3.6.0.
+
+## 1.7.0
+
+ - **FEAT**: update `flutter_nekoton_bridge` dependency to version 3.6.0.
+
+
 ## 2025-09-22
 
 ### Changes
