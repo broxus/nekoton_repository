@@ -15,7 +15,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$NftTokenTransferInput {
 
-@amountJsonConverter BigInt get count;@amountJsonConverter BigInt get deployTokenWalletValue; Address get recipient; Address get remainingGasTo; String get payload; bool get notify;
+ BigInt get count; BigInt get deployTokenWalletValue; Address get recipient; Address get remainingGasTo; String get payload; bool get notify;
 /// Create a copy of NftTokenTransferInput
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -48,7 +48,7 @@ abstract mixin class $NftTokenTransferInputCopyWith<$Res>  {
   factory $NftTokenTransferInputCopyWith(NftTokenTransferInput value, $Res Function(NftTokenTransferInput) _then) = _$NftTokenTransferInputCopyWithImpl;
 @useResult
 $Res call({
-@amountJsonConverter BigInt count,@amountJsonConverter BigInt deployTokenWalletValue, Address recipient, Address remainingGasTo, String payload, bool notify
+ BigInt count, BigInt deployTokenWalletValue, Address recipient, Address remainingGasTo, String payload, bool notify
 });
 
 
@@ -176,7 +176,7 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function(@amountJsonConverter  BigInt count, @amountJsonConverter  BigInt deployTokenWalletValue,  Address recipient,  Address remainingGasTo,  String payload,  bool notify)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( BigInt count,  BigInt deployTokenWalletValue,  Address recipient,  Address remainingGasTo,  String payload,  bool notify)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _NftTokenTransferInput() when $default != null:
 return $default(_that.count,_that.deployTokenWalletValue,_that.recipient,_that.remainingGasTo,_that.payload,_that.notify);case _:
@@ -197,7 +197,7 @@ return $default(_that.count,_that.deployTokenWalletValue,_that.recipient,_that.r
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function(@amountJsonConverter  BigInt count, @amountJsonConverter  BigInt deployTokenWalletValue,  Address recipient,  Address remainingGasTo,  String payload,  bool notify)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( BigInt count,  BigInt deployTokenWalletValue,  Address recipient,  Address remainingGasTo,  String payload,  bool notify)  $default,) {final _that = this;
 switch (_that) {
 case _NftTokenTransferInput():
 return $default(_that.count,_that.deployTokenWalletValue,_that.recipient,_that.remainingGasTo,_that.payload,_that.notify);case _:
@@ -217,7 +217,7 @@ return $default(_that.count,_that.deployTokenWalletValue,_that.recipient,_that.r
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function(@amountJsonConverter  BigInt count, @amountJsonConverter  BigInt deployTokenWalletValue,  Address recipient,  Address remainingGasTo,  String payload,  bool notify)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( BigInt count,  BigInt deployTokenWalletValue,  Address recipient,  Address remainingGasTo,  String payload,  bool notify)?  $default,) {final _that = this;
 switch (_that) {
 case _NftTokenTransferInput() when $default != null:
 return $default(_that.count,_that.deployTokenWalletValue,_that.recipient,_that.remainingGasTo,_that.payload,_that.notify);case _:
@@ -232,11 +232,11 @@ return $default(_that.count,_that.deployTokenWalletValue,_that.recipient,_that.r
 @JsonSerializable()
 
 class _NftTokenTransferInput implements NftTokenTransferInput {
-  const _NftTokenTransferInput({@amountJsonConverter required this.count, @amountJsonConverter required this.deployTokenWalletValue, required this.recipient, required this.remainingGasTo, required this.payload, required this.notify});
+  const _NftTokenTransferInput({required this.count, required this.deployTokenWalletValue, required this.recipient, required this.remainingGasTo, required this.payload, required this.notify});
   factory _NftTokenTransferInput.fromJson(Map<String, dynamic> json) => _$NftTokenTransferInputFromJson(json);
 
-@override@amountJsonConverter final  BigInt count;
-@override@amountJsonConverter final  BigInt deployTokenWalletValue;
+@override final  BigInt count;
+@override final  BigInt deployTokenWalletValue;
 @override final  Address recipient;
 @override final  Address remainingGasTo;
 @override final  String payload;
@@ -275,7 +275,7 @@ abstract mixin class _$NftTokenTransferInputCopyWith<$Res> implements $NftTokenT
   factory _$NftTokenTransferInputCopyWith(_NftTokenTransferInput value, $Res Function(_NftTokenTransferInput) _then) = __$NftTokenTransferInputCopyWithImpl;
 @override @useResult
 $Res call({
-@amountJsonConverter BigInt count,@amountJsonConverter BigInt deployTokenWalletValue, Address recipient, Address remainingGasTo, String payload, bool notify
+ BigInt count, BigInt deployTokenWalletValue, Address recipient, Address remainingGasTo, String payload, bool notify
 });
 
 

@@ -117,7 +117,7 @@ abstract class SeedKeyRepository {
   /// Sign raw [data] message with key it was called on.
   /// [signatureId] is [Transport.getSignatureId].
   /// [signInput] can be get from [SeedKey.signInput].
-  Future<SignedDataRaw> signRawData({
+  Future<SignedDataRaw> signDataRaw({
     required String data,
     required SignInput signInput,
     required int? signatureId,

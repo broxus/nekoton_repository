@@ -370,6 +370,7 @@ mixin TokenWalletRepositoryImpl implements TokenWalletRepository {
     required bool notifyReceiver,
     BigInt? attachedAmount,
     String? payload,
+    Address? remainingGasTo,
   }) async {
     final tokenWalletState = await getTokenWallet(owner, rootTokenContract);
     final tokenWallet = tokenWalletState.wallet;
@@ -403,11 +404,12 @@ mixin TokenWalletRepositoryImpl implements TokenWalletRepository {
         payload: payload,
         notifyReceiver: notifyReceiver,
         attachedAmount: attachedAmount,
+        remainingGasTo: remainingGasTo,
       ),
       JettonTokenWallet() => tokenWallet.inner.prepareTransfer(
         destination: destination,
         amount: amount,
-        remainingGasTo: tokenWallet.owner,
+        remainingGasTo: remainingGasTo ?? tokenWallet.owner,
         callbackValue: BigInt.one,
         callbackPayload: payload,
         attachedAmount: attachedAmount,

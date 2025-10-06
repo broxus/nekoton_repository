@@ -15,7 +15,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$MultitokenTransfer {
 
- String get tokenId; Address get collection; Address get sender;@amountJsonConverter BigInt get count;
+ String get tokenId; Address get collection; Address get sender; BigInt get count;
 /// Create a copy of MultitokenTransfer
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -48,7 +48,7 @@ abstract mixin class $MultitokenTransferCopyWith<$Res>  {
   factory $MultitokenTransferCopyWith(MultitokenTransfer value, $Res Function(MultitokenTransfer) _then) = _$MultitokenTransferCopyWithImpl;
 @useResult
 $Res call({
- String tokenId, Address collection, Address sender,@amountJsonConverter BigInt count
+ String tokenId, Address collection, Address sender, BigInt count
 });
 
 
@@ -174,7 +174,7 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String tokenId,  Address collection,  Address sender, @amountJsonConverter  BigInt count)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String tokenId,  Address collection,  Address sender,  BigInt count)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _MultitokenTransfer() when $default != null:
 return $default(_that.tokenId,_that.collection,_that.sender,_that.count);case _:
@@ -195,7 +195,7 @@ return $default(_that.tokenId,_that.collection,_that.sender,_that.count);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String tokenId,  Address collection,  Address sender, @amountJsonConverter  BigInt count)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String tokenId,  Address collection,  Address sender,  BigInt count)  $default,) {final _that = this;
 switch (_that) {
 case _MultitokenTransfer():
 return $default(_that.tokenId,_that.collection,_that.sender,_that.count);case _:
@@ -215,7 +215,7 @@ return $default(_that.tokenId,_that.collection,_that.sender,_that.count);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String tokenId,  Address collection,  Address sender, @amountJsonConverter  BigInt count)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String tokenId,  Address collection,  Address sender,  BigInt count)?  $default,) {final _that = this;
 switch (_that) {
 case _MultitokenTransfer() when $default != null:
 return $default(_that.tokenId,_that.collection,_that.sender,_that.count);case _:
@@ -230,13 +230,13 @@ return $default(_that.tokenId,_that.collection,_that.sender,_that.count);case _:
 @JsonSerializable()
 
 class _MultitokenTransfer implements MultitokenTransfer {
-  const _MultitokenTransfer({required this.tokenId, required this.collection, required this.sender, @amountJsonConverter required this.count});
+  const _MultitokenTransfer({required this.tokenId, required this.collection, required this.sender, required this.count});
   factory _MultitokenTransfer.fromJson(Map<String, dynamic> json) => _$MultitokenTransferFromJson(json);
 
 @override final  String tokenId;
 @override final  Address collection;
 @override final  Address sender;
-@override@amountJsonConverter final  BigInt count;
+@override final  BigInt count;
 
 /// Create a copy of MultitokenTransfer
 /// with the given fields replaced by the non-null parameter values.
@@ -271,7 +271,7 @@ abstract mixin class _$MultitokenTransferCopyWith<$Res> implements $MultitokenTr
   factory _$MultitokenTransferCopyWith(_MultitokenTransfer value, $Res Function(_MultitokenTransfer) _then) = __$MultitokenTransferCopyWithImpl;
 @override @useResult
 $Res call({
- String tokenId, Address collection, Address sender,@amountJsonConverter BigInt count
+ String tokenId, Address collection, Address sender, BigInt count
 });
 
 

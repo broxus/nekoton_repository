@@ -17,7 +17,7 @@ mixin _$TonWalletExpiredTransaction {
 // address of wallet for which this transaction found
  Address get address;// creation date
  DateTime get date; DateTime get expireAt;// address for which tokens was sent
- Address get destination;@amountJsonConverter BigInt get amount; String get messageHash;// flag if this transaction was sent to this wallet
+ Address get destination; BigInt get amount; String get messageHash;// flag if this transaction was sent to this wallet
  bool get isIncoming;
 /// Create a copy of TonWalletExpiredTransaction
 /// with the given fields replaced by the non-null parameter values.
@@ -49,7 +49,7 @@ abstract mixin class $TonWalletExpiredTransactionCopyWith<$Res>  {
   factory $TonWalletExpiredTransactionCopyWith(TonWalletExpiredTransaction value, $Res Function(TonWalletExpiredTransaction) _then) = _$TonWalletExpiredTransactionCopyWithImpl;
 @useResult
 $Res call({
- Address address, DateTime date, DateTime expireAt, Address destination,@amountJsonConverter BigInt amount, String messageHash, bool isIncoming
+ Address address, DateTime date, DateTime expireAt, Address destination, BigInt amount, String messageHash, bool isIncoming
 });
 
 
@@ -178,7 +178,7 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( Address address,  DateTime date,  DateTime expireAt,  Address destination, @amountJsonConverter  BigInt amount,  String messageHash,  bool isIncoming)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( Address address,  DateTime date,  DateTime expireAt,  Address destination,  BigInt amount,  String messageHash,  bool isIncoming)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _TonWalletExpiredTransaction() when $default != null:
 return $default(_that.address,_that.date,_that.expireAt,_that.destination,_that.amount,_that.messageHash,_that.isIncoming);case _:
@@ -199,7 +199,7 @@ return $default(_that.address,_that.date,_that.expireAt,_that.destination,_that.
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( Address address,  DateTime date,  DateTime expireAt,  Address destination, @amountJsonConverter  BigInt amount,  String messageHash,  bool isIncoming)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( Address address,  DateTime date,  DateTime expireAt,  Address destination,  BigInt amount,  String messageHash,  bool isIncoming)  $default,) {final _that = this;
 switch (_that) {
 case _TonWalletExpiredTransaction():
 return $default(_that.address,_that.date,_that.expireAt,_that.destination,_that.amount,_that.messageHash,_that.isIncoming);case _:
@@ -219,7 +219,7 @@ return $default(_that.address,_that.date,_that.expireAt,_that.destination,_that.
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( Address address,  DateTime date,  DateTime expireAt,  Address destination, @amountJsonConverter  BigInt amount,  String messageHash,  bool isIncoming)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( Address address,  DateTime date,  DateTime expireAt,  Address destination,  BigInt amount,  String messageHash,  bool isIncoming)?  $default,) {final _that = this;
 switch (_that) {
 case _TonWalletExpiredTransaction() when $default != null:
 return $default(_that.address,_that.date,_that.expireAt,_that.destination,_that.amount,_that.messageHash,_that.isIncoming);case _:
@@ -234,7 +234,7 @@ return $default(_that.address,_that.date,_that.expireAt,_that.destination,_that.
 
 
 class _TonWalletExpiredTransaction implements TonWalletExpiredTransaction {
-  const _TonWalletExpiredTransaction({required this.address, required this.date, required this.expireAt, required this.destination, @amountJsonConverter required this.amount, required this.messageHash, required this.isIncoming});
+  const _TonWalletExpiredTransaction({required this.address, required this.date, required this.expireAt, required this.destination, required this.amount, required this.messageHash, required this.isIncoming});
   
 
 // address of wallet for which this transaction found
@@ -244,7 +244,7 @@ class _TonWalletExpiredTransaction implements TonWalletExpiredTransaction {
 @override final  DateTime expireAt;
 // address for which tokens was sent
 @override final  Address destination;
-@override@amountJsonConverter final  BigInt amount;
+@override final  BigInt amount;
 @override final  String messageHash;
 // flag if this transaction was sent to this wallet
 @override final  bool isIncoming;
@@ -279,7 +279,7 @@ abstract mixin class _$TonWalletExpiredTransactionCopyWith<$Res> implements $Ton
   factory _$TonWalletExpiredTransactionCopyWith(_TonWalletExpiredTransaction value, $Res Function(_TonWalletExpiredTransaction) _then) = __$TonWalletExpiredTransactionCopyWithImpl;
 @override @useResult
 $Res call({
- Address address, DateTime date, DateTime expireAt, Address destination,@amountJsonConverter BigInt amount, String messageHash, bool isIncoming
+ Address address, DateTime date, DateTime expireAt, Address destination, BigInt amount, String messageHash, bool isIncoming
 });
 
 

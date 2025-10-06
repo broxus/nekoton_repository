@@ -15,7 +15,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$NftCallbackPayload {
 
-@amountJsonConverter BigInt get value; String get payload;
+ BigInt get value; String get payload;
 /// Create a copy of NftCallbackPayload
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -48,7 +48,7 @@ abstract mixin class $NftCallbackPayloadCopyWith<$Res>  {
   factory $NftCallbackPayloadCopyWith(NftCallbackPayload value, $Res Function(NftCallbackPayload) _then) = _$NftCallbackPayloadCopyWithImpl;
 @useResult
 $Res call({
-@amountJsonConverter BigInt value, String payload
+ BigInt value, String payload
 });
 
 
@@ -154,7 +154,7 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function(@amountJsonConverter  BigInt value,  String payload)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( BigInt value,  String payload)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _NftCallbackPayload() when $default != null:
 return $default(_that.value,_that.payload);case _:
@@ -175,7 +175,7 @@ return $default(_that.value,_that.payload);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function(@amountJsonConverter  BigInt value,  String payload)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( BigInt value,  String payload)  $default,) {final _that = this;
 switch (_that) {
 case _NftCallbackPayload():
 return $default(_that.value,_that.payload);case _:
@@ -195,7 +195,7 @@ return $default(_that.value,_that.payload);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function(@amountJsonConverter  BigInt value,  String payload)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( BigInt value,  String payload)?  $default,) {final _that = this;
 switch (_that) {
 case _NftCallbackPayload() when $default != null:
 return $default(_that.value,_that.payload);case _:
@@ -210,10 +210,10 @@ return $default(_that.value,_that.payload);case _:
 @JsonSerializable()
 
 class _NftCallbackPayload implements NftCallbackPayload {
-  const _NftCallbackPayload({@amountJsonConverter required this.value, required this.payload});
+  const _NftCallbackPayload({required this.value, required this.payload});
   factory _NftCallbackPayload.fromJson(Map<String, dynamic> json) => _$NftCallbackPayloadFromJson(json);
 
-@override@amountJsonConverter final  BigInt value;
+@override final  BigInt value;
 @override final  String payload;
 
 /// Create a copy of NftCallbackPayload
@@ -249,7 +249,7 @@ abstract mixin class _$NftCallbackPayloadCopyWith<$Res> implements $NftCallbackP
   factory _$NftCallbackPayloadCopyWith(_NftCallbackPayload value, $Res Function(_NftCallbackPayload) _then) = __$NftCallbackPayloadCopyWithImpl;
 @override @useResult
 $Res call({
-@amountJsonConverter BigInt value, String payload
+ BigInt value, String payload
 });
 
 

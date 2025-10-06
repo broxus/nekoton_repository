@@ -8,12 +8,12 @@ part of 'nft_callback_payload.dart';
 
 _NftCallbackPayload _$NftCallbackPayloadFromJson(Map<String, dynamic> json) =>
     _NftCallbackPayload(
-      value: amountJsonConverter.fromJson(json['value'] as String),
+      value: BigInt.parse(json['value'] as String),
       payload: json['payload'] as String,
     );
 
 Map<String, dynamic> _$NftCallbackPayloadToJson(_NftCallbackPayload instance) =>
     <String, dynamic>{
-      'value': amountJsonConverter.toJson(instance.value),
+      'value': instance.value.toString(),
       'payload': instance.payload,
     };

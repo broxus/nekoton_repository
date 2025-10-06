@@ -14,7 +14,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$TokenWalletOrdinaryTransaction {
 
- String get lt; bool get isOutgoing;@amountJsonConverter BigInt get value; Address get address;@dateSecondsSinceEpochJsonConverter DateTime get date;@amountJsonConverter BigInt get fees; String get hash; String? get prevTransactionLt; TokenIncomingTransfer? get incomingTransfer; TokenOutgoingTransfer? get outgoingTransfer; TokenSwapBack? get swapBack;@amountJsonConverter BigInt? get accept;@amountJsonConverter BigInt? get transferBounced;@amountJsonConverter BigInt? get swapBackBounced; JettonIncomingTransfer? get jettonIncomingTransfer; JettonOutgoingTransfer? get jettonOutgoingTransfer;
+ String get lt; bool get isOutgoing; BigInt get value; Address get address;@dateSecondsSinceEpochJsonConverter DateTime get date; BigInt get fees; String get hash; String? get prevTransactionLt; TokenIncomingTransfer? get incomingTransfer; TokenOutgoingTransfer? get outgoingTransfer; TokenSwapBack? get swapBack; BigInt? get accept; BigInt? get transferBounced; BigInt? get swapBackBounced; JettonIncomingTransfer? get jettonIncomingTransfer; JettonOutgoingTransfer? get jettonOutgoingTransfer;
 /// Create a copy of TokenWalletOrdinaryTransaction
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -45,7 +45,7 @@ abstract mixin class $TokenWalletOrdinaryTransactionCopyWith<$Res>  {
   factory $TokenWalletOrdinaryTransactionCopyWith(TokenWalletOrdinaryTransaction value, $Res Function(TokenWalletOrdinaryTransaction) _then) = _$TokenWalletOrdinaryTransactionCopyWithImpl;
 @useResult
 $Res call({
- String lt, bool isOutgoing,@amountJsonConverter BigInt value, Address address,@dateSecondsSinceEpochJsonConverter DateTime date,@amountJsonConverter BigInt fees, String hash, String? prevTransactionLt, TokenIncomingTransfer? incomingTransfer, TokenOutgoingTransfer? outgoingTransfer, TokenSwapBack? swapBack,@amountJsonConverter BigInt? accept,@amountJsonConverter BigInt? transferBounced,@amountJsonConverter BigInt? swapBackBounced, JettonIncomingTransfer? jettonIncomingTransfer, JettonOutgoingTransfer? jettonOutgoingTransfer
+ String lt, bool isOutgoing, BigInt value, Address address,@dateSecondsSinceEpochJsonConverter DateTime date, BigInt fees, String hash, String? prevTransactionLt, TokenIncomingTransfer? incomingTransfer, TokenOutgoingTransfer? outgoingTransfer, TokenSwapBack? swapBack, BigInt? accept, BigInt? transferBounced, BigInt? swapBackBounced, JettonIncomingTransfer? jettonIncomingTransfer, JettonOutgoingTransfer? jettonOutgoingTransfer
 });
 
 
@@ -234,7 +234,7 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String lt,  bool isOutgoing, @amountJsonConverter  BigInt value,  Address address, @dateSecondsSinceEpochJsonConverter  DateTime date, @amountJsonConverter  BigInt fees,  String hash,  String? prevTransactionLt,  TokenIncomingTransfer? incomingTransfer,  TokenOutgoingTransfer? outgoingTransfer,  TokenSwapBack? swapBack, @amountJsonConverter  BigInt? accept, @amountJsonConverter  BigInt? transferBounced, @amountJsonConverter  BigInt? swapBackBounced,  JettonIncomingTransfer? jettonIncomingTransfer,  JettonOutgoingTransfer? jettonOutgoingTransfer)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String lt,  bool isOutgoing,  BigInt value,  Address address, @dateSecondsSinceEpochJsonConverter  DateTime date,  BigInt fees,  String hash,  String? prevTransactionLt,  TokenIncomingTransfer? incomingTransfer,  TokenOutgoingTransfer? outgoingTransfer,  TokenSwapBack? swapBack,  BigInt? accept,  BigInt? transferBounced,  BigInt? swapBackBounced,  JettonIncomingTransfer? jettonIncomingTransfer,  JettonOutgoingTransfer? jettonOutgoingTransfer)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _TokenWalletOrdinaryTransaction() when $default != null:
 return $default(_that.lt,_that.isOutgoing,_that.value,_that.address,_that.date,_that.fees,_that.hash,_that.prevTransactionLt,_that.incomingTransfer,_that.outgoingTransfer,_that.swapBack,_that.accept,_that.transferBounced,_that.swapBackBounced,_that.jettonIncomingTransfer,_that.jettonOutgoingTransfer);case _:
@@ -255,7 +255,7 @@ return $default(_that.lt,_that.isOutgoing,_that.value,_that.address,_that.date,_
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String lt,  bool isOutgoing, @amountJsonConverter  BigInt value,  Address address, @dateSecondsSinceEpochJsonConverter  DateTime date, @amountJsonConverter  BigInt fees,  String hash,  String? prevTransactionLt,  TokenIncomingTransfer? incomingTransfer,  TokenOutgoingTransfer? outgoingTransfer,  TokenSwapBack? swapBack, @amountJsonConverter  BigInt? accept, @amountJsonConverter  BigInt? transferBounced, @amountJsonConverter  BigInt? swapBackBounced,  JettonIncomingTransfer? jettonIncomingTransfer,  JettonOutgoingTransfer? jettonOutgoingTransfer)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String lt,  bool isOutgoing,  BigInt value,  Address address, @dateSecondsSinceEpochJsonConverter  DateTime date,  BigInt fees,  String hash,  String? prevTransactionLt,  TokenIncomingTransfer? incomingTransfer,  TokenOutgoingTransfer? outgoingTransfer,  TokenSwapBack? swapBack,  BigInt? accept,  BigInt? transferBounced,  BigInt? swapBackBounced,  JettonIncomingTransfer? jettonIncomingTransfer,  JettonOutgoingTransfer? jettonOutgoingTransfer)  $default,) {final _that = this;
 switch (_that) {
 case _TokenWalletOrdinaryTransaction():
 return $default(_that.lt,_that.isOutgoing,_that.value,_that.address,_that.date,_that.fees,_that.hash,_that.prevTransactionLt,_that.incomingTransfer,_that.outgoingTransfer,_that.swapBack,_that.accept,_that.transferBounced,_that.swapBackBounced,_that.jettonIncomingTransfer,_that.jettonOutgoingTransfer);case _:
@@ -275,7 +275,7 @@ return $default(_that.lt,_that.isOutgoing,_that.value,_that.address,_that.date,_
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String lt,  bool isOutgoing, @amountJsonConverter  BigInt value,  Address address, @dateSecondsSinceEpochJsonConverter  DateTime date, @amountJsonConverter  BigInt fees,  String hash,  String? prevTransactionLt,  TokenIncomingTransfer? incomingTransfer,  TokenOutgoingTransfer? outgoingTransfer,  TokenSwapBack? swapBack, @amountJsonConverter  BigInt? accept, @amountJsonConverter  BigInt? transferBounced, @amountJsonConverter  BigInt? swapBackBounced,  JettonIncomingTransfer? jettonIncomingTransfer,  JettonOutgoingTransfer? jettonOutgoingTransfer)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String lt,  bool isOutgoing,  BigInt value,  Address address, @dateSecondsSinceEpochJsonConverter  DateTime date,  BigInt fees,  String hash,  String? prevTransactionLt,  TokenIncomingTransfer? incomingTransfer,  TokenOutgoingTransfer? outgoingTransfer,  TokenSwapBack? swapBack,  BigInt? accept,  BigInt? transferBounced,  BigInt? swapBackBounced,  JettonIncomingTransfer? jettonIncomingTransfer,  JettonOutgoingTransfer? jettonOutgoingTransfer)?  $default,) {final _that = this;
 switch (_that) {
 case _TokenWalletOrdinaryTransaction() when $default != null:
 return $default(_that.lt,_that.isOutgoing,_that.value,_that.address,_that.date,_that.fees,_that.hash,_that.prevTransactionLt,_that.incomingTransfer,_that.outgoingTransfer,_that.swapBack,_that.accept,_that.transferBounced,_that.swapBackBounced,_that.jettonIncomingTransfer,_that.jettonOutgoingTransfer);case _:
@@ -290,23 +290,23 @@ return $default(_that.lt,_that.isOutgoing,_that.value,_that.address,_that.date,_
 
 
 class _TokenWalletOrdinaryTransaction implements TokenWalletOrdinaryTransaction {
-  const _TokenWalletOrdinaryTransaction({required this.lt, required this.isOutgoing, @amountJsonConverter required this.value, required this.address, @dateSecondsSinceEpochJsonConverter required this.date, @amountJsonConverter required this.fees, required this.hash, this.prevTransactionLt, this.incomingTransfer, this.outgoingTransfer, this.swapBack, @amountJsonConverter this.accept, @amountJsonConverter this.transferBounced, @amountJsonConverter this.swapBackBounced, this.jettonIncomingTransfer, this.jettonOutgoingTransfer});
+  const _TokenWalletOrdinaryTransaction({required this.lt, required this.isOutgoing, required this.value, required this.address, @dateSecondsSinceEpochJsonConverter required this.date, required this.fees, required this.hash, this.prevTransactionLt, this.incomingTransfer, this.outgoingTransfer, this.swapBack, this.accept, this.transferBounced, this.swapBackBounced, this.jettonIncomingTransfer, this.jettonOutgoingTransfer});
   
 
 @override final  String lt;
 @override final  bool isOutgoing;
-@override@amountJsonConverter final  BigInt value;
+@override final  BigInt value;
 @override final  Address address;
 @override@dateSecondsSinceEpochJsonConverter final  DateTime date;
-@override@amountJsonConverter final  BigInt fees;
+@override final  BigInt fees;
 @override final  String hash;
 @override final  String? prevTransactionLt;
 @override final  TokenIncomingTransfer? incomingTransfer;
 @override final  TokenOutgoingTransfer? outgoingTransfer;
 @override final  TokenSwapBack? swapBack;
-@override@amountJsonConverter final  BigInt? accept;
-@override@amountJsonConverter final  BigInt? transferBounced;
-@override@amountJsonConverter final  BigInt? swapBackBounced;
+@override final  BigInt? accept;
+@override final  BigInt? transferBounced;
+@override final  BigInt? swapBackBounced;
 @override final  JettonIncomingTransfer? jettonIncomingTransfer;
 @override final  JettonOutgoingTransfer? jettonOutgoingTransfer;
 
@@ -340,7 +340,7 @@ abstract mixin class _$TokenWalletOrdinaryTransactionCopyWith<$Res> implements $
   factory _$TokenWalletOrdinaryTransactionCopyWith(_TokenWalletOrdinaryTransaction value, $Res Function(_TokenWalletOrdinaryTransaction) _then) = __$TokenWalletOrdinaryTransactionCopyWithImpl;
 @override @useResult
 $Res call({
- String lt, bool isOutgoing,@amountJsonConverter BigInt value, Address address,@dateSecondsSinceEpochJsonConverter DateTime date,@amountJsonConverter BigInt fees, String hash, String? prevTransactionLt, TokenIncomingTransfer? incomingTransfer, TokenOutgoingTransfer? outgoingTransfer, TokenSwapBack? swapBack,@amountJsonConverter BigInt? accept,@amountJsonConverter BigInt? transferBounced,@amountJsonConverter BigInt? swapBackBounced, JettonIncomingTransfer? jettonIncomingTransfer, JettonOutgoingTransfer? jettonOutgoingTransfer
+ String lt, bool isOutgoing, BigInt value, Address address,@dateSecondsSinceEpochJsonConverter DateTime date, BigInt fees, String hash, String? prevTransactionLt, TokenIncomingTransfer? incomingTransfer, TokenOutgoingTransfer? outgoingTransfer, TokenSwapBack? swapBack, BigInt? accept, BigInt? transferBounced, BigInt? swapBackBounced, JettonIncomingTransfer? jettonIncomingTransfer, JettonOutgoingTransfer? jettonOutgoingTransfer
 });
 
 

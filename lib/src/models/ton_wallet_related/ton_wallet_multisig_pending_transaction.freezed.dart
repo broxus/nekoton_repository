@@ -18,9 +18,9 @@ mixin _$TonWalletMultisigPendingTransaction {
  PublicKey get creator;// custodians who accepted this transaction
  List<PublicKey> get confirmations;// list of possible custodians for account
  List<PublicKey> get custodians;// if this transaction was sent from this wallet
- bool get isOutgoing;@amountJsonConverter BigInt get value;// address of destination or source depends on isOutgoing
+ bool get isOutgoing; BigInt get value;// address of destination or source depends on isOutgoing
  Address get address;// address of account for which this transaction was found
- Address get walletAddress; DateTime get date;@amountJsonConverter BigInt get fees; String get hash; int get signsReceived; int get signsRequired; String get transactionId;// local custodians that can confirm transaction
+ Address get walletAddress; DateTime get date; BigInt get fees; String get hash; int get signsReceived; int get signsRequired; String get transactionId;// local custodians that can confirm transaction
  List<PublicKey> get nonConfirmedLocalCustodians;// if user can confirm this transaction (not confirmed earlier)
  bool get canConfirm;// date and time of transaction expiration
  DateTime get expireAt; String? get comment; String? get prevTransactionLt; DePoolOnRoundCompleteNotification? get dePoolOnRoundCompleteNotification; DePoolReceiveAnswerNotification? get dePoolReceiveAnswerNotification; TokenWalletDeployedNotification? get tokenWalletDeployedNotification; WalletInteractionInfo? get walletInteractionInfo;
@@ -54,7 +54,7 @@ abstract mixin class $TonWalletMultisigPendingTransactionCopyWith<$Res>  {
   factory $TonWalletMultisigPendingTransactionCopyWith(TonWalletMultisigPendingTransaction value, $Res Function(TonWalletMultisigPendingTransaction) _then) = _$TonWalletMultisigPendingTransactionCopyWithImpl;
 @useResult
 $Res call({
- String lt, PublicKey creator, List<PublicKey> confirmations, List<PublicKey> custodians, bool isOutgoing,@amountJsonConverter BigInt value, Address address, Address walletAddress, DateTime date,@amountJsonConverter BigInt fees, String hash, int signsReceived, int signsRequired, String transactionId, List<PublicKey> nonConfirmedLocalCustodians, bool canConfirm, DateTime expireAt, String? comment, String? prevTransactionLt, DePoolOnRoundCompleteNotification? dePoolOnRoundCompleteNotification, DePoolReceiveAnswerNotification? dePoolReceiveAnswerNotification, TokenWalletDeployedNotification? tokenWalletDeployedNotification, WalletInteractionInfo? walletInteractionInfo
+ String lt, PublicKey creator, List<PublicKey> confirmations, List<PublicKey> custodians, bool isOutgoing, BigInt value, Address address, Address walletAddress, DateTime date, BigInt fees, String hash, int signsReceived, int signsRequired, String transactionId, List<PublicKey> nonConfirmedLocalCustodians, bool canConfirm, DateTime expireAt, String? comment, String? prevTransactionLt, DePoolOnRoundCompleteNotification? dePoolOnRoundCompleteNotification, DePoolReceiveAnswerNotification? dePoolReceiveAnswerNotification, TokenWalletDeployedNotification? tokenWalletDeployedNotification, WalletInteractionInfo? walletInteractionInfo
 });
 
 
@@ -256,7 +256,7 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String lt,  PublicKey creator,  List<PublicKey> confirmations,  List<PublicKey> custodians,  bool isOutgoing, @amountJsonConverter  BigInt value,  Address address,  Address walletAddress,  DateTime date, @amountJsonConverter  BigInt fees,  String hash,  int signsReceived,  int signsRequired,  String transactionId,  List<PublicKey> nonConfirmedLocalCustodians,  bool canConfirm,  DateTime expireAt,  String? comment,  String? prevTransactionLt,  DePoolOnRoundCompleteNotification? dePoolOnRoundCompleteNotification,  DePoolReceiveAnswerNotification? dePoolReceiveAnswerNotification,  TokenWalletDeployedNotification? tokenWalletDeployedNotification,  WalletInteractionInfo? walletInteractionInfo)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String lt,  PublicKey creator,  List<PublicKey> confirmations,  List<PublicKey> custodians,  bool isOutgoing,  BigInt value,  Address address,  Address walletAddress,  DateTime date,  BigInt fees,  String hash,  int signsReceived,  int signsRequired,  String transactionId,  List<PublicKey> nonConfirmedLocalCustodians,  bool canConfirm,  DateTime expireAt,  String? comment,  String? prevTransactionLt,  DePoolOnRoundCompleteNotification? dePoolOnRoundCompleteNotification,  DePoolReceiveAnswerNotification? dePoolReceiveAnswerNotification,  TokenWalletDeployedNotification? tokenWalletDeployedNotification,  WalletInteractionInfo? walletInteractionInfo)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _TonWalletMultisigPendingTransaction() when $default != null:
 return $default(_that.lt,_that.creator,_that.confirmations,_that.custodians,_that.isOutgoing,_that.value,_that.address,_that.walletAddress,_that.date,_that.fees,_that.hash,_that.signsReceived,_that.signsRequired,_that.transactionId,_that.nonConfirmedLocalCustodians,_that.canConfirm,_that.expireAt,_that.comment,_that.prevTransactionLt,_that.dePoolOnRoundCompleteNotification,_that.dePoolReceiveAnswerNotification,_that.tokenWalletDeployedNotification,_that.walletInteractionInfo);case _:
@@ -277,7 +277,7 @@ return $default(_that.lt,_that.creator,_that.confirmations,_that.custodians,_tha
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String lt,  PublicKey creator,  List<PublicKey> confirmations,  List<PublicKey> custodians,  bool isOutgoing, @amountJsonConverter  BigInt value,  Address address,  Address walletAddress,  DateTime date, @amountJsonConverter  BigInt fees,  String hash,  int signsReceived,  int signsRequired,  String transactionId,  List<PublicKey> nonConfirmedLocalCustodians,  bool canConfirm,  DateTime expireAt,  String? comment,  String? prevTransactionLt,  DePoolOnRoundCompleteNotification? dePoolOnRoundCompleteNotification,  DePoolReceiveAnswerNotification? dePoolReceiveAnswerNotification,  TokenWalletDeployedNotification? tokenWalletDeployedNotification,  WalletInteractionInfo? walletInteractionInfo)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String lt,  PublicKey creator,  List<PublicKey> confirmations,  List<PublicKey> custodians,  bool isOutgoing,  BigInt value,  Address address,  Address walletAddress,  DateTime date,  BigInt fees,  String hash,  int signsReceived,  int signsRequired,  String transactionId,  List<PublicKey> nonConfirmedLocalCustodians,  bool canConfirm,  DateTime expireAt,  String? comment,  String? prevTransactionLt,  DePoolOnRoundCompleteNotification? dePoolOnRoundCompleteNotification,  DePoolReceiveAnswerNotification? dePoolReceiveAnswerNotification,  TokenWalletDeployedNotification? tokenWalletDeployedNotification,  WalletInteractionInfo? walletInteractionInfo)  $default,) {final _that = this;
 switch (_that) {
 case _TonWalletMultisigPendingTransaction():
 return $default(_that.lt,_that.creator,_that.confirmations,_that.custodians,_that.isOutgoing,_that.value,_that.address,_that.walletAddress,_that.date,_that.fees,_that.hash,_that.signsReceived,_that.signsRequired,_that.transactionId,_that.nonConfirmedLocalCustodians,_that.canConfirm,_that.expireAt,_that.comment,_that.prevTransactionLt,_that.dePoolOnRoundCompleteNotification,_that.dePoolReceiveAnswerNotification,_that.tokenWalletDeployedNotification,_that.walletInteractionInfo);case _:
@@ -297,7 +297,7 @@ return $default(_that.lt,_that.creator,_that.confirmations,_that.custodians,_tha
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String lt,  PublicKey creator,  List<PublicKey> confirmations,  List<PublicKey> custodians,  bool isOutgoing, @amountJsonConverter  BigInt value,  Address address,  Address walletAddress,  DateTime date, @amountJsonConverter  BigInt fees,  String hash,  int signsReceived,  int signsRequired,  String transactionId,  List<PublicKey> nonConfirmedLocalCustodians,  bool canConfirm,  DateTime expireAt,  String? comment,  String? prevTransactionLt,  DePoolOnRoundCompleteNotification? dePoolOnRoundCompleteNotification,  DePoolReceiveAnswerNotification? dePoolReceiveAnswerNotification,  TokenWalletDeployedNotification? tokenWalletDeployedNotification,  WalletInteractionInfo? walletInteractionInfo)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String lt,  PublicKey creator,  List<PublicKey> confirmations,  List<PublicKey> custodians,  bool isOutgoing,  BigInt value,  Address address,  Address walletAddress,  DateTime date,  BigInt fees,  String hash,  int signsReceived,  int signsRequired,  String transactionId,  List<PublicKey> nonConfirmedLocalCustodians,  bool canConfirm,  DateTime expireAt,  String? comment,  String? prevTransactionLt,  DePoolOnRoundCompleteNotification? dePoolOnRoundCompleteNotification,  DePoolReceiveAnswerNotification? dePoolReceiveAnswerNotification,  TokenWalletDeployedNotification? tokenWalletDeployedNotification,  WalletInteractionInfo? walletInteractionInfo)?  $default,) {final _that = this;
 switch (_that) {
 case _TonWalletMultisigPendingTransaction() when $default != null:
 return $default(_that.lt,_that.creator,_that.confirmations,_that.custodians,_that.isOutgoing,_that.value,_that.address,_that.walletAddress,_that.date,_that.fees,_that.hash,_that.signsReceived,_that.signsRequired,_that.transactionId,_that.nonConfirmedLocalCustodians,_that.canConfirm,_that.expireAt,_that.comment,_that.prevTransactionLt,_that.dePoolOnRoundCompleteNotification,_that.dePoolReceiveAnswerNotification,_that.tokenWalletDeployedNotification,_that.walletInteractionInfo);case _:
@@ -312,7 +312,7 @@ return $default(_that.lt,_that.creator,_that.confirmations,_that.custodians,_tha
 
 
 class _TonWalletMultisigPendingTransaction implements TonWalletMultisigPendingTransaction {
-  const _TonWalletMultisigPendingTransaction({required this.lt, required this.creator, required final  List<PublicKey> confirmations, required final  List<PublicKey> custodians, required this.isOutgoing, @amountJsonConverter required this.value, required this.address, required this.walletAddress, required this.date, @amountJsonConverter required this.fees, required this.hash, required this.signsReceived, required this.signsRequired, required this.transactionId, required final  List<PublicKey> nonConfirmedLocalCustodians, required this.canConfirm, required this.expireAt, this.comment, this.prevTransactionLt, this.dePoolOnRoundCompleteNotification, this.dePoolReceiveAnswerNotification, this.tokenWalletDeployedNotification, this.walletInteractionInfo}): _confirmations = confirmations,_custodians = custodians,_nonConfirmedLocalCustodians = nonConfirmedLocalCustodians;
+  const _TonWalletMultisigPendingTransaction({required this.lt, required this.creator, required final  List<PublicKey> confirmations, required final  List<PublicKey> custodians, required this.isOutgoing, required this.value, required this.address, required this.walletAddress, required this.date, required this.fees, required this.hash, required this.signsReceived, required this.signsRequired, required this.transactionId, required final  List<PublicKey> nonConfirmedLocalCustodians, required this.canConfirm, required this.expireAt, this.comment, this.prevTransactionLt, this.dePoolOnRoundCompleteNotification, this.dePoolReceiveAnswerNotification, this.tokenWalletDeployedNotification, this.walletInteractionInfo}): _confirmations = confirmations,_custodians = custodians,_nonConfirmedLocalCustodians = nonConfirmedLocalCustodians;
   
 
 @override final  String lt;
@@ -338,13 +338,13 @@ class _TonWalletMultisigPendingTransaction implements TonWalletMultisigPendingTr
 
 // if this transaction was sent from this wallet
 @override final  bool isOutgoing;
-@override@amountJsonConverter final  BigInt value;
+@override final  BigInt value;
 // address of destination or source depends on isOutgoing
 @override final  Address address;
 // address of account for which this transaction was found
 @override final  Address walletAddress;
 @override final  DateTime date;
-@override@amountJsonConverter final  BigInt fees;
+@override final  BigInt fees;
 @override final  String hash;
 @override final  int signsReceived;
 @override final  int signsRequired;
@@ -399,7 +399,7 @@ abstract mixin class _$TonWalletMultisigPendingTransactionCopyWith<$Res> impleme
   factory _$TonWalletMultisigPendingTransactionCopyWith(_TonWalletMultisigPendingTransaction value, $Res Function(_TonWalletMultisigPendingTransaction) _then) = __$TonWalletMultisigPendingTransactionCopyWithImpl;
 @override @useResult
 $Res call({
- String lt, PublicKey creator, List<PublicKey> confirmations, List<PublicKey> custodians, bool isOutgoing,@amountJsonConverter BigInt value, Address address, Address walletAddress, DateTime date,@amountJsonConverter BigInt fees, String hash, int signsReceived, int signsRequired, String transactionId, List<PublicKey> nonConfirmedLocalCustodians, bool canConfirm, DateTime expireAt, String? comment, String? prevTransactionLt, DePoolOnRoundCompleteNotification? dePoolOnRoundCompleteNotification, DePoolReceiveAnswerNotification? dePoolReceiveAnswerNotification, TokenWalletDeployedNotification? tokenWalletDeployedNotification, WalletInteractionInfo? walletInteractionInfo
+ String lt, PublicKey creator, List<PublicKey> confirmations, List<PublicKey> custodians, bool isOutgoing, BigInt value, Address address, Address walletAddress, DateTime date, BigInt fees, String hash, int signsReceived, int signsRequired, String transactionId, List<PublicKey> nonConfirmedLocalCustodians, bool canConfirm, DateTime expireAt, String? comment, String? prevTransactionLt, DePoolOnRoundCompleteNotification? dePoolOnRoundCompleteNotification, DePoolReceiveAnswerNotification? dePoolReceiveAnswerNotification, TokenWalletDeployedNotification? tokenWalletDeployedNotification, WalletInteractionInfo? walletInteractionInfo
 });
 
 

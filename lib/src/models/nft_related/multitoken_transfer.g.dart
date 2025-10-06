@@ -11,7 +11,7 @@ _MultitokenTransfer _$MultitokenTransferFromJson(Map<String, dynamic> json) =>
       tokenId: json['tokenId'] as String,
       collection: Address.fromJson(json['collection'] as String),
       sender: Address.fromJson(json['sender'] as String),
-      count: amountJsonConverter.fromJson(json['count'] as String),
+      count: BigInt.parse(json['count'] as String),
     );
 
 Map<String, dynamic> _$MultitokenTransferToJson(_MultitokenTransfer instance) =>
@@ -19,5 +19,5 @@ Map<String, dynamic> _$MultitokenTransferToJson(_MultitokenTransfer instance) =>
       'tokenId': instance.tokenId,
       'collection': instance.collection.toJson(),
       'sender': instance.sender.toJson(),
-      'count': amountJsonConverter.toJson(instance.count),
+      'count': instance.count.toString(),
     };

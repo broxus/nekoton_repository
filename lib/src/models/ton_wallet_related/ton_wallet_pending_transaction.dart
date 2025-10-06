@@ -15,7 +15,7 @@ abstract class TonWalletPendingTransaction with _$TonWalletPendingTransaction {
     required DateTime expireAt,
     // address for which tokens was sent
     required final Address destination,
-    @amountJsonConverter required final BigInt amount,
+    required final BigInt amount,
     required String messageHash,
     // flag if this transaction was sent to this wallet
     required bool isIncoming,

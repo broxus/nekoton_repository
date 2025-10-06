@@ -586,7 +586,7 @@ mixin SeedKeyRepositoryImpl implements SeedKeyRepository {
       keyStore.signData(data: data, input: signInput, signatureId: signatureId);
 
   @override
-  Future<SignedDataRaw> signRawData({
+  Future<SignedDataRaw> signDataRaw({
     required String data,
     required SignInput signInput,
     required int? signatureId,

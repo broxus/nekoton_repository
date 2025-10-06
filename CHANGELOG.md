@@ -3,6 +3,81 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## 2025-10-02
+
+### Changes
+
+---
+
+Packages with breaking changes:
+
+ - There are no breaking changes in this release.
+
+Packages with other changes:
+
+ - [`nekoton_repository` - `v1.7.0`](#nekoton_repository---v170)
+
+---
+
+#### `nekoton_repository` - `v1.7.0`
+
+ - **FEAT**: update `flutter_nekoton_bridge` dependency to version 3.6.0.
+
+## 1.7.0
+
+ - **FEAT**: update `flutter_nekoton_bridge` dependency to version 3.6.0.
+
+
+## 2025-09-22
+
+### Changes
+
+---
+
+Packages with breaking changes:
+
+ - There are no breaking changes in this release.
+
+Packages with other changes:
+
+ - [`nekoton_repository` - `v1.6.0`](#nekoton_repository---v160)
+
+---
+
+#### `nekoton_repository` - `v1.6.0`
+
+ - **FEAT**: add `remainingGasTo` parameter and update `flutter_nekoton_bridge` dependency.
+
+## 1.6.0
+
+ - **FEAT**: add `remainingGasTo` parameter and update `flutter_nekoton_bridge` dependency.
+
+
+## 2025-09-19
+
+### Changes
+
+---
+
+Packages with breaking changes:
+
+ - There are no breaking changes in this release.
+
+Packages with other changes:
+
+ - [`nekoton_repository` - `v1.5.2`](#nekoton_repository---v152)
+
+---
+
+#### `nekoton_repository` - `v1.5.2`
+
+ - **FIX**: correct message value calculation for outgoing transactions.
+
+## 1.5.2
+
+ - **FIX**: correct message value calculation for outgoing transactions.
+
+
 ## 2025-09-17
 
 ### Changes
@@ -55,6 +130,25 @@ Packages with other changes:
 > Note: This release has breaking changes.
 
  - **BREAKING** **CHORE**: update `flutter_nekoton_bridge` to version 4.0.0; update `freezed_annotation`;.
+ - There are no breaking changes in this release.
+
+Packages with other changes:
+
+ - [`nekoton_repository` - `v1.5.1`](#nekoton_repository---v151)
+
+---
+
+#### `nekoton_repository` - `v1.5.1`
+
+ - **REFACTOR**: rename signRawData to signDataRaw for consistency.
+ - **REFACTOR**: remove redundant json converters.
+ - **FIX**: calc out messages total value; update flutter_nekoton_bridge dependency to version 3.4.0.
+
+## 1.5.1
+
+ - **REFACTOR**: rename signRawData to signDataRaw for consistency.
+ - **REFACTOR**: remove redundant json converters.
+ - **FIX**: calc out messages total value; update flutter_nekoton_bridge dependency to version 3.4.0.
 
 
 ## 2025-08-22

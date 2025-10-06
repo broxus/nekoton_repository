@@ -18,8 +18,8 @@ mixin _$TonWalletMultisigOrdinaryTransaction {
  PublicKey get creator;// custodians who accepted this transaction
  List<PublicKey> get confirmations;// list of possible custodians
  List<PublicKey> get custodians;// if this transaction was sent from this wallet
- bool get isOutgoing;@amountJsonConverter BigInt get value;// address of destination or source depends on isOutgoing
- Address get address;@dateSecondsSinceEpochJsonConverter DateTime get date;@amountJsonConverter BigInt get fees; String get hash; String? get comment; String? get prevTransactionLt; DePoolOnRoundCompleteNotification? get dePoolOnRoundCompleteNotification; DePoolReceiveAnswerNotification? get dePoolReceiveAnswerNotification; TokenWalletDeployedNotification? get tokenWalletDeployedNotification; WalletInteractionInfo? get walletInteractionInfo;
+ bool get isOutgoing; BigInt get value;// address of destination or source depends on isOutgoing
+ Address get address;@dateSecondsSinceEpochJsonConverter DateTime get date; BigInt get fees; String get hash; String? get comment; String? get prevTransactionLt; DePoolOnRoundCompleteNotification? get dePoolOnRoundCompleteNotification; DePoolReceiveAnswerNotification? get dePoolReceiveAnswerNotification; TokenWalletDeployedNotification? get tokenWalletDeployedNotification; WalletInteractionInfo? get walletInteractionInfo;
 /// Create a copy of TonWalletMultisigOrdinaryTransaction
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -50,7 +50,7 @@ abstract mixin class $TonWalletMultisigOrdinaryTransactionCopyWith<$Res>  {
   factory $TonWalletMultisigOrdinaryTransactionCopyWith(TonWalletMultisigOrdinaryTransaction value, $Res Function(TonWalletMultisigOrdinaryTransaction) _then) = _$TonWalletMultisigOrdinaryTransactionCopyWithImpl;
 @useResult
 $Res call({
- String lt, PublicKey creator, List<PublicKey> confirmations, List<PublicKey> custodians, bool isOutgoing,@amountJsonConverter BigInt value, Address address,@dateSecondsSinceEpochJsonConverter DateTime date,@amountJsonConverter BigInt fees, String hash, String? comment, String? prevTransactionLt, DePoolOnRoundCompleteNotification? dePoolOnRoundCompleteNotification, DePoolReceiveAnswerNotification? dePoolReceiveAnswerNotification, TokenWalletDeployedNotification? tokenWalletDeployedNotification, WalletInteractionInfo? walletInteractionInfo
+ String lt, PublicKey creator, List<PublicKey> confirmations, List<PublicKey> custodians, bool isOutgoing, BigInt value, Address address,@dateSecondsSinceEpochJsonConverter DateTime date, BigInt fees, String hash, String? comment, String? prevTransactionLt, DePoolOnRoundCompleteNotification? dePoolOnRoundCompleteNotification, DePoolReceiveAnswerNotification? dePoolReceiveAnswerNotification, TokenWalletDeployedNotification? tokenWalletDeployedNotification, WalletInteractionInfo? walletInteractionInfo
 });
 
 
@@ -236,7 +236,7 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String lt,  PublicKey creator,  List<PublicKey> confirmations,  List<PublicKey> custodians,  bool isOutgoing, @amountJsonConverter  BigInt value,  Address address, @dateSecondsSinceEpochJsonConverter  DateTime date, @amountJsonConverter  BigInt fees,  String hash,  String? comment,  String? prevTransactionLt,  DePoolOnRoundCompleteNotification? dePoolOnRoundCompleteNotification,  DePoolReceiveAnswerNotification? dePoolReceiveAnswerNotification,  TokenWalletDeployedNotification? tokenWalletDeployedNotification,  WalletInteractionInfo? walletInteractionInfo)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String lt,  PublicKey creator,  List<PublicKey> confirmations,  List<PublicKey> custodians,  bool isOutgoing,  BigInt value,  Address address, @dateSecondsSinceEpochJsonConverter  DateTime date,  BigInt fees,  String hash,  String? comment,  String? prevTransactionLt,  DePoolOnRoundCompleteNotification? dePoolOnRoundCompleteNotification,  DePoolReceiveAnswerNotification? dePoolReceiveAnswerNotification,  TokenWalletDeployedNotification? tokenWalletDeployedNotification,  WalletInteractionInfo? walletInteractionInfo)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _TonWalletMultisigOrdinaryTransaction() when $default != null:
 return $default(_that.lt,_that.creator,_that.confirmations,_that.custodians,_that.isOutgoing,_that.value,_that.address,_that.date,_that.fees,_that.hash,_that.comment,_that.prevTransactionLt,_that.dePoolOnRoundCompleteNotification,_that.dePoolReceiveAnswerNotification,_that.tokenWalletDeployedNotification,_that.walletInteractionInfo);case _:
@@ -257,7 +257,7 @@ return $default(_that.lt,_that.creator,_that.confirmations,_that.custodians,_tha
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String lt,  PublicKey creator,  List<PublicKey> confirmations,  List<PublicKey> custodians,  bool isOutgoing, @amountJsonConverter  BigInt value,  Address address, @dateSecondsSinceEpochJsonConverter  DateTime date, @amountJsonConverter  BigInt fees,  String hash,  String? comment,  String? prevTransactionLt,  DePoolOnRoundCompleteNotification? dePoolOnRoundCompleteNotification,  DePoolReceiveAnswerNotification? dePoolReceiveAnswerNotification,  TokenWalletDeployedNotification? tokenWalletDeployedNotification,  WalletInteractionInfo? walletInteractionInfo)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String lt,  PublicKey creator,  List<PublicKey> confirmations,  List<PublicKey> custodians,  bool isOutgoing,  BigInt value,  Address address, @dateSecondsSinceEpochJsonConverter  DateTime date,  BigInt fees,  String hash,  String? comment,  String? prevTransactionLt,  DePoolOnRoundCompleteNotification? dePoolOnRoundCompleteNotification,  DePoolReceiveAnswerNotification? dePoolReceiveAnswerNotification,  TokenWalletDeployedNotification? tokenWalletDeployedNotification,  WalletInteractionInfo? walletInteractionInfo)  $default,) {final _that = this;
 switch (_that) {
 case _TonWalletMultisigOrdinaryTransaction():
 return $default(_that.lt,_that.creator,_that.confirmations,_that.custodians,_that.isOutgoing,_that.value,_that.address,_that.date,_that.fees,_that.hash,_that.comment,_that.prevTransactionLt,_that.dePoolOnRoundCompleteNotification,_that.dePoolReceiveAnswerNotification,_that.tokenWalletDeployedNotification,_that.walletInteractionInfo);case _:
@@ -277,7 +277,7 @@ return $default(_that.lt,_that.creator,_that.confirmations,_that.custodians,_tha
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String lt,  PublicKey creator,  List<PublicKey> confirmations,  List<PublicKey> custodians,  bool isOutgoing, @amountJsonConverter  BigInt value,  Address address, @dateSecondsSinceEpochJsonConverter  DateTime date, @amountJsonConverter  BigInt fees,  String hash,  String? comment,  String? prevTransactionLt,  DePoolOnRoundCompleteNotification? dePoolOnRoundCompleteNotification,  DePoolReceiveAnswerNotification? dePoolReceiveAnswerNotification,  TokenWalletDeployedNotification? tokenWalletDeployedNotification,  WalletInteractionInfo? walletInteractionInfo)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String lt,  PublicKey creator,  List<PublicKey> confirmations,  List<PublicKey> custodians,  bool isOutgoing,  BigInt value,  Address address, @dateSecondsSinceEpochJsonConverter  DateTime date,  BigInt fees,  String hash,  String? comment,  String? prevTransactionLt,  DePoolOnRoundCompleteNotification? dePoolOnRoundCompleteNotification,  DePoolReceiveAnswerNotification? dePoolReceiveAnswerNotification,  TokenWalletDeployedNotification? tokenWalletDeployedNotification,  WalletInteractionInfo? walletInteractionInfo)?  $default,) {final _that = this;
 switch (_that) {
 case _TonWalletMultisigOrdinaryTransaction() when $default != null:
 return $default(_that.lt,_that.creator,_that.confirmations,_that.custodians,_that.isOutgoing,_that.value,_that.address,_that.date,_that.fees,_that.hash,_that.comment,_that.prevTransactionLt,_that.dePoolOnRoundCompleteNotification,_that.dePoolReceiveAnswerNotification,_that.tokenWalletDeployedNotification,_that.walletInteractionInfo);case _:
@@ -292,7 +292,7 @@ return $default(_that.lt,_that.creator,_that.confirmations,_that.custodians,_tha
 
 
 class _TonWalletMultisigOrdinaryTransaction implements TonWalletMultisigOrdinaryTransaction {
-  const _TonWalletMultisigOrdinaryTransaction({required this.lt, required this.creator, required final  List<PublicKey> confirmations, required final  List<PublicKey> custodians, required this.isOutgoing, @amountJsonConverter required this.value, required this.address, @dateSecondsSinceEpochJsonConverter required this.date, @amountJsonConverter required this.fees, required this.hash, this.comment, this.prevTransactionLt, this.dePoolOnRoundCompleteNotification, this.dePoolReceiveAnswerNotification, this.tokenWalletDeployedNotification, this.walletInteractionInfo}): _confirmations = confirmations,_custodians = custodians;
+  const _TonWalletMultisigOrdinaryTransaction({required this.lt, required this.creator, required final  List<PublicKey> confirmations, required final  List<PublicKey> custodians, required this.isOutgoing, required this.value, required this.address, @dateSecondsSinceEpochJsonConverter required this.date, required this.fees, required this.hash, this.comment, this.prevTransactionLt, this.dePoolOnRoundCompleteNotification, this.dePoolReceiveAnswerNotification, this.tokenWalletDeployedNotification, this.walletInteractionInfo}): _confirmations = confirmations,_custodians = custodians;
   
 
 @override final  String lt;
@@ -318,11 +318,11 @@ class _TonWalletMultisigOrdinaryTransaction implements TonWalletMultisigOrdinary
 
 // if this transaction was sent from this wallet
 @override final  bool isOutgoing;
-@override@amountJsonConverter final  BigInt value;
+@override final  BigInt value;
 // address of destination or source depends on isOutgoing
 @override final  Address address;
 @override@dateSecondsSinceEpochJsonConverter final  DateTime date;
-@override@amountJsonConverter final  BigInt fees;
+@override final  BigInt fees;
 @override final  String hash;
 @override final  String? comment;
 @override final  String? prevTransactionLt;
@@ -361,7 +361,7 @@ abstract mixin class _$TonWalletMultisigOrdinaryTransactionCopyWith<$Res> implem
   factory _$TonWalletMultisigOrdinaryTransactionCopyWith(_TonWalletMultisigOrdinaryTransaction value, $Res Function(_TonWalletMultisigOrdinaryTransaction) _then) = __$TonWalletMultisigOrdinaryTransactionCopyWithImpl;
 @override @useResult
 $Res call({
- String lt, PublicKey creator, List<PublicKey> confirmations, List<PublicKey> custodians, bool isOutgoing,@amountJsonConverter BigInt value, Address address,@dateSecondsSinceEpochJsonConverter DateTime date,@amountJsonConverter BigInt fees, String hash, String? comment, String? prevTransactionLt, DePoolOnRoundCompleteNotification? dePoolOnRoundCompleteNotification, DePoolReceiveAnswerNotification? dePoolReceiveAnswerNotification, TokenWalletDeployedNotification? tokenWalletDeployedNotification, WalletInteractionInfo? walletInteractionInfo
+ String lt, PublicKey creator, List<PublicKey> confirmations, List<PublicKey> custodians, bool isOutgoing, BigInt value, Address address,@dateSecondsSinceEpochJsonConverter DateTime date, BigInt fees, String hash, String? comment, String? prevTransactionLt, DePoolOnRoundCompleteNotification? dePoolOnRoundCompleteNotification, DePoolReceiveAnswerNotification? dePoolReceiveAnswerNotification, TokenWalletDeployedNotification? tokenWalletDeployedNotification, WalletInteractionInfo? walletInteractionInfo
 });
 
 

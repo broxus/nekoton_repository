@@ -22,7 +22,7 @@ PendingTransactionWithData _$PendingTransactionWithDataFromJson(
 /// @nodoc
 mixin _$PendingTransactionWithData {
 
- PendingTransaction get transaction; Address get destination;@amountJsonConverter BigInt get amount; DateTime get createdAt;
+ PendingTransaction get transaction; Address get destination; BigInt get amount; DateTime get createdAt;
 /// Create a copy of PendingTransactionWithData
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -55,7 +55,7 @@ abstract mixin class $PendingTransactionWithDataCopyWith<$Res>  {
   factory $PendingTransactionWithDataCopyWith(PendingTransactionWithData value, $Res Function(PendingTransactionWithData) _then) = _$PendingTransactionWithDataCopyWithImpl;
 @useResult
 $Res call({
- PendingTransaction transaction, Address destination,@amountJsonConverter BigInt amount, DateTime createdAt
+ PendingTransaction transaction, Address destination, BigInt amount, DateTime createdAt
 });
 
 
@@ -178,7 +178,7 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( PendingTransaction transaction,  Address destination, @amountJsonConverter  BigInt amount,  DateTime createdAt)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( PendingTransaction transaction,  Address destination,  BigInt amount,  DateTime createdAt)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _PendingTransactionWithAdditionalInfo() when $default != null:
 return $default(_that.transaction,_that.destination,_that.amount,_that.createdAt);case _:
@@ -199,7 +199,7 @@ return $default(_that.transaction,_that.destination,_that.amount,_that.createdAt
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( PendingTransaction transaction,  Address destination, @amountJsonConverter  BigInt amount,  DateTime createdAt)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( PendingTransaction transaction,  Address destination,  BigInt amount,  DateTime createdAt)  $default,) {final _that = this;
 switch (_that) {
 case _PendingTransactionWithAdditionalInfo():
 return $default(_that.transaction,_that.destination,_that.amount,_that.createdAt);}
@@ -216,7 +216,7 @@ return $default(_that.transaction,_that.destination,_that.amount,_that.createdAt
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( PendingTransaction transaction,  Address destination, @amountJsonConverter  BigInt amount,  DateTime createdAt)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( PendingTransaction transaction,  Address destination,  BigInt amount,  DateTime createdAt)?  $default,) {final _that = this;
 switch (_that) {
 case _PendingTransactionWithAdditionalInfo() when $default != null:
 return $default(_that.transaction,_that.destination,_that.amount,_that.createdAt);case _:
@@ -231,12 +231,12 @@ return $default(_that.transaction,_that.destination,_that.amount,_that.createdAt
 @JsonSerializable()
 
 class _PendingTransactionWithAdditionalInfo extends PendingTransactionWithData {
-  const _PendingTransactionWithAdditionalInfo({required this.transaction, required this.destination, @amountJsonConverter required this.amount, required this.createdAt}): super._();
+  const _PendingTransactionWithAdditionalInfo({required this.transaction, required this.destination, required this.amount, required this.createdAt}): super._();
   factory _PendingTransactionWithAdditionalInfo.fromJson(Map<String, dynamic> json) => _$PendingTransactionWithAdditionalInfoFromJson(json);
 
 @override final  PendingTransaction transaction;
 @override final  Address destination;
-@override@amountJsonConverter final  BigInt amount;
+@override final  BigInt amount;
 @override final  DateTime createdAt;
 
 /// Create a copy of PendingTransactionWithData
@@ -272,7 +272,7 @@ abstract mixin class _$PendingTransactionWithAdditionalInfoCopyWith<$Res> implem
   factory _$PendingTransactionWithAdditionalInfoCopyWith(_PendingTransactionWithAdditionalInfo value, $Res Function(_PendingTransactionWithAdditionalInfo) _then) = __$PendingTransactionWithAdditionalInfoCopyWithImpl;
 @override @useResult
 $Res call({
- PendingTransaction transaction, Address destination,@amountJsonConverter BigInt amount, DateTime createdAt
+ PendingTransaction transaction, Address destination, BigInt amount, DateTime createdAt
 });
 
 

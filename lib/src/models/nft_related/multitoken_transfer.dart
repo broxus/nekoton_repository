@@ -10,7 +10,7 @@ abstract class MultitokenTransfer with _$MultitokenTransfer {
     required String tokenId,
     required Address collection,
     required Address sender,
-    @amountJsonConverter required BigInt count,
+    required BigInt count,
   }) = _MultitokenTransfer;
 
   factory MultitokenTransfer.fromJson(Map<String, dynamic> json) =>

@@ -181,7 +181,7 @@ return token(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( TransferDirection direction,  String id,  Address collection,  Address sender,  Address recipient)?  ownership,TResult Function( TransferDirection direction,  String id,  Address collection,  Address sender,  Address recipient, @amountJsonConverter  BigInt count)?  token,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( TransferDirection direction,  String id,  Address collection,  Address sender,  Address recipient)?  ownership,TResult Function( TransferDirection direction,  String id,  Address collection,  Address sender,  Address recipient,  BigInt count)?  token,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case NftOwnershipTransferEvent() when ownership != null:
 return ownership(_that.direction,_that.id,_that.collection,_that.sender,_that.recipient);case NftTokenTransferEvent() when token != null:
@@ -203,7 +203,7 @@ return token(_that.direction,_that.id,_that.collection,_that.sender,_that.recipi
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( TransferDirection direction,  String id,  Address collection,  Address sender,  Address recipient)  ownership,required TResult Function( TransferDirection direction,  String id,  Address collection,  Address sender,  Address recipient, @amountJsonConverter  BigInt count)  token,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( TransferDirection direction,  String id,  Address collection,  Address sender,  Address recipient)  ownership,required TResult Function( TransferDirection direction,  String id,  Address collection,  Address sender,  Address recipient,  BigInt count)  token,}) {final _that = this;
 switch (_that) {
 case NftOwnershipTransferEvent():
 return ownership(_that.direction,_that.id,_that.collection,_that.sender,_that.recipient);case NftTokenTransferEvent():
@@ -221,7 +221,7 @@ return token(_that.direction,_that.id,_that.collection,_that.sender,_that.recipi
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( TransferDirection direction,  String id,  Address collection,  Address sender,  Address recipient)?  ownership,TResult? Function( TransferDirection direction,  String id,  Address collection,  Address sender,  Address recipient, @amountJsonConverter  BigInt count)?  token,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( TransferDirection direction,  String id,  Address collection,  Address sender,  Address recipient)?  ownership,TResult? Function( TransferDirection direction,  String id,  Address collection,  Address sender,  Address recipient,  BigInt count)?  token,}) {final _that = this;
 switch (_that) {
 case NftOwnershipTransferEvent() when ownership != null:
 return ownership(_that.direction,_that.id,_that.collection,_that.sender,_that.recipient);case NftTokenTransferEvent() when token != null:
@@ -338,7 +338,7 @@ $AddressCopyWith<$Res> get recipient {
 
 
 class NftTokenTransferEvent implements NftTransferEvent {
-  const NftTokenTransferEvent({required this.direction, required this.id, required this.collection, required this.sender, required this.recipient, @amountJsonConverter required this.count});
+  const NftTokenTransferEvent({required this.direction, required this.id, required this.collection, required this.sender, required this.recipient, required this.count});
   
 
 @override final  TransferDirection direction;
@@ -346,7 +346,7 @@ class NftTokenTransferEvent implements NftTransferEvent {
 @override final  Address collection;
 @override final  Address sender;
 @override final  Address recipient;
-@amountJsonConverter final  BigInt count;
+ final  BigInt count;
 
 /// Create a copy of NftTransferEvent
 /// with the given fields replaced by the non-null parameter values.
@@ -378,7 +378,7 @@ abstract mixin class $NftTokenTransferEventCopyWith<$Res> implements $NftTransfe
   factory $NftTokenTransferEventCopyWith(NftTokenTransferEvent value, $Res Function(NftTokenTransferEvent) _then) = _$NftTokenTransferEventCopyWithImpl;
 @override @useResult
 $Res call({
- TransferDirection direction, String id, Address collection, Address sender, Address recipient,@amountJsonConverter BigInt count
+ TransferDirection direction, String id, Address collection, Address sender, Address recipient, BigInt count
 });
 
 
