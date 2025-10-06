@@ -61,7 +61,7 @@ melos:
 
     codegen:
       description: Generate code for all packages
-      exec: "find . -type f -name \"*.gen.dart\" -delete && flutter packages pub run build_runner build --delete-conflicting-outputs && dart format lib/generated/assets.gen.dart"
+      exec: "find . -type f -name \"*.gen.dart\" -delete && flutter packages pub run build_runner build --delete-conflicting-outputs && dart format lib/generated/assets.gen.dart lib/nekoton_repository.module.dart"
       failFast: true
       packageFilters:
         dependsOn: "build_runner"
