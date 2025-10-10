@@ -66,8 +66,10 @@ class Seed extends SeedBase {
   /// related to newly added keys.
   Future<List<PublicKey>> deriveKeys({
     required List<int> accountIds,
+    required int workchainId,
     required String password,
   }) => GetIt.instance<SeedKeyRepository>().deriveKeys(
+    workchainId: workchainId,
     params: accountIds.map(
       (accountId) => DeriveKeysParams.derived(
         accountId: accountId,
@@ -83,7 +85,9 @@ class Seed extends SeedBase {
   Future<PublicKey> deriveKey({
     required int accountId,
     required String password,
+    required int workchainId,
   }) => GetIt.instance<SeedKeyRepository>().deriveKey(
+    workchainId: workchainId,
     params: DeriveKeysParams.derived(
       accountId: accountId,
       masterKey: masterKey.publicKey,

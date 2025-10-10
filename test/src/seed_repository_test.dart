@@ -231,6 +231,7 @@ void main() {
         ).thenAnswer((_) => Future.value('[]'));
 
         final result = await repository.deriveKeys(
+          workchainId: 0,
           params: const [
             DeriveKeysParams.derived(
               accountId: 0,
@@ -276,6 +277,7 @@ void main() {
         final result = await repository.addSeed(
           phrase: phrase,
           password: password,
+          workchainId: 0,
         );
 
         expect(result, equals(publicKey));
@@ -313,6 +315,7 @@ void main() {
         final result = await repository.addSeed(
           phrase: phrase,
           password: password,
+          workchainId: 0,
         );
 
         expect(result, equals(publicKey));

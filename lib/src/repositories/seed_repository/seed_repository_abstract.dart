@@ -30,6 +30,7 @@ abstract class SeedKeyRepository {
   /// related to newly added keys.
   Future<List<PublicKey>> deriveKeys({
     required Iterable<DeriveKeysParams> params,
+    required int workchainId,
     bool addActiveAccounts,
   });
 
@@ -38,6 +39,7 @@ abstract class SeedKeyRepository {
   /// This method do not triggers accounts adding
   Future<PublicKey> deriveKey({
     required DeriveKeysParams params,
+    required int workchainId,
     bool addActiveAccounts,
   });
 
@@ -46,12 +48,17 @@ abstract class SeedKeyRepository {
   Future<PublicKey> addSeed({
     required List<String> phrase,
     required String password,
+    required int workchainId,
     MnemonicType? mnemonicType,
     String? name,
     SeedAddType addType,
   });
 
-  Future<PublicKey> addLedgerKey({required int accountId, String? name});
+  Future<PublicKey> addLedgerKey({
+    required int accountId,
+    required int workchainId,
+    String? name,
+  });
 
   /// Change password of seed phrase.
   Future<void> changeSeedPassword({

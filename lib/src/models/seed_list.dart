@@ -78,11 +78,13 @@ class SeedList extends Equatable {
   Future<PublicKey> addSeed({
     required List<String> phrase,
     required String password,
+    required int workchainId,
     MnemonicType? mnemonicType,
     String? name,
   }) => GetIt.instance<SeedKeyRepository>().addSeed(
     phrase: phrase,
     password: password,
+    workchainId: workchainId,
     mnemonicType: mnemonicType,
     name: name,
   );
@@ -199,7 +201,6 @@ class SeedList extends Equatable {
     required int? signatureId,
   }) async {
     try {
-      // TODO(komarov): check if it is correct
       await signData(
         data: fakeSignature(),
         publicKey: publicKey,
