@@ -115,12 +115,15 @@ void main() {
       );
 
       when(() => transport.transport).thenReturn(proto);
-      when(() => transport.availableWalletTypes)
-          .thenReturn([const WalletType.everWallet()]);
-      when(() => transport.defaultWalletType)
-          .thenReturn(const WalletType.everWallet());
-      when(() => transport.defaultAccountName(any()))
-          .thenReturn('defaultAccountName');
+      when(
+        () => transport.availableWalletTypes,
+      ).thenReturn([const WalletType.everWallet()]);
+      when(
+        () => transport.defaultWalletType,
+      ).thenReturn(const WalletType.everWallet());
+      when(
+        () => transport.defaultAccountName(any()),
+      ).thenReturn('defaultAccountName');
       when(() => proto.disposed).thenReturn(false);
       when(() => proto.transportBox).thenReturn(box);
     });
@@ -150,8 +153,9 @@ void main() {
           PublicKey(publicKey: 'key2'),
         ];
 
-        when(() => keyStore.getPublicKeys(any()))
-            .thenAnswer((_) async => publicKeys);
+        when(
+          () => keyStore.getPublicKeys(any()),
+        ).thenAnswer((_) async => publicKeys);
 
         final result = await repository.getKeysToDerive(
           const GetPublicKeysParams.derived(
@@ -184,8 +188,9 @@ void main() {
           PublicKey(publicKey: 'key2'),
         ];
 
-        when(() => keyStore.getPublicKeys(any()))
-            .thenAnswer((_) async => publicKeys);
+        when(
+          () => keyStore.getPublicKeys(any()),
+        ).thenAnswer((_) async => publicKeys);
 
         final result = await repository.getKeysToDerive(
           const GetPublicKeysParams.ledger(limit: 100, offset: 0),
@@ -226,6 +231,7 @@ void main() {
         ).thenAnswer((_) => Future.value('[]'));
 
         final result = await repository.deriveKeys(
+          workchainId: 0,
           params: const [
             DeriveKeysParams.derived(
               accountId: 0,
@@ -271,6 +277,7 @@ void main() {
         final result = await repository.addSeed(
           phrase: phrase,
           password: password,
+          workchainId: 0,
         );
 
         expect(result, equals(publicKey));
@@ -308,6 +315,7 @@ void main() {
         final result = await repository.addSeed(
           phrase: phrase,
           password: password,
+          workchainId: 0,
         );
 
         expect(result, equals(publicKey));
@@ -349,9 +357,9 @@ void main() {
           ),
         ];
 
-        when(() => keyStore.removeKeys(publicKeys: publicKeys)).thenAnswer(
-          (_) async => publicKeys,
-        );
+        when(
+          () => keyStore.removeKeys(publicKeys: publicKeys),
+        ).thenAnswer((_) async => publicKeys);
 
         final result = await repository.removeKeys(seedKeys);
 

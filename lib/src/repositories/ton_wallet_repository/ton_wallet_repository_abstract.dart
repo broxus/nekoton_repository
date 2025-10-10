@@ -120,10 +120,7 @@ abstract class TonWalletRepository {
 
   /// Prepare wallet with [address] to be deployed.
   /// [expiration] is a timeout after which action will be failed.
-  Future<UnsignedMessage> prepareDeploy(
-    Address address,
-    Expiration expiration,
-  );
+  Future<UnsignedMessage> prepareDeploy(Address address, Expiration expiration);
 
   /// Prepare wallet with [address] to deploy multisig wallet.
   /// [custodians] list of public keys that will be custodians of wallet.
@@ -276,7 +273,7 @@ abstract class TonWalletRepository {
   /// [multisigPendingTransactions] - list of transactions from
   ///   [TonWallet.getUnconfirmedTransactions]
   Future<List<TonWalletMultisigOrdinaryTransaction>>
-      mapMultisigOrdinaryTransactions({
+  mapMultisigOrdinaryTransactions({
     required Address walletAddress,
     required List<TransactionWithData<TransactionAdditionalInfo?>> transactions,
     required List<MultisigPendingTransaction> multisigPendingTransactions,
@@ -290,7 +287,7 @@ abstract class TonWalletRepository {
   /// [multisigPendingTransactions] - list of transactions from
   ///   [TonWallet.getUnconfirmedTransactions]
   Future<List<TonWalletMultisigPendingTransaction>>
-      mapMultisigPendingTransactions({
+  mapMultisigPendingTransactions({
     required Address walletAddress,
     required List<TransactionWithData<TransactionAdditionalInfo?>> transactions,
     required List<MultisigPendingTransaction> multisigPendingTransactions,
@@ -304,7 +301,7 @@ abstract class TonWalletRepository {
   /// [multisigPendingTransactions] - list of transactions from
   ///   [TonWallet.getUnconfirmedTransactions]
   Future<List<TonWalletMultisigExpiredTransaction>>
-      mapMultisigExpiredTransactions({
+  mapMultisigExpiredTransactions({
     required Address walletAddress,
     required List<TransactionWithData<TransactionAdditionalInfo?>> transactions,
     required List<MultisigPendingTransaction> multisigPendingTransactions,

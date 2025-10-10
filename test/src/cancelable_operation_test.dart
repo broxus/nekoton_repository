@@ -13,9 +13,9 @@ void main() {
   group('CancelableOperation', () {
     test('Complete operation itself', () async {
       final function = MockFunction();
-      when(function.call).thenAnswer(
-        (_) => Future.delayed(const Duration(seconds: 1)),
-      );
+      when(
+        function.call,
+      ).thenAnswer((_) => Future.delayed(const Duration(seconds: 1)));
 
       final start = NtpTime.now();
       final operation = CancelableOperation<void>.fromFuture(function.call());
@@ -29,9 +29,9 @@ void main() {
 
     test('Complete operation by stop call', () async {
       final function = MockFunction();
-      when(function.call).thenAnswer(
-        (_) => Future.delayed(const Duration(seconds: 1)),
-      );
+      when(
+        function.call,
+      ).thenAnswer((_) => Future.delayed(const Duration(seconds: 1)));
 
       late CancelableOperation<void> operation;
       operation = CancelableOperation<void>.fromFuture(() async {
@@ -53,9 +53,9 @@ void main() {
 
     test('Complete operation with error', () async {
       final function = MockFunction();
-      when(function.call).thenAnswer(
-        (_) => Future.delayed(const Duration(seconds: 1)),
-      );
+      when(
+        function.call,
+      ).thenAnswer((_) => Future.delayed(const Duration(seconds: 1)));
 
       late CancelableOperation<void> operation;
       operation = CancelableOperation<void>.fromFuture(() async {

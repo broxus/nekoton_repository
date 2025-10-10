@@ -23,10 +23,7 @@ class MockNftItem extends Mock implements NftItem {}
 class MockNftList extends Mock implements NftList {}
 
 class TestNftRepository with NftRepositoryImpl {
-  TestNftRepository({
-    required this.currentTransport,
-    required this.abiLoader,
-  });
+  TestNftRepository({required this.currentTransport, required this.abiLoader});
 
   @override
   final TransportStrategy currentTransport;
@@ -46,36 +43,42 @@ void main() {
       abiLoader = MockAbiLoader();
       protoTransport = MockProtoTransport();
       when(() => transport.transport).thenReturn(protoTransport);
-      repository =
-          TestNftRepository(currentTransport: transport, abiLoader: abiLoader);
+      repository = TestNftRepository(
+        currentTransport: transport,
+        abiLoader: abiLoader,
+      );
     });
 
     test('can be instantiated', () {
       expect(repository, isNotNull);
     });
 
-    test('scanNftCollections calls transport and returns collections',
-        () async {
-      final owner = makeAddress();
-      final collection = makeAddress();
-      final nftCollection = MockNftCollection();
-      when(() => protoTransport.use<List<NftCollection>>(any()))
-          .thenAnswer((_) async => [nftCollection]);
+    test(
+      'scanNftCollections calls transport and returns collections',
+      () async {
+        final owner = makeAddress();
+        final collection = makeAddress();
+        final nftCollection = MockNftCollection();
+        when(
+          () => protoTransport.use<List<NftCollection>>(any()),
+        ).thenAnswer((_) async => [nftCollection]);
 
-      final result = await repository.scanNftCollections(
-        owner: owner,
-        collections: [collection],
-      );
+        final result = await repository.scanNftCollections(
+          owner: owner,
+          collections: [collection],
+        );
 
-      expect(result, isA<List<NftCollection>>());
-      expect(result.first, nftCollection);
-    });
+        expect(result, isA<List<NftCollection>>());
+        expect(result.first, nftCollection);
+      },
+    );
 
     test('tryGetNftCollection returns null if not owner', () async {
       final address = makeAddress();
       final owner = makeAddress();
-      when(() => protoTransport.use<NftCollection?>(any()))
-          .thenAnswer((_) async => null);
+      when(
+        () => protoTransport.use<NftCollection?>(any()),
+      ).thenAnswer((_) async => null);
 
       final result = await repository.tryGetNftCollection(
         address: address,
@@ -89,8 +92,9 @@ void main() {
       final collection = makeAddress();
       final owner = makeAddress();
       final nftList = MockNftList();
-      when(() => protoTransport.use<NftList>(any()))
-          .thenAnswer((_) async => nftList);
+      when(
+        () => protoTransport.use<NftList>(any()),
+      ).thenAnswer((_) async => nftList);
 
       final result = await repository.getNtfList(
         collection: collection,
@@ -105,8 +109,9 @@ void main() {
       final address = makeAddress();
       final owner = makeAddress();
       final nftItem = MockNftItem();
-      when(() => protoTransport.use<NftItem>(any()))
-          .thenAnswer((_) async => nftItem);
+      when(
+        () => protoTransport.use<NftItem>(any()),
+      ).thenAnswer((_) async => nftItem);
 
       final result = await repository.getNftItem(
         address: address,
@@ -119,8 +124,9 @@ void main() {
     test('getNftCollection returns NftCollection', () async {
       final address = makeAddress();
       final nftCollection = MockNftCollection();
-      when(() => protoTransport.use<NftCollection>(any()))
-          .thenAnswer((_) async => nftCollection);
+      when(
+        () => protoTransport.use<NftCollection>(any()),
+      ).thenAnswer((_) async => nftCollection);
 
       final result = await repository.getNftCollection(address);
 

@@ -35,16 +35,16 @@ enum AbiType {
   nftTransfer;
 
   String get path => switch (this) {
-        tip61 => Assets.abi.tip61Abi,
-        tip43 => Assets.abi.tip43Abi,
-        vep1155Collection => Assets.abi.vep1155CollectionAbi,
-        vep1155Nft => Assets.abi.vep1155NftAbi,
-        vep1155Transfer => Assets.abi.vep1155TransferAbi,
-        vep1155Wallet => Assets.abi.vep1155WalletAbi,
-        tip422Collection => Assets.abi.tip422CollectionAbi,
-        tip422Nft => Assets.abi.tip422NftAbi,
-        nftTransfer => Assets.abi.nftTransferAbi,
-        collection => Assets.abi.collectionAbi,
-        nft => Assets.abi.nftAbi,
-      };
+    tip61 => Assets.abi.tip61Abi,
+    tip43 => Assets.abi.tip43Abi,
+    vep1155Collection => Assets.abi.vep1155CollectionAbi,
+    vep1155Nft => Assets.abi.vep1155NftAbi,
+    vep1155Transfer => Assets.abi.vep1155TransferAbi,
+    vep1155Wallet => Assets.abi.vep1155WalletAbi,
+    tip422Collection => Assets.abi.tip422CollectionAbi,
+    tip422Nft => Assets.abi.tip422NftAbi,
+    nftTransfer => Assets.abi.nftTransferAbi,
+    collection => Assets.abi.collectionAbi,
+    nft => Assets.abi.nftAbi,
+  };
 }

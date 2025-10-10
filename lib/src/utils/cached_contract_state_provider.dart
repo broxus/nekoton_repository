@@ -1,9 +1,7 @@
 import 'package:nekoton_repository/nekoton_repository.dart';
 
 class CachedContractStateProvider {
-  CachedContractStateProvider({
-    this.expiration = const Duration(minutes: 1),
-  });
+  CachedContractStateProvider({this.expiration = const Duration(minutes: 1)});
 
   final Duration expiration;
 

@@ -5,8 +5,6 @@ part 'nft_list.freezed.dart';
 
 @freezed
 abstract class NftList with _$NftList {
-  const factory NftList({
-    required List<NftItem> items,
-    String? continuation,
-  }) = _NftList;
+  const factory NftList({required List<NftItem> items, String? continuation}) =
+      _NftList;
 }

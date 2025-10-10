@@ -13,7 +13,4 @@ _FileMetadata _$FileMetadataFromJson(Map<String, dynamic> json) =>
     );
 
 Map<String, dynamic> _$FileMetadataToJson(_FileMetadata instance) =>
-    <String, dynamic>{
-      'source': instance.source,
-      'mimetype': instance.mimetype,
-    };
+    <String, dynamic>{'source': instance.source, 'mimetype': instance.mimetype};

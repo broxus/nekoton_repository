@@ -11,7 +11,6 @@ sealed class DeriveKeysParams with _$DeriveKeysParams {
     required String password,
   }) = DeriveKeysParamsDerived;
 
-  const factory DeriveKeysParams.ledger({
-    required int accountId,
-  }) = DeriveKeysParamsLedger;
+  const factory DeriveKeysParams.ledger({required int accountId}) =
+      DeriveKeysParamsLedger;
 }

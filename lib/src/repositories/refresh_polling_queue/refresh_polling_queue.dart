@@ -4,9 +4,8 @@ import 'package:nekoton_repository/nekoton_repository.dart';
 
 /// Callback that will be called during every refresh completes.
 /// If refresh completes with error, [error] will not be null.
-typedef RefreshCompleteCallback = void Function([
-  (Object error, StackTrace trace)? error,
-]);
+typedef RefreshCompleteCallback =
+    void Function([(Object error, StackTrace trace)? error]);
 
 /// This is a queue that lets you refreshing your wallets.
 ///

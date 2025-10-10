@@ -3,9 +3,7 @@ import 'package:mocktail/mocktail.dart';
 import 'package:nekoton_repository/nekoton_repository.dart';
 
 class _CallbackStub {
-  void call([
-    (Object error, StackTrace trace)? error,
-  ]) {}
+  void call([(Object error, StackTrace trace)? error]) {}
 }
 
 class RefresherImplementation extends Mock implements RefreshingInterface {
@@ -24,9 +22,9 @@ void main() {
       final refresher = RefresherImplementation();
       final callback = RefreshCompleteCallback();
 
-      when(refresher.refresh).thenAnswer(
-        (_) => Future<void>.delayed(refresherDelay),
-      );
+      when(
+        refresher.refresh,
+      ).thenAnswer((_) => Future<void>.delayed(refresherDelay));
       when(callback.call).thenReturn(null);
 
       RefreshPollingQueue(
@@ -43,9 +41,9 @@ void main() {
     test('Request refresh by polling', () async {
       final refresher = RefresherImplementation();
       final callback = RefreshCompleteCallback();
-      when(refresher.refresh).thenAnswer(
-        (_) => Future<void>.delayed(refresherDelay),
-      );
+      when(
+        refresher.refresh,
+      ).thenAnswer((_) => Future<void>.delayed(refresherDelay));
       when(callback.call).thenReturn(null);
 
       final queue = RefreshPollingQueue(
@@ -67,9 +65,9 @@ void main() {
 
     test('Request refresh by polling with refreshImmediately=true', () async {
       final refresher = RefresherImplementation();
-      when(refresher.refresh).thenAnswer(
-        (_) => Future<void>.delayed(refresherDelay),
-      );
+      when(
+        refresher.refresh,
+      ).thenAnswer((_) => Future<void>.delayed(refresherDelay));
 
       final queue = RefreshPollingQueue(
         refresher: refresher,
@@ -88,9 +86,9 @@ void main() {
 
     test('Refresh when refresher takes more time when polling', () async {
       final refresher = RefresherImplementation();
-      when(refresher.refresh).thenAnswer(
-        (_) => Future<void>.delayed(const Duration(seconds: 5)),
-      );
+      when(
+        refresher.refresh,
+      ).thenAnswer((_) => Future<void>.delayed(const Duration(seconds: 5)));
 
       RefreshPollingQueue(
         refresher: refresher,

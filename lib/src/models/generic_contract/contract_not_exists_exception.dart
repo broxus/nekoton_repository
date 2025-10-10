@@ -10,7 +10,8 @@ class ContractNotExistsException implements Exception {
   final Address address;
 
   @override
-  String toString() => '''
+  String toString() =>
+      '''
 Contract state does not exist. Please ensure the contract is properly initialized
 before calling this method. Address: $address
 ''';

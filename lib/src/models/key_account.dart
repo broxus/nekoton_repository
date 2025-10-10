@@ -14,14 +14,12 @@ class KeyAccount extends KeyAccountBase {
   });
 
   /// Show this account in wallet page.
-  Future<void> show() => GetIt.instance<NekotonRepository>()
-      .storageRepository
+  Future<void> show() => GetIt.instance<NekotonRepository>().storageRepository
       .showAccounts([account.address]);
 
   /// Hide this account from wallet page.
   /// In profile page is still will be visible.
-  Future<void> hide() => GetIt.instance<NekotonRepository>()
-      .storageRepository
+  Future<void> hide() => GetIt.instance<NekotonRepository>().storageRepository
       .hideAccounts([account.address]);
 
   /// Add token to this account

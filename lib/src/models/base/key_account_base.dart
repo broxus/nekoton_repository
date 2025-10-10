@@ -15,11 +15,11 @@ class KeyAccountBase extends Equatable {
 
   /// Create instance from real account
   factory KeyAccountBase.fromAccount(KeyAccount account) => KeyAccountBase(
-        account: account.account,
-        publicKey: account.publicKey,
-        isExternal: account.isExternal,
-        isHidden: account.isHidden,
-      );
+    account: account.account,
+    publicKey: account.publicKey,
+    isExternal: account.isExternal,
+    isHidden: account.isHidden,
+  );
 
   /// Nekoton's account
   final AssetsList account;

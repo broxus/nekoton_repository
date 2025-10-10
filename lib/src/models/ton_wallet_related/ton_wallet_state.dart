@@ -9,17 +9,15 @@ import 'package:nekoton_repository/nekoton_repository.dart';
 @immutable
 class TonWalletState extends Equatable {
   /// Create state with error.
-  const TonWalletState.error({
-    required Object err,
-    required this.address,
-  })  : wallet = null,
-        error = err;
+  const TonWalletState.error({required Object err, required this.address})
+    : wallet = null,
+      error = err;
 
   /// Create state with wallet
   TonWalletState.wallet(TonWallet w)
-      : error = null,
-        address = w.address,
-        wallet = w;
+    : error = null,
+      address = w.address,
+      wallet = w;
 
   /// Allows to track for which wallet this state was created.
   /// This can be useful when [wallet] is null and we cannot detect it.
@@ -53,7 +51,8 @@ class TonWalletStateNotInitializedException implements Exception {
   final Object? subscriptionError;
 
   @override
-  String toString() => '''
+  String toString() =>
+      '''
 `TonWalletState.wallet` was not initialized. Address: $address.
 ${subscriptionError != null ? 'Subscription error: $subscriptionError.' : ''}
 ''';

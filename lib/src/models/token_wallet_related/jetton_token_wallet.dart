@@ -2,22 +2,21 @@ part of 'generic_token_wallet.dart';
 
 class JettonTokenWallet extends GenericTokenWallet {
   JettonTokenWallet(this._wallet, this._symbol)
-      : _currency = _symbol.toCurrency();
+    : _currency = _symbol.toCurrency();
 
   static Future<JettonTokenWallet> subscribe({
     required Transport transport,
     required Address owner,
     required Address rootTokenContract,
     required Symbol symbol,
-  }) async =>
-      JettonTokenWallet(
-        await JettonWallet.subscribe(
-          transport: transport,
-          owner: owner,
-          rootTokenContract: rootTokenContract,
-        ),
-        symbol,
-      );
+  }) async => JettonTokenWallet(
+    await JettonWallet.subscribe(
+      transport: transport,
+      owner: owner,
+      rootTokenContract: rootTokenContract,
+    ),
+    symbol,
+  );
 
   final JettonWallet _wallet;
   final Symbol _symbol;
@@ -64,15 +63,14 @@ class JettonTokenWallet extends GenericTokenWallet {
 
   @override
   Stream<Money> get onMoneyBalanceChangedStream => onBalanceChangedStream.map(
-        (balance) => Money.fromBigIntWithCurrency(balance, currency),
-      );
+    (balance) => Money.fromBigIntWithCurrency(balance, currency),
+  );
 
   @override
   Stream<
-      (
-        List<TransactionWithData<TokenWalletTransaction?>>,
-        TransactionsBatchInfo
-      )> get onTransactionsFoundStream => _wallet.onTransactionsFoundStream;
+    (List<TransactionWithData<TokenWalletTransaction?>>, TransactionsBatchInfo)
+  >
+  get onTransactionsFoundStream => _wallet.onTransactionsFoundStream;
 
   @override
   Future<ContractState> getContractState() => _wallet.getContractState();

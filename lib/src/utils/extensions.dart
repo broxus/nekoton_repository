@@ -1,3 +1,4 @@
+import 'package:money2/money2.dart';
 import 'package:nekoton_repository/nekoton_repository.dart';
 
 extension NumExtension on num {
@@ -18,9 +19,7 @@ extension ExistingWalletInfoX on ExistingWalletInfo {
 }
 
 extension SymbolX on Symbol {
-  Currency toCurrency({
-    bool register = true,
-  }) {
+  Currency toCurrency({bool register = true}) {
     final patternDigits = decimals > 0 ? '0.${'#' * decimals}' : '0';
     final currency = Currency.create(
       name,

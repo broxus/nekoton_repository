@@ -9,15 +9,10 @@ import 'package:nekoton_repository/nekoton_repository.dart';
 /// List of accounts specified for [publicKey].
 @immutable
 class AccountList extends Equatable {
-  const AccountList({
-    required this.allAccounts,
-    required this.publicKey,
-  });
+  const AccountList({required this.allAccounts, required this.publicKey});
 
-  factory AccountList.empty(PublicKey publicKey) => AccountList(
-        allAccounts: const [],
-        publicKey: publicKey,
-      );
+  factory AccountList.empty(PublicKey publicKey) =>
+      AccountList(allAccounts: const [], publicKey: publicKey);
 
   /// List of all accounts specified for [publicKey].
   final List<KeyAccount> allAccounts;
@@ -49,9 +44,9 @@ class AccountList extends Equatable {
   }) {
     return GetIt.instance<AccountRepository>().addAccount(
       AccountToAdd(
-        name: name ??
-            GetIt.instance<TransportRepository>()
-                .currentTransport
+        name:
+            name ??
+            GetIt.instance<TransportRepository>().currentTransport
                 .defaultAccountName(walletType),
         publicKey: publicKey,
         contract: walletType,
@@ -63,10 +58,7 @@ class AccountList extends Equatable {
   /// Add external account with [address] where [publicKey] is custodian.
   /// [name] is optional.
   /// This method calls [addAccount] inside.
-  Future<void> addExternalAccount({
-    required Address address,
-    String? name,
-  }) {
+  Future<void> addExternalAccount({required Address address, String? name}) {
     return GetIt.instance<AccountRepository>().addExternalAccount(
       publicKey: publicKey,
       address: address,

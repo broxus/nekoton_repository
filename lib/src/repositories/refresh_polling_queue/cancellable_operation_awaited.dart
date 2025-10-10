@@ -4,7 +4,7 @@ import 'package:async/async.dart';
 /// and wait for canceled operation itself except of ignoring result.
 class CancelableOperationAwaited<T> {
   CancelableOperationAwaited.fromFuture(Future<T> result)
-      : _operation = CancelableOperation.fromFuture(result);
+    : _operation = CancelableOperation.fromFuture(result);
 
   final CancelableOperation<T> _operation;
 
