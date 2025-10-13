@@ -78,12 +78,14 @@ class SeedList extends Equatable {
   Future<PublicKey> addSeed({
     required List<String> phrase,
     required String password,
+    int? accountId,
     MnemonicType? mnemonicType,
     String? name,
   }) =>
       GetIt.instance<SeedKeyRepository>().addSeed(
         phrase: phrase,
         password: password,
+        accountId: accountId,
         mnemonicType: mnemonicType,
         name: name,
       );

@@ -46,6 +46,7 @@ abstract class SeedKeyRepository {
   Future<PublicKey> addSeed({
     required List<String> phrase,
     required String password,
+    int? accountId,
     MnemonicType? mnemonicType,
     String? name,
     SeedAddType addType,
