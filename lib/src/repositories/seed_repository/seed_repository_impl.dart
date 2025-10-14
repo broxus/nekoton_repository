@@ -146,6 +146,7 @@ mixin SeedKeyRepositoryImpl implements SeedKeyRepository {
     required List<String> phrase,
     required String password,
     int? accountId,
+    int? workchainId,
     MnemonicType? mnemonicType,
     String? name,
     SeedAddType addType = SeedAddType.create,
@@ -201,13 +202,17 @@ mixin SeedKeyRepositoryImpl implements SeedKeyRepository {
     if (addType == SeedAddType.create) {
       // no need to scan for existing wallets
       // if seed was created from scratch
-      await addDefaultAccount(publicKey);
+      await addDefaultAccount(publicKey, workchainId: workchainId);
     } else {
       if (useEncryptedKey) {
-        unawaited(triggerAddingAccounts([publicKey]));
+        unawaited(triggerAddingAccounts([publicKey], workchainId: workchainId));
       } else {
         unawaited(
-          triggerDerivingKeys(masterKey: publicKey, password: password),
+          triggerDerivingKeys(
+            masterKey: publicKey,
+            password: password,
+            workchainId: workchainId,
+          ),
         );
       }
     }
@@ -235,7 +240,10 @@ mixin SeedKeyRepositoryImpl implements SeedKeyRepository {
     return publicKey;
   }
 
-  Future<void> addDefaultAccount(PublicKey publicKey) async {
+  Future<void> addDefaultAccount(
+    PublicKey publicKey, {
+    int? workchainId,
+  }) async {
     final transport = currentTransport;
     if (transport.transport.disposed) return;
 
@@ -243,7 +251,7 @@ mixin SeedKeyRepositoryImpl implements SeedKeyRepository {
       name: transport.defaultAccountName(transport.defaultWalletType),
       publicKey: publicKey,
       contract: transport.defaultWalletType,
-      workchain: defaultWorkchainId,
+      workchain: workchainId ?? defaultWorkchainId,
     );
 
     await GetIt.instance<AccountRepository>().addAccount(defaultAccount);
@@ -268,6 +276,7 @@ mixin SeedKeyRepositoryImpl implements SeedKeyRepository {
   Future<void> triggerDerivingKeys({
     required PublicKey masterKey,
     String? password,
+    int? workchainId,
   }) async {
     _findingDerivedKeysSubject.add(
       Set.of(_findingDerivedKeysSubject.value)..add(masterKey.toString()),
@@ -302,7 +311,7 @@ mixin SeedKeyRepositoryImpl implements SeedKeyRepository {
         // adding default account if no accounts were found.
         final found = await TonWallet.findExistingWallets(
           transport: transport.transport,
-          workchainId: defaultWorkchainId,
+          workchainId: workchainId ?? defaultWorkchainId,
           publicKey: key,
           walletTypes: transport.availableWalletTypes,
         );
@@ -356,7 +365,9 @@ mixin SeedKeyRepositoryImpl implements SeedKeyRepository {
   }
 
   /// Trigger adding accounts to [AccountRepository] by public keys.
-  Future<void> triggerAddingAccounts(List<PublicKey> publicKeys) async {
+  Future<void> triggerAddingAccounts(List<PublicKey> publicKeys, {
+    int? workchainId,
+  }) async {
     final transport = currentTransport;
     final keys = publicKeys.map((item) => item.toString()).toSet();
     final accounts = accountsStorage.accounts.map((e) => e.address).toSet();
@@ -379,7 +390,7 @@ mixin SeedKeyRepositoryImpl implements SeedKeyRepository {
 
         final found = await TonWallet.findExistingWallets(
           transport: transport.transport,
-          workchainId: defaultWorkchainId,
+          workchainId: workchainId ?? defaultWorkchainId,
           publicKey: key,
           walletTypes: transport.availableWalletTypes,
         );
@@ -399,7 +410,7 @@ mixin SeedKeyRepositoryImpl implements SeedKeyRepository {
               name: transport.defaultAccountName(transport.defaultWalletType),
               publicKey: key,
               contract: transport.defaultWalletType,
-              workchain: defaultWorkchainId,
+              workchain: workchainId ?? defaultWorkchainId,
             ),
           );
         } else {

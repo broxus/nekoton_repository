@@ -47,6 +47,7 @@ abstract class SeedKeyRepository {
     required List<String> phrase,
     required String password,
     int? accountId,
+    int? workchainId,
     MnemonicType? mnemonicType,
     String? name,
     SeedAddType addType,

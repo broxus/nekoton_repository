@@ -79,6 +79,7 @@ class SeedList extends Equatable {
     required List<String> phrase,
     required String password,
     int? accountId,
+    int? workchainId,
     MnemonicType? mnemonicType,
     String? name,
   }) =>
@@ -86,6 +87,7 @@ class SeedList extends Equatable {
         phrase: phrase,
         password: password,
         accountId: accountId,
+        workchainId: workchainId,
         mnemonicType: mnemonicType,
         name: name,
       );
