@@ -81,6 +81,7 @@ mixin SeedKeyRepositoryImpl implements SeedKeyRepository {
   Future<List<PublicKey>> deriveKeys({
     required Iterable<DeriveKeysParams> params,
     bool addActiveAccounts = true,
+    int? workchainId,
   }) async {
     final inputs = params.map((p) {
       return switch (p) {
@@ -104,7 +105,7 @@ mixin SeedKeyRepositoryImpl implements SeedKeyRepository {
     final publicKeys = await keyStore.addKeys(inputs);
 
     if (addActiveAccounts) {
-      unawaited(triggerAddingAccounts(publicKeys));
+      unawaited(triggerAddingAccounts(publicKeys, workchainId: workchainId));
     }
 
     return publicKeys;
@@ -114,6 +115,7 @@ mixin SeedKeyRepositoryImpl implements SeedKeyRepository {
   Future<PublicKey> deriveKey({
     required DeriveKeysParams params,
     bool addActiveAccounts = true,
+    int? workchainId,
   }) async {
     final input = switch (params) {
       final DeriveKeysParamsDerived p => DerivedKeyCreateInput.derive(
@@ -135,7 +137,7 @@ mixin SeedKeyRepositoryImpl implements SeedKeyRepository {
     final publicKey = await keyStore.addKey(input);
 
     if (addActiveAccounts) {
-      unawaited(triggerAddingAccounts([publicKey]));
+      unawaited(triggerAddingAccounts([publicKey], workchainId: workchainId));
     }
 
     return publicKey;
@@ -221,7 +223,11 @@ mixin SeedKeyRepositoryImpl implements SeedKeyRepository {
   }
 
   @override
-  Future<PublicKey> addLedgerKey({required int accountId, String? name}) async {
+  Future<PublicKey> addLedgerKey({
+    required int accountId,
+    String? name,
+    int? workchainId,
+  }) async {
     final publicKey = await keyStore.addKey(
       LedgerKeyCreateInput(accountId: accountId, name: name),
     );
@@ -235,7 +241,7 @@ mixin SeedKeyRepositoryImpl implements SeedKeyRepository {
       ),
     );
 
-    unawaited(triggerAddingAccounts([publicKey]));
+    unawaited(triggerAddingAccounts([publicKey], workchainId: workchainId));
 
     return publicKey;
   }
@@ -283,7 +289,7 @@ mixin SeedKeyRepositoryImpl implements SeedKeyRepository {
     );
 
     try {
-      await triggerAddingAccounts([masterKey]);
+      await triggerAddingAccounts([masterKey], workchainId: workchainId);
 
       final transport = currentTransport;
       final accounts = accountsStorage.accounts.map((e) => e.address).toSet();
@@ -365,7 +371,8 @@ mixin SeedKeyRepositoryImpl implements SeedKeyRepository {
   }
 
   /// Trigger adding accounts to [AccountRepository] by public keys.
-  Future<void> triggerAddingAccounts(List<PublicKey> publicKeys, {
+  Future<void> triggerAddingAccounts(
+    List<PublicKey> publicKeys, {
     int? workchainId,
   }) async {
     final transport = currentTransport;
