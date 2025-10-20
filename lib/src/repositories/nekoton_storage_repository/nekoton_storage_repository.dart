@@ -20,28 +20,25 @@ class NekotonStorageRepository {
   final EncryptedStorage _storage;
 
   Future<void> init() => Future.wait([
-        _streamedSeedMeta(),
-        _streamedHiddenAccounts(),
-        _streamedExternalAccounts(),
-      ]);
+    _streamedSeedMeta(),
+    _streamedHiddenAccounts(),
+    _streamedExternalAccounts(),
+  ]);
 
   Future<void> clearSensitiveData() => Future.wait([
-        clearPreferences(),
-        clearStorageData(),
-        clearSeeds(),
-        clearExternalAccounts(),
-        clearHiddenAccounts(),
-      ]);
+    clearPreferences(),
+    clearStorageData(),
+    clearSeeds(),
+    clearExternalAccounts(),
+    clearHiddenAccounts(),
+  ]);
 
   /// Get data of nekoton storage
   Future<String?> getStorageData(String key) async =>
       _storage.get(key, domain: _nekotonBridgeKey);
 
   /// Set data of nekoton storage
-  Future<void> setStorageData({
-    required String key,
-    required String value,
-  }) =>
+  Future<void> setStorageData({required String key, required String value}) =>
       _storage.set(key, value, domain: _nekotonBridgeKey);
 
   /// Clear data of nekoton storage by key
@@ -80,7 +77,8 @@ class NekotonStorageRepository {
     required PublicKey masterKey,
     required String name,
   }) async {
-    final meta = (await readSeedMeta())[masterKey]?.copyWith(name: name) ??
+    final meta =
+        (await readSeedMeta())[masterKey]?.copyWith(name: name) ??
         SeedMetadata(name: name);
 
     await _storage.set(
@@ -268,12 +266,13 @@ class NekotonStorageRepository {
       domain: _externalAccountsKey,
     );
 
-    final accounts = accountsEncoded == null
-        ? List<String>.empty()
-        : ((jsonDecode(accountsEncoded) as List<dynamic>).cast<String>())
-      ..removeWhere(
-        (a) => addresses.map((address) => address.address).contains(a),
-      );
+    final accounts =
+        accountsEncoded == null
+              ? List<String>.empty()
+              : ((jsonDecode(accountsEncoded) as List<dynamic>).cast<String>())
+          ..removeWhere(
+            (a) => addresses.map((address) => address.address).contains(a),
+          );
 
     await _storage.set(
       publicKey.publicKey,

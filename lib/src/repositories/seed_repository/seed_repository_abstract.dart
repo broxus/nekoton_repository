@@ -30,8 +30,8 @@ abstract class SeedKeyRepository {
   /// related to newly added keys.
   Future<List<PublicKey>> deriveKeys({
     required Iterable<DeriveKeysParams> params,
+    required int workchainId,
     bool addActiveAccounts,
-    int? workchainId,
   });
 
   /// Derive key from [params].
@@ -39,8 +39,8 @@ abstract class SeedKeyRepository {
   /// This method do not triggers accounts adding
   Future<PublicKey> deriveKey({
     required DeriveKeysParams params,
+    required int workchainId,
     bool addActiveAccounts,
-    int? workchainId,
   });
 
   /// Add new seed to application.
@@ -48,8 +48,7 @@ abstract class SeedKeyRepository {
   Future<PublicKey> addSeed({
     required List<String> phrase,
     required String password,
-    int? accountId,
-    int? workchainId,
+    required int workchainId,
     MnemonicType? mnemonicType,
     String? name,
     SeedAddType addType,
@@ -57,8 +56,8 @@ abstract class SeedKeyRepository {
 
   Future<PublicKey> addLedgerKey({
     required int accountId,
+    required int workchainId,
     String? name,
-    int? workchainId,
   });
 
   /// Change password of seed phrase.
@@ -78,10 +77,7 @@ abstract class SeedKeyRepository {
 
   /// Rename seed with [masterKey] to [name].
   /// This changes name in storage, not in keystore.
-  Future<void> renameSeed({
-    required PublicKey masterKey,
-    required String name,
-  });
+  Future<void> renameSeed({required PublicKey masterKey, required String name});
 
   /// Return seeds phrase of [masterKey].
   /// Do not works for ledger key.

@@ -23,9 +23,9 @@ mixin GenericContractRepositoryImpl implements GenericContractRepository {
 
   @override
   Map<Address, ContractUpdatesSubscription>? tabSubscriptions(String tabId) => {
-        for (final item in allContracts.where((c) => c.tabId == tabId))
-          item.address: item.updateSubscriptionOptions,
-      };
+    for (final item in allContracts.where((c) => c.tabId == tabId))
+      item.address: item.updateSubscriptionOptions,
+  };
 
   @override
   Stream<ContractFoundTransactionEvent> tabTransactionsStream(String tabId) =>
@@ -57,10 +57,8 @@ mixin GenericContractRepositoryImpl implements GenericContractRepository {
           )
           .flatMap(
             (c) => c.contract.onStateChangedStream.map(
-              (state) => ContractStateChangedEvent(
-                address: c.address,
-                state: state,
-              ),
+              (state) =>
+                  ContractStateChangedEvent(address: c.address, state: state),
             ),
           );
 
@@ -135,8 +133,9 @@ mixin GenericContractRepositoryImpl implements GenericContractRepository {
 
   @override
   void updateContractTransportSubscriptions() {
-    final contractListClone =
-        List<GenericContractSubscriptionItem>.from(allContracts);
+    final contractListClone = List<GenericContractSubscriptionItem>.from(
+      allContracts,
+    );
     for (final contract in contractListClone) {
       unsubscribeContract(
         tabId: contract.tabId,
@@ -161,7 +160,7 @@ mixin GenericContractRepositoryImpl implements GenericContractRepository {
   }
 
   @override
-// ignore: long-method
+  // ignore: long-method
   Future<Transaction> waitContractSending({
     required Address address,
     required PendingTransaction pending,
@@ -272,10 +271,7 @@ mixin GenericContractRepositoryImpl implements GenericContractRepository {
       signedMessage: signedMessage,
     );
 
-    return waitContractSending(
-      address: address,
-      pending: pendingTransaction,
-    );
+    return waitContractSending(address: address, pending: pendingTransaction);
   }
 
   @override

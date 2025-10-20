@@ -104,7 +104,6 @@ class NekotonRepository
     _tonWalletStorage = tonWalletStorage;
     _tokenWalletStorage = tokenWalletStorage;
 
-    await fnb.initRustToDartCaller();
     _nekotonStorage = Storage.create(
       get: storage.getStorageData,
       set: storage.setStorageData,
@@ -157,8 +156,9 @@ class NekotonRepository
   SeedList get seedList => _seedsSubject.value;
 
   /// Subject that allows track changes in [SeedList]
-  final _changesSubject =
-      BehaviorSubject<SeedListDiffChange>.seeded(SeedListDiffChange.empty);
+  final _changesSubject = BehaviorSubject<SeedListDiffChange>.seeded(
+    SeedListDiffChange.empty,
+  );
 
   /// Stream of changes in [SeedList], there is no any changes if nothing
   /// happened.
@@ -265,8 +265,9 @@ class NekotonRepository
 
       // if account is external, then add it to all related publicKeys
       if (isExternal) {
-        final allExternalKeys = externalAccounts.keys
-            .where((k) => externalAccounts[k]!.contains(account.address));
+        final allExternalKeys = externalAccounts.keys.where(
+          (k) => externalAccounts[k]!.contains(account.address),
+        );
         for (final externalKey in allExternalKeys) {
           final keyAccount = KeyAccount(
             account: account,
@@ -332,31 +333,35 @@ class NekotonRepository
     final deletedSeeds = oldSeeds
         // old seeds contains items, that new doesn't
         .where(
-      (seed) => newSeeds.none(
-        (s) => s.masterPublicKey.publicKey == seed.masterPublicKey.publicKey,
-      ),
-    );
+          (seed) => newSeeds.none(
+            (s) =>
+                s.masterPublicKey.publicKey == seed.masterPublicKey.publicKey,
+          ),
+        );
     final addedSeeds = newSeeds
         // new seeds contains items, that old doesn't
         .where(
-      (seed) => oldSeeds.none(
-        (s) => s.masterPublicKey.publicKey == seed.masterPublicKey.publicKey,
-      ),
-    );
+          (seed) => oldSeeds.none(
+            (s) =>
+                s.masterPublicKey.publicKey == seed.masterPublicKey.publicKey,
+          ),
+        );
     final intersectedSeedsFromOld = oldSeeds
         // items from both lists
         .where(
-      (seed) => newSeeds.any(
-        (s) => s.masterPublicKey.publicKey == seed.masterPublicKey.publicKey,
-      ),
-    );
+          (seed) => newSeeds.any(
+            (s) =>
+                s.masterPublicKey.publicKey == seed.masterPublicKey.publicKey,
+          ),
+        );
     final intersectedSeedsFromNew = newSeeds
         // items from both lists
         .where(
-      (seed) => oldSeeds.any(
-        (s) => s.masterPublicKey.publicKey == seed.masterPublicKey.publicKey,
-      ),
-    );
+          (seed) => oldSeeds.any(
+            (s) =>
+                s.masterPublicKey.publicKey == seed.masterPublicKey.publicKey,
+          ),
+        );
 
     /// Add seed-level difference to result
     result = result.expandList(
@@ -380,23 +385,23 @@ class NekotonRepository
       final deletedKeys = oldSeed.allKeys
           // old keys contains items, that new doesn't
           .where(
-        (key) => newSeed.allKeys.none((k) => k.publicKey == key.publicKey),
-      );
+            (key) => newSeed.allKeys.none((k) => k.publicKey == key.publicKey),
+          );
       final addedKeys = newSeed.allKeys
           // new keys contains items, that old doesn't
           .where(
-        (key) => oldSeed.allKeys.none((k) => k.publicKey == key.publicKey),
-      );
+            (key) => oldSeed.allKeys.none((k) => k.publicKey == key.publicKey),
+          );
       final intersectedKeysFromOld = oldSeed.allKeys
           // items from both lists
           .where(
-        (key) => newSeed.allKeys.any((k) => k.publicKey == key.publicKey),
-      );
+            (key) => newSeed.allKeys.any((k) => k.publicKey == key.publicKey),
+          );
       final intersectedKeysFromNew = newSeed.allKeys
           // items from both lists
           .where(
-        (key) => oldSeed.allKeys.any((k) => k.publicKey == key.publicKey),
-      );
+            (key) => oldSeed.allKeys.any((k) => k.publicKey == key.publicKey),
+          );
 
       /// Add key-level difference to result
       result = result.expandList(
@@ -419,15 +424,17 @@ class NekotonRepository
         final deletedAccounts = oldKey.accountList.allAccounts
             // old accounts contains items, that new doesn't
             .where(
-          (acc) => newKey.accountList.allAccounts
-              .none((a) => a.address == acc.address),
-        );
+              (acc) => newKey.accountList.allAccounts.none(
+                (a) => a.address == acc.address,
+              ),
+            );
         final addedAccounts = newKey.accountList.allAccounts
             // new accounts contains items, that old doesn't
             .where(
-          (acc) => oldKey.accountList.allAccounts
-              .none((a) => a.address == acc.address),
-        );
+              (acc) => oldKey.accountList.allAccounts.none(
+                (a) => a.address == acc.address,
+              ),
+            );
 
         /// Add account-level difference to result
         result = result.expandList(

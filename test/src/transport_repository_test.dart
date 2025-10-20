@@ -1,5 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
+import 'package:money2/money2.dart';
 import 'package:nekoton_repository/nekoton_repository.dart';
 
 class TransportRepositoryTest with TransportRepositoryImpl {}

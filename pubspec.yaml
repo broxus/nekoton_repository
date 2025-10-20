@@ -1,12 +1,12 @@
 ---
 name: nekoton_repository
 description: Nekoton repository package
-version: 1.7.0
+version: 2.0.1
 repository: https://github.com/broxus/nekoton_repository
 
 environment:
-  sdk: '>=3.5.0 <4.0.0'
-  flutter: '>=3.24.0'
+  sdk: '>=3.9.0 <4.0.0'
+  flutter: '>=3.35.0'
 
 dependencies:
   async: ^2.11.0
@@ -15,13 +15,14 @@ dependencies:
   equatable: ^2.0.7
   flutter:
     sdk: flutter
-  flutter_nekoton_bridge: ^3.6.0
-  freezed_annotation: '>=3.0.0 <3.1.0'
+  flutter_nekoton_bridge: ^4.0.0
+  freezed_annotation: ^3.1.0
   get_it: ^8.0.3
   injectable: ^2.5.0
   json_annotation: ^4.9.0
   json_serializable: ^6.9.0
   logging: ^1.3.0
+  money2: ^6.0.0
   mutex: ^3.1.0
   quiver: ^3.2.2
   rxdart: ^0.28.0
@@ -35,9 +36,9 @@ dev_dependencies:
   flutter_gen_runner: ^5.10.0
   flutter_test:
     sdk: flutter
-  freezed: '>=3.0.6 <3.1.0'
+  freezed: ^3.1.0
   injectable_generator: ^2.6.2
-  melos: ^6.2.0
+  melos: ^7.1.0
   mocktail: ^1.0.4
   very_good_analysis: ^5.1.0
 
@@ -50,3 +51,65 @@ flutter_gen:
 flutter:
   assets:
     - assets/abi/
+
+melos:
+  useRootAsPackage: true
+  scripts:
+    build_and_test:
+      description: GA main script
+      run: bash scripts/build_and_test.sh
+
+    codegen:
+      description: Generate code for all packages
+      exec: "find . -type f -name \"*.gen.dart\" -delete && flutter packages pub run build_runner build --delete-conflicting-outputs && dart format lib/generated/assets.gen.dart lib/nekoton_repository.module.dart"
+      failFast: true
+      packageFilters:
+        dependsOn: "build_runner"
+
+    analyze:
+      description: Analyze a specific package in this project.
+      exec: flutter analyze .
+      failFast: true
+
+    check-format:
+      description: Check the format of a specific package in this project.
+      exec: dart format --set-exit-if-changed .
+      failFast: true
+
+    format:
+      exec: dart format .
+      description: Format a specific package in this project.
+
+    test:
+      description: Run Flutter tests for a specific package in this project.
+      exec: "flutter test test"
+      failFast: true
+      packageFilters:
+        flutter: true
+        dirExists: test
+
+    test:integration:
+      run: melos exec -c 1 --fail-fast -- "flutter test integration_test"
+      description: Run Flutter teintegration teststs for a specific package in this project.
+      packageFilters:
+        flutter: true
+        dirExists: integration_test
+
+    check-all:
+      description: Prepare to commit by checking all things
+      run: melos check-format && melos analyze && melos test && melos test:integration
+      failFast: true
+
+    git-check:
+      run: bash scripts/git-check.sh
+      description: Check if some code changed during build
+
+  command:
+    clean:
+      hooks:
+        post: bash scripts/clean.sh
+
+    version:
+      hooks:
+        preCommit: melos bs && git add --all
+

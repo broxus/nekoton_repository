@@ -78,19 +78,16 @@ class SeedList extends Equatable {
   Future<PublicKey> addSeed({
     required List<String> phrase,
     required String password,
-    int? accountId,
-    int? workchainId,
+    required int workchainId,
     MnemonicType? mnemonicType,
     String? name,
-  }) =>
-      GetIt.instance<SeedKeyRepository>().addSeed(
-        phrase: phrase,
-        password: password,
-        accountId: accountId,
-        workchainId: workchainId,
-        mnemonicType: mnemonicType,
-        name: name,
-      );
+  }) => GetIt.instance<SeedKeyRepository>().addSeed(
+    phrase: phrase,
+    password: password,
+    workchainId: workchainId,
+    mnemonicType: mnemonicType,
+    name: name,
+  );
 
   /// Encrypt data for external usages.
   /// [publicKey] is key that must be used for signing.
@@ -204,7 +201,6 @@ class SeedList extends Equatable {
     required int? signatureId,
   }) async {
     try {
-      // TODO(komarov): check if it is correct
       await signData(
         data: fakeSignature(),
         publicKey: publicKey,
@@ -257,22 +253,23 @@ class SeedList extends Equatable {
           addedAt: meta?.addedAt ?? 0,
           masterKey: SeedKey(
             key: keys.first,
-            accountList: mappedAccounts[keys.first.publicKey] ??
+            accountList:
+                mappedAccounts[keys.first.publicKey] ??
                 AccountList.empty(keys.first.publicKey),
           ),
-          subKeys: keys
-              .sublist(1)
-              .map(
-                (key) => SeedKey(
-                  key: key,
-                  accountList: mappedAccounts[key.publicKey] ??
-                      AccountList.empty(key.publicKey),
-                ),
-              )
-              .toList()
-            ..sort(
-              (a, b) => a.key.accountId.compareTo(b.key.accountId),
-            ),
+          subKeys:
+              keys
+                  .sublist(1)
+                  .map(
+                    (key) => SeedKey(
+                      key: key,
+                      accountList:
+                          mappedAccounts[key.publicKey] ??
+                          AccountList.empty(key.publicKey),
+                    ),
+                  )
+                  .toList()
+                ..sort((a, b) => a.key.accountId.compareTo(b.key.accountId)),
         ),
       );
     });

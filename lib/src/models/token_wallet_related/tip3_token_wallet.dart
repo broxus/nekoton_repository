@@ -2,22 +2,21 @@ part of 'generic_token_wallet.dart';
 
 class Tip3TokenWallet extends GenericTokenWallet {
   Tip3TokenWallet(this._wallet, [this._symbol])
-      : _currency = _symbol?.toCurrency();
+    : _currency = _symbol?.toCurrency();
 
   static Future<Tip3TokenWallet> subscribe({
     required Transport transport,
     required Address owner,
     required Address rootTokenContract,
     Symbol? symbol,
-  }) async =>
-      Tip3TokenWallet(
-        await TokenWallet.subscribe(
-          transport: transport,
-          owner: owner,
-          rootTokenContract: rootTokenContract,
-        ),
-        symbol,
-      );
+  }) async => Tip3TokenWallet(
+    await TokenWallet.subscribe(
+      transport: transport,
+      owner: owner,
+      rootTokenContract: rootTokenContract,
+    ),
+    symbol,
+  );
 
   final TokenWallet _wallet;
   final Symbol? _symbol;
@@ -64,15 +63,14 @@ class Tip3TokenWallet extends GenericTokenWallet {
 
   @override
   Stream<Money> get onMoneyBalanceChangedStream => onBalanceChangedStream.map(
-        (balance) => Money.fromBigIntWithCurrency(balance, currency),
-      );
+    (balance) => Money.fromBigIntWithCurrency(balance, currency),
+  );
 
   @override
   Stream<
-      (
-        List<TransactionWithData<TokenWalletTransaction?>>,
-        TransactionsBatchInfo
-      )> get onTransactionsFoundStream => _wallet.onTransactionsFoundStream;
+    (List<TransactionWithData<TokenWalletTransaction?>>, TransactionsBatchInfo)
+  >
+  get onTransactionsFoundStream => _wallet.onTransactionsFoundStream;
 
   @override
   Future<ContractState> getContractState() => _wallet.getContractState();

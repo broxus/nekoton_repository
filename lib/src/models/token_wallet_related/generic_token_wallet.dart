@@ -1,4 +1,5 @@
 import 'package:flutter_nekoton_bridge/flutter_nekoton_bridge.dart';
+import 'package:money2/money2.dart';
 import 'package:nekoton_repository/src/utils/utils.dart';
 
 part 'jetton_token_wallet.dart';
@@ -20,10 +21,9 @@ sealed class GenericTokenWallet {
   Stream<BigInt> get onBalanceChangedStream;
   Stream<Money> get onMoneyBalanceChangedStream;
   Stream<
-      (
-        List<TransactionWithData<TokenWalletTransaction?>>,
-        TransactionsBatchInfo
-      )> get onTransactionsFoundStream;
+    (List<TransactionWithData<TokenWalletTransaction?>>, TransactionsBatchInfo)
+  >
+  get onTransactionsFoundStream;
   Future<ContractState> getContractState();
   Future<void> preloadTransactions([String? fromLt]);
   void onBalanceChanged(String balance);

@@ -21,4 +21,4 @@ jobs:
     uses: broxus/flutter_templates/.github/workflows/run-melos.yaml@v4
     with:
       runner: macos-latest
-      flutter_version: '3.29.3'
+      flutter_version: '3.35.6'

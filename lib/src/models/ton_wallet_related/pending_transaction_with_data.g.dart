@@ -7,20 +7,21 @@ part of 'pending_transaction_with_data.dart';
 // **************************************************************************
 
 _PendingTransactionWithAdditionalInfo
-    _$PendingTransactionWithAdditionalInfoFromJson(Map<String, dynamic> json) =>
-        _PendingTransactionWithAdditionalInfo(
-          transaction: PendingTransaction.fromJson(
-              json['transaction'] as Map<String, dynamic>),
-          destination: Address.fromJson(json['destination'] as String),
-          amount: BigInt.parse(json['amount'] as String),
-          createdAt: DateTime.parse(json['createdAt'] as String),
-        );
+_$PendingTransactionWithAdditionalInfoFromJson(Map<String, dynamic> json) =>
+    _PendingTransactionWithAdditionalInfo(
+      transaction: PendingTransaction.fromJson(
+        json['transaction'] as Map<String, dynamic>,
+      ),
+      destination: Address.fromJson(json['destination'] as String),
+      amount: BigInt.parse(json['amount'] as String),
+      createdAt: DateTime.parse(json['createdAt'] as String),
+    );
 
 Map<String, dynamic> _$PendingTransactionWithAdditionalInfoToJson(
-        _PendingTransactionWithAdditionalInfo instance) =>
-    <String, dynamic>{
-      'transaction': instance.transaction.toJson(),
-      'destination': instance.destination.toJson(),
-      'amount': instance.amount.toString(),
-      'createdAt': instance.createdAt.toIso8601String(),
-    };
+  _PendingTransactionWithAdditionalInfo instance,
+) => <String, dynamic>{
+  'transaction': instance.transaction.toJson(),
+  'destination': instance.destination.toJson(),
+  'amount': instance.amount.toString(),
+  'createdAt': instance.createdAt.toIso8601String(),
+};

@@ -7,16 +7,16 @@ part of 'nft_json_data.dart';
 // **************************************************************************
 
 _NftJsonData _$NftJsonDataFromJson(Map<String, dynamic> json) => _NftJsonData(
-      name: json['name'] as String?,
-      description: json['description'] as String?,
-      preview: json['preview'] == null
-          ? null
-          : FileMetadata.fromJson(json['preview'] as Map<String, dynamic>),
-      files: (json['files'] as List<dynamic>?)
-          ?.map((e) => FileMetadata.fromJson(e as Map<String, dynamic>))
-          .toList(),
-      externalUrl: json['external_url'] as String?,
-    );
+  name: json['name'] as String?,
+  description: json['description'] as String?,
+  preview: json['preview'] == null
+      ? null
+      : FileMetadata.fromJson(json['preview'] as Map<String, dynamic>),
+  files: (json['files'] as List<dynamic>?)
+      ?.map((e) => FileMetadata.fromJson(e as Map<String, dynamic>))
+      .toList(),
+  externalUrl: json['external_url'] as String?,
+);
 
 Map<String, dynamic> _$NftJsonDataToJson(_NftJsonData instance) =>
     <String, dynamic>{

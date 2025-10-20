@@ -7,8 +7,6 @@ part 'nft_item.freezed.dart';
 /// information (VEP-1155).
 @freezed
 abstract class NftItem with _$NftItem {
-  const factory NftItem({
-    required Nft nft,
-    MultitokenWallet? wallet,
-  }) = _NftItem;
+  const factory NftItem({required Nft nft, MultitokenWallet? wallet}) =
+      _NftItem;
 }
