@@ -9,4 +9,4 @@ jobs:
   publish:
     uses: broxus/flutter_templates/.github/workflows/publish-package.yaml@v4
     with:
-      flutter_version: '3.35.4'
+      flutter_version: '3.35.6'
