@@ -3,6 +3,43 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## 2025-10-06
+
+### Changes
+
+---
+
+Packages with breaking changes:
+
+ - There are no breaking changes in this release.
+
+Packages with other changes:
+
+ - [`nekoton_repository` - `v2.0.0-dev.2`](#nekoton_repository---v200-dev2)
+
+---
+
+#### `nekoton_repository` - `v2.0.0-dev.2`
+
+ - **REFACTOR**: rename signRawData to signDataRaw for consistency. ([23d7e86b](https://github.com/broxus/nekoton_repository/commit/23d7e86b85de604e37cd8d790b14f0a60093461d))
+ - **REFACTOR**: remove redundant json converters. ([89fcc7e9](https://github.com/broxus/nekoton_repository/commit/89fcc7e922930e202ce141d552677c97bd16b1a8))
+ - **FIX**: update codegen command to include `lib/nekoton_repository.module.dart` in formatting. ([c308d9e0](https://github.com/broxus/nekoton_repository/commit/c308d9e0b24762e7677990add060531e0f41db51))
+ - **FIX**: correct message value calculation for outgoing transactions. ([5c5cb737](https://github.com/broxus/nekoton_repository/commit/5c5cb7371f3700806b5646467d2546b68797af56))
+ - **FIX**: calc out messages total value; update flutter_nekoton_bridge dependency to version 3.4.0. ([3aa352d9](https://github.com/broxus/nekoton_repository/commit/3aa352d93254bc72a5ef61c50efb2b06ba400120))
+ - **FEAT**: update `flutter_nekoton_bridge` dependency to version 3.6.0. ([726cda80](https://github.com/broxus/nekoton_repository/commit/726cda808589a1a896a845aa834bc44421d60b1d))
+ - **FEAT**: add `remainingGasTo` parameter and update `flutter_nekoton_bridge` dependency. ([3fa7ddff](https://github.com/broxus/nekoton_repository/commit/3fa7ddff118cf903c3f732f90c32744a9e4cce55))
+
+## 2.0.0-dev.2
+
+ - **REFACTOR**: rename signRawData to signDataRaw for consistency. ([23d7e86b](https://github.com/broxus/nekoton_repository/commit/23d7e86b85de604e37cd8d790b14f0a60093461d))
+ - **REFACTOR**: remove redundant json converters. ([89fcc7e9](https://github.com/broxus/nekoton_repository/commit/89fcc7e922930e202ce141d552677c97bd16b1a8))
+ - **FIX**: update codegen command to include `lib/nekoton_repository.module.dart` in formatting. ([c308d9e0](https://github.com/broxus/nekoton_repository/commit/c308d9e0b24762e7677990add060531e0f41db51))
+ - **FIX**: correct message value calculation for outgoing transactions. ([5c5cb737](https://github.com/broxus/nekoton_repository/commit/5c5cb7371f3700806b5646467d2546b68797af56))
+ - **FIX**: calc out messages total value; update flutter_nekoton_bridge dependency to version 3.4.0. ([3aa352d9](https://github.com/broxus/nekoton_repository/commit/3aa352d93254bc72a5ef61c50efb2b06ba400120))
+ - **FEAT**: update `flutter_nekoton_bridge` dependency to version 3.6.0. ([726cda80](https://github.com/broxus/nekoton_repository/commit/726cda808589a1a896a845aa834bc44421d60b1d))
+ - **FEAT**: add `remainingGasTo` parameter and update `flutter_nekoton_bridge` dependency. ([3fa7ddff](https://github.com/broxus/nekoton_repository/commit/3fa7ddff118cf903c3f732f90c32744a9e4cce55))
+
+
 ## 2025-10-02
 
 ### Changes
@@ -86,6 +123,50 @@ Packages with other changes:
 
 Packages with breaking changes:
 
+ - [`nekoton_repository` - `v2.0.0-dev.1`](#nekoton_repository---v200-dev1)
+
+Packages with other changes:
+
+ - There are no other changes in this release.
+
+---
+
+#### `nekoton_repository` - `v2.0.0-dev.1`
+
+ - **BREAKING** **CHORE**: sdk >=3.9.0; flutter >=3.35.0. ([1bdfc8a4](https://github.com/broxus/nekoton_repository/commit/1bdfc8a434b124afb5bfc54d1db127a01a03c5e1))
+
+## 2.0.0-dev.1
+
+> Note: This release has breaking changes.
+
+ - **BREAKING** **CHORE**: sdk >=3.9.0; flutter >=3.35.0. ([1bdfc8a4](https://github.com/broxus/nekoton_repository/commit/1bdfc8a434b124afb5bfc54d1db127a01a03c5e1))
+
+
+## 2025-08-28
+
+### Changes
+
+---
+
+Packages with breaking changes:
+
+ - [`nekoton_repository` - `v2.0.0-dev.0`](#nekoton_repository---v200-dev0)
+
+Packages with other changes:
+
+ - There are no other changes in this release.
+
+---
+
+#### `nekoton_repository` - `v2.0.0-dev.0`
+
+ - **BREAKING** **CHORE**: update `flutter_nekoton_bridge` to version 4.0.0; update `freezed_annotation`;.
+
+## 2.0.0-dev.0
+
+> Note: This release has breaking changes.
+
+ - **BREAKING** **CHORE**: update `flutter_nekoton_bridge` to version 4.0.0; update `freezed_annotation`;.
  - There are no breaking changes in this release.
 
 Packages with other changes:

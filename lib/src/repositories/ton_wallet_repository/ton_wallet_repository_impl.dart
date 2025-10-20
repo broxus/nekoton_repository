@@ -19,8 +19,10 @@ mixin TonWalletRepositoryImpl implements TonWalletRepository {
   final _logger = Logger('TonWalletRepositoryImpl');
 
   final List<RefreshPollingQueue> _sendPollingQueues = [];
-  final BehaviorSubject<bool> _isPollingPaused =
-      BehaviorSubject.seeded(false, sync: true);
+  final BehaviorSubject<bool> _isPollingPaused = BehaviorSubject.seeded(
+    false,
+    sync: true,
+  );
   final _mutexes = <Address, ReadWriteMutex>{};
 
   KeyStore get keyStore;
@@ -51,8 +53,9 @@ mixin TonWalletRepositoryImpl implements TonWalletRepository {
   List<(TonWalletAsset, bool)>? lastUpdatedAssets;
 
   /// Subject that allows listening for wallets subscribing/unsubscribing
-  final _walletsSubject =
-      BehaviorSubject<Map<Address, TonWalletState>>.seeded({});
+  final _walletsSubject = BehaviorSubject<Map<Address, TonWalletState>>.seeded(
+    {},
+  );
 
   /// Subscriptions for wallets, that allows automatically update transactions
   /// and states in storage.
@@ -172,8 +175,9 @@ mixin TonWalletRepositoryImpl implements TonWalletRepository {
 
   @override
   Future<void> retrySubscriptions(Address address) async {
-    final asset =
-        lastUpdatedAssets?.firstWhereOrNull((e) => e.$1.address == address);
+    final asset = lastUpdatedAssets?.firstWhereOrNull(
+      (e) => e.$1.address == address,
+    );
 
     if (asset == null) {
       walletsMap[address] = TonWalletState.error(
@@ -209,7 +213,8 @@ mixin TonWalletRepositoryImpl implements TonWalletRepository {
     if (wallet == null) return;
 
     pollingQueues[address] = RefreshPollingQueue(
-      refreshInterval: refreshInterval ??
+      refreshInterval:
+          refreshInterval ??
           currentTransport.pollingConfig.tonWalletRefreshInterval,
       refresher: wallet,
     )..start();
@@ -303,9 +308,7 @@ mixin TonWalletRepositoryImpl implements TonWalletRepository {
       assets.where((a) => !wallets.any((w) => w.address == a.$1.address)),
     );
 
-    await Future.wait(
-      toUnsubscribe.map((e) => unsubscribe(e.address)),
-    );
+    await Future.wait(toUnsubscribe.map((e) => unsubscribe(e.address)));
 
     lastUpdatedAssets = assets;
 
@@ -693,10 +696,7 @@ mixin TonWalletRepositoryImpl implements TonWalletRepository {
       amount: amount,
     );
 
-    return waitSending(
-      pending: pendingTransaction,
-      address: address,
-    );
+    return waitSending(pending: pendingTransaction, address: address);
   }
 
   @override
@@ -855,11 +855,300 @@ mixin TonWalletRepositoryImpl implements TonWalletRepository {
   List<TonWalletOrdinaryTransaction> mapOrdinaryTransactions({
     required Address walletAddress,
     required List<TransactionWithData<TransactionAdditionalInfo?>> transactions,
-  }) =>
-      transactions.where((e) => !e.isMultisigTransaction).map(
-        (e) {
+  }) => transactions.where((e) => !e.isMultisigTransaction).map((e) {
+    final lt = e.transaction.id.lt;
+    final prevTransactionLt = e.transaction.prevTransactionId?.lt;
+    final msgSender = e.transaction.inMessage.src;
+    final sender = e.dataSender ?? msgSender;
+    final msgRecipient = e.transaction.outMessages.firstOrNull?.dst;
+    final recipient = e.dataRecipient ?? msgRecipient;
+    final isOutgoing = recipient != null;
+
+    final msgValue = isOutgoing
+        ? e.transaction.outMessages.fold(
+            -e.transaction.inMessage.value,
+            (acc, msg) => acc + msg.value,
+          )
+        : e.transaction.inMessage.value;
+
+    final value = e.dataValue ?? msgValue;
+    final address = (isOutgoing ? recipient : sender) ?? walletAddress;
+    final date = e.transaction.createdAt;
+    final fees = e.transaction.totalFees;
+    final hash = e.transaction.id.hash;
+
+    return TonWalletOrdinaryTransaction(
+      lt: lt,
+      prevTransactionLt: prevTransactionLt,
+      isOutgoing: isOutgoing,
+      value: value,
+      address: address,
+      date: date,
+      fees: fees,
+      hash: hash,
+      comment: e.comment,
+      dePoolOnRoundCompleteNotification: e.dePoolOnRoundCompleteNotification,
+      dePoolReceiveAnswerNotification: e.dePoolReceiveAnswerNotification,
+      tokenWalletDeployedNotification: e.tokenWalletDeployedNotification,
+      walletInteractionInfo: e.walletInteractionInfo,
+    );
+  }).toList();
+
+  @override
+  List<TonWalletPendingTransaction> mapPendingTransactions({
+    required Address walletAddress,
+    required List<PendingTransactionWithData> pendingTransactions,
+  }) => pendingTransactions.map((e) {
+    final expireAt = e.transaction.expireAt;
+
+    final date = e.createdAt;
+
+    return TonWalletPendingTransaction(
+      expireAt: expireAt,
+      address: walletAddress,
+      isIncoming: walletAddress == e.destination,
+      amount: e.amount,
+      destination: e.destination,
+      messageHash: e.transaction.messageHash,
+      date: date,
+    );
+  }).toList();
+
+  @override
+  List<TonWalletExpiredTransaction> mapExpiredTransactions({
+    required Address walletAddress,
+    required List<PendingTransactionWithData> expiredTransactions,
+  }) => expiredTransactions.map((e) {
+    final expireAt = e.transaction.expireAt;
+
+    final address = e.transaction.src ?? walletAddress;
+
+    final date = e.createdAt;
+
+    return TonWalletExpiredTransaction(
+      expireAt: expireAt,
+      address: address,
+      isIncoming: walletAddress == e.destination,
+      amount: e.amount,
+      destination: e.destination,
+      messageHash: e.transaction.messageHash,
+      date: date,
+    );
+  }).toList();
+
+  @override
+  // ignore: long-method
+  Future<List<TonWalletMultisigOrdinaryTransaction>>
+  mapMultisigOrdinaryTransactions({
+    required Address walletAddress,
+    required List<TransactionWithData<TransactionAdditionalInfo?>> transactions,
+    required List<MultisigPendingTransaction> multisigPendingTransactions,
+  }) async {
+    final wallet = (await getWallet(walletAddress)).wallet;
+    if (wallet == null) return [];
+
+    return transactions
+        .where(
+          (e) => e.isOrdinaryTransaction(
+            details: wallet.details,
+            transactions: transactions,
+            pendingTransactions: multisigPendingTransactions,
+          ),
+        )
+        .map((e) {
           final lt = e.transaction.id.lt;
           final prevTransactionLt = e.transaction.prevTransactionId?.lt;
+          final multisigSubmitTransaction = e.multisigSubmitTransaction!;
+          final creator = multisigSubmitTransaction.custodian;
+          final transactionId = multisigSubmitTransaction.transId;
+          final confirmations = transactions
+              .where((e) => e.isSubmitOrConfirmTransaction(transactionId))
+              .map((e) => e.custodian)
+              .nonNulls
+              .toList();
+          final msgSender = e.transaction.inMessage.src;
+          final sender = e.dataSender ?? msgSender;
+          final msgRecipient = e.transaction.outMessages.firstOrNull?.dst;
+          final recipient = e.dataRecipient ?? msgRecipient;
+          final isOutgoing = recipient != null;
+
+          final msgValue = isOutgoing
+              ? e.transaction.outMessages.fold(
+                  -e.transaction.inMessage.value,
+                  (acc, msg) => acc + msg.value,
+                )
+              : e.transaction.inMessage.value;
+
+          final value = e.dataValue ?? msgValue;
+          final address = (isOutgoing ? recipient : sender) ?? wallet.address;
+          final date = e.transaction.createdAt;
+          final fees = e.transaction.totalFees;
+          final hash = e.transaction.id.hash;
+
+          return TonWalletMultisigOrdinaryTransaction(
+            lt: lt,
+            prevTransactionLt: prevTransactionLt,
+            creator: creator,
+            confirmations: confirmations,
+            custodians: wallet.custodians!,
+            isOutgoing: isOutgoing,
+            value: value,
+            address: address,
+            date: date,
+            fees: fees,
+            hash: hash,
+            comment: e.comment,
+            dePoolOnRoundCompleteNotification:
+                e.dePoolOnRoundCompleteNotification,
+            dePoolReceiveAnswerNotification: e.dePoolReceiveAnswerNotification,
+            tokenWalletDeployedNotification: e.tokenWalletDeployedNotification,
+            walletInteractionInfo: e.walletInteractionInfo,
+          );
+        })
+        .toList();
+  }
+
+  @override
+  // ignore: long-method
+  Future<List<TonWalletMultisigPendingTransaction>>
+  mapMultisigPendingTransactions({
+    required Address walletAddress,
+    required List<TransactionWithData<TransactionAdditionalInfo?>> transactions,
+    required List<MultisigPendingTransaction> multisigPendingTransactions,
+  }) async {
+    final wallet = (await getWallet(walletAddress)).wallet;
+    if (wallet == null) return [];
+
+    return transactions
+        .where(
+          (e) =>
+              e.isPendingTransaction(multisigPendingTransactions) &&
+              !e.isExpiredTransaction(
+                details: wallet.details,
+                transactions: transactions,
+              ),
+        )
+        .map((e) {
+          final lt = e.transaction.id.lt;
+          final prevTransactionLt = e.transaction.prevTransactionId?.lt;
+          final multisigPendingTransaction = multisigPendingTransactions
+              .firstWhere(
+                (el) => el.id == e.multisigSubmitTransaction!.transId,
+              );
+          final creator = multisigPendingTransaction.creator;
+          final msgSender = e.transaction.inMessage.src;
+          final sender = e.dataSender ?? msgSender;
+          final msgRecipient = e.transaction.outMessages.firstOrNull?.dst;
+          final recipient = e.dataRecipient ?? msgRecipient;
+          final isOutgoing = recipient != null;
+
+          final msgValue = isOutgoing
+              ? e.transaction.outMessages.fold(
+                  -e.transaction.inMessage.value,
+                  (acc, msg) => acc + msg.value,
+                )
+              : e.transaction.inMessage.value;
+
+          final value = e.dataValue ?? msgValue;
+          final address = (isOutgoing ? recipient : sender) ?? walletAddress;
+          final date = e.transaction.createdAt;
+          final fees = e.transaction.totalFees;
+          final hash = e.transaction.id.hash;
+          final signsReceived = multisigPendingTransaction.signsReceived;
+          final signsRequired = multisigPendingTransaction.signsRequired;
+          final confirmations = multisigPendingTransaction.confirmations;
+          final transactionId = multisigPendingTransaction.id;
+
+          final localCustodians = keyStore.keys
+              .where((e) => wallet.custodians!.any((el) => el == e.publicKey))
+              .toList();
+
+          final initiatorKey = localCustodians.firstWhereOrNull(
+            (e) => e.publicKey == wallet.publicKey,
+          );
+
+          final listOfKeys = [
+            if (initiatorKey != null) initiatorKey,
+            ...localCustodians.where(
+              (e) => e.publicKey != initiatorKey?.publicKey,
+            ),
+          ];
+
+          final nonConfirmedLocalCustodians = listOfKeys.where(
+            (e) => confirmations.every((el) => el != e.publicKey),
+          );
+
+          final nonConfirmedLocalCustodiansKeys = nonConfirmedLocalCustodians
+              .map((e) => e.publicKey)
+              .toList();
+
+          final canConfirm = nonConfirmedLocalCustodiansKeys.isNotEmpty;
+
+          final timeForConfirmation = Duration(
+            seconds: wallet.details.expirationTime,
+          );
+
+          final expireAt = date.add(timeForConfirmation);
+
+          return TonWalletMultisigPendingTransaction(
+            lt: lt,
+            prevTransactionLt: prevTransactionLt,
+            creator: creator,
+            confirmations: confirmations,
+            custodians: wallet.custodians!,
+            isOutgoing: isOutgoing,
+            value: value,
+            address: address,
+            walletAddress: wallet.address,
+            date: date,
+            fees: fees,
+            hash: hash,
+            comment: e.comment,
+            dePoolOnRoundCompleteNotification:
+                e.dePoolOnRoundCompleteNotification,
+            dePoolReceiveAnswerNotification: e.dePoolReceiveAnswerNotification,
+            tokenWalletDeployedNotification: e.tokenWalletDeployedNotification,
+            walletInteractionInfo: e.walletInteractionInfo,
+            signsReceived: signsReceived,
+            signsRequired: signsRequired,
+            transactionId: transactionId,
+            nonConfirmedLocalCustodians: nonConfirmedLocalCustodiansKeys,
+            canConfirm: canConfirm,
+            expireAt: expireAt,
+          );
+        })
+        .toList();
+  }
+
+  @override
+  // ignore: long-method
+  Future<List<TonWalletMultisigExpiredTransaction>>
+  mapMultisigExpiredTransactions({
+    required Address walletAddress,
+    required List<TransactionWithData<TransactionAdditionalInfo?>> transactions,
+    required List<MultisigPendingTransaction> multisigPendingTransactions,
+  }) async {
+    final wallet = (await getWallet(walletAddress)).wallet;
+    if (wallet == null) return [];
+
+    return transactions
+        .where(
+          (e) => e.isExpiredTransaction(
+            details: wallet.details,
+            transactions: transactions,
+          ),
+        )
+        .map((e) {
+          final lt = e.transaction.id.lt;
+          final prevTransactionLt = e.transaction.prevTransactionId?.lt;
+          final multisigSubmitTransaction = e.multisigSubmitTransaction!;
+          final creator = multisigSubmitTransaction.custodian;
+          final transactionId = multisigSubmitTransaction.transId;
+          final confirmations = transactions
+              .where((e) => e.isSubmitOrConfirmTransaction(transactionId))
+              .map((e) => e.custodian)
+              .nonNulls
+              .toList();
           final msgSender = e.transaction.inMessage.src;
           final sender = e.dataSender ?? msgSender;
           final msgRecipient = e.transaction.outMessages.firstOrNull?.dst;
@@ -879,9 +1168,12 @@ mixin TonWalletRepositoryImpl implements TonWalletRepository {
           final fees = e.transaction.totalFees;
           final hash = e.transaction.id.hash;
 
-          return TonWalletOrdinaryTransaction(
+          return TonWalletMultisigExpiredTransaction(
             lt: lt,
             prevTransactionLt: prevTransactionLt,
+            creator: creator,
+            confirmations: confirmations,
+            custodians: wallet.custodians!,
             isOutgoing: isOutgoing,
             value: value,
             address: address,
@@ -895,308 +1187,8 @@ mixin TonWalletRepositoryImpl implements TonWalletRepository {
             tokenWalletDeployedNotification: e.tokenWalletDeployedNotification,
             walletInteractionInfo: e.walletInteractionInfo,
           );
-        },
-      ).toList();
-
-  @override
-  List<TonWalletPendingTransaction> mapPendingTransactions({
-    required Address walletAddress,
-    required List<PendingTransactionWithData> pendingTransactions,
-  }) =>
-      pendingTransactions.map(
-        (e) {
-          final expireAt = e.transaction.expireAt;
-
-          final date = e.createdAt;
-
-          return TonWalletPendingTransaction(
-            expireAt: expireAt,
-            address: walletAddress,
-            isIncoming: walletAddress == e.destination,
-            amount: e.amount,
-            destination: e.destination,
-            messageHash: e.transaction.messageHash,
-            date: date,
-          );
-        },
-      ).toList();
-
-  @override
-  List<TonWalletExpiredTransaction> mapExpiredTransactions({
-    required Address walletAddress,
-    required List<PendingTransactionWithData> expiredTransactions,
-  }) =>
-      expiredTransactions.map(
-        (e) {
-          final expireAt = e.transaction.expireAt;
-
-          final address = e.transaction.src ?? walletAddress;
-
-          final date = e.createdAt;
-
-          return TonWalletExpiredTransaction(
-            expireAt: expireAt,
-            address: address,
-            isIncoming: walletAddress == e.destination,
-            amount: e.amount,
-            destination: e.destination,
-            messageHash: e.transaction.messageHash,
-            date: date,
-          );
-        },
-      ).toList();
-
-  @override
-  // ignore: long-method
-  Future<List<TonWalletMultisigOrdinaryTransaction>>
-      mapMultisigOrdinaryTransactions({
-    required Address walletAddress,
-    required List<TransactionWithData<TransactionAdditionalInfo?>> transactions,
-    required List<MultisigPendingTransaction> multisigPendingTransactions,
-  }) async {
-    final wallet = (await getWallet(walletAddress)).wallet;
-    if (wallet == null) return [];
-
-    return transactions
-        .where(
-      (e) => e.isOrdinaryTransaction(
-        details: wallet.details,
-        transactions: transactions,
-        pendingTransactions: multisigPendingTransactions,
-      ),
-    )
-        .map(
-      (e) {
-        final lt = e.transaction.id.lt;
-        final prevTransactionLt = e.transaction.prevTransactionId?.lt;
-        final multisigSubmitTransaction = e.multisigSubmitTransaction!;
-        final creator = multisigSubmitTransaction.custodian;
-        final transactionId = multisigSubmitTransaction.transId;
-        final confirmations = transactions
-            .where((e) => e.isSubmitOrConfirmTransaction(transactionId))
-            .map((e) => e.custodian)
-            .nonNulls
-            .toList();
-        final msgSender = e.transaction.inMessage.src;
-        final sender = e.dataSender ?? msgSender;
-        final msgRecipient = e.transaction.outMessages.firstOrNull?.dst;
-        final recipient = e.dataRecipient ?? msgRecipient;
-        final isOutgoing = recipient != null;
-
-        final msgValue = isOutgoing
-            ? e.transaction.outMessages.fold(
-                -e.transaction.inMessage.value,
-                (acc, msg) => acc + msg.value,
-              )
-            : e.transaction.inMessage.value;
-
-        final value = e.dataValue ?? msgValue;
-        final address = (isOutgoing ? recipient : sender) ?? wallet.address;
-        final date = e.transaction.createdAt;
-        final fees = e.transaction.totalFees;
-        final hash = e.transaction.id.hash;
-
-        return TonWalletMultisigOrdinaryTransaction(
-          lt: lt,
-          prevTransactionLt: prevTransactionLt,
-          creator: creator,
-          confirmations: confirmations,
-          custodians: wallet.custodians!,
-          isOutgoing: isOutgoing,
-          value: value,
-          address: address,
-          date: date,
-          fees: fees,
-          hash: hash,
-          comment: e.comment,
-          dePoolOnRoundCompleteNotification:
-              e.dePoolOnRoundCompleteNotification,
-          dePoolReceiveAnswerNotification: e.dePoolReceiveAnswerNotification,
-          tokenWalletDeployedNotification: e.tokenWalletDeployedNotification,
-          walletInteractionInfo: e.walletInteractionInfo,
-        );
-      },
-    ).toList();
-  }
-
-  @override
-  // ignore: long-method
-  Future<List<TonWalletMultisigPendingTransaction>>
-      mapMultisigPendingTransactions({
-    required Address walletAddress,
-    required List<TransactionWithData<TransactionAdditionalInfo?>> transactions,
-    required List<MultisigPendingTransaction> multisigPendingTransactions,
-  }) async {
-    final wallet = (await getWallet(walletAddress)).wallet;
-    if (wallet == null) return [];
-
-    return transactions
-        .where(
-      (e) =>
-          e.isPendingTransaction(multisigPendingTransactions) &&
-          !e.isExpiredTransaction(
-            details: wallet.details,
-            transactions: transactions,
-          ),
-    )
-        .map(
-      (e) {
-        final lt = e.transaction.id.lt;
-        final prevTransactionLt = e.transaction.prevTransactionId?.lt;
-        final multisigPendingTransaction = multisigPendingTransactions
-            .firstWhere((el) => el.id == e.multisigSubmitTransaction!.transId);
-        final creator = multisigPendingTransaction.creator;
-        final msgSender = e.transaction.inMessage.src;
-        final sender = e.dataSender ?? msgSender;
-        final msgRecipient = e.transaction.outMessages.firstOrNull?.dst;
-        final recipient = e.dataRecipient ?? msgRecipient;
-        final isOutgoing = recipient != null;
-
-        final msgValue = isOutgoing
-            ? e.transaction.outMessages.fold(
-                -e.transaction.inMessage.value,
-                (acc, msg) => acc + msg.value,
-              )
-            : e.transaction.inMessage.value;
-
-        final value = e.dataValue ?? msgValue;
-        final address = (isOutgoing ? recipient : sender) ?? walletAddress;
-        final date = e.transaction.createdAt;
-        final fees = e.transaction.totalFees;
-        final hash = e.transaction.id.hash;
-        final signsReceived = multisigPendingTransaction.signsReceived;
-        final signsRequired = multisigPendingTransaction.signsRequired;
-        final confirmations = multisigPendingTransaction.confirmations;
-        final transactionId = multisigPendingTransaction.id;
-
-        final localCustodians = keyStore.keys
-            .where(
-              (e) => wallet.custodians!.any((el) => el == e.publicKey),
-            )
-            .toList();
-
-        final initiatorKey = localCustodians
-            .firstWhereOrNull((e) => e.publicKey == wallet.publicKey);
-
-        final listOfKeys = [
-          if (initiatorKey != null) initiatorKey,
-          ...localCustodians
-              .where((e) => e.publicKey != initiatorKey?.publicKey),
-        ];
-
-        final nonConfirmedLocalCustodians = listOfKeys
-            .where((e) => confirmations.every((el) => el != e.publicKey));
-
-        final nonConfirmedLocalCustodiansKeys =
-            nonConfirmedLocalCustodians.map((e) => e.publicKey).toList();
-
-        final canConfirm = nonConfirmedLocalCustodiansKeys.isNotEmpty;
-
-        final timeForConfirmation =
-            Duration(seconds: wallet.details.expirationTime);
-
-        final expireAt = date.add(timeForConfirmation);
-
-        return TonWalletMultisigPendingTransaction(
-          lt: lt,
-          prevTransactionLt: prevTransactionLt,
-          creator: creator,
-          confirmations: confirmations,
-          custodians: wallet.custodians!,
-          isOutgoing: isOutgoing,
-          value: value,
-          address: address,
-          walletAddress: wallet.address,
-          date: date,
-          fees: fees,
-          hash: hash,
-          comment: e.comment,
-          dePoolOnRoundCompleteNotification:
-              e.dePoolOnRoundCompleteNotification,
-          dePoolReceiveAnswerNotification: e.dePoolReceiveAnswerNotification,
-          tokenWalletDeployedNotification: e.tokenWalletDeployedNotification,
-          walletInteractionInfo: e.walletInteractionInfo,
-          signsReceived: signsReceived,
-          signsRequired: signsRequired,
-          transactionId: transactionId,
-          nonConfirmedLocalCustodians: nonConfirmedLocalCustodiansKeys,
-          canConfirm: canConfirm,
-          expireAt: expireAt,
-        );
-      },
-    ).toList();
-  }
-
-  @override
-  // ignore: long-method
-  Future<List<TonWalletMultisigExpiredTransaction>>
-      mapMultisigExpiredTransactions({
-    required Address walletAddress,
-    required List<TransactionWithData<TransactionAdditionalInfo?>> transactions,
-    required List<MultisigPendingTransaction> multisigPendingTransactions,
-  }) async {
-    final wallet = (await getWallet(walletAddress)).wallet;
-    if (wallet == null) return [];
-
-    return transactions
-        .where(
-      (e) => e.isExpiredTransaction(
-        details: wallet.details,
-        transactions: transactions,
-      ),
-    )
-        .map(
-      (e) {
-        final lt = e.transaction.id.lt;
-        final prevTransactionLt = e.transaction.prevTransactionId?.lt;
-        final multisigSubmitTransaction = e.multisigSubmitTransaction!;
-        final creator = multisigSubmitTransaction.custodian;
-        final transactionId = multisigSubmitTransaction.transId;
-        final confirmations = transactions
-            .where((e) => e.isSubmitOrConfirmTransaction(transactionId))
-            .map((e) => e.custodian)
-            .nonNulls
-            .toList();
-        final msgSender = e.transaction.inMessage.src;
-        final sender = e.dataSender ?? msgSender;
-        final msgRecipient = e.transaction.outMessages.firstOrNull?.dst;
-        final recipient = e.dataRecipient ?? msgRecipient;
-        final isOutgoing = recipient != null;
-
-        final msgValue = isOutgoing
-            ? e.transaction.outMessages.fold(
-                -e.transaction.inMessage.value,
-                (acc, msg) => acc + msg.value,
-              )
-            : e.transaction.inMessage.value;
-
-        final value = e.dataValue ?? msgValue;
-        final address = (isOutgoing ? recipient : sender) ?? walletAddress;
-        final date = e.transaction.createdAt;
-        final fees = e.transaction.totalFees;
-        final hash = e.transaction.id.hash;
-
-        return TonWalletMultisigExpiredTransaction(
-          lt: lt,
-          prevTransactionLt: prevTransactionLt,
-          creator: creator,
-          confirmations: confirmations,
-          custodians: wallet.custodians!,
-          isOutgoing: isOutgoing,
-          value: value,
-          address: address,
-          date: date,
-          fees: fees,
-          hash: hash,
-          comment: e.comment,
-          dePoolOnRoundCompleteNotification:
-              e.dePoolOnRoundCompleteNotification,
-          dePoolReceiveAnswerNotification: e.dePoolReceiveAnswerNotification,
-          tokenWalletDeployedNotification: e.tokenWalletDeployedNotification,
-          walletInteractionInfo: e.walletInteractionInfo,
-        );
-      },
-    ).toList();
+        })
+        .toList();
   }
 
   @override
@@ -1227,22 +1219,18 @@ mixin TonWalletRepositoryImpl implements TonWalletRepository {
 
     try {
       final signedMessage = await message.signFake();
-      Iterable<TxTreeSimulationErrorItem> errors =
-          await wallet.transport.simulateTransactionTree(
-        signedMessage: signedMessage,
-        ignoredComputePhaseCodes: Int32List.fromList(
-          [
-            ..._ignoredComputePhaseCodes,
-            if (icpc != null) ...icpc,
-          ],
-        ),
-        ignoredActionPhaseCodes: Int32List.fromList(
-          [
-            ..._ignoredActionPhaseCodes,
-            if (iapc != null) ...iapc,
-          ],
-        ),
-      );
+      Iterable<TxTreeSimulationErrorItem> errors = await wallet.transport
+          .simulateTransactionTree(
+            signedMessage: signedMessage,
+            ignoredComputePhaseCodes: Int32List.fromList([
+              ..._ignoredComputePhaseCodes,
+              if (icpc != null) ...icpc,
+            ]),
+            ignoredActionPhaseCodes: Int32List.fromList([
+              ..._ignoredActionPhaseCodes,
+              if (iapc != null) ...iapc,
+            ]),
+          );
 
       // filter out ignoredComputePhaseCodes by address
       if (ignoredComputePhaseCodes != null &&
@@ -1277,8 +1265,8 @@ extension TonWalletTransactionExtension
     on TransactionWithData<TransactionAdditionalInfo?> {
   Address? get dataSender {
     return switch (data) {
-      TransactionAdditionalInfoWalletInteraction(:final data) => switch (
-            data.knownPayload) {
+      TransactionAdditionalInfoWalletInteraction(:final data) =>
+        switch (data.knownPayload) {
           KnownPayloadTokenSwapBack(:final data) => data.callbackAddress,
           _ => null,
         },
@@ -1320,13 +1308,13 @@ extension TonWalletTransactionExtension
     return switch (data) {
       TransactionAdditionalInfoDePoolOnRoundComplete(:final data) =>
         data.reward,
-      TransactionAdditionalInfoWalletInteraction(:final data) => switch (
-            data.method) {
+      TransactionAdditionalInfoWalletInteraction(:final data) =>
+        switch (data.method) {
           WalletInteractionMethodMultisig(:final data) => switch (data) {
-              MultisigTransactionSend(:final data) => data.value,
-              MultisigTransactionSubmit(:final data) => data.value,
-              _ => null,
-            },
+            MultisigTransactionSend(:final data) => data.value,
+            MultisigTransactionSubmit(:final data) => data.value,
+            _ => null,
+          },
           _ => null,
         },
       _ => null,
@@ -1334,9 +1322,9 @@ extension TonWalletTransactionExtension
   }
 
   String? get comment => switch (data) {
-        TransactionAdditionalInfoComment(:final data) => data,
-        _ => null,
-      };
+    TransactionAdditionalInfoComment(:final data) => data,
+    _ => null,
+  };
 
   DePoolOnRoundCompleteNotification? get dePoolOnRoundCompleteNotification =>
       switch (data) {
@@ -1357,17 +1345,17 @@ extension TonWalletTransactionExtension
       };
 
   WalletInteractionInfo? get walletInteractionInfo => switch (data) {
-        TransactionAdditionalInfoWalletInteraction(:final data) => data,
-        _ => null,
-      };
+    TransactionAdditionalInfoWalletInteraction(:final data) => data,
+    _ => null,
+  };
 
   bool get isMultisigTransaction {
     return switch (walletInteractionInfo?.method) {
       WalletInteractionMethodMultisig(:final data) => switch (data) {
-          MultisigTransactionSubmit() => true,
-          MultisigTransactionConfirm() => true,
-          _ => false,
-        },
+        MultisigTransactionSubmit() => true,
+        MultisigTransactionConfirm() => true,
+        _ => false,
+      },
       _ => false,
     };
   }
@@ -1379,11 +1367,11 @@ extension TonWalletTransactionExtension
   }) {
     return switch (walletInteractionInfo?.method) {
       WalletInteractionMethodMultisig(:final data) => switch (data) {
-          MultisigTransactionSubmit(:final data) =>
-            pendingTransactions.every((e) => e.id != data.transId) &&
-                isEnoughSubscribers(data.transId, details, transactions),
-          _ => false,
-        },
+        MultisigTransactionSubmit(:final data) =>
+          pendingTransactions.every((e) => e.id != data.transId) &&
+              isEnoughSubscribers(data.transId, details, transactions),
+        _ => false,
+      },
       _ => false,
     };
   }
@@ -1391,9 +1379,9 @@ extension TonWalletTransactionExtension
   bool isConfirmTransaction(String id) {
     return switch (walletInteractionInfo?.method) {
       WalletInteractionMethodMultisig(:final data) => switch (data) {
-          MultisigTransactionConfirm(:final data) => data.transactionId == id,
-          _ => false,
-        },
+        MultisigTransactionConfirm(:final data) => data.transactionId == id,
+        _ => false,
+      },
       _ => false,
     };
   }
@@ -1401,10 +1389,10 @@ extension TonWalletTransactionExtension
   bool isSubmitOrConfirmTransaction(String id) {
     return switch (walletInteractionInfo?.method) {
       WalletInteractionMethodMultisig(:final data) => switch (data) {
-          MultisigTransactionSubmit(:final data) => data.transId == id,
-          MultisigTransactionConfirm(:final data) => data.transactionId == id,
-          _ => false,
-        },
+        MultisigTransactionSubmit(:final data) => data.transId == id,
+        MultisigTransactionConfirm(:final data) => data.transactionId == id,
+        _ => false,
+      },
       _ => false,
     };
   }
@@ -1414,10 +1402,11 @@ extension TonWalletTransactionExtension
   ) {
     return switch (walletInteractionInfo?.method) {
       WalletInteractionMethodMultisig(:final data) => switch (data) {
-          MultisigTransactionSubmit(:final data) =>
-            pendingTransactions.any((e) => e.id == data.transId),
-          _ => false,
-        },
+        MultisigTransactionSubmit(:final data) => pendingTransactions.any(
+          (e) => e.id == data.transId,
+        ),
+        _ => false,
+      },
       _ => false,
     };
   }
@@ -1428,11 +1417,11 @@ extension TonWalletTransactionExtension
   }) {
     return switch (walletInteractionInfo?.method) {
       WalletInteractionMethodMultisig(:final data) => switch (data) {
-          MultisigTransactionSubmit(:final data) =>
-            !isEnoughSubscribers(data.transId, details, transactions) &&
-                isExpiredByTime(details),
-          _ => false,
-        },
+        MultisigTransactionSubmit(:final data) =>
+          !isEnoughSubscribers(data.transId, details, transactions) &&
+              isExpiredByTime(details),
+        _ => false,
+      },
       _ => false,
     };
   }
@@ -1445,8 +1434,9 @@ extension TonWalletTransactionExtension
   ) {
     if (details.requiredConfirmations == null) return true;
 
-    final foundConfirms =
-        transactions.where((e) => e.isConfirmTransaction(transId)).length;
+    final foundConfirms = transactions
+        .where((e) => e.isConfirmTransaction(transId))
+        .length;
 
     // -1 because 1-st submit transaction is confirmation itself
     return foundConfirms >= details.requiredConfirmations! - 1;
@@ -1461,9 +1451,9 @@ extension TonWalletTransactionExtension
   MultisigSubmitTransaction? get multisigSubmitTransaction {
     return switch (walletInteractionInfo?.method) {
       WalletInteractionMethodMultisig(:final data) => switch (data) {
-          MultisigTransactionSubmit(:final data) => data,
-          _ => null,
-        },
+        MultisigTransactionSubmit(:final data) => data,
+        _ => null,
+      },
       _ => null,
     };
   }
@@ -1471,10 +1461,10 @@ extension TonWalletTransactionExtension
   PublicKey? get custodian {
     return switch (walletInteractionInfo?.method) {
       WalletInteractionMethodMultisig(:final data) => switch (data) {
-          MultisigTransactionSubmit(:final data) => data.custodian,
-          MultisigTransactionConfirm(:final data) => data.custodian,
-          _ => null,
-        },
+        MultisigTransactionSubmit(:final data) => data.custodian,
+        MultisigTransactionConfirm(:final data) => data.custodian,
+        _ => null,
+      },
       _ => null,
     };
   }

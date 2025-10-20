@@ -7,11 +7,11 @@ part of 'nft_transfer.dart';
 // **************************************************************************
 
 _NftTransfer _$NftTransferFromJson(Map<String, dynamic> json) => _NftTransfer(
-      id: json['id'] as String,
-      collection: Address.fromJson(json['collection'] as String),
-      oldOwner: Address.fromJson(json['oldOwner'] as String),
-      newOwner: Address.fromJson(json['newOwner'] as String),
-    );
+  id: json['id'] as String,
+  collection: Address.fromJson(json['collection'] as String),
+  oldOwner: Address.fromJson(json['oldOwner'] as String),
+  newOwner: Address.fromJson(json['newOwner'] as String),
+);
 
 Map<String, dynamic> _$NftTransferToJson(_NftTransfer instance) =>
     <String, dynamic>{

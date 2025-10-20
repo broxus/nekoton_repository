@@ -57,18 +57,18 @@ class $AssetsAbiGen {
 
   /// List of all assets
   List<String> get values => [
-        collectionAbi,
-        nftAbi,
-        nftTransferAbi,
-        tip422CollectionAbi,
-        tip422NftAbi,
-        tip61Abi,
-        tip43Abi,
-        vep1155CollectionAbi,
-        vep1155NftAbi,
-        vep1155TransferAbi,
-        vep1155WalletAbi
-      ];
+    collectionAbi,
+    nftAbi,
+    nftTransferAbi,
+    tip422CollectionAbi,
+    tip422NftAbi,
+    tip61Abi,
+    tip43Abi,
+    vep1155CollectionAbi,
+    vep1155NftAbi,
+    vep1155TransferAbi,
+    vep1155WalletAbi,
+  ];
 }
 
 class Assets {

@@ -5,16 +5,11 @@ import 'package:nekoton_repository/nekoton_repository.dart';
 /// This model allows tracking Seed adding/removing from [SeedList],
 /// see [SeedListDiffChange].
 class SeedBase extends Equatable {
-  const SeedBase({
-    required this.masterPublicKey,
-    required this.name,
-  });
+  const SeedBase({required this.masterPublicKey, required this.name});
 
   /// Create instance from real seed
-  factory SeedBase.fromSeed(Seed seed) => SeedBase(
-        masterPublicKey: seed.masterKey.publicKey,
-        name: seed.name,
-      );
+  factory SeedBase.fromSeed(Seed seed) =>
+      SeedBase(masterPublicKey: seed.masterKey.publicKey, name: seed.name);
 
   /// Master key of seed.
   /// This key is derived directly from seed phrase.

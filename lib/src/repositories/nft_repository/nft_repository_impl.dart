@@ -148,9 +148,7 @@ mixin NftRepositoryImpl implements NftRepository {
             final address = Address(address: result['nft'] as String);
 
             if (!isVep1155) {
-              return NftItem(
-                nft: await _getNft(address),
-              );
+              return NftItem(nft: await _getNft(address));
             }
 
             // For VEP-1155, returned address is multitoken wallet
@@ -165,10 +163,7 @@ mixin NftRepositoryImpl implements NftRepository {
               collection: collection,
             );
 
-            return NftItem(
-              nft: await _getNft(nftAddress),
-              wallet: wallet,
-            );
+            return NftItem(nft: await _getNft(nftAddress), wallet: wallet);
           } catch (e) {
             _logger.warning('Failed to get NFT: $e');
             return null;
@@ -478,10 +473,7 @@ mixin NftRepositoryImpl implements NftRepository {
         address: collection,
         methodId: 'getNftUrl',
         responsible: true,
-        input: {
-          'answerId': 0,
-          'parts': parts['part'],
-        },
+        input: {'answerId': 0, 'parts': parts['part']},
       );
       final url = result['nftUrl'] as String;
       final json = await currentTransport.fetchJson(url);
@@ -504,15 +496,15 @@ mixin NftRepositoryImpl implements NftRepository {
       abiVersion: '2.0', // !!! abi version 2.0; do not change
       params: switch (type) {
         NftType.nft => const [
-            AbiParam(name: 'collection', type: 'address'),
-            AbiParam(name: 'owner', type: 'address'),
-            AbiParam(name: 'stamp', type: 'fixedbytes3'),
-          ],
+          AbiParam(name: 'collection', type: 'address'),
+          AbiParam(name: 'owner', type: 'address'),
+          AbiParam(name: 'stamp', type: 'fixedbytes3'),
+        ],
         NftType.fungible => const [
-            AbiParam(name: 'collection', type: 'address'),
-            AbiParam(name: 'owner', type: 'address'),
-            AbiParam(name: 'stamp', type: 'fixedbytes8'),
-          ],
+          AbiParam(name: 'collection', type: 'address'),
+          AbiParam(name: 'owner', type: 'address'),
+          AbiParam(name: 'stamp', type: 'fixedbytes8'),
+        ],
       },
       tokens: {
         'collection': collection.toString(),
@@ -520,10 +512,7 @@ mixin NftRepositoryImpl implements NftRepository {
         'stamp': base64.encode(utf8.encode(type.name)),
       },
     );
-    final (_, hash) = setCodeSalt(
-      code: _indexCode,
-      salt: boc,
-    );
+    final (_, hash) = setCodeSalt(code: _indexCode, salt: boc);
 
     return currentTransport.transport.getAccountsByCodeHash(
       codeHash: hash,
@@ -538,10 +527,8 @@ mixin NftRepositoryImpl implements NftRepository {
   }) async {
     final result = await Future.wait<bool>(
       interfaces.map(
-        (interface) => _supportsInterface(
-          address: address,
-          interface: interface,
-        ),
+        (interface) =>
+            _supportsInterface(address: address, interface: interface),
       ),
     );
 

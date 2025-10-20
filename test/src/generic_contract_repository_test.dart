@@ -25,9 +25,7 @@ class MockArcTransportBoxTrait extends Mock implements ArcTransportBoxTrait {}
 class MockArcTonWalletBoxTrait extends Mock implements ArcTonWalletBoxTrait {}
 
 class GenericContractRepoTest with GenericContractRepositoryImpl {
-  GenericContractRepoTest(
-    this.currentTransport,
-  );
+  GenericContractRepoTest(this.currentTransport);
 
   @override
   final MockTransport currentTransport;
@@ -45,7 +43,7 @@ void main() {
   late Stream<PendingTransaction> expiredStream;
   late Stream<ContractState> stateStream;
   late Stream<(List<Transaction>, TransactionsBatchInfo)>
-      transactionsFoundStream;
+  transactionsFoundStream;
 
   const address1 = Address(
     address:
@@ -65,10 +63,14 @@ void main() {
   final origin1 = Uri.parse('https://octusbridge.io/');
   final origin2 = Uri.parse('https://flatqube.io/');
   const tabId1 = 'TAB1';
-  const updateSubsAll =
-      ContractUpdatesSubscription(transactions: true, contractState: true);
-  const updateNothingSub =
-      ContractUpdatesSubscription(transactions: false, contractState: false);
+  const updateSubsAll = ContractUpdatesSubscription(
+    transactions: true,
+    contractState: true,
+  );
+  const updateNothingSub = ContractUpdatesSubscription(
+    transactions: false,
+    contractState: false,
+  );
 
   const batch = TransactionsBatchInfo(
     maxLt: '',
@@ -101,12 +103,8 @@ void main() {
     registerFallbackValue(box);
 
     walletBoxTrait = MockArcTonWalletBoxTrait();
-    tonWrapper1 = TonWalletDartWrapper(
-      innerWallet: walletBoxTrait,
-    );
-    tonWrapper2 = TonWalletDartWrapper(
-      innerWallet: walletBoxTrait,
-    );
+    tonWrapper1 = TonWalletDartWrapper(innerWallet: walletBoxTrait);
+    tonWrapper2 = TonWalletDartWrapper(innerWallet: walletBoxTrait);
     registerFallbackValue(walletBoxTrait);
     registerFallbackValue(tonWrapper1);
     registerFallbackValue(tonWrapper2);
@@ -237,20 +235,20 @@ void main() {
 
       final subs = repository.tabSubscriptions(tabId1);
 
-      expect(subs, {
-        address1: updateSubsAll,
-        address2: updateNothingSub,
-      });
+      expect(subs, {address1: updateSubsAll, address2: updateNothingSub});
     });
 
     test('tabTransactionsStream', () async {
       transactionsFoundStream = Stream.value((<Transaction>[], batch));
-      when(() => contract.onMessageExpiredStream)
-          .thenAnswer((_) => expiredStream);
-      when(() => contract.onMessageSentStream)
-          .thenAnswer((_) => messageSentStream);
-      when(() => contract.onTransactionsFoundStream)
-          .thenAnswer((_) => transactionsFoundStream);
+      when(
+        () => contract.onMessageExpiredStream,
+      ).thenAnswer((_) => expiredStream);
+      when(
+        () => contract.onMessageSentStream,
+      ).thenAnswer((_) => messageSentStream);
+      when(
+        () => contract.onTransactionsFoundStream,
+      ).thenAnswer((_) => transactionsFoundStream);
       when(() => contract.onStateChangedStream).thenAnswer((_) => stateStream);
       when(() => contract.address).thenReturn(address1);
       when(() => contract.dispose()).thenReturn(null);
@@ -282,26 +280,26 @@ void main() {
           )
           .toList();
 
-      expect(
-        subs,
-        [
-          const ContractFoundTransactionEvent(
-            address: address1,
-            transactions: [],
-            info: batch,
-          ),
-        ],
-      );
+      expect(subs, [
+        const ContractFoundTransactionEvent(
+          address: address1,
+          transactions: [],
+          info: batch,
+        ),
+      ]);
     });
 
     test('tabStateChangesStream', () async {
       stateStream = Stream.value(contractState);
-      when(() => contract.onMessageExpiredStream)
-          .thenAnswer((_) => expiredStream);
-      when(() => contract.onMessageSentStream)
-          .thenAnswer((_) => messageSentStream);
-      when(() => contract.onTransactionsFoundStream)
-          .thenAnswer((_) => transactionsFoundStream);
+      when(
+        () => contract.onMessageExpiredStream,
+      ).thenAnswer((_) => expiredStream);
+      when(
+        () => contract.onMessageSentStream,
+      ).thenAnswer((_) => messageSentStream);
+      when(
+        () => contract.onTransactionsFoundStream,
+      ).thenAnswer((_) => transactionsFoundStream);
       when(() => contract.onStateChangedStream).thenAnswer((_) => stateStream);
       when(() => contract.address).thenReturn(address1);
       when(() => contract.dispose()).thenReturn(null);
@@ -333,10 +331,9 @@ void main() {
           )
           .toList();
 
-      expect(
-        subs,
-        [ContractStateChangedEvent(address: address1, state: contractState)],
-      );
+      expect(subs, [
+        ContractStateChangedEvent(address: address1, state: contractState),
+      ]);
     });
   });
 
@@ -389,20 +386,19 @@ void main() {
 
     test('send GQL success', () async {
       // default settings for subscription
-      when(() => contract.onMessageExpiredStream)
-          .thenAnswer((_) => expiredStream);
+      when(
+        () => contract.onMessageExpiredStream,
+      ).thenAnswer((_) => expiredStream);
       when(() => contract.onMessageSentStream).thenAnswer(
         (_) => Stream.fromFuture(
           Future.delayed(sendDuration, () {
-            return (
-              pendingTransaction,
-              transaction,
-            );
+            return (pendingTransaction, transaction);
           }),
         ),
       );
-      when(() => contract.onTransactionsFoundStream)
-          .thenAnswer((_) => transactionsFoundStream);
+      when(
+        () => contract.onTransactionsFoundStream,
+      ).thenAnswer((_) => transactionsFoundStream);
       when(() => contract.onStateChangedStream).thenAnswer((_) => stateStream);
       when(() => contract.address).thenReturn(address1);
       when(contract.refresh).thenAnswer((_) => Future<void>.value());
@@ -420,8 +416,9 @@ void main() {
       when(() => gql.group).thenReturn(group);
 
       /// Gql refresh flow
-      when(() => gql.getLatestBlock(address: any(named: 'address')))
-          .thenAnswer((_) => Future.value(latestBlock));
+      when(
+        () => gql.getLatestBlock(address: any(named: 'address')),
+      ).thenAnswer((_) => Future.value(latestBlock));
       when(
         () => gql.waitForNextBlock(
           currentBlockId: any(named: 'currentBlockId'),
@@ -429,10 +426,12 @@ void main() {
           timeout: any(named: 'timeout'),
         ),
       ).thenAnswer((_) => Future.value(nextBlockId));
-      when(() => gql.getBlock(id: any(named: 'id')))
-          .thenAnswer((_) => Future.value(block));
-      when(() => contract.handleBlock(block: any(named: 'block')))
-          .thenAnswer((_) => Future<void>.value());
+      when(
+        () => gql.getBlock(id: any(named: 'id')),
+      ).thenAnswer((_) => Future.value(block));
+      when(
+        () => contract.handleBlock(block: any(named: 'block')),
+      ).thenAnswer((_) => Future<void>.value());
       final sub = GenericContractSubscriptionItem(
         tabId: tabId1,
         address: address1,
@@ -477,16 +476,17 @@ void main() {
 
     test('send GQL failed', () async {
       // default settings for subscription
-      when(() => contract.onMessageExpiredStream)
-          .thenAnswer((_) => expiredStream);
+      when(
+        () => contract.onMessageExpiredStream,
+      ).thenAnswer((_) => expiredStream);
       // this should be avoided
       when(() => contract.onMessageSentStream).thenAnswer(
-        (_) => Stream.fromFuture(
-          Future.delayed(transactionExpiring, throwError),
-        ),
+        (_) =>
+            Stream.fromFuture(Future.delayed(transactionExpiring, throwError)),
       );
-      when(() => contract.onTransactionsFoundStream)
-          .thenAnswer((_) => transactionsFoundStream);
+      when(
+        () => contract.onTransactionsFoundStream,
+      ).thenAnswer((_) => transactionsFoundStream);
       when(() => contract.onStateChangedStream).thenAnswer((_) => stateStream);
       when(() => contract.address).thenReturn(address1);
       when(contract.refresh).thenAnswer((_) => Future<void>.value());
@@ -505,10 +505,8 @@ void main() {
 
       /// Gql refresh flow
       when(() => gql.getLatestBlock(address: any(named: 'address'))).thenAnswer(
-        (_) => Future<LatestBlock>.delayed(
-          const Duration(seconds: 1),
-          throwError,
-        ),
+        (_) =>
+            Future<LatestBlock>.delayed(const Duration(seconds: 1), throwError),
       );
 
       final sub = GenericContractSubscriptionItem(
@@ -563,24 +561,24 @@ void main() {
 
     test('send PROTO success', () async {
       // default settings for subscription
-      when(() => contract.onMessageExpiredStream)
-          .thenAnswer((_) => expiredStream);
+      when(
+        () => contract.onMessageExpiredStream,
+      ).thenAnswer((_) => expiredStream);
       when(() => contract.onMessageSentStream).thenAnswer(
         (_) => Stream.fromFuture(
           Future.delayed(sendDuration, () {
-            return (
-              pendingTransaction,
-              transaction,
-            );
+            return (pendingTransaction, transaction);
           }),
         ),
       );
-      when(() => contract.onTransactionsFoundStream)
-          .thenAnswer((_) => transactionsFoundStream);
+      when(
+        () => contract.onTransactionsFoundStream,
+      ).thenAnswer((_) => transactionsFoundStream);
       when(() => contract.onStateChangedStream).thenAnswer((_) => stateStream);
       when(() => contract.address).thenReturn(address1);
-      when(() => contract.refresh())
-          .thenAnswer((_) => Future<void>.delayed(sendDuration));
+      when(
+        () => contract.refresh(),
+      ).thenAnswer((_) => Future<void>.delayed(sendDuration));
       when(() => contract.refreshDescription).thenReturn('');
 
       when(() => contract.transport).thenReturn(proto);
@@ -628,23 +626,22 @@ void main() {
 
     test('send PROTO failed', () async {
       // default settings for subscription
-      when(() => contract.onMessageExpiredStream)
-          .thenAnswer((_) => expiredStream);
+      when(
+        () => contract.onMessageExpiredStream,
+      ).thenAnswer((_) => expiredStream);
       // this should be avoided
       when(() => contract.onMessageSentStream).thenAnswer(
-        (_) => Stream.fromFuture(
-          Future.delayed(transactionExpiring, throwError),
-        ),
+        (_) =>
+            Stream.fromFuture(Future.delayed(transactionExpiring, throwError)),
       );
-      when(() => contract.onTransactionsFoundStream)
-          .thenAnswer((_) => transactionsFoundStream);
+      when(
+        () => contract.onTransactionsFoundStream,
+      ).thenAnswer((_) => transactionsFoundStream);
       when(() => contract.onStateChangedStream).thenAnswer((_) => stateStream);
       when(() => contract.address).thenReturn(address1);
       when(() => contract.refresh()).thenAnswer(
-        (_) => Future<LatestBlock>.delayed(
-          const Duration(seconds: 1),
-          throwError,
-        ),
+        (_) =>
+            Future<LatestBlock>.delayed(const Duration(seconds: 1), throwError),
       );
       when(() => contract.refreshDescription).thenReturn('');
 
@@ -701,24 +698,24 @@ void main() {
 
     test('send JRPC success', () async {
       // default settings for subscription
-      when(() => contract.onMessageExpiredStream)
-          .thenAnswer((_) => expiredStream);
+      when(
+        () => contract.onMessageExpiredStream,
+      ).thenAnswer((_) => expiredStream);
       when(() => contract.onMessageSentStream).thenAnswer(
         (_) => Stream.fromFuture(
           Future.delayed(sendDuration, () {
-            return (
-              pendingTransaction,
-              transaction,
-            );
+            return (pendingTransaction, transaction);
           }),
         ),
       );
-      when(() => contract.onTransactionsFoundStream)
-          .thenAnswer((_) => transactionsFoundStream);
+      when(
+        () => contract.onTransactionsFoundStream,
+      ).thenAnswer((_) => transactionsFoundStream);
       when(() => contract.onStateChangedStream).thenAnswer((_) => stateStream);
       when(() => contract.address).thenReturn(address1);
-      when(() => contract.refresh())
-          .thenAnswer((_) => Future<void>.delayed(sendDuration));
+      when(
+        () => contract.refresh(),
+      ).thenAnswer((_) => Future<void>.delayed(sendDuration));
       when(() => contract.refreshDescription).thenReturn('');
 
       when(() => contract.transport).thenReturn(jrpc);
@@ -766,23 +763,22 @@ void main() {
 
     test('send JRPC failed', () async {
       // default settings for subscription
-      when(() => contract.onMessageExpiredStream)
-          .thenAnswer((_) => expiredStream);
+      when(
+        () => contract.onMessageExpiredStream,
+      ).thenAnswer((_) => expiredStream);
       // this should be avoided
       when(() => contract.onMessageSentStream).thenAnswer(
-        (_) => Stream.fromFuture(
-          Future.delayed(transactionExpiring, throwError),
-        ),
+        (_) =>
+            Stream.fromFuture(Future.delayed(transactionExpiring, throwError)),
       );
-      when(() => contract.onTransactionsFoundStream)
-          .thenAnswer((_) => transactionsFoundStream);
+      when(
+        () => contract.onTransactionsFoundStream,
+      ).thenAnswer((_) => transactionsFoundStream);
       when(() => contract.onStateChangedStream).thenAnswer((_) => stateStream);
       when(() => contract.address).thenReturn(address1);
       when(() => contract.refresh()).thenAnswer(
-        (_) => Future<LatestBlock>.delayed(
-          const Duration(seconds: 1),
-          throwError,
-        ),
+        (_) =>
+            Future<LatestBlock>.delayed(const Duration(seconds: 1), throwError),
       );
       when(() => contract.refreshDescription).thenReturn('');
 
