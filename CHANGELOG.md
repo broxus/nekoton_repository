@@ -11,6 +11,31 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 Packages with breaking changes:
 
+ - There are no breaking changes in this release.
+
+Packages with other changes:
+
+ - [`nekoton_repository` - `v2.0.1`](#nekoton_repository---v201)
+
+---
+
+#### `nekoton_repository` - `v2.0.1`
+
+ - **FIX**: update flutter_version to 3.35.6 in workflow files. ([1ec32c1c](https://github.com/broxus/nekoton_repository/commit/1ec32c1c85c6b9e742fc5d7ea706138a34a22744))
+
+## 2.0.1
+
+ - **FIX**: update flutter_version to 3.35.6 in workflow files. ([1ec32c1c](https://github.com/broxus/nekoton_repository/commit/1ec32c1c85c6b9e742fc5d7ea706138a34a22744))
+
+
+## 2025-10-20
+
+### Changes
+
+---
+
+Packages with breaking changes:
+
  - [`nekoton_repository` - `v2.0.0`](#nekoton_repository---v200)
 
 Packages with other changes:
