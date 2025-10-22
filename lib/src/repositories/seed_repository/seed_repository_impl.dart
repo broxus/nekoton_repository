@@ -161,9 +161,7 @@ mixin SeedKeyRepositoryImpl implements SeedKeyRepository {
   }) async {
     // Generate default seed name if not provided
     if (name?.isEmpty ?? true) {
-      // Count existing seeds (master keys only)
-      final existingSeedCount = keyStore.keys.where((k) => k.isMaster).length;
-      name = 'Seed #${existingSeedCount + 1}';
+      name = 'Seed #${_getNextSeedNumber()}';
     }
 
     mnemonicType ??= phrase.length == 24
@@ -247,9 +245,7 @@ mixin SeedKeyRepositoryImpl implements SeedKeyRepository {
   }) async {
     // Generate default seed name if not provided
     if (name?.isEmpty ?? true) {
-      // Count existing seeds (master keys only)
-      final existingSeedCount = keyStore.keys.where((k) => k.isMaster).length;
-      name = 'Seed #${existingSeedCount + 1}';
+      name = 'Seed #${_getNextSeedNumber()}';
     }
 
     final publicKey = await keyStore.addKey(
@@ -684,5 +680,31 @@ mixin SeedKeyRepositoryImpl implements SeedKeyRepository {
       }
     }
     await GetIt.instance<AccountRepository>().removeAccounts(accountsToRemove);
+  }
+
+  /// Gets the next available seed number by finding the maximum number
+  /// in existing seed names (format: "Seed #N") and returning max + 1.
+  /// Returns 1 if no seeds exist or no default names are found.
+  int _getNextSeedNumber() {
+    final seedMeta = storageRepository.seedMeta;
+    if (seedMeta.isEmpty) return 1;
+
+    var maxNumber = 0;
+
+    for (final metadata in seedMeta.values) {
+      final name = metadata.name;
+      if (name == null) continue;
+
+      // Parse "Seed #N" format
+      final match = RegExp(r'^Seed #(\d+)$').firstMatch(name);
+      if (match != null) {
+        final number = int.tryParse(match.group(1) ?? '');
+        if (number != null && number > maxNumber) {
+          maxNumber = number;
+        }
+      }
+    }
+
+    return maxNumber + 1;
   }
 }

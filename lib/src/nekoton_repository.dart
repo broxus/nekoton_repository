@@ -484,14 +484,41 @@ class NekotonRepository
     // Key position is 1-based (master key = 1, first derived = 2, etc.)
     final keyPosition = keyIndex + 1;
 
-    // Count existing accounts for this key
-    final existingAccountsCount =
-        seed.allKeys[keyIndex].accountList.allAccounts.length;
-
-    // Account position is 1-based
-    final accountPosition = existingAccountsCount + 1;
+    // Get next account number by finding max existing number + 1
+    final accountPosition = _getNextAccountNumber(
+      seed.allKeys[keyIndex].accountList.allAccounts,
+      keyPosition,
+    );
 
     return 'Account $keyPosition.$accountPosition';
+  }
+
+  /// Gets the next available account number for a specific key position
+  /// by finding the maximum number in existing account names
+  /// (format: "Account N.M") and returning max M + 1 for the given N.
+  /// Returns 1 if no accounts exist or no default names are found.
+  int _getNextAccountNumber(List<KeyAccount> accounts, int keyPosition) {
+    if (accounts.isEmpty) return 1;
+
+    var maxNumber = 0;
+
+    for (final account in accounts) {
+      final name = account.name;
+
+      // Parse "Account N.M" format
+      final match = RegExp(r'^Account (\d+)\.(\d+)$').firstMatch(name);
+      if (match != null) {
+        final n = int.tryParse(match.group(1) ?? '');
+        final m = int.tryParse(match.group(2) ?? '');
+
+        // Only consider accounts for this specific key position
+        if (n == keyPosition && m != null && m > maxNumber) {
+          maxNumber = m;
+        }
+      }
+    }
+
+    return maxNumber + 1;
   }
 
   void _logHandler(fnb.LogEntry logEntry) {
