@@ -278,8 +278,9 @@ mixin SeedKeyRepositoryImpl implements SeedKeyRepository {
     // For newly created seeds, this will be the first account on master key
     // At this point the seed might not be in seedList yet, so we use fallback
     final accountName =
-        GetIt.instance<NekotonRepository>()
-            .generateDefaultAccountName(publicKey) ??
+        GetIt.instance<NekotonRepository>().generateDefaultAccountName(
+          publicKey,
+        ) ??
         transport.defaultAccountName(transport.defaultWalletType);
 
     final defaultAccount = AccountToAdd(
@@ -372,7 +373,8 @@ mixin SeedKeyRepositoryImpl implements SeedKeyRepository {
               publicKey: a.publicKey,
               contract: a.walletType,
               workchain: a.address.workchain,
-              name: GetIt.instance<NekotonRepository>()
+              name:
+                  GetIt.instance<NekotonRepository>()
                       .generateDefaultAccountName(a.publicKey) ??
                   transport.defaultAccountName(a.walletType),
             ),
@@ -452,7 +454,8 @@ mixin SeedKeyRepositoryImpl implements SeedKeyRepository {
         if (activeAccounts.isEmpty) {
           accountsToAdd.add(
             AccountToAdd(
-              name: GetIt.instance<NekotonRepository>()
+              name:
+                  GetIt.instance<NekotonRepository>()
                       .generateDefaultAccountName(key) ??
                   transport.defaultAccountName(transport.defaultWalletType),
               publicKey: key,
@@ -471,7 +474,8 @@ mixin SeedKeyRepositoryImpl implements SeedKeyRepository {
               publicKey: a.publicKey,
               contract: a.walletType,
               workchain: a.address.workchain,
-              name: GetIt.instance<NekotonRepository>()
+              name:
+                  GetIt.instance<NekotonRepository>()
                       .generateDefaultAccountName(a.publicKey) ??
                   transport.defaultAccountName(a.walletType),
             ),

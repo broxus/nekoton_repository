@@ -45,11 +45,12 @@ class AccountList extends Equatable {
   }) {
     return GetIt.instance<AccountRepository>().addAccount(
       AccountToAdd(
-        name: name ??
-            GetIt.instance<NekotonRepository>()
-                .generateDefaultAccountName(publicKey) ??
-            GetIt.instance<TransportRepository>()
-                .currentTransport
+        name:
+            name ??
+            GetIt.instance<NekotonRepository>().generateDefaultAccountName(
+              publicKey,
+            ) ??
+            GetIt.instance<TransportRepository>().currentTransport
                 .defaultAccountName(walletType),
         publicKey: publicKey,
         contract: walletType,
