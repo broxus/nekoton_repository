@@ -159,7 +159,13 @@ mixin SeedKeyRepositoryImpl implements SeedKeyRepository {
     String? name,
     SeedAddType addType = SeedAddType.create,
   }) async {
-    name = name?.isEmpty ?? true ? null : name;
+    // Generate default seed name if not provided
+    if (name?.isEmpty ?? true) {
+      // Count existing seeds (master keys only)
+      final existingSeedCount = keyStore.keys.where((k) => k.isMaster).length;
+      name = 'Seed #${existingSeedCount + 1}';
+    }
+
     mnemonicType ??= phrase.length == 24
         ? const MnemonicType.legacy()
         : const MnemonicType.bip39(
@@ -239,6 +245,13 @@ mixin SeedKeyRepositoryImpl implements SeedKeyRepository {
     required int workchainId,
     String? name,
   }) async {
+    // Generate default seed name if not provided
+    if (name?.isEmpty ?? true) {
+      // Count existing seeds (master keys only)
+      final existingSeedCount = keyStore.keys.where((k) => k.isMaster).length;
+      name = 'Seed #${existingSeedCount + 1}';
+    }
+
     final publicKey = await keyStore.addKey(
       LedgerKeyCreateInput(accountId: accountId, name: name),
     );
@@ -266,8 +279,15 @@ mixin SeedKeyRepositoryImpl implements SeedKeyRepository {
     final transport = currentTransport;
     if (transport.transport.disposed) return;
 
+    // For newly created seeds, this will be the first account on master key
+    // At this point the seed might not be in seedList yet, so we use fallback
+    final accountName =
+        GetIt.instance<NekotonRepository>()
+            .generateDefaultAccountName(publicKey) ??
+        transport.defaultAccountName(transport.defaultWalletType);
+
     final defaultAccount = AccountToAdd(
-      name: transport.defaultAccountName(transport.defaultWalletType),
+      name: accountName,
       publicKey: publicKey,
       contract: transport.defaultWalletType,
       workchain: workchainId,
@@ -356,7 +376,9 @@ mixin SeedKeyRepositoryImpl implements SeedKeyRepository {
               publicKey: a.publicKey,
               contract: a.walletType,
               workchain: a.address.workchain,
-              name: transport.defaultAccountName(a.walletType),
+              name: GetIt.instance<NekotonRepository>()
+                      .generateDefaultAccountName(a.publicKey) ??
+                  transport.defaultAccountName(a.walletType),
             ),
           ),
         );
@@ -434,7 +456,9 @@ mixin SeedKeyRepositoryImpl implements SeedKeyRepository {
         if (activeAccounts.isEmpty) {
           accountsToAdd.add(
             AccountToAdd(
-              name: transport.defaultAccountName(transport.defaultWalletType),
+              name: GetIt.instance<NekotonRepository>()
+                      .generateDefaultAccountName(key) ??
+                  transport.defaultAccountName(transport.defaultWalletType),
               publicKey: key,
               contract: transport.defaultWalletType,
               workchain: workchainId,
@@ -451,7 +475,9 @@ mixin SeedKeyRepositoryImpl implements SeedKeyRepository {
               publicKey: a.publicKey,
               contract: a.walletType,
               workchain: a.address.workchain,
-              name: transport.defaultAccountName(a.walletType),
+              name: GetIt.instance<NekotonRepository>()
+                      .generateDefaultAccountName(a.publicKey) ??
+                  transport.defaultAccountName(a.walletType),
             ),
           ),
         );

@@ -36,7 +36,8 @@ class AccountList extends Equatable {
 
   /// Add account to key with [publicKey] and [walletType].
   /// [workchain] specify Transport network that should be used for this account
-  /// [name] is optional and if not specified, auto-generated name will be used.
+  /// [name] is optional and if not specified, auto-generated name will be used
+  /// in format "Account N.M".
   Future<Address> addAccount({
     required WalletType walletType,
     required int workchain,
@@ -44,9 +45,11 @@ class AccountList extends Equatable {
   }) {
     return GetIt.instance<AccountRepository>().addAccount(
       AccountToAdd(
-        name:
-            name ??
-            GetIt.instance<TransportRepository>().currentTransport
+        name: name ??
+            GetIt.instance<NekotonRepository>()
+                .generateDefaultAccountName(publicKey) ??
+            GetIt.instance<TransportRepository>()
+                .currentTransport
                 .defaultAccountName(walletType),
         publicKey: publicKey,
         contract: walletType,

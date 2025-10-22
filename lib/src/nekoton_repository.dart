@@ -466,6 +466,34 @@ class NekotonRepository
     _keyStore.keysStream.listen((keys) => _hasSeeds.add(keys.isNotEmpty));
   }
 
+  /// Generates default account name in format "Account N.M"
+  /// where N is the key position in the seed (1-based) and M is the account
+  /// position within that key (1-based).
+  ///
+  /// Returns null if the publicKey is not found in any seed.
+  String? generateDefaultAccountName(PublicKey publicKey) {
+    final seed = seedList.findSeedByAnyPublicKey(publicKey);
+    if (seed == null) return null;
+
+    // Find the key within the seed
+    final keyIndex = seed.allKeys.indexWhere(
+      (key) => key.publicKey == publicKey,
+    );
+    if (keyIndex == -1) return null;
+
+    // Key position is 1-based (master key = 1, first derived = 2, etc.)
+    final keyPosition = keyIndex + 1;
+
+    // Count existing accounts for this key
+    final existingAccountsCount =
+        seed.allKeys[keyIndex].accountList.allAccounts.length;
+
+    // Account position is 1-based
+    final accountPosition = existingAccountsCount + 1;
+
+    return 'Account $keyPosition.$accountPosition';
+  }
+
   void _logHandler(fnb.LogEntry logEntry) {
     final logLevel = _toLogLevel(logEntry.level);
 

@@ -1,4 +1,5 @@
 import 'package:collection/collection.dart';
+import 'package:get_it/get_it.dart';
 import 'package:nekoton_repository/nekoton_repository.dart';
 
 /// Implementation of AccountRepository.
@@ -39,11 +40,10 @@ mixin AccountRepositoryImpl on TransportRepository
 
     var isCustodian = false;
     final externalAccounts = storageRepository.externalAccounts;
-    final publicKeys =
-        (publicKey == null
-                ? keyStore.keys.map((e) => e.publicKey)
-                : [publicKey])
-            .where(custodians.contains);
+    final publicKeys = (publicKey == null
+            ? keyStore.keys.map((e) => e.publicKey)
+            : [publicKey])
+        .where(custodians.contains);
 
     for (final publicKey in publicKeys) {
       if (externalAccounts[publicKey]?.contains(address) ?? false) continue;
@@ -61,8 +61,9 @@ mixin AccountRepositoryImpl on TransportRepository
 
         await addAccount(
           AccountToAdd(
-            name:
-                name ??
+            name: name ??
+                GetIt.instance<NekotonRepository>()
+                    .generateDefaultAccountName(publicKey) ??
                 currentTransport.defaultAccountName(
                   existingWalletInfo.walletType,
                 ),
@@ -175,38 +176,42 @@ mixin AccountRepositoryImpl on TransportRepository
   Future<void> addTokenWallet({
     required Address address,
     required Address rootTokenContract,
-  }) => accountsStorage.addTokenWallet(
-    address: address,
-    rootTokenContract: rootTokenContract,
-    networkGroup: currentTransport.transport.group,
-  );
+  }) =>
+      accountsStorage.addTokenWallet(
+        address: address,
+        rootTokenContract: rootTokenContract,
+        networkGroup: currentTransport.transport.group,
+      );
 
   @override
   Future<void> addTokenWallets({
     required Address address,
     required List<Address> rootTokenContracts,
-  }) => accountsStorage.addTokenWallets(
-    address: address,
-    rootTokenContracts: rootTokenContracts,
-    networkGroup: currentTransport.transport.group,
-  );
+  }) =>
+      accountsStorage.addTokenWallets(
+        address: address,
+        rootTokenContracts: rootTokenContracts,
+        networkGroup: currentTransport.transport.group,
+      );
 
   @override
   Future<void> removeTokenWallet({
     required Address address,
     required Address rootTokenContract,
-  }) => accountsStorage.removeTokenWallet(
-    address: address,
-    rootTokenContract: rootTokenContract,
-    networkGroup: currentTransport.transport.group,
-  );
+  }) =>
+      accountsStorage.removeTokenWallet(
+        address: address,
+        rootTokenContract: rootTokenContract,
+        networkGroup: currentTransport.transport.group,
+      );
   @override
   Future<void> removeTokenWallets({
     required Address address,
     required List<Address> rootTokenContracts,
-  }) => accountsStorage.removeTokenWallets(
-    address: address,
-    rootTokenContracts: rootTokenContracts,
-    networkGroup: currentTransport.transport.group,
-  );
+  }) =>
+      accountsStorage.removeTokenWallets(
+        address: address,
+        rootTokenContracts: rootTokenContracts,
+        networkGroup: currentTransport.transport.group,
+      );
 }
