@@ -4,6 +4,8 @@ import 'package:get_it/get_it.dart';
 import 'package:nekoton_repository/nekoton_repository.dart';
 import 'package:rxdart/rxdart.dart';
 
+const seedPrefix = 'Seed ';
+
 /// Implementation of SeedRepository.
 /// Usage
 /// ```
@@ -161,7 +163,7 @@ mixin SeedKeyRepositoryImpl implements SeedKeyRepository {
   }) async {
     // Generate default seed name if not provided
     if (name?.isEmpty ?? true) {
-      name = 'Seed #${_getNextSeedNumber()}';
+      name = '$seedPrefix${_getNextSeedNumber()}';
     }
 
     mnemonicType ??= phrase.length == 24
@@ -245,7 +247,7 @@ mixin SeedKeyRepositoryImpl implements SeedKeyRepository {
   }) async {
     // Generate default seed name if not provided
     if (name?.isEmpty ?? true) {
-      name = 'Seed #${_getNextSeedNumber()}';
+      name = '$seedPrefix${_getNextSeedNumber()}';
     }
 
     final publicKey = await keyStore.addKey(
@@ -687,7 +689,7 @@ mixin SeedKeyRepositoryImpl implements SeedKeyRepository {
   }
 
   /// Gets the next available seed number by finding the maximum number
-  /// in existing seed names (format: "Seed #N") and returning max + 1.
+  /// in existing seed names (format: "Seed N") and returning max + 1.
   /// Returns 1 if no seeds exist or no default names are found.
   int _getNextSeedNumber() {
     final seedMeta = storageRepository.seedMeta;
@@ -699,8 +701,8 @@ mixin SeedKeyRepositoryImpl implements SeedKeyRepository {
       final name = metadata.name;
       if (name == null) continue;
 
-      // Parse "Seed #N" format
-      final match = RegExp(r'^Seed #(\d+)$').firstMatch(name);
+      // Parse "Seed " format
+      final match = RegExp('^$seedPrefix(\\d+)\$').firstMatch(name);
       if (match != null) {
         final number = int.tryParse(match.group(1) ?? '');
         if (number != null && number > maxNumber) {

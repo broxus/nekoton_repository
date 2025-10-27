@@ -48,7 +48,7 @@ void main() {
       );
 
       final seedList = SeedList(
-        seedMeta: {masterKey: const SeedMetadata(name: 'Seed #1')},
+        seedMeta: {masterKey: const SeedMetadata(name: '${seedPrefix}1')},
         allKeys: [masterKeyEntry],
         mappedAccounts: const {},
       );
@@ -105,7 +105,7 @@ void main() {
       );
 
       final seedList = SeedList(
-        seedMeta: {masterKey: const SeedMetadata(name: 'Seed #1')},
+        seedMeta: {masterKey: const SeedMetadata(name: '${seedPrefix}1')},
         allKeys: [masterKeyEntry],
         mappedAccounts: {
           masterKey: const AccountList(
@@ -167,7 +167,7 @@ void main() {
       );
 
       final seedList = SeedList(
-        seedMeta: {masterKey: const SeedMetadata(name: 'Seed #1')},
+        seedMeta: {masterKey: const SeedMetadata(name: '${seedPrefix}1')},
         allKeys: [masterKeyEntry],
         mappedAccounts: {
           masterKey: const AccountList(
@@ -244,7 +244,7 @@ void main() {
       );
 
       final seedList = SeedList(
-        seedMeta: {masterKey: const SeedMetadata(name: 'Seed #1')},
+        seedMeta: {masterKey: const SeedMetadata(name: '${seedPrefix}1')},
         allKeys: [masterKeyEntry],
         mappedAccounts: {
           masterKey: const AccountList(
@@ -331,7 +331,7 @@ void main() {
       );
 
       final seedList = SeedList(
-        seedMeta: {masterKey: const SeedMetadata(name: 'Seed #1')},
+        seedMeta: {masterKey: const SeedMetadata(name: '${seedPrefix}1')},
         allKeys: [masterKeyEntry, subKeyEntry],
         mappedAccounts: {
           masterKey: const AccountList(

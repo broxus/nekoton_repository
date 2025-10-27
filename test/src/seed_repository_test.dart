@@ -338,7 +338,7 @@ void main() {
     });
 
     group('addSeed - default naming', () {
-      test('first seed without name gets "Seed #1"', () async {
+      test('first seed without name gets "Seed 1"', () async {
         final phrase = List.generate(12, (i) => 'word$i');
         const password = 'password';
         const publicKey = PublicKey(publicKey: 'publickey');
@@ -373,7 +373,7 @@ void main() {
             masterKey: publicKey,
             meta: any(
               named: 'meta',
-              that: predicate<SeedMetadata>((meta) => meta.name == 'Seed #1'),
+              that: predicate<SeedMetadata>((meta) => meta.name == '${seedPrefix}1'),
             ),
           ),
         );
@@ -390,8 +390,8 @@ void main() {
         when(() => keyStore.getPublicKeys(any())).thenAnswer((_) async => []);
         when(() => accountsStorage.accounts).thenReturn([]);
         when(() => storageRepository.seedMeta).thenReturn({
-          pk1: const SeedMetadata(name: 'Seed #1'),
-          pk2: const SeedMetadata(name: 'Seed #2'),
+          pk1: const SeedMetadata(name: '${seedPrefix}1'),
+          pk2: const SeedMetadata(name: '${seedPrefix}2'),
         });
         when(
           () => storageRepository.updateSeedMetadata(
@@ -419,13 +419,13 @@ void main() {
             masterKey: publicKey,
             meta: any(
               named: 'meta',
-              that: predicate<SeedMetadata>((meta) => meta.name == 'Seed #3'),
+              that: predicate<SeedMetadata>((meta) => meta.name == '${seedPrefix}3'),
             ),
           ),
         );
       });
 
-      test('gaps are not filled - next after Seed #1 and #3 is #4', () async {
+      test('gaps are not filled - next after Seed 1 and 3 is 4', () async {
         final phrase = List.generate(12, (i) => 'word$i');
         const password = 'password';
         const publicKey = PublicKey(publicKey: 'publickey');
@@ -436,8 +436,8 @@ void main() {
         when(() => keyStore.getPublicKeys(any())).thenAnswer((_) async => []);
         when(() => accountsStorage.accounts).thenReturn([]);
         when(() => storageRepository.seedMeta).thenReturn({
-          pk1: const SeedMetadata(name: 'Seed #1'),
-          pk3: const SeedMetadata(name: 'Seed #3'),
+          pk1: const SeedMetadata(name: '${seedPrefix}1'),
+          pk3: const SeedMetadata(name: '${seedPrefix}3'),
         });
         when(
           () => storageRepository.updateSeedMetadata(
@@ -465,7 +465,7 @@ void main() {
             masterKey: publicKey,
             meta: any(
               named: 'meta',
-              that: predicate<SeedMetadata>((meta) => meta.name == 'Seed #4'),
+              that: predicate<SeedMetadata>((meta) => meta.name == '${seedPrefix}4'),
             ),
           ),
         );
@@ -483,9 +483,9 @@ void main() {
         when(() => keyStore.getPublicKeys(any())).thenAnswer((_) async => []);
         when(() => accountsStorage.accounts).thenReturn([]);
         when(() => storageRepository.seedMeta).thenReturn({
-          pk1: const SeedMetadata(name: 'Seed #1'),
+          pk1: const SeedMetadata(name: '${seedPrefix}1'),
           pk2: const SeedMetadata(name: 'My Custom Seed'),
-          pk5: const SeedMetadata(name: 'Seed #5'),
+          pk5: const SeedMetadata(name: '${seedPrefix}5'),
         });
         when(
           () => storageRepository.updateSeedMetadata(
@@ -513,7 +513,7 @@ void main() {
             masterKey: publicKey,
             meta: any(
               named: 'meta',
-              that: predicate<SeedMetadata>((meta) => meta.name == 'Seed #6'),
+              that: predicate<SeedMetadata>((meta) => meta.name == '${seedPrefix}6'),
             ),
           ),
         );
