@@ -15,6 +15,31 @@ Packages with breaking changes:
 
 Packages with other changes:
 
+ - [`nekoton_repository` - `v2.1.0-dev.2`](#nekoton_repository---v210-dev2)
+
+---
+
+#### `nekoton_repository` - `v2.1.0-dev.2`
+
+ - **FIX**: add apiBaseUrl parameter to getNftList method in NftDataProvider. ([99a6fb99](https://github.com/broxus/nekoton_repository/commit/99a6fb990036cdf283b65b5b77c517409d3cd1aa))
+
+## 2.1.0-dev.2
+
+ - **FIX**: add apiBaseUrl parameter to getNftList method in NftDataProvider. ([99a6fb99](https://github.com/broxus/nekoton_repository/commit/99a6fb990036cdf283b65b5b77c517409d3cd1aa))
+
+
+## 2025-10-30
+
+### Changes
+
+---
+
+Packages with breaking changes:
+
+ - There are no breaking changes in this release.
+
+Packages with other changes:
+
  - [`nekoton_repository` - `v2.1.0-dev.1`](#nekoton_repository---v210-dev1)
 
 ---
