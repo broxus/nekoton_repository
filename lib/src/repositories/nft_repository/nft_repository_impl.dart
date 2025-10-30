@@ -63,6 +63,7 @@ mixin NftRepositoryImpl implements NftRepository {
           try {
             if (apiBaseUrl != null && apiBaseUrl.isNotEmpty) {
               final list = await nftDataProvider.getNftList(
+                apiBaseUrl: apiBaseUrl,
                 collection: collection,
                 owner: owner,
                 limit: 1,
@@ -139,6 +140,7 @@ mixin NftRepositoryImpl implements NftRepository {
     final apiBaseUrl = currentTransport.nftApiBaseUrl;
     if (apiBaseUrl != null && apiBaseUrl.isNotEmpty) {
       return nftDataProvider.getNftList(
+        apiBaseUrl: apiBaseUrl,
         collection: collection,
         owner: owner,
         limit: limit,
