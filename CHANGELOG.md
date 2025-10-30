@@ -15,6 +15,39 @@ Packages with breaking changes:
 
 Packages with other changes:
 
+ - [`nekoton_repository` - `v2.1.0-dev.1`](#nekoton_repository---v210-dev1)
+
+---
+
+#### `nekoton_repository` - `v2.1.0-dev.1`
+
+ - **FIX**: add NftDataProvider as a required parameter in NekotonRepository initialization. ([6d240b8e](https://github.com/broxus/nekoton_repository/commit/6d240b8efaa4f73abb7ec28384dea361ceef3f44))
+ - **FEAT**(EWM-582): add NFT data provider and update related repository methods. ([8c9c1d30](https://github.com/broxus/nekoton_repository/commit/8c9c1d306c92551733344c498ed4ec839ca75529))
+ - **FEAT**(EWM-397): add logic of count created names to choose max number. ([c47c067c](https://github.com/broxus/nekoton_repository/commit/c47c067c4ae0bc1ecfa560a2d4c8a0bb1c123ca7))
+ - **FEAT**(EWM-397): add new logic of default naming seeds and accounts. ([83bd3add](https://github.com/broxus/nekoton_repository/commit/83bd3add139d1914d4a723cab99fa9299c888514))
+ - **FEAT**(EWM-397): add new logic of account & seed default naming. ([2a9762a0](https://github.com/broxus/nekoton_repository/commit/2a9762a0d155ae283f96ac734638acf23a64c61d))
+
+## 2.1.0-dev.1
+
+ - **FIX**: add NftDataProvider as a required parameter in NekotonRepository initialization. ([6d240b8e](https://github.com/broxus/nekoton_repository/commit/6d240b8efaa4f73abb7ec28384dea361ceef3f44))
+ - **FEAT**(EWM-582): add NFT data provider and update related repository methods. ([8c9c1d30](https://github.com/broxus/nekoton_repository/commit/8c9c1d306c92551733344c498ed4ec839ca75529))
+ - **FEAT**(EWM-397): add logic of count created names to choose max number. ([c47c067c](https://github.com/broxus/nekoton_repository/commit/c47c067c4ae0bc1ecfa560a2d4c8a0bb1c123ca7))
+ - **FEAT**(EWM-397): add new logic of default naming seeds and accounts. ([83bd3add](https://github.com/broxus/nekoton_repository/commit/83bd3add139d1914d4a723cab99fa9299c888514))
+ - **FEAT**(EWM-397): add new logic of account & seed default naming. ([2a9762a0](https://github.com/broxus/nekoton_repository/commit/2a9762a0d155ae283f96ac734638acf23a64c61d))
+
+
+## 2025-10-30
+
+### Changes
+
+---
+
+Packages with breaking changes:
+
+ - There are no breaking changes in this release.
+
+Packages with other changes:
+
  - [`nekoton_repository` - `v2.1.0-dev.0`](#nekoton_repository---v210-dev0)
 
 ---
