@@ -45,7 +45,7 @@ abstract class NftRepository {
 
   /// Get a list of NFTs owned by [owner] in the [collection].
   /// Supports pagination with [limit] and [continuation].
-  Future<NftList> getNtfList({
+  Future<NftList> getNftList({
     required Address collection,
     required Address owner,
     required int limit,

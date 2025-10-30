@@ -75,6 +75,11 @@ class NekotonRepository
   @override
   AbiLoader get abiLoader => _abiLoader;
 
+  late final NftDataProvider _nftDataProvider;
+
+  @override
+  NftDataProvider get nftDataProvider => _nftDataProvider;
+
   late final fnb.LedgerConnection _ledgerConnection;
 
   /// Setup nekoton bridge logger
