@@ -3,6 +3,31 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## 2025-10-30
+
+### Changes
+
+---
+
+Packages with breaking changes:
+
+ - There are no breaking changes in this release.
+
+Packages with other changes:
+
+ - [`nekoton_repository` - `v2.1.0-dev.0`](#nekoton_repository---v210-dev0)
+
+---
+
+#### `nekoton_repository` - `v2.1.0-dev.0`
+
+ - **FEAT**(EWM-582): add NFT data provider and update related repository methods. ([8c9c1d30](https://github.com/broxus/nekoton_repository/commit/8c9c1d306c92551733344c498ed4ec839ca75529))
+
+## 2.1.0-dev.0
+
+ - **FEAT**(EWM-582): add NFT data provider and update related repository methods. ([8c9c1d30](https://github.com/broxus/nekoton_repository/commit/8c9c1d306c92551733344c498ed4ec839ca75529))
+
+
 ## 2025-10-20
 
 ### Changes
