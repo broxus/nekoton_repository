@@ -373,7 +373,9 @@ void main() {
             masterKey: publicKey,
             meta: any(
               named: 'meta',
-              that: predicate<SeedMetadata>((meta) => meta.name == '${seedPrefix}1'),
+              that: predicate<SeedMetadata>(
+                (meta) => meta.name == '${seedPrefix}1',
+              ),
             ),
           ),
         );
@@ -419,7 +421,9 @@ void main() {
             masterKey: publicKey,
             meta: any(
               named: 'meta',
-              that: predicate<SeedMetadata>((meta) => meta.name == '${seedPrefix}3'),
+              that: predicate<SeedMetadata>(
+                (meta) => meta.name == '${seedPrefix}3',
+              ),
             ),
           ),
         );
@@ -465,7 +469,9 @@ void main() {
             masterKey: publicKey,
             meta: any(
               named: 'meta',
-              that: predicate<SeedMetadata>((meta) => meta.name == '${seedPrefix}4'),
+              that: predicate<SeedMetadata>(
+                (meta) => meta.name == '${seedPrefix}4',
+              ),
             ),
           ),
         );
@@ -513,7 +519,9 @@ void main() {
             masterKey: publicKey,
             meta: any(
               named: 'meta',
-              that: predicate<SeedMetadata>((meta) => meta.name == '${seedPrefix}6'),
+              that: predicate<SeedMetadata>(
+                (meta) => meta.name == '${seedPrefix}6',
+              ),
             ),
           ),
         );
