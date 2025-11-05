@@ -6,6 +6,8 @@ class MockTransportStrategy extends Mock implements TransportStrategy {}
 
 class MockAbiLoader extends Mock implements AbiLoader {}
 
+class MockNftDataProvider extends Mock implements NftDataProvider {}
+
 class MockTonWallet extends Mock implements TonWallet {}
 
 class MockLatestLtTracker extends Mock implements LatestLtTracker {}
@@ -23,12 +25,20 @@ class MockNftItem extends Mock implements NftItem {}
 class MockNftList extends Mock implements NftList {}
 
 class TestNftRepository with NftRepositoryImpl {
-  TestNftRepository({required this.currentTransport, required this.abiLoader});
+  TestNftRepository({
+    required this.currentTransport,
+    required this.abiLoader,
+    required this.nftDataProvider,
+  });
 
   @override
   final TransportStrategy currentTransport;
+
   @override
   final AbiLoader abiLoader;
+
+  @override
+  final NftDataProvider nftDataProvider;
 }
 
 void main() {
@@ -36,16 +46,19 @@ void main() {
     late TestNftRepository repository;
     late MockTransportStrategy transport;
     late MockAbiLoader abiLoader;
+    late MockNftDataProvider nftDataProvider;
     late MockProtoTransport protoTransport;
 
     setUp(() {
       transport = MockTransportStrategy();
       abiLoader = MockAbiLoader();
+      nftDataProvider = MockNftDataProvider();
       protoTransport = MockProtoTransport();
       when(() => transport.transport).thenReturn(protoTransport);
       repository = TestNftRepository(
         currentTransport: transport,
         abiLoader: abiLoader,
+        nftDataProvider: nftDataProvider,
       );
     });
 
@@ -88,7 +101,7 @@ void main() {
       expect(result, isNull);
     });
 
-    test('getNtfList returns NftList', () async {
+    test('getNftList returns NftList', () async {
       final collection = makeAddress();
       final owner = makeAddress();
       final nftList = MockNftList();
@@ -96,7 +109,7 @@ void main() {
         () => protoTransport.use<NftList>(any()),
       ).thenAnswer((_) async => nftList);
 
-      final result = await repository.getNtfList(
+      final result = await repository.getNftList(
         collection: collection,
         owner: owner,
         limit: 1,

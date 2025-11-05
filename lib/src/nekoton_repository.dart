@@ -75,6 +75,11 @@ class NekotonRepository
   @override
   AbiLoader get abiLoader => _abiLoader;
 
+  late final NftDataProvider _nftDataProvider;
+
+  @override
+  NftDataProvider get nftDataProvider => _nftDataProvider;
+
   late final fnb.LedgerConnection _ledgerConnection;
 
   /// Setup nekoton bridge logger
@@ -98,11 +103,13 @@ class NekotonRepository
     required TonWalletTransactionsStorage tonWalletStorage,
     required TokenWalletTransactionsStorage tokenWalletStorage,
     required LedgerConnectionHandler ledgerConnectionHandler,
+    required NftDataProvider nftDataProvider,
     AssetBundle? bundle,
   }) async {
     _storageRepository = storage;
     _tonWalletStorage = tonWalletStorage;
     _tokenWalletStorage = tokenWalletStorage;
+    _nftDataProvider = nftDataProvider;
 
     _nekotonStorage = Storage.create(
       get: storage.getStorageData,

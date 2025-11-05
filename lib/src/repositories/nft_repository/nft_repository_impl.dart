@@ -16,6 +16,7 @@ const _transferAbiParams = [
 mixin NftRepositoryImpl implements NftRepository {
   TransportStrategy get currentTransport;
   AbiLoader get abiLoader;
+  NftDataProvider get nftDataProvider;
 
   final _logger = Logger('NftRepositoryImpl');
   final _cachedContractStateProvider = CachedContractStateProvider();
@@ -56,9 +57,23 @@ mixin NftRepositoryImpl implements NftRepository {
     required List<Address> collections,
   }) {
     return currentTransport.transport.use(() async {
+      final apiBaseUrl = currentTransport.nftApiBaseUrl;
       final result = await Future.wait(
         collections.map((collection) async {
           try {
+            if (apiBaseUrl != null && apiBaseUrl.isNotEmpty) {
+              final list = await nftDataProvider.getNftList(
+                apiBaseUrl: apiBaseUrl,
+                collection: collection,
+                owner: owner,
+                limit: 1,
+              );
+
+              return list.items.isNotEmpty
+                  ? getNftCollection(collection)
+                  : null;
+            }
+
             final [nft, fungible] = await Future.wait([
               _getNftIndexes(
                 type: NftType.nft,
@@ -116,12 +131,23 @@ mixin NftRepositoryImpl implements NftRepository {
   }
 
   @override
-  Future<NftList> getNtfList({
+  Future<NftList> getNftList({
     required Address collection,
     required Address owner,
     required int limit,
     String? continuation,
   }) {
+    final apiBaseUrl = currentTransport.nftApiBaseUrl;
+    if (apiBaseUrl != null && apiBaseUrl.isNotEmpty) {
+      return nftDataProvider.getNftList(
+        apiBaseUrl: apiBaseUrl,
+        collection: collection,
+        owner: owner,
+        limit: limit,
+        offset: continuation != null ? int.tryParse(continuation) : null,
+      );
+    }
+
     return currentTransport.transport.use(() async {
       final isVep1155 = await _supportsInterface(
         address: collection,
