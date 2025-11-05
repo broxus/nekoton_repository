@@ -15,7 +15,7 @@ dependencies:
   equatable: ^2.0.7
   flutter:
     sdk: flutter
-  flutter_nekoton_bridge: ^4.0.0
+  flutter_nekoton_bridge: ^4.0.1
   freezed_annotation: ^3.1.0
   get_it: ^8.0.3
   injectable: ^2.5.0
@@ -49,8 +49,7 @@ flutter_gen:
       package_parameter_enabled: true
 
 flutter:
-  assets:
-    - assets/abi/
+  assets: [assets/abi/]
 
 melos:
   useRootAsPackage: true
@@ -61,10 +60,12 @@ melos:
 
     codegen:
       description: Generate code for all packages
-      exec: "find . -type f -name \"*.gen.dart\" -delete && flutter packages pub run build_runner build --delete-conflicting-outputs && dart format lib/generated/assets.gen.dart lib/nekoton_repository.module.dart"
+      exec: find . -type f -name "*.gen.dart" -delete && flutter packages pub run
+        build_runner build --delete-conflicting-outputs && dart format lib/generated/assets.gen.dart
+        lib/nekoton_repository.module.dart
       failFast: true
       packageFilters:
-        dependsOn: "build_runner"
+        dependsOn: build_runner
 
     analyze:
       description: Analyze a specific package in this project.
@@ -82,7 +83,7 @@ melos:
 
     test:
       description: Run Flutter tests for a specific package in this project.
-      exec: "flutter test test"
+      exec: flutter test test
       failFast: true
       packageFilters:
         flutter: true
@@ -90,7 +91,8 @@ melos:
 
     test:integration:
       run: melos exec -c 1 --fail-fast -- "flutter test integration_test"
-      description: Run Flutter teintegration teststs for a specific package in this project.
+      description: Run Flutter teintegration teststs for a specific package in this
+        project.
       packageFilters:
         flutter: true
         dirExists: integration_test
@@ -112,4 +114,3 @@ melos:
     version:
       hooks:
         preCommit: melos bs && git add --all
-

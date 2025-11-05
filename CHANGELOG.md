@@ -84,6 +84,19 @@ Packages with other changes:
 ## 2.1.0-dev.0
 
  - **FEAT**(EWM-582): add NFT data provider and update related repository methods. ([8c9c1d30](https://github.com/broxus/nekoton_repository/commit/8c9c1d306c92551733344c498ed4ec839ca75529))
+ - [`nekoton_repository` - `v2.0.3-dev.0`](#nekoton_repository---v203-dev0)
+
+---
+
+#### `nekoton_repository` - `v2.0.3-dev.0`
+
+ - **FIX**(EWM-397): fix tests & create tests for new naming logic. ([81c66a2d](https://github.com/broxus/nekoton_repository/commit/81c66a2dd6bbf2e0e78477af910cac045b910205))
+ - **FIX**(EWM-397): formatting. ([5a26933b](https://github.com/broxus/nekoton_repository/commit/5a26933bb70e622259d2d71196a95430df7604ae))
+
+## 2.0.3-dev.0
+
+ - **FIX**(EWM-397): fix tests & create tests for new naming logic. ([81c66a2d](https://github.com/broxus/nekoton_repository/commit/81c66a2dd6bbf2e0e78477af910cac045b910205))
+ - **FIX**(EWM-397): formatting. ([5a26933b](https://github.com/broxus/nekoton_repository/commit/5a26933bb70e622259d2d71196a95430df7604ae))
 
 
 ## 2025-10-20
