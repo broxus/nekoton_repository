@@ -27,6 +27,11 @@ class MockAccountRepository extends Mock implements AccountRepository {
   Future<void> removeAccounts(List<KeyAccount> accounts) async {}
 }
 
+class MockNekotonRepository extends Mock implements NekotonRepository {
+  @override
+  String? generateDefaultAccountName(PublicKey publicKey) => null;
+}
+
 class MockArcTransportBoxTrait extends Mock implements ArcTransportBoxTrait {}
 
 class MockCreateKeyInput extends Mock implements CreateKeyInput {}
@@ -63,6 +68,7 @@ void main() {
     late MockAccountsStorage accountsStorage;
     late MockNekotonStorageRepository storageRepository;
     late MockAccountRepository accountRepository;
+    late MockNekotonRepository nekotonRepository;
     late MockTransportStrategy transport;
     late MockProtoTransport proto;
     late SeedKeyRepositoryTest repository;
@@ -99,6 +105,7 @@ void main() {
       accountsStorage = MockAccountsStorage();
       storageRepository = MockNekotonStorageRepository();
       accountRepository = MockAccountRepository();
+      nekotonRepository = MockNekotonRepository();
       transport = MockTransportStrategy();
       proto = MockProtoTransport();
 
@@ -106,6 +113,7 @@ void main() {
       registerFallbackValue(box);
 
       GetIt.instance.registerSingleton<AccountRepository>(accountRepository);
+      GetIt.instance.registerSingleton<NekotonRepository>(nekotonRepository);
 
       repository = SeedKeyRepositoryTest(
         transport,
@@ -126,6 +134,7 @@ void main() {
       ).thenReturn('defaultAccountName');
       when(() => proto.disposed).thenReturn(false);
       when(() => proto.transportBox).thenReturn(box);
+      when(() => storageRepository.seedMeta).thenReturn({});
     });
 
     setUpAll(() {
@@ -323,6 +332,197 @@ void main() {
           () => storageRepository.updateSeedMetadata(
             masterKey: publicKey,
             meta: any(named: 'meta'),
+          ),
+        );
+      });
+    });
+
+    group('addSeed - default naming', () {
+      test('first seed without name gets "Seed 1"', () async {
+        final phrase = List.generate(12, (i) => 'word$i');
+        const password = 'password';
+        const publicKey = PublicKey(publicKey: 'publickey');
+
+        when(() => keyStore.addKey(any())).thenAnswer((_) async => publicKey);
+        when(() => keyStore.getPublicKeys(any())).thenAnswer((_) async => []);
+        when(() => accountsStorage.accounts).thenReturn([]);
+        when(() => storageRepository.seedMeta).thenReturn({});
+        when(
+          () => storageRepository.updateSeedMetadata(
+            masterKey: publicKey,
+            meta: any(named: 'meta'),
+          ),
+        ).thenAnswer((_) async {});
+        when(
+          () => bridge.crateApiMergedTonWalletDartWrapperFindExistingWallets(
+            transport: any(named: 'transport'),
+            publicKey: any(named: 'publicKey'),
+            walletTypes: any(named: 'walletTypes'),
+            workchainId: any(named: 'workchainId'),
+          ),
+        ).thenAnswer((_) => Future.value('[]'));
+
+        await repository.addSeed(
+          phrase: phrase,
+          password: password,
+          workchainId: 0,
+        );
+
+        verify(
+          () => storageRepository.updateSeedMetadata(
+            masterKey: publicKey,
+            meta: any(
+              named: 'meta',
+              that: predicate<SeedMetadata>(
+                (meta) => meta.name == '${seedPrefix}1',
+              ),
+            ),
+          ),
+        );
+      });
+
+      test('sequential seeds get incremented numbers', () async {
+        final phrase = List.generate(12, (i) => 'word$i');
+        const password = 'password';
+        const publicKey = PublicKey(publicKey: 'publickey');
+        const pk1 = PublicKey(publicKey: 'pk1');
+        const pk2 = PublicKey(publicKey: 'pk2');
+
+        when(() => keyStore.addKey(any())).thenAnswer((_) async => publicKey);
+        when(() => keyStore.getPublicKeys(any())).thenAnswer((_) async => []);
+        when(() => accountsStorage.accounts).thenReturn([]);
+        when(() => storageRepository.seedMeta).thenReturn({
+          pk1: const SeedMetadata(name: '${seedPrefix}1'),
+          pk2: const SeedMetadata(name: '${seedPrefix}2'),
+        });
+        when(
+          () => storageRepository.updateSeedMetadata(
+            masterKey: publicKey,
+            meta: any(named: 'meta'),
+          ),
+        ).thenAnswer((_) async {});
+        when(
+          () => bridge.crateApiMergedTonWalletDartWrapperFindExistingWallets(
+            transport: any(named: 'transport'),
+            publicKey: any(named: 'publicKey'),
+            walletTypes: any(named: 'walletTypes'),
+            workchainId: any(named: 'workchainId'),
+          ),
+        ).thenAnswer((_) => Future.value('[]'));
+
+        await repository.addSeed(
+          phrase: phrase,
+          password: password,
+          workchainId: 0,
+        );
+
+        verify(
+          () => storageRepository.updateSeedMetadata(
+            masterKey: publicKey,
+            meta: any(
+              named: 'meta',
+              that: predicate<SeedMetadata>(
+                (meta) => meta.name == '${seedPrefix}3',
+              ),
+            ),
+          ),
+        );
+      });
+
+      test('gaps are not filled - next after Seed 1 and 3 is 4', () async {
+        final phrase = List.generate(12, (i) => 'word$i');
+        const password = 'password';
+        const publicKey = PublicKey(publicKey: 'publickey');
+        const pk1 = PublicKey(publicKey: 'pk1');
+        const pk3 = PublicKey(publicKey: 'pk3');
+
+        when(() => keyStore.addKey(any())).thenAnswer((_) async => publicKey);
+        when(() => keyStore.getPublicKeys(any())).thenAnswer((_) async => []);
+        when(() => accountsStorage.accounts).thenReturn([]);
+        when(() => storageRepository.seedMeta).thenReturn({
+          pk1: const SeedMetadata(name: '${seedPrefix}1'),
+          pk3: const SeedMetadata(name: '${seedPrefix}3'),
+        });
+        when(
+          () => storageRepository.updateSeedMetadata(
+            masterKey: publicKey,
+            meta: any(named: 'meta'),
+          ),
+        ).thenAnswer((_) async {});
+        when(
+          () => bridge.crateApiMergedTonWalletDartWrapperFindExistingWallets(
+            transport: any(named: 'transport'),
+            publicKey: any(named: 'publicKey'),
+            walletTypes: any(named: 'walletTypes'),
+            workchainId: any(named: 'workchainId'),
+          ),
+        ).thenAnswer((_) => Future.value('[]'));
+
+        await repository.addSeed(
+          phrase: phrase,
+          password: password,
+          workchainId: 0,
+        );
+
+        verify(
+          () => storageRepository.updateSeedMetadata(
+            masterKey: publicKey,
+            meta: any(
+              named: 'meta',
+              that: predicate<SeedMetadata>(
+                (meta) => meta.name == '${seedPrefix}4',
+              ),
+            ),
+          ),
+        );
+      });
+
+      test('custom names do not affect counter', () async {
+        final phrase = List.generate(12, (i) => 'word$i');
+        const password = 'password';
+        const publicKey = PublicKey(publicKey: 'publickey');
+        const pk1 = PublicKey(publicKey: 'pk1');
+        const pk2 = PublicKey(publicKey: 'pk2');
+        const pk5 = PublicKey(publicKey: 'pk5');
+
+        when(() => keyStore.addKey(any())).thenAnswer((_) async => publicKey);
+        when(() => keyStore.getPublicKeys(any())).thenAnswer((_) async => []);
+        when(() => accountsStorage.accounts).thenReturn([]);
+        when(() => storageRepository.seedMeta).thenReturn({
+          pk1: const SeedMetadata(name: '${seedPrefix}1'),
+          pk2: const SeedMetadata(name: 'My Custom Seed'),
+          pk5: const SeedMetadata(name: '${seedPrefix}5'),
+        });
+        when(
+          () => storageRepository.updateSeedMetadata(
+            masterKey: publicKey,
+            meta: any(named: 'meta'),
+          ),
+        ).thenAnswer((_) async {});
+        when(
+          () => bridge.crateApiMergedTonWalletDartWrapperFindExistingWallets(
+            transport: any(named: 'transport'),
+            publicKey: any(named: 'publicKey'),
+            walletTypes: any(named: 'walletTypes'),
+            workchainId: any(named: 'workchainId'),
+          ),
+        ).thenAnswer((_) => Future.value('[]'));
+
+        await repository.addSeed(
+          phrase: phrase,
+          password: password,
+          workchainId: 0,
+        );
+
+        verify(
+          () => storageRepository.updateSeedMetadata(
+            masterKey: publicKey,
+            meta: any(
+              named: 'meta',
+              that: predicate<SeedMetadata>(
+                (meta) => meta.name == '${seedPrefix}6',
+              ),
+            ),
           ),
         );
       });

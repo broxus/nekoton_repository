@@ -4,6 +4,8 @@ import 'package:get_it/get_it.dart';
 import 'package:nekoton_repository/nekoton_repository.dart';
 import 'package:rxdart/rxdart.dart';
 
+const seedPrefix = 'Seed ';
+
 /// Implementation of SeedRepository.
 /// Usage
 /// ```
@@ -159,7 +161,11 @@ mixin SeedKeyRepositoryImpl implements SeedKeyRepository {
     String? name,
     SeedAddType addType = SeedAddType.create,
   }) async {
-    name = name?.isEmpty ?? true ? null : name;
+    // Generate default seed name if not provided
+    if (name?.isEmpty ?? true) {
+      name = '$seedPrefix${_getNextSeedNumber()}';
+    }
+
     mnemonicType ??= phrase.length == 24
         ? const MnemonicType.legacy()
         : const MnemonicType.bip39(
@@ -239,6 +245,11 @@ mixin SeedKeyRepositoryImpl implements SeedKeyRepository {
     required int workchainId,
     String? name,
   }) async {
+    // Generate default seed name if not provided
+    if (name?.isEmpty ?? true) {
+      name = '$seedPrefix${_getNextSeedNumber()}';
+    }
+
     final publicKey = await keyStore.addKey(
       LedgerKeyCreateInput(accountId: accountId, name: name),
     );
@@ -266,8 +277,16 @@ mixin SeedKeyRepositoryImpl implements SeedKeyRepository {
     final transport = currentTransport;
     if (transport.transport.disposed) return;
 
+    // For newly created seeds, this will be the first account on master key
+    // At this point the seed might not be in seedList yet, so we use fallback
+    final accountName =
+        GetIt.instance<NekotonRepository>().generateDefaultAccountName(
+          publicKey,
+        ) ??
+        transport.defaultAccountName(transport.defaultWalletType);
+
     final defaultAccount = AccountToAdd(
-      name: transport.defaultAccountName(transport.defaultWalletType),
+      name: accountName,
       publicKey: publicKey,
       contract: transport.defaultWalletType,
       workchain: workchainId,
@@ -356,7 +375,10 @@ mixin SeedKeyRepositoryImpl implements SeedKeyRepository {
               publicKey: a.publicKey,
               contract: a.walletType,
               workchain: a.address.workchain,
-              name: transport.defaultAccountName(a.walletType),
+              name:
+                  GetIt.instance<NekotonRepository>()
+                      .generateDefaultAccountName(a.publicKey) ??
+                  transport.defaultAccountName(a.walletType),
             ),
           ),
         );
@@ -434,7 +456,10 @@ mixin SeedKeyRepositoryImpl implements SeedKeyRepository {
         if (activeAccounts.isEmpty) {
           accountsToAdd.add(
             AccountToAdd(
-              name: transport.defaultAccountName(transport.defaultWalletType),
+              name:
+                  GetIt.instance<NekotonRepository>()
+                      .generateDefaultAccountName(key) ??
+                  transport.defaultAccountName(transport.defaultWalletType),
               publicKey: key,
               contract: transport.defaultWalletType,
               workchain: workchainId,
@@ -451,7 +476,10 @@ mixin SeedKeyRepositoryImpl implements SeedKeyRepository {
               publicKey: a.publicKey,
               contract: a.walletType,
               workchain: a.address.workchain,
-              name: transport.defaultAccountName(a.walletType),
+              name:
+                  GetIt.instance<NekotonRepository>()
+                      .generateDefaultAccountName(a.publicKey) ??
+                  transport.defaultAccountName(a.walletType),
             ),
           ),
         );
@@ -658,5 +686,31 @@ mixin SeedKeyRepositoryImpl implements SeedKeyRepository {
       }
     }
     await GetIt.instance<AccountRepository>().removeAccounts(accountsToRemove);
+  }
+
+  /// Gets the next available seed number by finding the maximum number
+  /// in existing seed names (format: "Seed N") and returning max + 1.
+  /// Returns 1 if no seeds exist or no default names are found.
+  int _getNextSeedNumber() {
+    final seedMeta = storageRepository.seedMeta;
+    if (seedMeta.isEmpty) return 1;
+
+    var maxNumber = 0;
+
+    for (final metadata in seedMeta.values) {
+      final name = metadata.name;
+      if (name == null) continue;
+
+      // Parse "Seed " format
+      final match = RegExp('^$seedPrefix(\\d+)\$').firstMatch(name);
+      if (match != null) {
+        final number = int.tryParse(match.group(1) ?? '');
+        if (number != null && number > maxNumber) {
+          maxNumber = number;
+        }
+      }
+    }
+
+    return maxNumber + 1;
   }
 }

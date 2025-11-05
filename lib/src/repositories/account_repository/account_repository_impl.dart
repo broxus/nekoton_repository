@@ -1,4 +1,5 @@
 import 'package:collection/collection.dart';
+import 'package:get_it/get_it.dart';
 import 'package:nekoton_repository/nekoton_repository.dart';
 
 /// Implementation of AccountRepository.
@@ -63,6 +64,9 @@ mixin AccountRepositoryImpl on TransportRepository
           AccountToAdd(
             name:
                 name ??
+                GetIt.instance<NekotonRepository>().generateDefaultAccountName(
+                  publicKey,
+                ) ??
                 currentTransport.defaultAccountName(
                   existingWalletInfo.walletType,
                 ),
