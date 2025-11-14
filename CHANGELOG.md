@@ -3,6 +3,31 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## 2025-11-14
+
+### Changes
+
+---
+
+Packages with breaking changes:
+
+ - There are no breaking changes in this release.
+
+Packages with other changes:
+
+ - [`nekoton_repository` - `v2.1.1-dev.2`](#nekoton_repository---v211-dev2)
+
+---
+
+#### `nekoton_repository` - `v2.1.1-dev.2`
+
+ - **FEAT**: update flutter_nekoton_bridge to version 4.1.0-dev.3. ([77e3f525](https://github.com/broxus/nekoton_repository/commit/77e3f5253d8b36e677915eec5dac8dc53f19a9ab))
+
+## 2.1.1-dev.2
+
+ - **FEAT**: update flutter_nekoton_bridge to version 4.1.0-dev.3. ([77e3f525](https://github.com/broxus/nekoton_repository/commit/77e3f5253d8b36e677915eec5dac8dc53f19a9ab))
+
+
 ## 2025-11-11
 
 ### Changes
