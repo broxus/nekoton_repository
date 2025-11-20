@@ -375,10 +375,7 @@ mixin SeedKeyRepositoryImpl implements SeedKeyRepository {
               publicKey: a.publicKey,
               contract: a.walletType,
               workchain: a.address.workchain,
-              name:
-                  GetIt.instance<NekotonRepository>()
-                      .generateDefaultAccountName(a.publicKey) ??
-                  transport.defaultAccountName(a.walletType),
+              name: transport.defaultAccountName(a.walletType),
             ),
           ),
         );
@@ -456,10 +453,7 @@ mixin SeedKeyRepositoryImpl implements SeedKeyRepository {
         if (activeAccounts.isEmpty) {
           accountsToAdd.add(
             AccountToAdd(
-              name:
-                  GetIt.instance<NekotonRepository>()
-                      .generateDefaultAccountName(key) ??
-                  transport.defaultAccountName(transport.defaultWalletType),
+              name: transport.defaultAccountName(transport.defaultWalletType),
               publicKey: key,
               contract: transport.defaultWalletType,
               workchain: workchainId,
@@ -476,10 +470,7 @@ mixin SeedKeyRepositoryImpl implements SeedKeyRepository {
               publicKey: a.publicKey,
               contract: a.walletType,
               workchain: a.address.workchain,
-              name:
-                  GetIt.instance<NekotonRepository>()
-                      .generateDefaultAccountName(a.publicKey) ??
-                  transport.defaultAccountName(a.walletType),
+              name: transport.defaultAccountName(a.walletType),
             ),
           ),
         );
