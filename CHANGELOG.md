@@ -11,6 +11,31 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 Packages with breaking changes:
 
+ - There are no breaking changes in this release.
+
+Packages with other changes:
+
+ - [`nekoton_repository` - `v2.1.2`](#nekoton_repository---v212)
+
+---
+
+#### `nekoton_repository` - `v2.1.2`
+
+ - **FIX**: update flutter_nekoton_bridge dependency to stable version. ([75e76c6d](https://github.com/broxus/nekoton_repository/commit/75e76c6d37bea5a1151d863e72219362f366ebb3))
+
+## 2.1.2
+
+ - **FIX**: update flutter_nekoton_bridge dependency to stable version. ([75e76c6d](https://github.com/broxus/nekoton_repository/commit/75e76c6d37bea5a1151d863e72219362f366ebb3))
+
+
+## 2025-11-20
+
+### Changes
+
+---
+
+Packages with breaking changes:
+
  - [`nekoton_repository` - `v2.1.1`](#nekoton_repository---v211)
 
 Packages with other changes:
