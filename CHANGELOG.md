@@ -3,6 +3,31 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## 2025-12-05
+
+### Changes
+
+---
+
+Packages with breaking changes:
+
+ - There are no breaking changes in this release.
+
+Packages with other changes:
+
+ - [`nekoton_repository` - `v2.2.1`](#nekoton_repository---v221)
+
+---
+
+#### `nekoton_repository` - `v2.2.1`
+
+ - **FIX**(EWM-603): improve refresh handling and extend timeout duration. ([8876ed89](https://github.com/broxus/nekoton_repository/commit/8876ed89712374df3d73069253ffc772a9052d23))
+
+## 2.2.1
+
+ - **FIX**(EWM-603): improve refresh handling and extend timeout duration. ([8876ed89](https://github.com/broxus/nekoton_repository/commit/8876ed89712374df3d73069253ffc772a9052d23))
+
+
 ## 2025-11-27
 
 ### Changes
