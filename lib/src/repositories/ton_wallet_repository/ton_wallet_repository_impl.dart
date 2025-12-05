@@ -11,7 +11,7 @@ import 'package:nekoton_repository/src/utils/utils.dart';
 import 'package:quiver/iterables.dart';
 import 'package:rxdart/rxdart.dart';
 
-const _resumeTimeout = Duration(seconds: 1);
+const _resumeTimeout = Duration(seconds: 5);
 const _ignoredComputePhaseCodes = [0, 1, 60, 100];
 const _ignoredActionPhaseCodes = [0, 1];
 
@@ -670,7 +670,13 @@ mixin TonWalletRepositoryImpl implements TonWalletRepository {
             (e, _) => _isPollingPaused
                 .firstWhere((e) => !e) // wait for polling to be resumed
                 .then((_) => poller.currentRefresh())
-                .then((_) => sentTransactionFuture.timeout(_resumeTimeout)),
+                .then((_) async {
+                  try {
+                    return await sentTransactionFuture.timeout(_resumeTimeout);
+                  } catch (_) {
+                    throw e;
+                  }
+                }),
             // handle case when polling is paused
             test: (_) => _isPollingPaused.value,
           )

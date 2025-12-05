@@ -72,12 +72,15 @@ class RefreshPollingQueue {
 
   bool get isPaused => _isPaused;
 
+  /// Returns true, if refresh is in progress, false otherwise.
+  bool get _isRefreshing => _refreshCompleter?.isCompleted == false;
+
   /// Returns future that completes when current refresh is finished.
   /// Or empty future if there is no refresh action.
   ///
   /// This can be helpful outside to track when refresh is finished.
-  Future<void> currentRefresh() async =>
-      _isRefreshing() ? _refreshCompleter?.future : Future.value();
+  Future<void> currentRefresh() =>
+      _isRefreshing ? _refreshCompleter!.future : Future.value();
 
   /// Request only one refresh operation without polling.
   void runSingleRefresh() {
@@ -158,17 +161,10 @@ class RefreshPollingQueue {
 
     if (!_hasRequest) return;
 
-    if (_isRefreshing()) return;
+    if (_isRefreshing) return;
 
     // ignore to avoid throwing exception to startPolling and runSingleRefresh
     _refresh().ignore();
-  }
-
-  /// Returns true, if refresh is in progress, false otherwise.
-  bool _isRefreshing() {
-    final completer = _refreshCompleter;
-
-    return completer != null && !completer.isCompleted;
   }
 
   /// Start refresh operation by calling [RefreshingInterface.refresh] method.
