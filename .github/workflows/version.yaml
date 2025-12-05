@@ -19,7 +19,7 @@ jobs:
     uses: broxus/flutter_templates/.github/workflows/version.yaml@v4
     with:
       version_parameters: ${{ inputs.version_parameters }}
-      flutter_version: '3.35.6'
+      flutter_version: '3.38.4'
       push_tags: true
     secrets:
       token: ${{ secrets.BOT_ACCESS_TOKEN }}
