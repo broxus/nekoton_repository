@@ -11,6 +11,33 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 Packages with breaking changes:
 
+ - [`nekoton_repository` - `v3.0.0`](#nekoton_repository---v300)
+
+Packages with other changes:
+
+ - There are no other changes in this release.
+
+---
+
+#### `nekoton_repository` - `v3.0.0`
+
+ - **BREAKING** **CHORE**: update Flutter version to 3.38.4. ([8f1d3fd4](https://github.com/broxus/nekoton_repository/commit/8f1d3fd4477541c14d87915015ca508da7e5fad0))
+
+## 3.0.0
+
+> Note: This release has breaking changes.
+
+ - **BREAKING** **CHORE**: update Flutter version to 3.38.4. ([8f1d3fd4](https://github.com/broxus/nekoton_repository/commit/8f1d3fd4477541c14d87915015ca508da7e5fad0))
+
+
+## 2025-12-05
+
+### Changes
+
+---
+
+Packages with breaking changes:
+
  - There are no breaking changes in this release.
 
 Packages with other changes:
