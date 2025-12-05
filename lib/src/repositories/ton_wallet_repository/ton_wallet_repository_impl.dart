@@ -673,7 +673,7 @@ mixin TonWalletRepositoryImpl implements TonWalletRepository {
                 .then((_) async {
                   try {
                     return await sentTransactionFuture.timeout(_resumeTimeout);
-                  } catch (_) {
+                  } on TimeoutException catch (_) {
                     throw e;
                   }
                 }),
