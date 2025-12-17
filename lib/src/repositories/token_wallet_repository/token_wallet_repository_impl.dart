@@ -547,6 +547,7 @@ mixin TokenWalletRepositoryImpl implements TokenWalletRepository {
         TokenWalletTransactionSwapBackBounced(:final data) => data,
         TokenWalletTransactionTransfer(:final data) => data.tokens,
         TokenWalletTransactionInternalTransfer(:final data) => data.tokens,
+        TokenWalletTransactionBurnNotification(:final data) => data.tokens,
       };
 
       final isOutgoing = switch (data) {
@@ -558,6 +559,7 @@ mixin TokenWalletRepositoryImpl implements TokenWalletRepository {
         TokenWalletTransactionSwapBackBounced() => false,
         TokenWalletTransactionTransfer() => true,
         TokenWalletTransactionInternalTransfer() => false,
+        TokenWalletTransactionBurnNotification() => false,
       };
 
       final address = (isOutgoing ? recipient : sender) ?? rootTokenContract;
