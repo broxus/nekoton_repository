@@ -3,6 +3,31 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## 2025-12-17
+
+### Changes
+
+---
+
+Packages with breaking changes:
+
+ - There are no breaking changes in this release.
+
+Packages with other changes:
+
+ - [`nekoton_repository` - `v3.1.0`](#nekoton_repository---v310)
+
+---
+
+#### `nekoton_repository` - `v3.1.0`
+
+ - **FEAT**: update `flutter_nekoton_bridge` to 5.1.0; add support for TokenWalletTransactionBurnNotification;. ([6edbba62](https://github.com/broxus/nekoton_repository/commit/6edbba626277d234c6a9b33944c3683c4d870e3a))
+
+## 3.1.0
+
+ - **FEAT**: update `flutter_nekoton_bridge` to 5.1.0; add support for TokenWalletTransactionBurnNotification;. ([6edbba62](https://github.com/broxus/nekoton_repository/commit/6edbba626277d234c6a9b33944c3683c4d870e3a))
+
+
 ## 2025-12-05
 
 ### Changes
