@@ -361,6 +361,12 @@ void main() {
       when(() => proto.group).thenReturn(transportGroup);
 
       when(
+        () => bridge.crateApiMergedNtValidateAddress(
+          address: any(named: 'address'),
+        ),
+      ).thenReturn(true);
+
+      when(
         () => bridge.crateApiMergedTokenWalletDartWrapperSubscribe(
           transport: any(named: 'transport'),
           rootTokenContract: any(named: 'rootTokenContract'),
@@ -403,6 +409,12 @@ void main() {
         when(() => proto.disposed).thenReturn(false);
         when(() => proto.transportBox).thenReturn(box);
         when(() => proto.group).thenReturn(transportGroup);
+
+        when(
+          () => bridge.crateApiMergedNtValidateAddress(
+            address: any(named: 'address'),
+          ),
+        ).thenReturn(true);
 
         when(
           () => bridge.crateApiMergedTokenWalletDartWrapperSubscribe(
@@ -538,6 +550,12 @@ void main() {
       when(() => proto.disposed).thenReturn(false);
       when(() => proto.transportBox).thenReturn(box);
       when(() => proto.group).thenReturn(transportGroup);
+
+      when(
+        () => bridge.crateApiMergedNtValidateAddress(
+          address: any(named: 'address'),
+        ),
+      ).thenReturn(true);
 
       when(
         () => bridge.crateApiMergedTokenWalletDartWrapperSubscribe(
