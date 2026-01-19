@@ -3,6 +3,31 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## 2026-01-19
+
+### Changes
+
+---
+
+Packages with breaking changes:
+
+ - There are no breaking changes in this release.
+
+Packages with other changes:
+
+ - [`nekoton_repository` - `v3.3.0`](#nekoton_repository---v330)
+
+---
+
+#### `nekoton_repository` - `v3.3.0`
+
+ - **FEAT**(EWM-624): rename getWallet method and add overloads for asset and existing wallet. ([fe1fa2fb](https://github.com/broxus/nekoton_repository/commit/fe1fa2fb20cf39e6b1ec955fd6dd144b69f24079))
+
+## 3.3.0
+
+ - **FEAT**(EWM-624): rename getWallet method and add overloads for asset and existing wallet. ([fe1fa2fb](https://github.com/broxus/nekoton_repository/commit/fe1fa2fb20cf39e6b1ec955fd6dd144b69f24079))
+
+
 ## 2026-01-12
 
 ### Changes
