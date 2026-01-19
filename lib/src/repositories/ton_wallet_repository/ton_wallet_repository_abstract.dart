@@ -213,7 +213,13 @@ abstract class TonWalletRepository {
 
   /// Get instance of wallet that was added by [subscribe], [subscribeByAddress]
   /// or [subscribeByExistingWallet].
-  Future<TonWalletState> getWallet(Address address);
+  Future<TonWalletState> getWalletByAddress(Address address);
+
+  Future<TonWalletState> getWallet(TonWalletAsset asset);
+
+  Future<TonWalletState> getWalletByExistingWallet(
+    ExistingWalletInfo existingWallet,
+  );
 
   /// Get list of custodians for TonWallet with [address] that were added
   /// to application before.

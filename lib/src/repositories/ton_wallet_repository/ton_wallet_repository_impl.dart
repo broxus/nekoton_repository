@@ -91,7 +91,7 @@ mixin TonWalletRepositoryImpl implements TonWalletRepository {
 
   @override
   Future<TonWalletState> subscribe(TonWalletAsset asset) async {
-    if (asset.address.isZeroState) {
+    if (asset.address.isZeroState || asset.address.workchain == -1) {
       return subscribeByAddress(asset.address);
     }
 
@@ -209,7 +209,7 @@ mixin TonWalletRepositoryImpl implements TonWalletRepository {
       stopPolling();
     }
 
-    final wallet = (await getWallet(address)).wallet;
+    final wallet = (await getWalletByAddress(address)).wallet;
     if (wallet == null) return;
 
     pollingQueues[address] = RefreshPollingQueue(
@@ -385,7 +385,7 @@ mixin TonWalletRepositoryImpl implements TonWalletRepository {
     Address address,
     Expiration expiration,
   ) async {
-    final walletState = await getWallet(address);
+    final walletState = await getWalletByAddress(address);
     final wallet = walletState.wallet;
 
     if (wallet == null) {
@@ -406,7 +406,7 @@ mixin TonWalletRepositoryImpl implements TonWalletRepository {
     required Expiration expiration,
     required int? expirationTime,
   }) async {
-    final walletState = await getWallet(address);
+    final walletState = await getWalletByAddress(address);
     final wallet = walletState.wallet;
 
     if (wallet == null) {
@@ -431,7 +431,7 @@ mixin TonWalletRepositoryImpl implements TonWalletRepository {
     required List<TonWalletTransferParams> params,
     PublicKey? publicKey,
   }) async {
-    final walletState = await getWallet(address);
+    final walletState = await getWalletByAddress(address);
     final wallet = walletState.wallet;
 
     if (wallet == null) {
@@ -460,7 +460,7 @@ mixin TonWalletRepositoryImpl implements TonWalletRepository {
     required String transactionId,
     required Expiration expiration,
   }) async {
-    final walletState = await getWallet(address);
+    final walletState = await getWalletByAddress(address);
     final wallet = walletState.wallet;
 
     if (wallet == null) {
@@ -485,7 +485,7 @@ mixin TonWalletRepositoryImpl implements TonWalletRepository {
     required Address address,
     required UnsignedMessage message,
   }) async {
-    final walletState = await getWallet(address);
+    final walletState = await getWalletByAddress(address);
     final wallet = walletState.wallet;
 
     if (wallet == null) {
@@ -506,7 +506,7 @@ mixin TonWalletRepositoryImpl implements TonWalletRepository {
     required Address address,
     required UnsignedMessage message,
   }) async {
-    final walletState = await getWallet(address);
+    final walletState = await getWalletByAddress(address);
     final wallet = walletState.wallet;
 
     if (wallet == null) {
@@ -536,7 +536,7 @@ mixin TonWalletRepositoryImpl implements TonWalletRepository {
     required Address destination,
     required BigInt amount,
   }) async {
-    final walletState = await getWallet(address);
+    final walletState = await getWalletByAddress(address);
     final wallet = walletState.wallet;
 
     if (wallet == null) {
@@ -570,7 +570,7 @@ mixin TonWalletRepositoryImpl implements TonWalletRepository {
     required PendingTransaction pending,
     required Address address,
   }) async {
-    final walletState = await getWallet(address);
+    final walletState = await getWalletByAddress(address);
     final wallet = walletState.wallet;
 
     if (wallet == null) {
@@ -710,7 +710,7 @@ mixin TonWalletRepositoryImpl implements TonWalletRepository {
     required Address address,
     required String fromLt,
   }) async {
-    final walletState = await getWallet(address);
+    final walletState = await getWalletByAddress(address);
     final wallet = walletState.wallet;
 
     if (wallet == null) {
@@ -724,7 +724,7 @@ mixin TonWalletRepositoryImpl implements TonWalletRepository {
   }
 
   @override
-  Future<TonWalletState> getWallet(Address address) async {
+  Future<TonWalletState> getWalletByAddress(Address address) async {
     final mutex = _mutexes[address];
     await mutex?.acquireRead();
 
@@ -742,8 +742,46 @@ mixin TonWalletRepositoryImpl implements TonWalletRepository {
   }
 
   @override
+  Future<TonWalletState> getWallet(TonWalletAsset asset) async {
+    final mutex = _mutexes[asset.address];
+    await mutex?.acquireRead();
+
+    try {
+      final wallet = walletsMap[asset.address];
+      if (wallet != null) return wallet;
+    } finally {
+      mutex?.release();
+      if (mutex?.isLocked == false) {
+        _mutexes.remove(asset.address);
+      }
+    }
+
+    return subscribe(asset);
+  }
+
+  @override
+  Future<TonWalletState> getWalletByExistingWallet(
+    ExistingWalletInfo existingWallet,
+  ) async {
+    final mutex = _mutexes[existingWallet.address];
+    await mutex?.acquireRead();
+
+    try {
+      final wallet = walletsMap[existingWallet.address];
+      if (wallet != null) return wallet;
+    } finally {
+      mutex?.release();
+      if (mutex?.isLocked == false) {
+        _mutexes.remove(existingWallet.address);
+      }
+    }
+
+    return subscribeByExistingWallet(existingWallet);
+  }
+
+  @override
   Future<List<PublicKey>?> getLocalCustodians(Address address) async {
-    final walletState = await getWallet(address);
+    final walletState = await getWalletByAddress(address);
     final wallet = walletState.wallet;
 
     if (wallet == null) {
@@ -950,7 +988,7 @@ mixin TonWalletRepositoryImpl implements TonWalletRepository {
     required List<TransactionWithData<TransactionAdditionalInfo?>> transactions,
     required List<MultisigPendingTransaction> multisigPendingTransactions,
   }) async {
-    final wallet = (await getWallet(walletAddress)).wallet;
+    final wallet = (await getWalletByAddress(walletAddress)).wallet;
     if (wallet == null) return [];
 
     return transactions
@@ -1022,7 +1060,7 @@ mixin TonWalletRepositoryImpl implements TonWalletRepository {
     required List<TransactionWithData<TransactionAdditionalInfo?>> transactions,
     required List<MultisigPendingTransaction> multisigPendingTransactions,
   }) async {
-    final wallet = (await getWallet(walletAddress)).wallet;
+    final wallet = (await getWalletByAddress(walletAddress)).wallet;
     if (wallet == null) return [];
 
     return transactions
@@ -1134,7 +1172,7 @@ mixin TonWalletRepositoryImpl implements TonWalletRepository {
     required List<TransactionWithData<TransactionAdditionalInfo?>> transactions,
     required List<MultisigPendingTransaction> multisigPendingTransactions,
   }) async {
-    final wallet = (await getWallet(walletAddress)).wallet;
+    final wallet = (await getWalletByAddress(walletAddress)).wallet;
     if (wallet == null) return [];
 
     return transactions
@@ -1204,7 +1242,7 @@ mixin TonWalletRepositoryImpl implements TonWalletRepository {
     List<IgnoreTransactionTreeSimulationError>? ignoredComputePhaseCodes,
     List<IgnoreTransactionTreeSimulationError>? ignoredActionPhaseCodes,
   }) async {
-    final walletState = await getWallet(address);
+    final walletState = await getWalletByAddress(address);
     final wallet = walletState.wallet;
 
     if (wallet == null) {
