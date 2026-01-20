@@ -105,7 +105,7 @@ abstract class TonWalletRepository {
   ///
   /// !!! This method must be called from app side because repository does not
   /// track current active accounts.
-  Future<void> updateSubscriptions(List<(TonWalletAsset, bool)> assets);
+  Future<void> updateSubscriptions(List<TonWalletAsset> assets);
 
   /// Update subscriptions when transport changed.
   /// To get new transport, [TransportRepository.currentTransport] should be

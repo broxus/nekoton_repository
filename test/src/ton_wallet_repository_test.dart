@@ -1312,7 +1312,7 @@ void main() {
       mockTonWallet(tonWrapper1, asset1);
       mockTonWallet(tonWrapper2, asset2);
 
-      await repository.updateSubscriptions([(asset1, false), (asset2, false)]);
+      await repository.updateSubscriptions([asset1, asset2]);
 
       expect(repository.wallets.length, 2);
     });
@@ -1369,7 +1369,7 @@ void main() {
       mockTonWallet(tonWrapper1, asset1);
       mockTonWallet(tonWrapper2, asset2);
 
-      await repository.updateSubscriptions([(asset1, true), (asset2, false)]);
+      await repository.updateSubscriptions([asset1, asset2]);
 
       expect(repository.wallets.length, 2);
     });
@@ -1430,7 +1430,7 @@ void main() {
       mockTonWallet(tonWrapper1, asset1);
       mockTonWallet(tonWrapper2, asset2);
 
-      await repository.updateSubscriptions([(asset1, false), (asset2, false)]);
+      await repository.updateSubscriptions([asset1, asset2]);
 
       final wallets = repository.wallets;
 
@@ -1488,7 +1488,7 @@ void main() {
       ).thenAnswer((_) => throwError());
       mockTonWallet(tonWrapper1, asset1);
 
-      await repository.updateSubscriptions([(asset1, false)]);
+      await repository.updateSubscriptions([asset1]);
 
       var wallets = repository.wallets;
 
@@ -1626,9 +1626,9 @@ void main() {
       mockTonWallet(tonWrapper1, asset1);
       mockTonWallet(tonWrapper2, asset2);
 
-      unawaited(repository.updateSubscriptions([(asset1, false)]));
+      unawaited(repository.updateSubscriptions([asset1]));
       await Future<void>.delayed(const Duration(milliseconds: 300));
-      await repository.updateSubscriptions([(asset1, false), (asset2, false)]);
+      await repository.updateSubscriptions([asset1, asset2]);
 
       expect(repository.wallets.length, 2);
       verify(
@@ -1720,7 +1720,7 @@ void main() {
 
       repository.walletsMap[asset1.address] = state;
       repository.walletsMap[asset2.address] = state;
-      repository.lastUpdatedAssets = [(asset1, false), (asset2, false)];
+      repository.lastUpdatedAssets = [asset1, asset2];
       await repository.updateTransportSubscriptions();
 
       verify(wallet.dispose).called(2);

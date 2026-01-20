@@ -1,5 +1,4 @@
 import 'package:collection/collection.dart';
-import 'package:get_it/get_it.dart';
 import 'package:nekoton_repository/nekoton_repository.dart';
 
 /// Implementation of AccountRepository.
@@ -49,35 +48,6 @@ mixin AccountRepositoryImpl on TransportRepository
     for (final publicKey in publicKeys) {
       if (externalAccounts[publicKey]?.contains(address) ?? false) continue;
 
-      // Check if this account is part of publicKey
-      final account = accountsStorage.accounts.firstWhereOrNull(
-        (e) => e.address == address,
-      );
-
-      if (account == null) {
-        final existingWalletInfo = await TonWallet.getExistingWalletInfo(
-          transport: currentTransport.transport,
-          address: address,
-        );
-
-        await addAccount(
-          AccountToAdd(
-            name:
-                name ??
-                GetIt.instance<NekotonRepository>().generateDefaultAccountName(
-                  publicKey,
-                ) ??
-                currentTransport.defaultAccountName(
-                  existingWalletInfo.walletType,
-                ),
-            publicKey: publicKey,
-            contract: existingWalletInfo.walletType,
-            workchain: existingWalletInfo.address.workchain,
-            explicitAddress: address,
-          ),
-        );
-      }
-
       await storageRepository.addExternalAccount(
         publicKey: publicKey,
         address: address,
@@ -87,6 +57,32 @@ mixin AccountRepositoryImpl on TransportRepository
     }
 
     if (!isCustodian) throw Exception('Is not custodian');
+
+    // Check if this account is part of publicKey
+    final account = accountsStorage.accounts.firstWhereOrNull(
+      (e) => e.address == address,
+    );
+
+    if (account == null) {
+      final existingWalletInfo = await TonWallet.getExistingWalletInfo(
+        transport: currentTransport.transport,
+        address: address,
+      );
+
+      await addAccount(
+        AccountToAdd(
+          name:
+              name ??
+              currentTransport.defaultAccountName(
+                existingWalletInfo.walletType,
+              ),
+          publicKey: existingWalletInfo.publicKey,
+          contract: existingWalletInfo.walletType,
+          workchain: existingWalletInfo.address.workchain,
+          explicitAddress: address,
+        ),
+      );
+    }
   }
 
   @override
