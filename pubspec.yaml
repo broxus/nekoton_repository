@@ -1,7 +1,7 @@
 ---
 name: nekoton_repository
 description: Nekoton repository package
-version: 3.3.0
+version: 3.3.1-dev.0
 repository: https://github.com/broxus/nekoton_repository
 
 environment:
