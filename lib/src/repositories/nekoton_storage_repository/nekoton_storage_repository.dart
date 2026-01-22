@@ -221,17 +221,11 @@ class NekotonStorageRepository {
     required PublicKey publicKey,
     required Address address,
   }) async {
-    final accountsEncoded = await _storage.get(
-      publicKey.publicKey,
-      domain: _externalAccountsKey,
-    );
+    final accounts = await _readExternalAccountsForKey(publicKey);
 
-    final accounts = accountsEncoded == null
-        ? [address]
-        : [
-            ...(jsonDecode(accountsEncoded) as List<dynamic>).cast<String>(),
-            address,
-          ];
+    accounts
+      ..removeWhere((account) => account == address)
+      ..add(address);
 
     await _storage.set(
       publicKey.publicKey,
@@ -261,18 +255,9 @@ class NekotonStorageRepository {
     required PublicKey publicKey,
     required List<Address> addresses,
   }) async {
-    final accountsEncoded = await _storage.get(
-      publicKey.publicKey,
-      domain: _externalAccountsKey,
-    );
-
-    final accounts =
-        accountsEncoded == null
-              ? List<String>.empty()
-              : ((jsonDecode(accountsEncoded) as List<dynamic>).cast<String>())
-          ..removeWhere(
-            (a) => addresses.map((address) => address.address).contains(a),
-          );
+    final addressesSet = addresses.toSet();
+    final accounts = (await _readExternalAccountsForKey(publicKey))
+      ..removeWhere(addressesSet.contains);
 
     await _storage.set(
       publicKey.publicKey,
@@ -293,4 +278,18 @@ class NekotonStorageRepository {
   /// Clear information about all preferences
   Future<void> clearPreferences() =>
       _storage.clearDomain(_accountSeedPreferencesKey);
+
+  Future<List<Address>> _readExternalAccountsForKey(PublicKey publicKey) async {
+    final encoded = await _storage.get(
+      publicKey.publicKey,
+      domain: _externalAccountsKey,
+    );
+
+    if (encoded == null) return [];
+
+    return (jsonDecode(encoded) as List<dynamic>)
+        .cast<String>()
+        .map((address) => Address(address: address))
+        .toList();
+  }
 }

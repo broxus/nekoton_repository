@@ -3,6 +3,33 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## 2026-01-20
+
+### Changes
+
+---
+
+Packages with breaking changes:
+
+ - There are no breaking changes in this release.
+
+Packages with other changes:
+
+ - [`nekoton_repository` - `v3.3.1-dev.0`](#nekoton_repository---v331-dev0)
+
+---
+
+#### `nekoton_repository` - `v3.3.1-dev.0`
+
+ - **REFACTOR**: optimize wallet retrieval by introducing _tryGetWallet method. ([f740809c](https://github.com/broxus/nekoton_repository/commit/f740809ca3597fe1f23a7a5b65627b75d7b9db8b))
+ - **FIX**(EWM-624): external account public key and subscription. ([5dee92da](https://github.com/broxus/nekoton_repository/commit/5dee92da77f14283810d9472f32a7ff5d12bdcea))
+
+## 3.3.1-dev.0
+
+ - **REFACTOR**: optimize wallet retrieval by introducing _tryGetWallet method. ([f740809c](https://github.com/broxus/nekoton_repository/commit/f740809ca3597fe1f23a7a5b65627b75d7b9db8b))
+ - **FIX**(EWM-624): external account public key and subscription. ([5dee92da](https://github.com/broxus/nekoton_repository/commit/5dee92da77f14283810d9472f32a7ff5d12bdcea))
+
+
 ## 2026-01-19
 
 ### Changes

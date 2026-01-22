@@ -263,12 +263,16 @@ class NekotonRepository
     required TransportStrategy transport,
     required Map<PublicKey, SeedMetadata> seedMeta,
   }) {
-    final planeExternalAccounts = externalAccounts.values.expand((e) => e);
     final mapped = <PublicKey, List<KeyAccount>>{};
+    final hiddenSet = hiddenAccounts.toSet();
+    final externalAccountsSet = externalAccounts.values
+        .expand((e) => e)
+        .toSet();
+
     for (final account in allAccounts) {
       final key = account.publicKey;
-      final isHidden = hiddenAccounts.contains(account.address);
-      final isExternal = planeExternalAccounts.contains(account.address);
+      final isHidden = hiddenSet.contains(account.address);
+      final isExternal = externalAccountsSet.contains(account.address);
 
       // if account is external, then add it to all related publicKeys
       if (isExternal) {
@@ -276,22 +280,28 @@ class NekotonRepository
           (k) => externalAccounts[k]!.contains(account.address),
         );
         for (final externalKey in allExternalKeys) {
-          final keyAccount = KeyAccount(
-            account: account,
-            isHidden: isHidden,
-            isExternal: true,
-            publicKey: externalKey,
-          );
-          mapped[externalKey] = [...?mapped[externalKey], keyAccount];
+          mapped
+              .putIfAbsent(externalKey, () => [])
+              .add(
+                KeyAccount(
+                  account: account,
+                  isHidden: isHidden,
+                  isExternal: true,
+                  publicKey: externalKey,
+                ),
+              );
         }
       } else {
-        final keyAccount = KeyAccount(
-          account: account,
-          isHidden: isHidden,
-          isExternal: false,
-          publicKey: key,
-        );
-        mapped[key] = [...?mapped[key], keyAccount];
+        mapped
+            .putIfAbsent(key, () => [])
+            .add(
+              KeyAccount(
+                account: account,
+                isHidden: isHidden,
+                isExternal: false,
+                publicKey: key,
+              ),
+            );
       }
     }
 

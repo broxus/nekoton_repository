@@ -50,7 +50,7 @@ mixin TonWalletRepositoryImpl implements TonWalletRepository {
   /// assets could be reused.
   @protected
   @visibleForTesting
-  List<(TonWalletAsset, bool)>? lastUpdatedAssets;
+  List<TonWalletAsset>? lastUpdatedAssets;
 
   /// Subject that allows listening for wallets subscribing/unsubscribing
   final _walletsSubject = BehaviorSubject<Map<Address, TonWalletState>>.seeded(
@@ -159,6 +159,9 @@ mixin TonWalletRepositoryImpl implements TonWalletRepository {
     await mutex.acquireWrite();
 
     try {
+      final state = walletsMap[existingWallet.address];
+      if (state != null) return state;
+
       final wallet = await TonWallet.subscribeByExistingWallet(
         transport: transport,
         existingWallet: existingWallet,
@@ -176,7 +179,7 @@ mixin TonWalletRepositoryImpl implements TonWalletRepository {
   @override
   Future<void> retrySubscriptions(Address address) async {
     final asset = lastUpdatedAssets?.firstWhereOrNull(
-      (e) => e.$1.address == address,
+      (e) => e.address == address,
     );
 
     if (asset == null) {
@@ -288,8 +291,8 @@ mixin TonWalletRepositoryImpl implements TonWalletRepository {
   CancelableOperationAwaited<void>? _lastOperation;
 
   @override
-  Future<void> updateSubscriptions(List<(TonWalletAsset, bool)> assets) async {
-    final toSubscribe = <(TonWalletAsset, bool)>[];
+  Future<void> updateSubscriptions(List<TonWalletAsset> assets) async {
+    final toSubscribe = <TonWalletAsset>[];
     final toUnsubscribe = <TonWalletState>[];
 
     // Stop last created operation if possible
@@ -301,11 +304,11 @@ mixin TonWalletRepositoryImpl implements TonWalletRepository {
 
     toUnsubscribe.addAll(
       // pick all elements from old list, which is not contains in a new list
-      wallets.where((w) => !assets.any((a) => a.$1.address == w.address)),
+      wallets.where((w) => !assets.any((a) => a.address == w.address)),
     );
     toSubscribe.addAll(
       // pick all elements from new list, which is not contains in old list
-      assets.where((a) => !wallets.any((w) => w.address == a.$1.address)),
+      assets.where((a) => !wallets.any((w) => w.address == a.address)),
     );
 
     await Future.wait(toUnsubscribe.map((e) => unsubscribe(e.address)));
@@ -336,18 +339,16 @@ mixin TonWalletRepositoryImpl implements TonWalletRepository {
     await operation.valueOrCancellation();
   }
 
-  Future<void> _subscribeAsset((TonWalletAsset, bool) asset) async {
+  Future<void> _subscribeAsset(TonWalletAsset asset) async {
     if (currentTransport.transport.disposed) return;
 
     try {
-      asset.$2
-          ? await subscribeByAddress(asset.$1.address)
-          : await subscribe(asset.$1);
+      await subscribe(asset);
     } catch (e, t) {
       _logger.severe('_subscribeAsset', e, t);
 
       // Save error state of wallet
-      final address = asset.$1.address;
+      final address = asset.address;
       final res = TonWalletState.error(err: e, address: address);
       walletsMap[address] = res;
       _walletsSubject.add(walletsMap);
@@ -375,7 +376,7 @@ mixin TonWalletRepositoryImpl implements TonWalletRepository {
     await updateSubscriptions(last);
 
     // restart polling after transport changed
-    for (final (wallet, _) in last) {
+    for (final wallet in last) {
       await startPolling(wallet.address);
     }
   }
@@ -725,58 +726,20 @@ mixin TonWalletRepositoryImpl implements TonWalletRepository {
 
   @override
   Future<TonWalletState> getWalletByAddress(Address address) async {
-    final mutex = _mutexes[address];
-    await mutex?.acquireRead();
-
-    try {
-      final wallet = walletsMap[address];
-      if (wallet != null) return wallet;
-    } finally {
-      mutex?.release();
-      if (mutex?.isLocked == false) {
-        _mutexes.remove(address);
-      }
-    }
-
-    return subscribeByAddress(address);
+    return (await _tryGetWallet(address)) ?? subscribeByAddress(address);
   }
 
   @override
   Future<TonWalletState> getWallet(TonWalletAsset asset) async {
-    final mutex = _mutexes[asset.address];
-    await mutex?.acquireRead();
-
-    try {
-      final wallet = walletsMap[asset.address];
-      if (wallet != null) return wallet;
-    } finally {
-      mutex?.release();
-      if (mutex?.isLocked == false) {
-        _mutexes.remove(asset.address);
-      }
-    }
-
-    return subscribe(asset);
+    return (await _tryGetWallet(asset.address)) ?? subscribe(asset);
   }
 
   @override
   Future<TonWalletState> getWalletByExistingWallet(
     ExistingWalletInfo existingWallet,
   ) async {
-    final mutex = _mutexes[existingWallet.address];
-    await mutex?.acquireRead();
-
-    try {
-      final wallet = walletsMap[existingWallet.address];
-      if (wallet != null) return wallet;
-    } finally {
-      mutex?.release();
-      if (mutex?.isLocked == false) {
-        _mutexes.remove(existingWallet.address);
-      }
-    }
-
-    return subscribeByExistingWallet(existingWallet);
+    return (await _tryGetWallet(existingWallet.address)) ??
+        subscribeByExistingWallet(existingWallet);
   }
 
   @override
@@ -1301,6 +1264,20 @@ mixin TonWalletRepositoryImpl implements TonWalletRepository {
     } catch (e, st) {
       _logger.severe('TonWallet simulateTransactionTree error', e, st);
       return [];
+    }
+  }
+
+  Future<TonWalletState?> _tryGetWallet(Address address) async {
+    final mutex = _mutexes[address];
+    await mutex?.acquireRead();
+
+    try {
+      return walletsMap[address];
+    } finally {
+      mutex?.release();
+      if (mutex?.isLocked == false) {
+        _mutexes.remove(address);
+      }
     }
   }
 }
