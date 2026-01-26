@@ -3,6 +3,8 @@ import 'package:get_it/get_it.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:nekoton_repository/nekoton_repository.dart';
 
+// ignore_for_file: prefer_const_constructors
+
 class MockBridge extends Mock implements NekotonBridgeApi {}
 
 class MockTransportStrategy extends Mock implements TransportStrategy {}
@@ -15,9 +17,15 @@ class MockNekotonStorageRepository extends Mock
     implements NekotonStorageRepository {}
 
 class MockAccountRepository extends Mock implements AccountRepository {
+  int addAccountsCallCount = 0;
+  List<AccountToAdd>? lastAddedAccounts;
+
   @override
-  Future<List<Address>> addAccounts(List<AccountToAdd> accounts) =>
-      Future.value([]);
+  Future<List<Address>> addAccounts(List<AccountToAdd> accounts) {
+    addAccountsCallCount++;
+    lastAddedAccounts = accounts;
+    return Future.value([]);
+  }
 
   @override
   Future<Address> addAccount(AccountToAdd account) =>
@@ -35,6 +43,16 @@ class MockNekotonRepository extends Mock implements NekotonRepository {
 class MockArcTransportBoxTrait extends Mock implements ArcTransportBoxTrait {}
 
 class MockCreateKeyInput extends Mock implements CreateKeyInput {}
+
+class MockEncryptedKeyExportSeedOutput extends Mock
+    implements EncryptedKeyExportSeedOutput {}
+
+class MockDerivedKeyExportOutput extends Mock
+    implements DerivedKeyExportOutput {}
+
+class _FakeUpdateKeyInput extends Fake implements UpdateKeyInput {}
+
+class _FakeExportKeyInput extends Fake implements ExportKeyInput {}
 
 class MockProtoTransport extends Mock implements ProtoTransport {
   @override
@@ -100,6 +118,10 @@ void main() {
       );
       registerFallbackValue(MockCreateKeyInput());
       registerFallbackValue(const WalletType.everWallet());
+      registerFallbackValue('');
+      registerFallbackValue(0);
+      registerFallbackValue(_FakeUpdateKeyInput());
+      registerFallbackValue(_FakeExportKeyInput());
 
       keyStore = MockKeyStore();
       accountsStorage = MockAccountsStorage();
@@ -564,6 +586,203 @@ void main() {
         final result = await repository.removeKeys(seedKeys);
 
         expect(result, equals(publicKeys));
+      });
+    });
+
+    group('changeSeedPassword', () {
+      test('uses encrypted params for legacy keys', () async {
+        const publicKey = PublicKey(publicKey: 'pk');
+
+        when(() => keyStore.updateKey(any())).thenAnswer((_) async {});
+
+        await repository.changeSeedPassword(
+          publicKey: publicKey,
+          oldPassword: 'old',
+          newPassword: 'new',
+          isLegacy: true,
+        );
+
+        verify(
+          () => keyStore.updateKey(any(that: isA<EncryptedKeyUpdateParams>())),
+        ).called(1);
+      });
+
+      test('uses derived params for non-legacy keys', () async {
+        const publicKey = PublicKey(publicKey: 'pk');
+
+        when(() => keyStore.updateKey(any())).thenAnswer((_) async {});
+
+        await repository.changeSeedPassword(
+          publicKey: publicKey,
+          oldPassword: 'old',
+          newPassword: 'new',
+          isLegacy: false,
+        );
+
+        verify(
+          () => keyStore.updateKey(any(that: isA<DerivedKeyUpdateParams>())),
+        ).called(1);
+      });
+    });
+
+    group('renameKey', () {
+      test('renames encrypted key using encrypted params', () async {
+        const publicKey = PublicKey(publicKey: 'pk');
+        const masterKey = PublicKey(publicKey: 'master');
+        final entry = KeyStoreEntry(
+          name: 'name',
+          masterKey: masterKey,
+          accountId: 0,
+          publicKey: publicKey,
+          signerName: KeySigner.encrypted().name,
+        );
+
+        when(() => keyStore.keys).thenReturn([entry]);
+        when(() => keyStore.updateKey(any())).thenAnswer((_) async {});
+
+        await repository.renameKey(
+          publicKey: publicKey,
+          masterKey: masterKey,
+          name: 'updated',
+        );
+
+        verify(
+          () => keyStore.updateKey(any(that: isA<EncryptedKeyUpdateParams>())),
+        ).called(1);
+      });
+
+      test('renames derived key using derived params', () async {
+        const publicKey = PublicKey(publicKey: 'pk');
+        const masterKey = PublicKey(publicKey: 'master');
+        final entry = KeyStoreEntry(
+          name: 'name',
+          masterKey: masterKey,
+          accountId: 0,
+          publicKey: publicKey,
+          signerName: KeySigner.derived().name,
+        );
+
+        when(() => keyStore.keys).thenReturn([entry]);
+        when(() => keyStore.updateKey(any())).thenAnswer((_) async {});
+
+        await repository.renameKey(
+          publicKey: publicKey,
+          masterKey: masterKey,
+          name: 'updated',
+        );
+
+        verify(
+          () => keyStore.updateKey(any(that: isA<DerivedKeyUpdateParams>())),
+        ).called(1);
+      });
+
+      test('renames ledger key using ledger params', () async {
+        const publicKey = PublicKey(publicKey: 'pk');
+        const masterKey = PublicKey(publicKey: 'master');
+        final entry = KeyStoreEntry(
+          name: 'name',
+          masterKey: masterKey,
+          accountId: 0,
+          publicKey: publicKey,
+          signerName: KeySigner.ledger().name,
+        );
+
+        when(() => keyStore.keys).thenReturn([entry]);
+        when(() => keyStore.updateKey(any())).thenAnswer((_) async {});
+
+        await repository.renameKey(
+          publicKey: publicKey,
+          masterKey: masterKey,
+          name: 'updated',
+        );
+
+        verify(
+          () => keyStore.updateKey(any(that: isA<LedgerUpdateKeyInput>())),
+        ).called(1);
+      });
+    });
+
+    group('exportSeed', () {
+      test('exports legacy seed with encrypted password input', () async {
+        const publicKey = PublicKey(publicKey: 'pk');
+        final output = MockEncryptedKeyExportSeedOutput();
+
+        when(() => output.phrase).thenReturn('a b c');
+        when(() => keyStore.exportSeed(any())).thenAnswer((_) async => output);
+
+        final result = await repository.exportSeed(
+          masterKey: publicKey,
+          password: 'pwd',
+          isLegacy: true,
+        );
+
+        expect(result, equals(['a', 'b', 'c']));
+        verify(
+          () => keyStore.exportSeed(any(that: isA<EncryptedKeyPassword>())),
+        ).called(1);
+      });
+
+      test('exports derived seed with derived params', () async {
+        const publicKey = PublicKey(publicKey: 'pk');
+        final output = MockDerivedKeyExportOutput();
+
+        when(() => output.phrase).thenReturn('x y');
+        when(() => keyStore.exportSeed(any())).thenAnswer((_) async => output);
+
+        final result = await repository.exportSeed(
+          masterKey: publicKey,
+          password: 'pwd',
+          isLegacy: false,
+        );
+
+        expect(result, equals(['x', 'y']));
+        verify(
+          () =>
+              keyStore.exportSeed(any(that: isA<DerivedKeyExportSeedParams>())),
+        ).called(1);
+      });
+    });
+
+    group('triggerAddingAccounts', () {
+      test('returns early when transport disposed', () async {
+        const publicKey = PublicKey(publicKey: 'pk');
+        when(() => proto.disposed).thenReturn(true);
+        when(() => accountsStorage.accounts).thenReturn([]);
+
+        await repository.triggerAddingAccounts(
+          publicKeys: const [publicKey],
+          workchainId: 0,
+        );
+
+        expect(repository.findingExistingWallets, isEmpty);
+        expect(accountRepository.addAccountsCallCount, equals(0));
+      });
+
+      test('adds default account when no active wallets found', () async {
+        const publicKey = PublicKey(publicKey: 'pk');
+        when(() => proto.disposed).thenReturn(false);
+        when(() => accountsStorage.accounts).thenReturn([]);
+        when(
+          () => bridge.crateApiMergedTonWalletDartWrapperFindExistingWallets(
+            transport: box,
+            publicKey: publicKey.publicKey,
+            walletTypes: any<String>(named: 'walletTypes'),
+            workchainId: any<int>(named: 'workchainId'),
+          ),
+        ).thenAnswer((_) => Future.value('[]'));
+
+        await repository.triggerAddingAccounts(
+          publicKeys: const [publicKey],
+          workchainId: 0,
+        );
+
+        expect(accountRepository.addAccountsCallCount, equals(1));
+        final account = accountRepository.lastAddedAccounts!.single;
+        expect(account.publicKey, publicKey);
+        expect(account.contract, const WalletType.everWallet());
+        expect(account.name, 'defaultAccountName');
+        expect(account.workchain, 0);
+        expect(repository.findingExistingWallets, isEmpty);
       });
     });
   });
