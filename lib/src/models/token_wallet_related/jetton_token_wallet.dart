@@ -73,6 +73,10 @@ class JettonTokenWallet extends GenericTokenWallet {
   get onTransactionsFoundStream => _wallet.onTransactionsFoundStream;
 
   @override
+  void attachStreamListenersObserver(StreamListenersObserver observer) =>
+      _wallet.attachStreamListenersObserver(observer);
+
+  @override
   Future<ContractState> getContractState() => _wallet.getContractState();
 
   @override

@@ -30,47 +30,8 @@ abstract class TokenWalletRepository {
   /// method provides error state to stream.
   Future<void> retryTokenSubscription(Address owner, Address rootTokenContract);
 
-  /// Start polling for wallet state updates by its address.
-  ///
-  /// Only one wallet should be polled at the same time, this is necessary to
-  /// avoid blocking rust worker pool.
-  ///
-  /// If you really need update wallet's state, you can call
-  /// [TokenWallet.refresh].
-  /// directly, but for real polling, you must use this method.
-  ///
-  /// If [TokenWalletState.wallet] was null (wallet was not created), polling
-  /// will be ignored.
-  ///
-  /// [refreshInterval] - time to poll requests
-  /// [stopPrevious] - if previously created pollers should be stopped,
-  ///   default true.
-  Future<void> startPollingToken(
-    Address owner,
-    Address rootTokenContract, {
-    Duration refreshInterval,
-    bool stopPrevious,
-  });
-
-  /// Stops any existed polls for wallet state updates.
-  /// This method can be called when user leaves screen with wallet or
-  /// when user closes app.
-  /// If user just changed from one wallet to another, you must call
-  /// [startPollingToken].
-  void stopPollingToken();
-
-  void pausePollingToken();
-
-  void resumePollingToken();
-
   /// Dispose existing wallet instance and remove it from repository.
   void unsubscribeToken(Address owner, Address rootTokenContract);
-
-  /// Dispose all existing wallet instances and remove them from repository.
-  ///
-  /// This method calls automatically when
-  /// [TonWalletRepository.closeAllSubscriptions] was called.
-  void closeAllTokenSubscriptions();
 
   /// This is a method to update all subscriptions for wallets if transport
   /// or list of current active accounts was changed.
@@ -91,9 +52,6 @@ abstract class TokenWalletRepository {
   /// If subscriptions was not created before this method, then nothing will
   /// happen.
   /// To create new subscriptions for accounts, use [updateTokenSubscriptions].
-  ///
-  /// This method automatically calls [closeAllTokenSubscriptions] and then
-  /// recreates subscriptions in scope of new transport group.
   Future<void> updateTokenTransportSubscriptions();
 
   /// Prepare transfer of any token from wallet with [owner] and token contract

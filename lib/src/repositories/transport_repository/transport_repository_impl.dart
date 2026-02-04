@@ -19,9 +19,6 @@ mixin TransportRepositoryImpl implements TransportRepository {
 
   @override
   Future<void> updateTransport(TransportStrategy transport) async {
-    final prev = _transportSubject.valueOrNull;
-    _transportSubject.add(transport);
-
     final decimals = transport.defaultNativeCurrencyDecimal;
     final patternDigits = decimals > 0 ? '0.${'#' * decimals}' : '0';
 
@@ -33,6 +30,9 @@ mixin TransportRepositoryImpl implements TransportRepository {
         pattern: patternDigits,
       ),
     );
+
+    final prev = _transportSubject.valueOrNull;
+    _transportSubject.add(transport);
 
     await prev?.transport.dispose();
   }

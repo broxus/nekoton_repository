@@ -24,6 +24,12 @@ sealed class GenericTokenWallet {
     (List<TransactionWithData<TokenWalletTransaction?>>, TransactionsBatchInfo)
   >
   get onTransactionsFoundStream;
+
+  /// Attaches an observer that tracks total stream listeners count.
+  ///
+  /// The observer is notified whenever any wallet stream gains or loses
+  /// listeners, enabling lazy polling and resource management.
+  void attachStreamListenersObserver(StreamListenersObserver observer);
   Future<ContractState> getContractState();
   Future<void> preloadTransactions([String? fromLt]);
   void onBalanceChanged(String balance);

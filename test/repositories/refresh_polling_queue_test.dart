@@ -14,8 +14,8 @@ class RefresherImplementation extends Mock implements RefreshingInterface {
 class RefreshCompleteCallback extends Mock implements _CallbackStub {}
 
 void main() {
-  const queueTimeout = Duration(seconds: 2);
-  const refresherDelay = Duration(seconds: 1);
+  const queueTimeout = Duration(milliseconds: 200);
+  const refresherDelay = Duration(milliseconds: 100);
 
   group('RefreshPollingQueue', () {
     test('Request refresh by runSingleRefresh', () async {
@@ -52,11 +52,11 @@ void main() {
         refreshCompleteCallback: callback.call,
       )..start();
 
-      // 6.2 secs lasts, refreshed 2 times
+      // ~0.7 secs lasts, refreshed 2 times
       await Future<void>.delayed(
         queueTimeout * 2 +
             refresherDelay * 2 +
-            const Duration(milliseconds: 300),
+            const Duration(milliseconds: 60),
       );
       queue.stop();
       verify(refresher.refresh).called(2);
@@ -74,11 +74,11 @@ void main() {
         refreshInterval: queueTimeout,
       )..start(refreshImmediately: true);
 
-      // 7.3 secs lasts, refreshed 3 times
+      // ~0.9 secs lasts, refreshed 3 times
       await Future<void>.delayed(
         queueTimeout * 2 +
             refresherDelay * 3 +
-            const Duration(milliseconds: 300),
+            const Duration(milliseconds: 60),
       );
       queue.stop();
       verify(refresher.refresh).called(3);
@@ -86,17 +86,17 @@ void main() {
 
     test('Refresh when refresher takes more time when polling', () async {
       final refresher = RefresherImplementation();
-      when(
-        refresher.refresh,
-      ).thenAnswer((_) => Future<void>.delayed(const Duration(seconds: 5)));
+      when(refresher.refresh).thenAnswer(
+        (_) => Future<void>.delayed(const Duration(milliseconds: 500)),
+      );
 
       RefreshPollingQueue(
         refresher: refresher,
         refreshInterval: queueTimeout,
       ).start();
 
-      // 7 secs lasts, refreshed 2 times
-      await Future<void>.delayed(const Duration(seconds: 11));
+      // ~1.2 secs lasts, refreshed 2 times
+      await Future<void>.delayed(const Duration(milliseconds: 1200));
       verify(refresher.refresh).called(2);
     });
 
@@ -113,7 +113,7 @@ void main() {
         refreshCompleteCallback: callback.call,
       ).start();
 
-      // 7 secs lasts, refreshed 1 times with error
+      // ~0.7 secs lasts, refreshed 1 times with error
       await Future<void>.delayed(queueTimeout * 3.5);
       verify(refresher.refresh).called(1);
       verify(() => callback.call(any(that: isNotNull))).called(1);
@@ -133,7 +133,7 @@ void main() {
         refreshCompleteCallback: callback.call,
       ).start();
 
-      // 7 secs lasts, refreshed 3 times with error
+      // ~0.7 secs lasts, refreshed 3 times with error
       await Future<void>.delayed(queueTimeout * 3.5);
       verify(() => callback.call(any(that: isNotNull))).called(3);
     });

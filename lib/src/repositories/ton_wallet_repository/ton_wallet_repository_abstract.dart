@@ -52,45 +52,8 @@ abstract class TonWalletRepository {
   /// error state to stream.
   Future<void> retrySubscriptions(Address address);
 
-  /// Start polling for wallet state updates by its address.
-  ///
-  /// Only one wallet should be polled at the same time, this is necessary to
-  /// avoid blocking rust worker pool.
-  ///
-  /// If you really need update wallet's state, you can call [TonWallet.refresh]
-  /// directly, but for real polling, you must use this method.
-  ///
-  /// If [TonWalletState.wallet] was null (wallet was not created), polling
-  /// will be ignored.
-  ///
-  /// [refreshInterval] - time to poll requests
-  /// [stopPrevious] - if previously created pollers should be stopped,
-  ///   default true.
-  Future<void> startPolling(
-    Address address, {
-    Duration refreshInterval,
-    bool stopPrevious,
-  });
-
-  /// Stops any existed polls for wallet state updates.
-  /// This method can be called when user leaves screen with wallet or
-  /// when user closes app.
-  /// If user just changed from one wallet to another, you must call
-  /// [startPolling].
-  void stopPolling();
-
-  void pausePolling();
-
-  void resumePolling();
-
   /// Dispose existing wallet instance and remove it from repository.
   void unsubscribe(Address address);
-
-  /// Dispose all existing wallet instances and remove them from repository.
-  ///
-  /// This method automatically calls
-  /// [TokenWalletRepository.closeAllTokenSubscriptions].
-  void closeAllSubscriptions();
 
   /// This is a method to update all subscriptions for wallets if list of
   /// current active accounts was changed.
@@ -113,9 +76,6 @@ abstract class TonWalletRepository {
   /// If subscriptions was not created before this method, then nothing will
   /// happen.
   /// To create new subscriptions for accounts, use [updateSubscriptions].
-  ///
-  /// This method automatically calls [closeAllSubscriptions] and then
-  /// recreates subscriptions.
   Future<void> updateTransportSubscriptions();
 
   /// Prepare wallet with [address] to be deployed.

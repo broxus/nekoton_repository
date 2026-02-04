@@ -37,12 +37,23 @@ class TonWalletSubscription {
        _onTransactionsFoundSubscription = tonWallet.onTransactionsFoundStream
            .listen(onTransactionsFound);
 
-  /// Dynamic is used here to avoid importing Tuple lib, anyway we do not need
-  /// this type in subscription.
-  final StreamSubscription<dynamic> _onMessageSentSubscription;
-  final StreamSubscription<dynamic> _onStateChangedSubscription;
-  final StreamSubscription<dynamic> _onMessageExpiredSubscription;
-  final StreamSubscription<dynamic> _onTransactionsFoundSubscription;
+  /// Number of stream listeners created internally by this subscription.
+  ///
+  /// Used by lazy polling observers to ignore internal listeners when deciding
+  /// whether to start or stop polling.
+  static const int internalListenersCount = 4;
+
+  final StreamSubscription<(PendingTransaction, Transaction?)>
+  _onMessageSentSubscription;
+  final StreamSubscription<ContractState> _onStateChangedSubscription;
+  final StreamSubscription<PendingTransaction> _onMessageExpiredSubscription;
+  final StreamSubscription<
+    (
+      List<TransactionWithData<TransactionAdditionalInfo?>>,
+      TransactionsBatchInfo,
+    )
+  >
+  _onTransactionsFoundSubscription;
 
   void close() {
     _onMessageSentSubscription.cancel();

@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:collection/collection.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_nekoton_bridge/flutter_nekoton_bridge.dart' as fnb;
 import 'package:injectable/injectable.dart';
@@ -34,6 +35,14 @@ class NekotonRepository
   NekotonRepository();
 
   final _log = Logger('NekotonRepository');
+
+  /// Refresh polling manager responsible for wallet polling orchestration.
+  RefreshPollingManager? _refreshPollingManager;
+
+  /// Polling manager provided to repositories.
+  @override
+  RefreshPollingManager get refreshPollingManager =>
+      _refreshPollingManager ?? const NoopRefreshPollingManager();
 
   /// Nekoton's keystore and its getter
   late final fnb.KeyStore _keyStore;
@@ -139,8 +148,24 @@ class NekotonRepository
     fnb.updateClockOffset(offset);
   }
 
+  /// Stop polling for all wallets.
+  void stopPolling() {
+    _refreshPollingManager?.stopPollingAll();
+  }
+
+  /// Pause polling for all wallets.
+  void pausePolling() {
+    _refreshPollingManager?.pausePolling();
+  }
+
+  /// Resume polling for all wallets.
+  void resumePolling() {
+    _refreshPollingManager?.resumePolling();
+  }
+
   /// Clear used memory
   Future<void> dispose() async {
+    _refreshPollingManager?.dispose();
     _keyStore.dispose();
     _accountsStorage.dispose();
     _nekotonStorage.dispose();
@@ -208,21 +233,29 @@ class NekotonRepository
     _updateSeedList(needTrackChanges: false);
   }
 
-  late TransportStrategy prevTransport;
+  late Dio? _dio;
 
   /// Start listening for transport changing to update Ton/Token wallets
   /// subscriptions.
-  void setupWalletsSubscriptions() {
-    prevTransport = currentTransport;
+  void setupWalletsSubscriptions({Dio? dio}) {
+    _dio = dio;
+
+    _configureRefreshPollingManager(
+      pollingConfig: currentTransport.pollingConfig,
+      dio: _dio,
+    );
 
     // skip 1 to avoid duplicate init because first init should be called
     // from app side via [updateSubscriptions].
     currentTransportStream.skip(1).listen((transport) async {
+      _configureRefreshPollingManager(
+        pollingConfig: transport.pollingConfig,
+        dio: _dio,
+      );
+
       await updateTransportSubscriptions();
       await updateTokenTransportSubscriptions();
       updateContractTransportSubscriptions();
-
-      prevTransport = transport;
     });
   }
 
@@ -560,5 +593,21 @@ class NekotonRepository
 
   Level _toLogLevel(fnb.LogLevel level) {
     return _logMap.keys.firstWhere((key) => _logMap[key] == level);
+  }
+
+  /// Configure refresh polling manager based on [PollingConfig].
+  ///
+  /// Implementation must select SSE or interval backend depending on
+  /// [PollingConfig.sseBaseUrl] availability and connectivity, and must set
+  /// [_refreshPollingManager] for repository usage.
+  void _configureRefreshPollingManager({
+    required PollingConfig pollingConfig,
+    Dio? dio,
+  }) {
+    _refreshPollingManager?.dispose();
+    _refreshPollingManager = const DefaultRefreshPollingManagerFactory().create(
+      pollingConfig: pollingConfig,
+      dio: dio,
+    );
   }
 }

@@ -15,7 +15,7 @@ void main() {
       final function = MockFunction();
       when(
         function.call,
-      ).thenAnswer((_) => Future.delayed(const Duration(seconds: 1)));
+      ).thenAnswer((_) => Future.delayed(const Duration(milliseconds: 100)));
 
       final start = NtpTime.now();
       final operation = CancelableOperation<void>.fromFuture(function.call());
@@ -23,7 +23,10 @@ void main() {
       await operation.valueOrCancellation();
       final end = NtpTime.now();
 
-      expect(end.difference(start).inSeconds, 1);
+      expect(
+        end.difference(start).inMilliseconds,
+        moreOrLessEquals(100, epsilon: 25),
+      );
       verify(function.call).called(1);
     });
 
@@ -31,7 +34,7 @@ void main() {
       final function = MockFunction();
       when(
         function.call,
-      ).thenAnswer((_) => Future.delayed(const Duration(seconds: 1)));
+      ).thenAnswer((_) => Future.delayed(const Duration(milliseconds: 100)));
 
       late CancelableOperation<void> operation;
       operation = CancelableOperation<void>.fromFuture(() async {
@@ -43,7 +46,7 @@ void main() {
 
       final fut = operation.valueOrCancellation();
 
-      await Future<void>.delayed(const Duration(seconds: 2));
+      await Future<void>.delayed(const Duration(milliseconds: 200));
 
       await operation.cancel();
       await fut;
@@ -55,7 +58,7 @@ void main() {
       final function = MockFunction();
       when(
         function.call,
-      ).thenAnswer((_) => Future.delayed(const Duration(seconds: 1)));
+      ).thenAnswer((_) => Future.delayed(const Duration(milliseconds: 100)));
 
       late CancelableOperation<void> operation;
       operation = CancelableOperation<void>.fromFuture(() async {

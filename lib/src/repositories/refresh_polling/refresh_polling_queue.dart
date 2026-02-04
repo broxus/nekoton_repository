@@ -14,10 +14,10 @@ typedef RefreshCompleteCallback =
 class RefreshPollingQueue {
   RefreshPollingQueue({
     required this.refresher,
-    required this.refreshInterval,
+    required Duration refreshInterval,
     this.refreshCompleteCallback,
     this.stopPollingIfError = true,
-  });
+  }) : _refreshInterval = refreshInterval;
 
   static final _logger = Logger('RefreshPollingQueue');
 
@@ -38,7 +38,7 @@ class RefreshPollingQueue {
   final RefreshingInterface refresher;
 
   /// Refresh interval.
-  final Duration refreshInterval;
+  Duration _refreshInterval;
 
   /// Callback that will be called every time, when refresh completes.
   /// This can be helpful to handle some states during polling.
@@ -66,9 +66,11 @@ class RefreshPollingQueue {
   /// Get if polling is active now.
   /// Timer can be paused after it was completed, but not launched again after
   /// the refresh operation completion, so we check both states.
-  bool get isPolling =>
-      _timer != null && _timer!.isActive ||
-      _refreshCompleter != null && !_refreshCompleter!.isCompleted;
+  bool get isPolling {
+    final timerActive = _timer?.isActive ?? false;
+    final isRefreshing = _refreshCompleter?.isCompleted == false;
+    return timerActive || isRefreshing;
+  }
 
   bool get isPaused => _isPaused;
 
@@ -79,8 +81,13 @@ class RefreshPollingQueue {
   /// Or empty future if there is no refresh action.
   ///
   /// This can be helpful outside to track when refresh is finished.
-  Future<void> currentRefresh() =>
-      _isRefreshing ? _refreshCompleter!.future : Future.value();
+  Future<void> currentRefresh() {
+    final completer = _refreshCompleter;
+    if (completer == null || completer.isCompleted) {
+      return Future.value();
+    }
+    return completer.future;
+  }
 
   /// Request only one refresh operation without polling.
   void runSingleRefresh() {
@@ -123,21 +130,19 @@ class RefreshPollingQueue {
   /// refresh operation.
   void _createTimer() {
     if (!_hasRequest) return;
-
-    _timer = Timer(refreshInterval, _requestRefresh);
+    _cancelTimer();
+    _timer = Timer(_refreshInterval, _requestRefresh);
   }
 
   /// Stop refresh polling.
   void stop() {
-    _timer?.cancel();
-    _timer = null;
+    _cancelTimer();
     _hasRequest = false;
     _isPaused = false;
   }
 
   void pause() {
-    _timer?.cancel();
-    _timer = null;
+    _cancelTimer();
     _hasRequest = false;
     _isPaused = true;
   }
@@ -150,14 +155,43 @@ class RefreshPollingQueue {
     }
   }
 
+  /// Update polling interval for an active queue.
+  ///
+  /// This is required to switch between normal and intensive modes without
+  /// recreating the queue.
+  void updateRefreshInterval({
+    required Duration interval,
+    bool refreshImmediately = false,
+  }) {
+    _refreshInterval = interval;
+
+    // Reschedule timer with the new interval if polling is active.
+    if (_hasRequest && !_isPaused) {
+      _cancelTimer();
+
+      // If refresh is in progress, the next timer will be scheduled on finish.
+      if (!_isRefreshing) {
+        if (refreshImmediately) {
+          _requestRefresh();
+        } else {
+          _createTimer();
+        }
+      }
+    }
+  }
+
+  void _cancelTimer() {
+    _timer?.cancel();
+    _timer = null;
+  }
+
   /// ---------------------------------------------------
   /// Internal methods
   /// ---------------------------------------------------
 
   /// Try to refresh if possible.
   void _requestRefresh() {
-    _timer?.cancel();
-    _timer = null;
+    _cancelTimer();
 
     if (!_hasRequest) return;
 

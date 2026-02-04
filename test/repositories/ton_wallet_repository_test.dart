@@ -6,7 +6,6 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:get_it/get_it.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:nekoton_repository/nekoton_repository.dart' hide Symbol;
-import 'package:nekoton_repository/src/repositories/ton_wallet_repository/ton_wallet_gql_block_poller.dart';
 import 'package:nekoton_repository/src/utils/utils.dart';
 
 class MockTokenRepository extends Mock implements TokenWalletRepository {}
@@ -47,11 +46,15 @@ class MockJrpcTransport extends Mock implements ProtoTransport {
   Future<T> use<T>(Future<T> Function() fn) => fn();
 }
 
+class _FakeStreamListenersObserver extends Fake
+    implements StreamListenersObserver {}
+
 class TonWalletRepoTest with TonWalletRepositoryImpl {
   TonWalletRepoTest(
     this.currentTransport,
     this.keyStore,
     this.tonWalletStorage,
+    this.refreshPollingManager,
   );
 
   @override
@@ -62,6 +65,80 @@ class TonWalletRepoTest with TonWalletRepositoryImpl {
 
   @override
   final MockWalletStorage tonWalletStorage;
+
+  @override
+  final RefreshPollingManager refreshPollingManager;
+}
+
+class MockRefreshPollingManager extends Mock implements RefreshPollingManager {
+  final targets = <Address, RefreshPollingTarget>{};
+  final modeChanges = <(Address, RefreshPollingMode)>[];
+
+  bool _isPaused = false;
+  final _pausedController = StreamController<bool>.broadcast();
+
+  @override
+  RefreshPollingBackend get backend => RefreshPollingBackend.interval;
+
+  @override
+  bool get isPaused => _isPaused;
+
+  @override
+  Stream<bool> get isPausedStream => _pausedController.stream;
+
+  @override
+  void registerTarget(RefreshPollingTarget target) {
+    targets[target.address] = target;
+  }
+
+  @override
+  void unregisterTarget(Address address) {
+    targets.remove(address);
+  }
+
+  @override
+  bool hasTarget(Address address) => targets.containsKey(address);
+
+  @override
+  void startPolling(Address address) {
+    final refresher = targets[address]?.refresher;
+    if (refresher == null) return;
+
+    unawaited(refresher.refresh().catchError((_) {}));
+  }
+
+  @override
+  void stopPolling(Address address) {}
+
+  @override
+  void stopPollingAll() {}
+
+  @override
+  void pausePolling() {
+    _isPaused = true;
+    _pausedController.add(true);
+  }
+
+  @override
+  void resumePolling() {
+    _isPaused = false;
+    _pausedController.add(false);
+  }
+
+  @override
+  void setPollingMode(Address address, RefreshPollingMode mode) {
+    modeChanges.add((address, mode));
+  }
+
+  @override
+  void clear() {
+    targets.clear();
+  }
+
+  @override
+  void dispose() {
+    _pausedController.close();
+  }
 }
 
 void main() {
@@ -74,6 +151,7 @@ void main() {
   late MockJrpcTransport jrpc;
 
   late TonWalletRepoTest repository;
+  late MockRefreshPollingManager pollingManager;
   late MockTokenRepository tokenRepository;
 
   late Stream<(PendingTransaction, Transaction?)> messageSentStream;
@@ -89,6 +167,8 @@ void main() {
 
   const address = Address(address: '0:1111111111111');
   const duplicateAddress = Address(address: '0:22222222222');
+
+  const nextBlockTimeout = Duration(seconds: 30);
 
   const multisigAddress = Address(
     address:
@@ -176,7 +256,13 @@ void main() {
     storage = MockWalletStorage();
     keystore = MockKeystore();
     wallet = MockWallet();
-    repository = TonWalletRepoTest(transport, keystore, storage);
+    pollingManager = MockRefreshPollingManager();
+    repository = TonWalletRepoTest(
+      transport,
+      keystore,
+      storage,
+      pollingManager,
+    );
     gql = MockGqlTransport();
     proto = MockProtoTransport();
     jrpc = MockJrpcTransport();
@@ -193,6 +279,10 @@ void main() {
 
     tokenRepository = MockTokenRepository();
 
+    when(() => wallet.attachStreamListenersObserver(any())).thenReturn(null);
+    when(() => wallet.refresh()).thenAnswer((_) => Future<void>.value());
+    when(() => wallet.refreshDescription).thenReturn('');
+
     messageSentStream = const Stream.empty();
     expiredStream = const Stream.empty();
     stateStream = const Stream.empty();
@@ -203,10 +293,22 @@ void main() {
 
   setUpAll(() {
     NekotonBridge.initMock(api: bridge);
+    registerFallbackValue(_FakeStreamListenersObserver());
   });
 
   group('TonWalletRepository', () {
+    setUp(() {
+      when(() => transport.transport).thenReturn(proto);
+    });
+
     test('addWallet', () {
+      late StreamListenersObserver observer;
+      when(() => wallet.attachStreamListenersObserver(any())).thenAnswer((
+        invocation,
+      ) {
+        observer =
+            invocation.positionalArguments.first as StreamListenersObserver;
+      });
       when(
         () => wallet.onMessageExpiredStream,
       ).thenAnswer((_) => expiredStream);
@@ -220,6 +322,8 @@ void main() {
       when(() => wallet.address).thenReturn(address);
 
       repository.addWalletInst(wallet);
+
+      observer.onStreamListenersChanged(5);
 
       expect(repository.walletsMap[address]?.wallet, wallet);
       expect(repository.walletSubscriptions[address], isNotNull);
@@ -245,6 +349,7 @@ void main() {
 
       repository
         ..addWalletInst(wallet)
+        ..walletStreamObservers[address]!.onStreamListenersChanged(5)
         ..removeWalletInst(address);
 
       expect(repository.walletsMap[address]?.wallet, isNull);
@@ -252,6 +357,13 @@ void main() {
     });
 
     test('unsubscribe', () async {
+      late StreamListenersObserver observer;
+      when(() => wallet.attachStreamListenersObserver(any())).thenAnswer((
+        invocation,
+      ) {
+        observer =
+            invocation.positionalArguments.first as StreamListenersObserver;
+      });
       when(
         () => wallet.onMessageExpiredStream,
       ).thenAnswer((_) => expiredStream);
@@ -267,120 +379,15 @@ void main() {
       when(wallet.refresh).thenAnswer((_) => Future<void>.value());
       when(() => wallet.refreshDescription).thenReturn('');
 
-      final poller = RefreshPollingQueue(
-        refresher: wallet,
-        refreshInterval: PollingConfig.defaultConfig.tonWalletRefreshInterval,
-      )..start();
-
-      repository.pollingQueues[address] = poller;
-
       repository.addWalletInst(wallet);
+      observer.onStreamListenersChanged(5);
       await repository.unsubscribe(address);
 
       expect(repository.walletsMap[address]?.wallet, isNull);
       expect(repository.walletSubscriptions[address], isNull);
-      expect(repository.pollingQueues[address], isNull);
-      expect(poller.isPolling, isFalse);
+      expect(pollingManager.hasTarget(address), isFalse);
 
       verify(wallet.dispose).called(1);
-    });
-
-    test('stopPolling', () {
-      when(
-        () => wallet.onMessageExpiredStream,
-      ).thenAnswer((_) => expiredStream);
-      when(
-        () => wallet.onMessageSentStream,
-      ).thenAnswer((_) => messageSentStream);
-      when(
-        () => wallet.onTransactionsFoundStream,
-      ).thenAnswer((_) => transactionsFoundStream);
-      when(() => wallet.onStateChangedStream).thenAnswer((_) => stateStream);
-      when(() => wallet.address).thenReturn(address);
-      when(wallet.refresh).thenAnswer((_) => Future<void>.value());
-      when(() => wallet.refreshDescription).thenReturn('');
-
-      final poller1 = RefreshPollingQueue(
-        refresher: wallet,
-        refreshInterval: PollingConfig.defaultConfig.tonWalletRefreshInterval,
-      )..start();
-      final poller2 = RefreshPollingQueue(
-        refresher: wallet,
-        refreshInterval: PollingConfig.defaultConfig.tonWalletRefreshInterval,
-      )..start();
-
-      repository.pollingQueues[address] = poller1;
-      repository.pollingQueues[duplicateAddress] = poller2;
-
-      repository
-        ..addWalletInst(wallet)
-        ..stopPolling();
-
-      expect(repository.pollingQueues[address], isNull);
-      expect(repository.pollingQueues[duplicateAddress], isNull);
-      expect(poller1.isPolling, isFalse);
-      expect(poller2.isPolling, isFalse);
-    });
-
-    test('startPolling with clearing previous', () async {
-      when(
-        () => wallet.onMessageExpiredStream,
-      ).thenAnswer((_) => expiredStream);
-      when(
-        () => wallet.onMessageSentStream,
-      ).thenAnswer((_) => messageSentStream);
-      when(
-        () => wallet.onTransactionsFoundStream,
-      ).thenAnswer((_) => transactionsFoundStream);
-      when(() => wallet.onStateChangedStream).thenAnswer((_) => stateStream);
-      when(() => wallet.address).thenReturn(address);
-
-      when(wallet.refresh).thenAnswer((_) => Future<void>.value());
-      when(() => wallet.refreshDescription).thenReturn('');
-
-      final oldPoller = RefreshPollingQueue(
-        refresher: wallet,
-        refreshInterval: PollingConfig.defaultConfig.tonWalletRefreshInterval,
-      )..start();
-
-      repository.pollingQueues[duplicateAddress] = oldPoller;
-
-      repository.addWalletInst(wallet);
-      await repository.startPolling(address);
-
-      expect(repository.pollingQueues[address], isNotNull);
-      expect(repository.pollingQueues[address]!.isPolling, isTrue);
-      expect(repository.pollingQueues[duplicateAddress], isNull);
-      expect(oldPoller.isPolling, false);
-    });
-
-    test('startPolling without clearing previous', () async {
-      when(
-        () => wallet.onMessageExpiredStream,
-      ).thenAnswer((_) => expiredStream);
-      when(
-        () => wallet.onMessageSentStream,
-      ).thenAnswer((_) => messageSentStream);
-      when(
-        () => wallet.onTransactionsFoundStream,
-      ).thenAnswer((_) => transactionsFoundStream);
-      when(() => wallet.onStateChangedStream).thenAnswer((_) => stateStream);
-      when(() => wallet.address).thenReturn(address);
-
-      final oldPoller = RefreshPollingQueue(
-        refresher: wallet,
-        refreshInterval: PollingConfig.defaultConfig.tonWalletRefreshInterval,
-      )..start();
-
-      repository.pollingQueues[duplicateAddress] = oldPoller;
-
-      repository.addWalletInst(wallet);
-      await repository.startPolling(address, stopPrevious: false);
-
-      expect(repository.pollingQueues[address], isNotNull);
-      expect(repository.pollingQueues[address]!.isPolling, isTrue);
-      expect(repository.pollingQueues[duplicateAddress], isNotNull);
-      expect(oldPoller.isPolling, true);
     });
   });
 
@@ -388,11 +395,8 @@ void main() {
     // 1 ever
     final amount = BigInt.parse('1000000000');
     const transactionExpiring = Duration(seconds: 20);
-    final pendingTransaction = PendingTransaction(
-      messageHash: 'messageHash',
-      expireAt: NtpTime.now().add(transactionExpiring),
-    );
-    const sendDuration = Duration(seconds: 3);
+    late PendingTransaction pendingTransaction;
+    const sendDuration = Duration(milliseconds: 100);
     final signedMessage = SignedMessage(
       hash: 'hash',
       expireAt: NtpTime.now(),
@@ -423,16 +427,24 @@ void main() {
       ),
       outMessages: [],
     );
-    final pendingWithData = PendingTransactionWithData(
-      transaction: pendingTransaction,
-      destination: address,
-      amount: amount,
-      createdAt: NtpTime.now(),
-    );
     registerFallbackValue(signedMessage);
     registerFallbackValue(address);
     registerFallbackValue(nextBlockTimeout);
-    registerFallbackValue(pendingWithData);
+    late PendingTransactionWithData pendingWithData;
+
+    setUp(() {
+      pendingTransaction = PendingTransaction(
+        messageHash: 'messageHash',
+        expireAt: NtpTime.now().add(transactionExpiring),
+      );
+      pendingWithData = PendingTransactionWithData(
+        transaction: pendingTransaction,
+        destination: address,
+        amount: amount,
+        createdAt: NtpTime.now(),
+      );
+      registerFallbackValue(pendingWithData);
+    });
 
     ///--------------------------------------
     ///                  GQL
@@ -505,13 +517,10 @@ void main() {
         ),
       ).thenAnswer((_) => Future.value(pendingWithData));
 
-      /// old poller must be paused
-      final oldPoller = RefreshPollingQueue(
-        refresher: wallet,
-        refreshInterval: PollingConfig.defaultConfig.tonWalletRefreshInterval,
-      )..start();
-      repository.pollingQueues[address] = oldPoller;
+      when(() => transport.transport).thenReturn(gql);
+
       repository.addWalletInst(wallet);
+      repository.walletStreamObservers[address]!.onStreamListenersChanged(5);
 
       ///----------------------------
       /// Main flow
@@ -523,10 +532,6 @@ void main() {
         destination: duplicateAddress,
         amount: amount,
       );
-
-      /// wait for preparation completed
-      await Future<void>.delayed(const Duration(seconds: 1));
-      expect(oldPoller.isPolling, isFalse);
 
       /// Wait for method completion
       final transactionResult = await transactionFuture;
@@ -564,8 +569,14 @@ void main() {
       expect(transactionResult, transaction);
       expect(repository.walletsMap[address]?.wallet, isNotNull);
       expect(repository.walletSubscriptions[address], isNotNull);
-      expect(repository.pollingQueues[address], isNotNull);
-      expect(oldPoller.isPolling, isTrue);
+      expect(
+        pollingManager.modeChanges,
+        contains((address, RefreshPollingMode.intensive)),
+      );
+      expect(
+        pollingManager.modeChanges,
+        contains((address, RefreshPollingMode.normal)),
+      );
     });
 
     test('send GQL failed', () async {
@@ -573,11 +584,9 @@ void main() {
       when(
         () => wallet.onMessageExpiredStream,
       ).thenAnswer((_) => expiredStream);
-      // this should be avoided
-      when(() => wallet.onMessageSentStream).thenAnswer(
-        (_) =>
-            Stream.fromFuture(Future.delayed(transactionExpiring, throwError)),
-      );
+      when(
+        () => wallet.onMessageSentStream,
+      ).thenAnswer((_) => const Stream.empty());
       when(
         () => wallet.onTransactionsFoundStream,
       ).thenAnswer((_) => transactionsFoundStream);
@@ -613,13 +622,10 @@ void main() {
         ),
       ).thenAnswer((_) => Future<void>.value());
 
-      /// old poller must be paused
-      final oldPoller = RefreshPollingQueue(
-        refresher: wallet,
-        refreshInterval: PollingConfig.defaultConfig.tonWalletRefreshInterval,
-      )..start();
-      repository.pollingQueues[address] = oldPoller;
+      when(() => transport.transport).thenReturn(gql);
+
       repository.addWalletInst(wallet);
+      repository.walletStreamObservers[address]!.onStreamListenersChanged(5);
 
       ///----------------------------
       /// Main flow
@@ -632,17 +638,8 @@ void main() {
         amount: amount,
       );
 
-      /// wait for preparation completed
-      await Future<void>.delayed(const Duration(milliseconds: 500));
-      expect(oldPoller.isPolling, isFalse);
-
       /// Wait for method completion
-      try {
-        await transactionFuture;
-        expect(true, false);
-      } catch (_) {
-        expect(true, true);
-      }
+      await expectLater(transactionFuture, throwsA(isA<Exception>()));
 
       verify(() => wallet.send(signedMessage: signedMessage)).called(1);
       verify(
@@ -676,8 +673,14 @@ void main() {
 
       expect(repository.walletsMap[address]?.wallet, isNotNull);
       expect(repository.walletSubscriptions[address], isNotNull);
-      expect(repository.pollingQueues[address], isNotNull);
-      expect(oldPoller.isPolling, isTrue);
+      expect(
+        pollingManager.modeChanges,
+        contains((address, RefreshPollingMode.intensive)),
+      );
+      expect(
+        pollingManager.modeChanges,
+        contains((address, RefreshPollingMode.normal)),
+      );
     });
 
     ///--------------------------------------
@@ -735,7 +738,10 @@ void main() {
         ),
       ).thenAnswer((_) => Future.value(pendingWithData));
 
+      when(() => transport.transport).thenReturn(proto);
+
       repository.addWalletInst(wallet);
+      repository.walletStreamObservers[address]!.onStreamListenersChanged(5);
 
       ///----------------------------
       /// Main flow
@@ -747,9 +753,6 @@ void main() {
         destination: duplicateAddress,
         amount: amount,
       );
-
-      /// wait for preparation completed
-      await Future<void>.delayed(const Duration(seconds: 1));
 
       /// Wait for method completion
       final transactionResult = await transactionFuture;
@@ -777,7 +780,14 @@ void main() {
       expect(transactionResult, transaction);
       expect(repository.walletsMap[address]?.wallet, isNotNull);
       expect(repository.walletSubscriptions[address], isNotNull);
-      expect(repository.pollingQueues[address], isNull);
+      expect(
+        pollingManager.modeChanges,
+        contains((address, RefreshPollingMode.intensive)),
+      );
+      expect(
+        pollingManager.modeChanges,
+        contains((address, RefreshPollingMode.normal)),
+      );
     });
 
     test('send PROTO failed', () async {
@@ -785,11 +795,9 @@ void main() {
       when(
         () => wallet.onMessageExpiredStream,
       ).thenAnswer((_) => expiredStream);
-      // this should be avoided
-      when(() => wallet.onMessageSentStream).thenAnswer(
-        (_) =>
-            Stream.fromFuture(Future.delayed(transactionExpiring, throwError)),
-      );
+      when(
+        () => wallet.onMessageSentStream,
+      ).thenAnswer((_) => const Stream.empty());
       when(
         () => wallet.onTransactionsFoundStream,
       ).thenAnswer((_) => transactionsFoundStream);
@@ -797,7 +805,7 @@ void main() {
       when(() => wallet.address).thenReturn(address);
       when(() => wallet.refresh()).thenAnswer(
         (_) =>
-            Future<LatestBlock>.delayed(const Duration(seconds: 1), throwError),
+            Future<void>.delayed(const Duration(seconds: 1), throwError<void>),
       );
       when(() => wallet.refreshDescription).thenReturn('');
 
@@ -822,7 +830,10 @@ void main() {
         ),
       ).thenAnswer((_) => Future<void>.value());
 
+      when(() => transport.transport).thenReturn(proto);
+
       repository.addWalletInst(wallet);
+      repository.walletStreamObservers[address]!.onStreamListenersChanged(5);
 
       ///----------------------------
       /// Main flow
@@ -835,16 +846,8 @@ void main() {
         amount: amount,
       );
 
-      /// wait for preparation completed
-      await Future<void>.delayed(const Duration(milliseconds: 500));
-
       /// Wait for method completion
-      try {
-        await transactionFuture;
-        expect(true, false);
-      } catch (_) {
-        expect(true, true);
-      }
+      await expectLater(transactionFuture, throwsA(isA<Exception>()));
 
       verify(() => wallet.send(signedMessage: signedMessage)).called(1);
       verify(
@@ -869,7 +872,14 @@ void main() {
 
       expect(repository.walletsMap[address]?.wallet, isNotNull);
       expect(repository.walletSubscriptions[address], isNotNull);
-      expect(repository.pollingQueues[address], isNull);
+      expect(
+        pollingManager.modeChanges,
+        contains((address, RefreshPollingMode.intensive)),
+      );
+      expect(
+        pollingManager.modeChanges,
+        contains((address, RefreshPollingMode.normal)),
+      );
     });
 
     ///--------------------------------------
@@ -927,7 +937,10 @@ void main() {
         ),
       ).thenAnswer((_) => Future.value(pendingWithData));
 
+      when(() => transport.transport).thenReturn(jrpc);
+
       repository.addWalletInst(wallet);
+      repository.walletStreamObservers[address]!.onStreamListenersChanged(5);
 
       ///----------------------------
       /// Main flow
@@ -939,9 +952,6 @@ void main() {
         destination: duplicateAddress,
         amount: amount,
       );
-
-      /// wait for preparation completed
-      await Future<void>.delayed(const Duration(seconds: 1));
 
       /// Wait for method completion
       final transactionResult = await transactionFuture;
@@ -969,7 +979,14 @@ void main() {
       expect(transactionResult, transaction);
       expect(repository.walletsMap[address]?.wallet, isNotNull);
       expect(repository.walletSubscriptions[address], isNotNull);
-      expect(repository.pollingQueues[address], isNull);
+      expect(
+        pollingManager.modeChanges,
+        contains((address, RefreshPollingMode.intensive)),
+      );
+      expect(
+        pollingManager.modeChanges,
+        contains((address, RefreshPollingMode.normal)),
+      );
     });
 
     test('send JRPC failed', () async {
@@ -977,11 +994,9 @@ void main() {
       when(
         () => wallet.onMessageExpiredStream,
       ).thenAnswer((_) => expiredStream);
-      // this should be avoided
-      when(() => wallet.onMessageSentStream).thenAnswer(
-        (_) =>
-            Stream.fromFuture(Future.delayed(transactionExpiring, throwError)),
-      );
+      when(
+        () => wallet.onMessageSentStream,
+      ).thenAnswer((_) => const Stream.empty());
       when(
         () => wallet.onTransactionsFoundStream,
       ).thenAnswer((_) => transactionsFoundStream);
@@ -989,7 +1004,7 @@ void main() {
       when(() => wallet.address).thenReturn(address);
       when(() => wallet.refresh()).thenAnswer(
         (_) =>
-            Future<LatestBlock>.delayed(const Duration(seconds: 1), throwError),
+            Future<void>.delayed(const Duration(seconds: 1), throwError<void>),
       );
       when(() => wallet.refreshDescription).thenReturn('');
 
@@ -1014,7 +1029,10 @@ void main() {
         ),
       ).thenAnswer((_) => Future<void>.value());
 
+      when(() => transport.transport).thenReturn(jrpc);
+
       repository.addWalletInst(wallet);
+      repository.walletStreamObservers[address]!.onStreamListenersChanged(5);
 
       ///----------------------------
       /// Main flow
@@ -1027,16 +1045,8 @@ void main() {
         amount: amount,
       );
 
-      /// wait for preparation completed
-      await Future<void>.delayed(const Duration(milliseconds: 500));
-
       /// Wait for method completion
-      try {
-        await transactionFuture;
-        expect(true, false);
-      } catch (_) {
-        expect(true, true);
-      }
+      await expectLater(transactionFuture, throwsA(isA<Exception>()));
 
       verify(() => wallet.send(signedMessage: signedMessage)).called(1);
       verify(
@@ -1061,7 +1071,14 @@ void main() {
 
       expect(repository.walletsMap[address]?.wallet, isNotNull);
       expect(repository.walletSubscriptions[address], isNotNull);
-      expect(repository.pollingQueues[address], isNull);
+      expect(
+        pollingManager.modeChanges,
+        contains((address, RefreshPollingMode.intensive)),
+      );
+      expect(
+        pollingManager.modeChanges,
+        contains((address, RefreshPollingMode.normal)),
+      );
     });
   });
 
@@ -1619,7 +1636,10 @@ void main() {
       ).thenAnswer((call) {
         if (call.namedArguments[const Symbol('walletType')] ==
             jsonEncode(asset1.contract.toJson())) {
-          return Future.delayed(const Duration(seconds: 1), () => tonWrapper1);
+          return Future.delayed(
+            const Duration(milliseconds: 100),
+            () => tonWrapper1,
+          );
         }
         return Future.value(tonWrapper2);
       });
@@ -1683,7 +1703,6 @@ void main() {
       when(() => proto.disposed).thenReturn(false);
       when(() => wallet.address).thenReturn(multisigAddress);
       when(() => proto.transportBox).thenReturn(box);
-      when(() => tokenRepository.closeAllTokenSubscriptions()).thenReturn(null);
 
       if (GetIt.instance.isRegistered<TokenWalletRepository>()) {
         GetIt.instance.unregister<TokenWalletRepository>();
@@ -1724,7 +1743,6 @@ void main() {
       await repository.updateTransportSubscriptions();
 
       verify(wallet.dispose).called(2);
-      verify(() => tokenRepository.closeAllTokenSubscriptions()).called(1);
 
       expect(repository.wallets.length, 2);
     });
