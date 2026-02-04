@@ -26,7 +26,7 @@ abstract class RefreshPollingManager {
   /// Starts polling for a specific wallet [address].
   void startPolling(Address address);
 
-  /// Stops polling for a specific wallet [address] or all wallets if null.
+  /// Stops polling for a specific wallet [address].
   void stopPolling(Address address);
 
   /// Stops polling for all wallets.
