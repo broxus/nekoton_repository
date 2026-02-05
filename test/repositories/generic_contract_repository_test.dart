@@ -1,3 +1,4 @@
+import 'package:fake_async/fake_async.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:nekoton_repository/nekoton_repository.dart';
@@ -384,449 +385,496 @@ void main() {
     ///                  GQL
     ///--------------------------------------
 
-    test('send GQL success', () async {
-      // default settings for subscription
-      when(
-        () => contract.onMessageExpiredStream,
-      ).thenAnswer((_) => expiredStream);
-      when(() => contract.onMessageSentStream).thenAnswer(
-        (_) => Stream.fromFuture(
-          Future.delayed(sendDuration, () {
-            return (pendingTransaction, transaction);
-          }),
-        ),
-      );
-      when(
-        () => contract.onTransactionsFoundStream,
-      ).thenAnswer((_) => transactionsFoundStream);
-      when(() => contract.onStateChangedStream).thenAnswer((_) => stateStream);
-      when(() => contract.address).thenReturn(address1);
-      when(contract.refresh).thenAnswer((_) => Future<void>.value());
-      when(() => contract.refreshDescription).thenReturn('');
+    test('send GQL success', () {
+      fakeAsync((async) {
+        // default settings for subscription
+        when(
+          () => contract.onMessageExpiredStream,
+        ).thenAnswer((_) => expiredStream);
+        when(() => contract.onMessageSentStream).thenAnswer(
+          (_) => Stream.fromFuture(
+            Future.delayed(sendDuration, () {
+              return (pendingTransaction, transaction);
+            }),
+          ),
+        );
+        when(
+          () => contract.onTransactionsFoundStream,
+        ).thenAnswer((_) => transactionsFoundStream);
+        when(
+          () => contract.onStateChangedStream,
+        ).thenAnswer((_) => stateStream);
+        when(() => contract.address).thenReturn(address1);
+        when(contract.refresh).thenAnswer((_) => Future<void>.value());
+        when(() => contract.refreshDescription).thenReturn('');
 
-      when(() => contract.transport).thenReturn(gql);
-      when(
-        () => contract.send(
-          signedMessage: any(named: 'signedMessage', that: isNotNull),
-        ),
-      ).thenAnswer((_) => Future.value(pendingTransaction));
+        when(() => contract.transport).thenReturn(gql);
+        when(
+          () => contract.send(
+            signedMessage: any(named: 'signedMessage', that: isNotNull),
+          ),
+        ).thenAnswer((_) => Future.value(pendingTransaction));
 
-      // Transport flow
-      when(() => gql.networkId).thenReturn(networkId);
-      when(() => gql.group).thenReturn(group);
+        // Transport flow
+        when(() => gql.networkId).thenReturn(networkId);
+        when(() => gql.group).thenReturn(group);
 
-      /// Gql refresh flow
-      when(
-        () => gql.getLatestBlock(address: any(named: 'address')),
-      ).thenAnswer((_) => Future.value(latestBlock));
-      when(
-        () => gql.waitForNextBlock(
-          currentBlockId: any(named: 'currentBlockId'),
+        /// Gql refresh flow
+        when(
+          () => gql.getLatestBlock(address: any(named: 'address')),
+        ).thenAnswer((_) => Future.value(latestBlock));
+        when(
+          () => gql.waitForNextBlock(
+            currentBlockId: any(named: 'currentBlockId'),
+            address: address1,
+            timeout: any(named: 'timeout'),
+          ),
+        ).thenAnswer((_) => Future.value(nextBlockId));
+        when(
+          () => gql.getBlock(id: any(named: 'id')),
+        ).thenAnswer((_) => Future.value(block));
+        when(
+          () => contract.handleBlock(block: any(named: 'block')),
+        ).thenAnswer((_) => Future<void>.value());
+        final sub = GenericContractSubscriptionItem(
+          tabId: tabId1,
           address: address1,
-          timeout: any(named: 'timeout'),
-        ),
-      ).thenAnswer((_) => Future.value(nextBlockId));
-      when(
-        () => gql.getBlock(id: any(named: 'id')),
-      ).thenAnswer((_) => Future.value(block));
-      when(
-        () => contract.handleBlock(block: any(named: 'block')),
-      ).thenAnswer((_) => Future<void>.value());
-      final sub = GenericContractSubscriptionItem(
-        tabId: tabId1,
-        address: address1,
-        contract: contract,
-        origin: origin1,
-        updateSubscriptionOptions: updateSubsAll,
-      );
-      repository.addContractInst(sub);
+          contract: contract,
+          origin: origin1,
+          updateSubscriptionOptions: updateSubsAll,
+        );
+        repository.addContractInst(sub);
 
-      ///----------------------------
-      /// Main flow
-      ///----------------------------
+        ///----------------------------
+        /// Main flow
+        ///----------------------------
 
-      final transactionFuture = repository.sendContract(
-        address: address1,
-        signedMessage: signedMessage,
-      );
-
-      /// wait for preparation completed
-      await Future<void>.delayed(const Duration(seconds: 1));
-
-      /// Wait for method completion
-      final transactionResult = await transactionFuture;
-
-      verify(() => contract.send(signedMessage: signedMessage)).called(1);
-
-      // refresh flow
-      verify(() => gql.getLatestBlock(address: address1)).called(1);
-      verify(
-        () => gql.waitForNextBlock(
+        final transactionFuture = repository.sendContract(
           address: address1,
-          currentBlockId: latestBlock.id,
-          timeout: nextBlockTimeout,
-        ),
-      ).called(1);
-      verify(() => gql.getBlock(id: nextBlockId)).called(1);
-      verify(() => contract.handleBlock(block: block)).called(1);
+          signedMessage: signedMessage,
+        );
 
-      expect(transactionResult, transaction);
-      expect(repository.allContracts.contains(sub), isTrue);
+        Transaction? transactionResult;
+        transactionFuture.then((value) {
+          transactionResult = value;
+        });
+
+        async.elapse(sendDuration);
+
+        verify(() => contract.send(signedMessage: signedMessage)).called(1);
+
+        // refresh flow
+        verify(() => gql.getLatestBlock(address: address1)).called(1);
+        verify(
+          () => gql.waitForNextBlock(
+            address: address1,
+            currentBlockId: latestBlock.id,
+            timeout: nextBlockTimeout,
+          ),
+        ).called(1);
+        verify(() => gql.getBlock(id: nextBlockId)).called(1);
+        verify(() => contract.handleBlock(block: block)).called(1);
+
+        expect(transactionResult, transaction);
+        expect(repository.allContracts.contains(sub), isTrue);
+      });
     });
 
-    test('send GQL failed', () async {
-      // default settings for subscription
-      when(
-        () => contract.onMessageExpiredStream,
-      ).thenAnswer((_) => expiredStream);
-      // this should be avoided
-      when(() => contract.onMessageSentStream).thenAnswer(
-        (_) =>
-            Stream.fromFuture(Future.delayed(transactionExpiring, throwError)),
-      );
-      when(
-        () => contract.onTransactionsFoundStream,
-      ).thenAnswer((_) => transactionsFoundStream);
-      when(() => contract.onStateChangedStream).thenAnswer((_) => stateStream);
-      when(() => contract.address).thenReturn(address1);
-      when(contract.refresh).thenAnswer((_) => Future<void>.value());
-      when(() => contract.refreshDescription).thenReturn('');
+    test('send GQL failed', () {
+      fakeAsync((async) {
+        // default settings for subscription
+        when(
+          () => contract.onMessageExpiredStream,
+        ).thenAnswer((_) => expiredStream);
+        // this should be avoided
+        when(() => contract.onMessageSentStream).thenAnswer(
+          (_) => Stream.fromFuture(
+            Future.delayed(transactionExpiring, throwError),
+          ),
+        );
+        when(
+          () => contract.onTransactionsFoundStream,
+        ).thenAnswer((_) => transactionsFoundStream);
+        when(
+          () => contract.onStateChangedStream,
+        ).thenAnswer((_) => stateStream);
+        when(() => contract.address).thenReturn(address1);
+        when(contract.refresh).thenAnswer((_) => Future<void>.value());
+        when(() => contract.refreshDescription).thenReturn('');
 
-      when(() => contract.transport).thenReturn(gql);
-      when(
-        () => contract.send(
-          signedMessage: any(named: 'signedMessage', that: isNotNull),
-        ),
-      ).thenAnswer((_) => Future.value(pendingTransaction));
+        when(() => contract.transport).thenReturn(gql);
+        when(
+          () => contract.send(
+            signedMessage: any(named: 'signedMessage', that: isNotNull),
+          ),
+        ).thenAnswer((_) => Future.value(pendingTransaction));
 
-      // Transport flow
-      when(() => gql.networkId).thenReturn(networkId);
-      when(() => gql.group).thenReturn(group);
+        // Transport flow
+        when(() => gql.networkId).thenReturn(networkId);
+        when(() => gql.group).thenReturn(group);
 
-      /// Gql refresh flow
-      when(() => gql.getLatestBlock(address: any(named: 'address'))).thenAnswer(
-        (_) =>
-            Future<LatestBlock>.delayed(const Duration(seconds: 1), throwError),
-      );
+        /// Gql refresh flow
+        when(
+          () => gql.getLatestBlock(address: any(named: 'address')),
+        ).thenAnswer(
+          (_) => Future<LatestBlock>.delayed(
+            const Duration(seconds: 1),
+            throwError,
+          ),
+        );
 
-      final sub = GenericContractSubscriptionItem(
-        tabId: tabId1,
-        address: address1,
-        contract: contract,
-        origin: origin1,
-        updateSubscriptionOptions: updateSubsAll,
-      );
-      repository.addContractInst(sub);
-
-      ///----------------------------
-      /// Main flow
-      ///----------------------------
-
-      final transactionFuture = repository.sendContract(
-        address: address1,
-        signedMessage: signedMessage,
-      );
-
-      /// wait for preparation completed
-      await Future<void>.delayed(const Duration(milliseconds: 500));
-
-      /// Wait for method completion
-      try {
-        await transactionFuture;
-        expect(true, false);
-      } catch (_) {
-        expect(true, true);
-      }
-
-      verify(() => contract.send(signedMessage: signedMessage)).called(1);
-
-      // refresh flow
-      verify(() => gql.getLatestBlock(address: address1)).called(1);
-      verifyNever(
-        () => gql.waitForNextBlock(
+        final sub = GenericContractSubscriptionItem(
+          tabId: tabId1,
           address: address1,
-          currentBlockId: latestBlock.id,
-          timeout: nextBlockTimeout,
-        ),
-      );
-      verifyNever(() => gql.getBlock(id: nextBlockId));
-      verifyNever(() => contract.handleBlock(block: block));
+          contract: contract,
+          origin: origin1,
+          updateSubscriptionOptions: updateSubsAll,
+        );
+        repository.addContractInst(sub);
 
-      expect(repository.allContracts.contains(sub), isTrue);
+        ///----------------------------
+        /// Main flow
+        ///----------------------------
+
+        final transactionFuture = repository.sendContract(
+          address: address1,
+          signedMessage: signedMessage,
+        );
+
+        var failed = false;
+        transactionFuture.then(
+          (_) {
+            failed = false;
+          },
+          onError: (_) {
+            failed = true;
+          },
+        );
+
+        async.elapse(sendDuration);
+
+        verify(() => contract.send(signedMessage: signedMessage)).called(1);
+
+        // refresh flow
+        verify(() => gql.getLatestBlock(address: address1)).called(1);
+        verifyNever(
+          () => gql.waitForNextBlock(
+            address: address1,
+            currentBlockId: latestBlock.id,
+            timeout: nextBlockTimeout,
+          ),
+        );
+        verifyNever(() => gql.getBlock(id: nextBlockId));
+        verifyNever(() => contract.handleBlock(block: block));
+
+        expect(repository.allContracts.contains(sub), isTrue);
+        expect(failed, isTrue);
+      });
     });
 
     ///--------------------------------------
     ///                  PROTO
     ///--------------------------------------
 
-    test('send PROTO success', () async {
-      // default settings for subscription
-      when(
-        () => contract.onMessageExpiredStream,
-      ).thenAnswer((_) => expiredStream);
-      when(() => contract.onMessageSentStream).thenAnswer(
-        (_) => Stream.fromFuture(
-          Future.delayed(sendDuration, () {
-            return (pendingTransaction, transaction);
-          }),
-        ),
-      );
-      when(
-        () => contract.onTransactionsFoundStream,
-      ).thenAnswer((_) => transactionsFoundStream);
-      when(() => contract.onStateChangedStream).thenAnswer((_) => stateStream);
-      when(() => contract.address).thenReturn(address1);
-      when(
-        () => contract.refresh(),
-      ).thenAnswer((_) => Future<void>.delayed(sendDuration));
-      when(() => contract.refreshDescription).thenReturn('');
+    test('send PROTO success', () {
+      fakeAsync((async) {
+        // default settings for subscription
+        when(
+          () => contract.onMessageExpiredStream,
+        ).thenAnswer((_) => expiredStream);
+        when(() => contract.onMessageSentStream).thenAnswer(
+          (_) => Stream.fromFuture(
+            Future.delayed(sendDuration, () {
+              return (pendingTransaction, transaction);
+            }),
+          ),
+        );
+        when(
+          () => contract.onTransactionsFoundStream,
+        ).thenAnswer((_) => transactionsFoundStream);
+        when(
+          () => contract.onStateChangedStream,
+        ).thenAnswer((_) => stateStream);
+        when(() => contract.address).thenReturn(address1);
+        when(
+          () => contract.refresh(),
+        ).thenAnswer((_) => Future<void>.delayed(sendDuration));
+        when(() => contract.refreshDescription).thenReturn('');
 
-      when(() => contract.transport).thenReturn(proto);
-      when(
-        () => contract.send(
-          signedMessage: any(named: 'signedMessage', that: isNotNull),
-        ),
-      ).thenAnswer((_) => Future.value(pendingTransaction));
+        when(() => contract.transport).thenReturn(proto);
+        when(
+          () => contract.send(
+            signedMessage: any(named: 'signedMessage', that: isNotNull),
+          ),
+        ).thenAnswer((_) => Future.value(pendingTransaction));
 
-      // Transport flow
-      when(() => proto.networkId).thenReturn(networkId);
-      when(() => proto.group).thenReturn(group);
+        // Transport flow
+        when(() => proto.networkId).thenReturn(networkId);
+        when(() => proto.group).thenReturn(group);
 
-      final sub = GenericContractSubscriptionItem(
-        tabId: tabId1,
-        address: address1,
-        contract: contract,
-        origin: origin1,
-        updateSubscriptionOptions: updateSubsAll,
-      );
-      repository.addContractInst(sub);
+        final sub = GenericContractSubscriptionItem(
+          tabId: tabId1,
+          address: address1,
+          contract: contract,
+          origin: origin1,
+          updateSubscriptionOptions: updateSubsAll,
+        );
+        repository.addContractInst(sub);
 
-      ///----------------------------
-      /// Main flow
-      ///----------------------------
+        ///----------------------------
+        /// Main flow
+        ///----------------------------
 
-      final transactionFuture = repository.sendContract(
-        address: address1,
-        signedMessage: signedMessage,
-      );
+        final transactionFuture = repository.sendContract(
+          address: address1,
+          signedMessage: signedMessage,
+        );
 
-      /// wait for preparation completed
-      await Future<void>.delayed(const Duration(seconds: 1));
+        /// Wait for method completion
+        Transaction? transactionResult;
+        transactionFuture.then((value) {
+          transactionResult = value;
+        });
 
-      /// Wait for method completion
-      final transactionResult = await transactionFuture;
+        async.elapse(sendDuration);
 
-      verify(() => contract.send(signedMessage: signedMessage)).called(1);
+        verify(() => contract.send(signedMessage: signedMessage)).called(1);
 
-      verify(() => contract.refresh()).called(1);
+        verify(() => contract.refresh()).called(1);
 
-      expect(transactionResult, transaction);
-      expect(repository.allContracts.contains(sub), isTrue);
+        expect(transactionResult, transaction);
+        expect(repository.allContracts.contains(sub), isTrue);
+      });
     });
 
-    test('send PROTO failed', () async {
-      // default settings for subscription
-      when(
-        () => contract.onMessageExpiredStream,
-      ).thenAnswer((_) => expiredStream);
-      // this should be avoided
-      when(() => contract.onMessageSentStream).thenAnswer(
-        (_) =>
-            Stream.fromFuture(Future.delayed(transactionExpiring, throwError)),
-      );
-      when(
-        () => contract.onTransactionsFoundStream,
-      ).thenAnswer((_) => transactionsFoundStream);
-      when(() => contract.onStateChangedStream).thenAnswer((_) => stateStream);
-      when(() => contract.address).thenReturn(address1);
-      when(() => contract.refresh()).thenAnswer(
-        (_) =>
-            Future<LatestBlock>.delayed(const Duration(seconds: 1), throwError),
-      );
-      when(() => contract.refreshDescription).thenReturn('');
+    test('send PROTO failed', () {
+      fakeAsync((async) {
+        // default settings for subscription
+        when(
+          () => contract.onMessageExpiredStream,
+        ).thenAnswer((_) => expiredStream);
+        // this should be avoided
+        when(() => contract.onMessageSentStream).thenAnswer(
+          (_) => Stream.fromFuture(
+            Future.delayed(transactionExpiring, throwError),
+          ),
+        );
+        when(
+          () => contract.onTransactionsFoundStream,
+        ).thenAnswer((_) => transactionsFoundStream);
+        when(
+          () => contract.onStateChangedStream,
+        ).thenAnswer((_) => stateStream);
+        when(() => contract.address).thenReturn(address1);
+        when(() => contract.refresh()).thenAnswer(
+          (_) => Future<LatestBlock>.delayed(
+            const Duration(seconds: 1),
+            throwError,
+          ),
+        );
+        when(() => contract.refreshDescription).thenReturn('');
 
-      when(() => contract.transport).thenReturn(proto);
-      when(
-        () => contract.send(
-          signedMessage: any(named: 'signedMessage', that: isNotNull),
-        ),
-      ).thenAnswer((_) => Future.value(pendingTransaction));
+        when(() => contract.transport).thenReturn(proto);
+        when(
+          () => contract.send(
+            signedMessage: any(named: 'signedMessage', that: isNotNull),
+          ),
+        ).thenAnswer((_) => Future.value(pendingTransaction));
 
-      // Transport flow
-      when(() => proto.networkId).thenReturn(networkId);
-      when(() => proto.group).thenReturn(group);
+        // Transport flow
+        when(() => proto.networkId).thenReturn(networkId);
+        when(() => proto.group).thenReturn(group);
 
-      final sub = GenericContractSubscriptionItem(
-        tabId: tabId1,
-        address: address1,
-        contract: contract,
-        origin: origin1,
-        updateSubscriptionOptions: updateSubsAll,
-      );
-      repository.addContractInst(sub);
+        final sub = GenericContractSubscriptionItem(
+          tabId: tabId1,
+          address: address1,
+          contract: contract,
+          origin: origin1,
+          updateSubscriptionOptions: updateSubsAll,
+        );
+        repository.addContractInst(sub);
 
-      ///----------------------------
-      /// Main flow
-      ///----------------------------
+        ///----------------------------
+        /// Main flow
+        ///----------------------------
 
-      final transactionFuture = repository.sendContract(
-        address: address1,
-        signedMessage: signedMessage,
-      );
+        final transactionFuture = repository.sendContract(
+          address: address1,
+          signedMessage: signedMessage,
+        );
 
-      /// wait for preparation completed
-      await Future<void>.delayed(const Duration(milliseconds: 500));
+        var failed = false;
+        transactionFuture.then(
+          (_) {
+            failed = false;
+          },
+          onError: (_) {
+            failed = true;
+          },
+        );
 
-      /// Wait for method completion
-      try {
-        await transactionFuture;
-        expect(true, false);
-      } catch (_) {
-        expect(true, true);
-      }
+        async.elapse(sendDuration);
 
-      verify(() => contract.send(signedMessage: signedMessage)).called(1);
+        verify(() => contract.send(signedMessage: signedMessage)).called(1);
 
-      // refresh flow
-      verify(() => contract.refresh()).called(1);
-      expect(repository.allContracts.contains(sub), isTrue);
+        // refresh flow
+        verify(() => contract.refresh()).called(1);
+        expect(repository.allContracts.contains(sub), isTrue);
+        expect(failed, isTrue);
+      });
     });
 
     ///--------------------------------------
     ///                  JRPC
     ///--------------------------------------
 
-    test('send JRPC success', () async {
-      // default settings for subscription
-      when(
-        () => contract.onMessageExpiredStream,
-      ).thenAnswer((_) => expiredStream);
-      when(() => contract.onMessageSentStream).thenAnswer(
-        (_) => Stream.fromFuture(
-          Future.delayed(sendDuration, () {
-            return (pendingTransaction, transaction);
-          }),
-        ),
-      );
-      when(
-        () => contract.onTransactionsFoundStream,
-      ).thenAnswer((_) => transactionsFoundStream);
-      when(() => contract.onStateChangedStream).thenAnswer((_) => stateStream);
-      when(() => contract.address).thenReturn(address1);
-      when(
-        () => contract.refresh(),
-      ).thenAnswer((_) => Future<void>.delayed(sendDuration));
-      when(() => contract.refreshDescription).thenReturn('');
+    test('send JRPC success', () {
+      fakeAsync((async) {
+        // default settings for subscription
+        when(
+          () => contract.onMessageExpiredStream,
+        ).thenAnswer((_) => expiredStream);
+        when(() => contract.onMessageSentStream).thenAnswer(
+          (_) => Stream.fromFuture(
+            Future.delayed(sendDuration, () {
+              return (pendingTransaction, transaction);
+            }),
+          ),
+        );
+        when(
+          () => contract.onTransactionsFoundStream,
+        ).thenAnswer((_) => transactionsFoundStream);
+        when(
+          () => contract.onStateChangedStream,
+        ).thenAnswer((_) => stateStream);
+        when(() => contract.address).thenReturn(address1);
+        when(
+          () => contract.refresh(),
+        ).thenAnswer((_) => Future<void>.delayed(sendDuration));
+        when(() => contract.refreshDescription).thenReturn('');
 
-      when(() => contract.transport).thenReturn(jrpc);
-      when(
-        () => contract.send(
-          signedMessage: any(named: 'signedMessage', that: isNotNull),
-        ),
-      ).thenAnswer((_) => Future.value(pendingTransaction));
+        when(() => contract.transport).thenReturn(jrpc);
+        when(
+          () => contract.send(
+            signedMessage: any(named: 'signedMessage', that: isNotNull),
+          ),
+        ).thenAnswer((_) => Future.value(pendingTransaction));
 
-      // Transport flow
-      when(() => jrpc.networkId).thenReturn(networkId);
-      when(() => jrpc.group).thenReturn(group);
+        // Transport flow
+        when(() => jrpc.networkId).thenReturn(networkId);
+        when(() => jrpc.group).thenReturn(group);
 
-      final sub = GenericContractSubscriptionItem(
-        tabId: tabId1,
-        address: address1,
-        contract: contract,
-        origin: origin1,
-        updateSubscriptionOptions: updateSubsAll,
-      );
-      repository.addContractInst(sub);
+        final sub = GenericContractSubscriptionItem(
+          tabId: tabId1,
+          address: address1,
+          contract: contract,
+          origin: origin1,
+          updateSubscriptionOptions: updateSubsAll,
+        );
+        repository.addContractInst(sub);
 
-      ///----------------------------
-      /// Main flow
-      ///----------------------------
+        ///----------------------------
+        /// Main flow
+        ///----------------------------
 
-      final transactionFuture = repository.sendContract(
-        address: address1,
-        signedMessage: signedMessage,
-      );
+        final transactionFuture = repository.sendContract(
+          address: address1,
+          signedMessage: signedMessage,
+        );
 
-      /// wait for preparation completed
-      await Future<void>.delayed(const Duration(seconds: 1));
+        /// Wait for method completion
+        Transaction? transactionResult;
+        transactionFuture.then((value) {
+          transactionResult = value;
+        });
 
-      /// Wait for method completion
-      final transactionResult = await transactionFuture;
+        async.elapse(sendDuration);
 
-      verify(() => contract.send(signedMessage: signedMessage)).called(1);
+        verify(() => contract.send(signedMessage: signedMessage)).called(1);
 
-      verify(() => contract.refresh()).called(1);
+        verify(() => contract.refresh()).called(1);
 
-      expect(transactionResult, transaction);
-      expect(repository.allContracts.contains(sub), isTrue);
+        expect(transactionResult, transaction);
+        expect(repository.allContracts.contains(sub), isTrue);
+      });
     });
 
-    test('send JRPC failed', () async {
-      // default settings for subscription
-      when(
-        () => contract.onMessageExpiredStream,
-      ).thenAnswer((_) => expiredStream);
-      // this should be avoided
-      when(() => contract.onMessageSentStream).thenAnswer(
-        (_) =>
-            Stream.fromFuture(Future.delayed(transactionExpiring, throwError)),
-      );
-      when(
-        () => contract.onTransactionsFoundStream,
-      ).thenAnswer((_) => transactionsFoundStream);
-      when(() => contract.onStateChangedStream).thenAnswer((_) => stateStream);
-      when(() => contract.address).thenReturn(address1);
-      when(() => contract.refresh()).thenAnswer(
-        (_) =>
-            Future<LatestBlock>.delayed(const Duration(seconds: 1), throwError),
-      );
-      when(() => contract.refreshDescription).thenReturn('');
+    test('send JRPC failed', () {
+      fakeAsync((async) {
+        // default settings for subscription
+        when(
+          () => contract.onMessageExpiredStream,
+        ).thenAnswer((_) => expiredStream);
+        // this should be avoided
+        when(() => contract.onMessageSentStream).thenAnswer(
+          (_) => Stream.fromFuture(
+            Future.delayed(transactionExpiring, throwError),
+          ),
+        );
+        when(
+          () => contract.onTransactionsFoundStream,
+        ).thenAnswer((_) => transactionsFoundStream);
+        when(
+          () => contract.onStateChangedStream,
+        ).thenAnswer((_) => stateStream);
+        when(() => contract.address).thenReturn(address1);
+        when(() => contract.refresh()).thenAnswer(
+          (_) => Future<LatestBlock>.delayed(
+            const Duration(seconds: 1),
+            throwError,
+          ),
+        );
+        when(() => contract.refreshDescription).thenReturn('');
 
-      when(() => contract.transport).thenReturn(jrpc);
-      when(
-        () => contract.send(
-          signedMessage: any(named: 'signedMessage', that: isNotNull),
-        ),
-      ).thenAnswer((_) => Future.value(pendingTransaction));
+        when(() => contract.transport).thenReturn(jrpc);
+        when(
+          () => contract.send(
+            signedMessage: any(named: 'signedMessage', that: isNotNull),
+          ),
+        ).thenAnswer((_) => Future.value(pendingTransaction));
 
-      // Transport flow
-      when(() => jrpc.networkId).thenReturn(networkId);
-      when(() => jrpc.group).thenReturn(group);
+        // Transport flow
+        when(() => jrpc.networkId).thenReturn(networkId);
+        when(() => jrpc.group).thenReturn(group);
 
-      final sub = GenericContractSubscriptionItem(
-        tabId: tabId1,
-        address: address1,
-        contract: contract,
-        origin: origin1,
-        updateSubscriptionOptions: updateSubsAll,
-      );
-      repository.addContractInst(sub);
+        final sub = GenericContractSubscriptionItem(
+          tabId: tabId1,
+          address: address1,
+          contract: contract,
+          origin: origin1,
+          updateSubscriptionOptions: updateSubsAll,
+        );
+        repository.addContractInst(sub);
 
-      ///----------------------------
-      /// Main flow
-      ///----------------------------
+        ///----------------------------
+        /// Main flow
+        ///----------------------------
 
-      final transactionFuture = repository.sendContract(
-        address: address1,
-        signedMessage: signedMessage,
-      );
+        final transactionFuture = repository.sendContract(
+          address: address1,
+          signedMessage: signedMessage,
+        );
 
-      /// wait for preparation completed
-      await Future<void>.delayed(const Duration(milliseconds: 500));
+        /// Wait for method completion
+        var failed = false;
+        transactionFuture.then(
+          (_) {
+            failed = false;
+          },
+          onError: (_) {
+            failed = true;
+          },
+        );
 
-      /// Wait for method completion
-      try {
-        await transactionFuture;
-        expect(true, false);
-      } catch (_) {
-        expect(true, true);
-      }
+        async.elapse(sendDuration);
 
-      verify(() => contract.send(signedMessage: signedMessage)).called(1);
+        verify(() => contract.send(signedMessage: signedMessage)).called(1);
 
-      // refresh flow
-      verify(() => contract.refresh()).called(1);
-      expect(repository.allContracts.contains(sub), isTrue);
+        // refresh flow
+        verify(() => contract.refresh()).called(1);
+        expect(repository.allContracts.contains(sub), isTrue);
+        expect(failed, isTrue);
+      });
     });
   });
 }

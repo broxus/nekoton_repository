@@ -1,3 +1,4 @@
+import 'package:fake_async/fake_async.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:nekoton_repository/nekoton_repository.dart';
@@ -18,124 +19,140 @@ void main() {
   const refresherDelay = Duration(milliseconds: 100);
 
   group('RefreshPollingQueue', () {
-    test('Request refresh by runSingleRefresh', () async {
-      final refresher = RefresherImplementation();
-      final callback = RefreshCompleteCallback();
+    test('Request refresh by runSingleRefresh', () {
+      fakeAsync((async) {
+        final refresher = RefresherImplementation();
+        final callback = RefreshCompleteCallback();
 
-      when(
-        refresher.refresh,
-      ).thenAnswer((_) => Future<void>.delayed(refresherDelay));
-      when(callback.call).thenReturn(null);
+        when(
+          refresher.refresh,
+        ).thenAnswer((_) => Future<void>.delayed(refresherDelay));
+        when(callback.call).thenReturn(null);
 
-      RefreshPollingQueue(
-        refresher: refresher,
-        refreshInterval: queueTimeout,
-        refreshCompleteCallback: callback.call,
-      ).runSingleRefresh();
+        RefreshPollingQueue(
+          refresher: refresher,
+          refreshInterval: queueTimeout,
+          refreshCompleteCallback: callback.call,
+        ).runSingleRefresh();
 
-      await Future<void>.delayed(queueTimeout * 2);
-      verify(refresher.refresh).called(1);
-      verify(callback.call).called(1);
+        async.elapse(queueTimeout * 2);
+
+        verify(refresher.refresh).called(1);
+        verify(callback.call).called(1);
+      });
     });
 
-    test('Request refresh by polling', () async {
-      final refresher = RefresherImplementation();
-      final callback = RefreshCompleteCallback();
-      when(
-        refresher.refresh,
-      ).thenAnswer((_) => Future<void>.delayed(refresherDelay));
-      when(callback.call).thenReturn(null);
+    test('Request refresh by polling', () {
+      fakeAsync((async) {
+        final refresher = RefresherImplementation();
+        final callback = RefreshCompleteCallback();
+        when(
+          refresher.refresh,
+        ).thenAnswer((_) => Future<void>.delayed(refresherDelay));
+        when(callback.call).thenReturn(null);
 
-      final queue = RefreshPollingQueue(
-        refresher: refresher,
-        refreshInterval: queueTimeout,
-        refreshCompleteCallback: callback.call,
-      )..start();
+        final queue = RefreshPollingQueue(
+          refresher: refresher,
+          refreshInterval: queueTimeout,
+          refreshCompleteCallback: callback.call,
+        )..start();
 
-      // ~0.7 secs lasts, refreshed 2 times
-      await Future<void>.delayed(
-        queueTimeout * 2 +
-            refresherDelay * 2 +
-            const Duration(milliseconds: 60),
-      );
-      queue.stop();
-      verify(refresher.refresh).called(2);
-      verify(callback.call).called(2);
+        async.elapse(
+          queueTimeout * 2 +
+              refresherDelay * 2 +
+              const Duration(milliseconds: 60),
+        );
+        queue.stop();
+
+        verify(refresher.refresh).called(2);
+        verify(callback.call).called(2);
+      });
     });
 
-    test('Request refresh by polling with refreshImmediately=true', () async {
-      final refresher = RefresherImplementation();
-      when(
-        refresher.refresh,
-      ).thenAnswer((_) => Future<void>.delayed(refresherDelay));
+    test('Request refresh by polling with refreshImmediately=true', () {
+      fakeAsync((async) {
+        final refresher = RefresherImplementation();
+        when(
+          refresher.refresh,
+        ).thenAnswer((_) => Future<void>.delayed(refresherDelay));
 
-      final queue = RefreshPollingQueue(
-        refresher: refresher,
-        refreshInterval: queueTimeout,
-      )..start(refreshImmediately: true);
+        final queue = RefreshPollingQueue(
+          refresher: refresher,
+          refreshInterval: queueTimeout,
+        )..start(refreshImmediately: true);
 
-      // ~0.9 secs lasts, refreshed 3 times
-      await Future<void>.delayed(
-        queueTimeout * 2 +
-            refresherDelay * 3 +
-            const Duration(milliseconds: 60),
-      );
-      queue.stop();
-      verify(refresher.refresh).called(3);
+        async.elapse(
+          queueTimeout * 2 +
+              refresherDelay * 3 +
+              const Duration(milliseconds: 60),
+        );
+        queue.stop();
+
+        verify(refresher.refresh).called(3);
+      });
     });
 
-    test('Refresh when refresher takes more time when polling', () async {
-      final refresher = RefresherImplementation();
-      when(refresher.refresh).thenAnswer(
-        (_) => Future<void>.delayed(const Duration(milliseconds: 500)),
-      );
+    test('Refresh when refresher takes more time when polling', () {
+      fakeAsync((async) {
+        final refresher = RefresherImplementation();
+        when(refresher.refresh).thenAnswer(
+          (_) => Future<void>.delayed(const Duration(milliseconds: 500)),
+        );
 
-      RefreshPollingQueue(
-        refresher: refresher,
-        refreshInterval: queueTimeout,
-      ).start();
+        RefreshPollingQueue(
+          refresher: refresher,
+          refreshInterval: queueTimeout,
+        ).start();
 
-      // ~1.2 secs lasts, refreshed 2 times
-      await Future<void>.delayed(const Duration(milliseconds: 1200));
-      verify(refresher.refresh).called(2);
+        // ~1.2 secs lasts, refreshed 2 times
+        async.elapse(const Duration(milliseconds: 1200));
+
+        verify(refresher.refresh).called(2);
+      });
     });
 
-    test('Refresh stops if error', () async {
-      final refresher = RefresherImplementation();
-      final callback = RefreshCompleteCallback();
+    test('Refresh stops if error', () {
+      fakeAsync((async) {
+        final refresher = RefresherImplementation();
+        final callback = RefreshCompleteCallback();
 
-      when(refresher.refresh).thenThrow(Exception('ERROR'));
-      when(() => callback.call(any(that: isNotNull))).thenReturn(null);
+        when(refresher.refresh).thenThrow(Exception('ERROR'));
+        when(() => callback.call(any(that: isNotNull))).thenReturn(null);
 
-      RefreshPollingQueue(
-        refresher: refresher,
-        refreshInterval: queueTimeout,
-        refreshCompleteCallback: callback.call,
-      ).start();
+        RefreshPollingQueue(
+          refresher: refresher,
+          refreshInterval: queueTimeout,
+          refreshCompleteCallback: callback.call,
+        ).start();
 
-      // ~0.7 secs lasts, refreshed 1 times with error
-      await Future<void>.delayed(queueTimeout * 3.5);
-      verify(refresher.refresh).called(1);
-      verify(() => callback.call(any(that: isNotNull))).called(1);
+        // ~0.7 secs lasts, refreshed 1 times with error
+        async.elapse(queueTimeout * 3.5);
+
+        verify(refresher.refresh).called(1);
+        verify(() => callback.call(any(that: isNotNull))).called(1);
+      });
     });
 
-    test('Refresh not stops if error', () async {
-      final refresher = RefresherImplementation();
-      final callback = RefreshCompleteCallback();
+    test('Refresh not stops if error', () {
+      fakeAsync((async) {
+        final refresher = RefresherImplementation();
+        final callback = RefreshCompleteCallback();
 
-      when(refresher.refresh).thenThrow(Exception('ERROR'));
-      when(() => callback.call(any(that: isNotNull))).thenReturn(null);
+        when(refresher.refresh).thenThrow(Exception('ERROR'));
+        when(() => callback.call(any(that: isNotNull))).thenReturn(null);
 
-      RefreshPollingQueue(
-        refresher: refresher,
-        refreshInterval: queueTimeout,
-        stopPollingIfError: false,
-        refreshCompleteCallback: callback.call,
-      ).start();
+        RefreshPollingQueue(
+          refresher: refresher,
+          refreshInterval: queueTimeout,
+          stopPollingIfError: false,
+          refreshCompleteCallback: callback.call,
+        ).start();
 
-      // ~0.7 secs lasts, refreshed 3 times with error
-      await Future<void>.delayed(queueTimeout * 3.5);
-      verify(() => callback.call(any(that: isNotNull))).called(3);
+        // ~0.7 secs lasts, refreshed 3 times with error
+        async.elapse(queueTimeout * 3.5);
+
+        verify(() => callback.call(any(that: isNotNull))).called(3);
+      });
     });
   });
 }
