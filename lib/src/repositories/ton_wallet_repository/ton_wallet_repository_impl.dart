@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
-import 'package:get_it/get_it.dart';
 import 'package:logging/logging.dart';
 import 'package:mutex/mutex.dart';
 import 'package:nekoton_repository/nekoton_repository.dart';
@@ -18,11 +17,6 @@ const _ignoredActionPhaseCodes = [0, 1];
 mixin TonWalletRepositoryImpl implements TonWalletRepository {
   final _logger = Logger('TonWalletRepositoryImpl');
 
-  final List<RefreshPollingQueue> _sendPollingQueues = [];
-  final BehaviorSubject<bool> _isPollingPaused = BehaviorSubject.seeded(
-    false,
-    sync: true,
-  );
   final _mutexes = <Address, ReadWriteMutex>{};
 
   KeyStore get keyStore;
@@ -31,6 +25,9 @@ mixin TonWalletRepositoryImpl implements TonWalletRepository {
 
   /// Current transport of application
   TransportStrategy get currentTransport;
+
+  /// Polling manager provided by [NekotonRepository].
+  RefreshPollingManager get refreshPollingManager;
 
   /// How many tokens can be subscribed at time for one cycle in
   /// [TonWalletRepositoryImpl.updateSubscriptions].
@@ -68,6 +65,10 @@ mixin TonWalletRepositoryImpl implements TonWalletRepository {
   @visibleForTesting
   final walletSubscriptions = <Address, TonWalletSubscription>{};
 
+  @protected
+  @visibleForTesting
+  final walletStreamObservers = <Address, RefreshPollingStreamObserver>{};
+
   /// Listen for wallets subscribing/unsubscribing
   Stream<List<TonWalletState>> get walletsStream =>
       _walletsSubject.stream.map((e) => e.values.toList());
@@ -80,14 +81,6 @@ mixin TonWalletRepositoryImpl implements TonWalletRepository {
 
   /// Get current available subscriptions for wallets as map
   Map<Address, TonWalletState> get walletsMap => _walletsSubject.value;
-
-  /// Queues for polling active wallets.
-  /// In common cases, only one wallet should be here because only one wallet
-  /// is active in app at time.
-  /// But other subscriptions could be added here.
-  @protected
-  @visibleForTesting
-  final pollingQueues = <Address, RefreshPollingQueue>{};
 
   @override
   Future<TonWalletState> subscribe(TonWalletAsset asset) async {
@@ -114,8 +107,9 @@ mixin TonWalletRepositoryImpl implements TonWalletRepository {
         publicKey: asset.publicKey,
         walletType: asset.contract,
       );
+      final state = addWalletInst(wallet);
 
-      return addWalletInst(wallet);
+      return state;
     } finally {
       mutex.release();
       if (!mutex.isLocked) {
@@ -136,8 +130,9 @@ mixin TonWalletRepositoryImpl implements TonWalletRepository {
         transport: transport,
         address: address,
       );
+      final state = addWalletInst(wallet);
 
-      return addWalletInst(wallet);
+      return state;
     } finally {
       mutex.release();
       if (!mutex.isLocked) {
@@ -196,73 +191,12 @@ mixin TonWalletRepositoryImpl implements TonWalletRepository {
   }
 
   @override
-  Future<void> startPolling(
-    Address address, {
-    Duration? refreshInterval,
-    bool stopPrevious = true,
-  }) async {
-    // If wallet has polling but was stopped, so rerun
-    if (pollingQueues[address] != null) {
-      pollingQueues[address]!.start();
-
-      return;
-    }
-
-    if (stopPrevious) {
-      stopPolling();
-    }
-
-    final wallet = (await getWalletByAddress(address)).wallet;
-    if (wallet == null) return;
-
-    pollingQueues[address] = RefreshPollingQueue(
-      refreshInterval:
-          refreshInterval ??
-          currentTransport.pollingConfig.tonWalletRefreshInterval,
-      refresher: wallet,
-    )..start();
-  }
-
-  @override
-  void stopPolling() {
-    for (final polling in pollingQueues.values) {
-      polling.stop();
-    }
-    pollingQueues.clear();
-  }
-
-  @override
-  void pausePolling() {
-    for (final polling in pollingQueues.values) {
-      polling.pause();
-    }
-    for (final polling in _sendPollingQueues) {
-      polling.pause();
-    }
-
-    _isPollingPaused.add(true);
-  }
-
-  @override
-  void resumePolling() {
-    for (final polling in pollingQueues.values) {
-      polling.resume();
-    }
-    for (final polling in _sendPollingQueues) {
-      polling.resume();
-    }
-
-    _isPollingPaused.add(false);
-  }
-
-  @override
   Future<void> unsubscribe(Address address) async {
     final mutex = _mutexes[address];
     await mutex?.acquireWrite();
 
     try {
       final wallet = removeWalletInst(address);
-      pollingQueues.remove(address)?.stop();
       wallet?.wallet?.dispose();
     } finally {
       mutex?.release();
@@ -270,19 +204,6 @@ mixin TonWalletRepositoryImpl implements TonWalletRepository {
         _mutexes.remove(address);
       }
     }
-  }
-
-  @override
-  void closeAllSubscriptions() {
-    stopPolling();
-
-    for (final wallet in wallets) {
-      wallet.wallet?.dispose();
-    }
-    _walletsSubject.add({});
-    _mutexes.clear();
-
-    GetIt.instance<TokenWalletRepository>().closeAllTokenSubscriptions();
   }
 
   /// Last call of [updateSubscriptions] that will be stopped if needed.
@@ -339,22 +260,6 @@ mixin TonWalletRepositoryImpl implements TonWalletRepository {
     await operation.valueOrCancellation();
   }
 
-  Future<void> _subscribeAsset(TonWalletAsset asset) async {
-    if (currentTransport.transport.disposed) return;
-
-    try {
-      await subscribe(asset);
-    } catch (e, t) {
-      _logger.severe('_subscribeAsset', e, t);
-
-      // Save error state of wallet
-      final address = asset.address;
-      final res = TonWalletState.error(err: e, address: address);
-      walletsMap[address] = res;
-      _walletsSubject.add(walletsMap);
-    }
-  }
-
   @override
   Future<void> updateTransportSubscriptions() async {
     // Stop last created operation if possible
@@ -374,11 +279,6 @@ mixin TonWalletRepositoryImpl implements TonWalletRepository {
     lastUpdatedAssets = null;
 
     await updateSubscriptions(last);
-
-    // restart polling after transport changed
-    for (final wallet in last) {
-      await startPolling(wallet.address);
-    }
   }
 
   @override
@@ -584,59 +484,12 @@ mixin TonWalletRepositoryImpl implements TonWalletRepository {
     final transport = wallet.transport;
     final completer = Completer<Transaction>();
 
-    // stop polling existed poller for this wallet to avoid multiple duplicate
-    // calls, it will be rerun in the end of this method.
-    final existedPoller = pollingQueues[address];
-    existedPoller?.pause();
+    // Switch to intensive mode while waiting for transaction completion.
+    refreshPollingManager.setPollingMode(address, RefreshPollingMode.intensive);
 
-    // This is a poller, that lets subscribe for next pending transaction
-    // in code below.
-    late RefreshPollingQueue poller;
-
-    // Stop this poller and start old poller if it was enabled before sending
+    // Restore normal polling mode when completed.
     void completePolling() {
-      poller.stop();
-      existedPoller?.resume();
-      _sendPollingQueues.remove(poller);
-    }
-
-    void createPoller(RefreshingInterface refresher) {
-      poller = RefreshPollingQueue(
-        refresher: refresher,
-        refreshInterval:
-            currentTransport.pollingConfig.intensivePollingInterval,
-        refreshCompleteCallback: ([(Object, StackTrace)? err]) {
-          if (err != null) {
-            _logger.severe(
-              '${transport.runtimeType} TonWallet Reliable polling error',
-              err.$1,
-              err.$2,
-            );
-            completePolling();
-            if (!completer.isCompleted) completer.completeError(err.$1, err.$2);
-          }
-          if (wallet.pollingMethod != PollingMethod.reliable) {
-            // Being here means, that onMessageSentStream got data
-            completePolling();
-          }
-        },
-        // refresh immediately to start polling without delay
-      )..start(refreshImmediately: true);
-
-      _sendPollingQueues.add(poller);
-    }
-
-    if (transport is GqlTransport) {
-      createPoller(
-        TonWalletGqlBlockPoller(tonWallet: wallet, transport: transport),
-      );
-    } else if (transport is ProtoTransport || transport is JrpcTransport) {
-      createPoller(wallet);
-    } else {
-      completer.completeError(Exception('Invalid transport'));
-
-      // avoid starting listening if transport is wrong, typically impossible
-      return completer.future;
+      refreshPollingManager.setPollingMode(address, RefreshPollingMode.normal);
     }
 
     void onStreamCompletedError(OperationCanceledException err, StackTrace st) {
@@ -668,18 +521,19 @@ mixin TonWalletRepositoryImpl implements TonWalletRepository {
       sentTransactionFuture
           .timeout(pending.expireAt.toTimeout())
           .onError<TimeoutException>(
-            (e, _) => _isPollingPaused
+            (e, _) => refreshPollingManager.isPausedStream
                 .firstWhere((e) => !e) // wait for polling to be resumed
-                .then((_) => poller.currentRefresh())
                 .then((_) async {
                   try {
                     return await sentTransactionFuture.timeout(_resumeTimeout);
                   } on TimeoutException catch (_) {
+                    // rethrow original timeout exception
+                    // if transaction was not sent after resume
                     throw e;
                   }
                 }),
             // handle case when polling is paused
-            test: (_) => _isPollingPaused.value,
+            test: (_) => refreshPollingManager.isPaused,
           )
           .then(onSent)
           .onError<OperationCanceledException>(onStreamCompletedError)
@@ -799,6 +653,22 @@ mixin TonWalletRepositoryImpl implements TonWalletRepository {
     walletSubscriptions[wallet.address] = _createWalletSubscription(wallet);
     _walletsSubject.add(wallets);
 
+    refreshPollingManager.registerTarget(
+      RefreshPollingTarget(
+        address: wallet.address,
+        refresher: _createRefresher(wallet),
+        defaultInterval:
+            currentTransport.pollingConfig.tonWalletRefreshInterval,
+        intensiveInterval:
+            currentTransport.pollingConfig.intensivePollingInterval,
+        debugLabel: 'TonWallet(${wallet.address})',
+      ),
+    );
+
+    final observer = _createStreamObserver(wallet);
+    walletStreamObservers[wallet.address] = observer;
+    wallet.attachStreamListenersObserver(observer);
+
     return res;
   }
 
@@ -809,52 +679,12 @@ mixin TonWalletRepositoryImpl implements TonWalletRepository {
   TonWalletState? removeWalletInst(Address address) {
     final wallets = walletsMap;
     final wallet = wallets.remove(address);
+    walletStreamObservers.remove(address)?.dispose();
     walletSubscriptions.remove(address)?.close();
     _walletsSubject.add(wallets);
+    refreshPollingManager.unregisterTarget(address);
 
     return wallet;
-  }
-
-  TonWalletSubscription _createWalletSubscription(TonWallet wallet) {
-    return TonWalletSubscription(
-      tonWallet: wallet,
-      onMessageSent: (event) => tonWalletStorage.deletePendingTransaction(
-        address: wallet.address,
-        group: wallet.transport.group,
-        networkId: wallet.transport.networkId,
-        messageHash: event.$1.messageHash,
-      ),
-      onStateChanged: (state) => tonWalletStorage.updateTonWalletDetails(
-        address: wallet.address,
-        group: wallet.transport.group,
-        networkId: wallet.transport.networkId,
-        contractState: state,
-        details: wallet.details,
-        custodians: wallet.custodians,
-      ),
-      onTransactionsFound: (event) => tonWalletStorage.addFoundTransactions(
-        address: wallet.address,
-        group: wallet.transport.group,
-        networkId: wallet.transport.networkId,
-        transaction: event.$1,
-      ),
-      onMessageExpired: (trans) async {
-        final expired = await tonWalletStorage.deletePendingTransaction(
-          address: wallet.address,
-          group: wallet.transport.group,
-          networkId: wallet.transport.networkId,
-          messageHash: trans.messageHash,
-        );
-        if (expired != null) {
-          await tonWalletStorage.addExpiredTransaction(
-            address: wallet.address,
-            group: wallet.transport.group,
-            networkId: wallet.transport.networkId,
-            transaction: expired,
-          );
-        }
-      },
-    );
   }
 
   @override
@@ -1267,6 +1097,82 @@ mixin TonWalletRepositoryImpl implements TonWalletRepository {
     }
   }
 
+  @protected
+  @visibleForTesting
+  void closeAllSubscriptions() {
+    for (final wallet in wallets) {
+      final address = wallet.address;
+
+      walletStreamObservers.remove(address)?.dispose();
+      refreshPollingManager.unregisterTarget(address);
+      walletSubscriptions.remove(address)?.close();
+      wallet.wallet?.dispose();
+    }
+
+    walletStreamObservers.clear();
+    walletSubscriptions.clear();
+    _walletsSubject.add({});
+    _mutexes.clear();
+  }
+
+  Future<void> _subscribeAsset(TonWalletAsset asset) async {
+    if (currentTransport.transport.disposed) return;
+
+    try {
+      await subscribe(asset);
+    } catch (e, t) {
+      _logger.severe('_subscribeAsset', e, t);
+
+      // Save error state of wallet
+      final address = asset.address;
+      final res = TonWalletState.error(err: e, address: address);
+      walletsMap[address] = res;
+      _walletsSubject.add(walletsMap);
+    }
+  }
+
+  TonWalletSubscription _createWalletSubscription(TonWallet wallet) {
+    return TonWalletSubscription(
+      tonWallet: wallet,
+      onMessageSent: (event) => tonWalletStorage.deletePendingTransaction(
+        address: wallet.address,
+        group: wallet.transport.group,
+        networkId: wallet.transport.networkId,
+        messageHash: event.$1.messageHash,
+      ),
+      onStateChanged: (state) => tonWalletStorage.updateTonWalletDetails(
+        address: wallet.address,
+        group: wallet.transport.group,
+        networkId: wallet.transport.networkId,
+        contractState: state,
+        details: wallet.details,
+        custodians: wallet.custodians,
+      ),
+      onTransactionsFound: (event) => tonWalletStorage.addFoundTransactions(
+        address: wallet.address,
+        group: wallet.transport.group,
+        networkId: wallet.transport.networkId,
+        transaction: event.$1,
+      ),
+      onMessageExpired: (trans) async {
+        final expired = await tonWalletStorage.deletePendingTransaction(
+          address: wallet.address,
+          group: wallet.transport.group,
+          networkId: wallet.transport.networkId,
+          messageHash: trans.messageHash,
+        );
+        if (expired != null) {
+          await tonWalletStorage.addExpiredTransaction(
+            address: wallet.address,
+            group: wallet.transport.group,
+            networkId: wallet.transport.networkId,
+            transaction: expired,
+          );
+        }
+      },
+    );
+  }
+
   Future<TonWalletState?> _tryGetWallet(Address address) async {
     final mutex = _mutexes[address];
     await mutex?.acquireRead();
@@ -1280,213 +1186,21 @@ mixin TonWalletRepositoryImpl implements TonWalletRepository {
       }
     }
   }
-}
 
-extension TonWalletTransactionExtension
-    on TransactionWithData<TransactionAdditionalInfo?> {
-  Address? get dataSender {
-    return switch (data) {
-      TransactionAdditionalInfoWalletInteraction(:final data) =>
-        switch (data.knownPayload) {
-          KnownPayloadTokenSwapBack(:final data) => data.callbackAddress,
-          _ => null,
-        },
-      _ => null,
-    };
+  RefreshPollingStreamObserver _createStreamObserver(TonWallet wallet) {
+    return RefreshPollingStreamObserver(
+      address: wallet.address,
+      refreshPollingManager: refreshPollingManager,
+      internalListenersCount: TonWalletSubscription.internalListenersCount,
+    );
   }
 
-  Address? get dataRecipient {
-    final data = switch (this.data) {
-      TransactionAdditionalInfoWalletInteraction(:final data) => data,
-      _ => null,
-    };
-
-    if (data == null) return null;
-
-    if (data.knownPayload != null &&
-        data.knownPayload is KnownPayloadTokenOutgoingTransfer) {
-      final knownPayload =
-          data.knownPayload! as KnownPayloadTokenOutgoingTransfer;
-
-      return knownPayload.data.to.data;
+  RefreshingInterface _createRefresher(TonWallet wallet) {
+    final transport = currentTransport.transport;
+    if (transport is GqlTransport) {
+      return TonWalletGqlBlockPoller(tonWallet: wallet, transport: transport);
     }
 
-    if (data.method is WalletInteractionMethodMultisig) {
-      final method = data.method as WalletInteractionMethodMultisig;
-      final dest = switch (method.data) {
-        MultisigTransactionSend(:final data) => data.dest,
-        MultisigTransactionSubmit(:final data) => data.dest,
-        _ => null,
-      };
-
-      if (dest != null) return dest;
-    }
-
-    return data.recipient;
-  }
-
-  BigInt? get dataValue {
-    return switch (data) {
-      TransactionAdditionalInfoDePoolOnRoundComplete(:final data) =>
-        data.reward,
-      TransactionAdditionalInfoWalletInteraction(:final data) =>
-        switch (data.method) {
-          WalletInteractionMethodMultisig(:final data) => switch (data) {
-            MultisigTransactionSend(:final data) => data.value,
-            MultisigTransactionSubmit(:final data) => data.value,
-            _ => null,
-          },
-          _ => null,
-        },
-      _ => null,
-    };
-  }
-
-  String? get comment => switch (data) {
-    TransactionAdditionalInfoComment(:final data) => data,
-    _ => null,
-  };
-
-  DePoolOnRoundCompleteNotification? get dePoolOnRoundCompleteNotification =>
-      switch (data) {
-        TransactionAdditionalInfoDePoolOnRoundComplete(:final data) => data,
-        _ => null,
-      };
-
-  DePoolReceiveAnswerNotification? get dePoolReceiveAnswerNotification =>
-      switch (data) {
-        TransactionAdditionalInfoDePoolReceiveAnswer(:final data) => data,
-        _ => null,
-      };
-
-  TokenWalletDeployedNotification? get tokenWalletDeployedNotification =>
-      switch (data) {
-        TransactionAdditionalInfoTokenWalletDeployed(:final data) => data,
-        _ => null,
-      };
-
-  WalletInteractionInfo? get walletInteractionInfo => switch (data) {
-    TransactionAdditionalInfoWalletInteraction(:final data) => data,
-    _ => null,
-  };
-
-  bool get isMultisigTransaction {
-    return switch (walletInteractionInfo?.method) {
-      WalletInteractionMethodMultisig(:final data) => switch (data) {
-        MultisigTransactionSubmit() => true,
-        MultisigTransactionConfirm() => true,
-        _ => false,
-      },
-      _ => false,
-    };
-  }
-
-  bool isOrdinaryTransaction({
-    required TonWalletDetails details,
-    required List<TransactionWithData<TransactionAdditionalInfo?>> transactions,
-    required List<MultisigPendingTransaction> pendingTransactions,
-  }) {
-    return switch (walletInteractionInfo?.method) {
-      WalletInteractionMethodMultisig(:final data) => switch (data) {
-        MultisigTransactionSubmit(:final data) =>
-          pendingTransactions.every((e) => e.id != data.transId) &&
-              isEnoughSubscribers(data.transId, details, transactions),
-        _ => false,
-      },
-      _ => false,
-    };
-  }
-
-  bool isConfirmTransaction(String id) {
-    return switch (walletInteractionInfo?.method) {
-      WalletInteractionMethodMultisig(:final data) => switch (data) {
-        MultisigTransactionConfirm(:final data) => data.transactionId == id,
-        _ => false,
-      },
-      _ => false,
-    };
-  }
-
-  bool isSubmitOrConfirmTransaction(String id) {
-    return switch (walletInteractionInfo?.method) {
-      WalletInteractionMethodMultisig(:final data) => switch (data) {
-        MultisigTransactionSubmit(:final data) => data.transId == id,
-        MultisigTransactionConfirm(:final data) => data.transactionId == id,
-        _ => false,
-      },
-      _ => false,
-    };
-  }
-
-  bool isPendingTransaction(
-    List<MultisigPendingTransaction> pendingTransactions,
-  ) {
-    return switch (walletInteractionInfo?.method) {
-      WalletInteractionMethodMultisig(:final data) => switch (data) {
-        MultisigTransactionSubmit(:final data) => pendingTransactions.any(
-          (e) => e.id == data.transId,
-        ),
-        _ => false,
-      },
-      _ => false,
-    };
-  }
-
-  bool isExpiredTransaction({
-    required TonWalletDetails details,
-    required List<TransactionWithData<TransactionAdditionalInfo?>> transactions,
-  }) {
-    return switch (walletInteractionInfo?.method) {
-      WalletInteractionMethodMultisig(:final data) => switch (data) {
-        MultisigTransactionSubmit(:final data) =>
-          !isEnoughSubscribers(data.transId, details, transactions) &&
-              isExpiredByTime(details),
-        _ => false,
-      },
-      _ => false,
-    };
-  }
-
-  /// More or equals to required confirmations were achieved
-  bool isEnoughSubscribers(
-    String transId,
-    TonWalletDetails details,
-    List<TransactionWithData<TransactionAdditionalInfo?>> transactions,
-  ) {
-    if (details.requiredConfirmations == null) return true;
-
-    final foundConfirms = transactions
-        .where((e) => e.isConfirmTransaction(transId))
-        .length;
-
-    // -1 because 1-st submit transaction is confirmation itself
-    return foundConfirms >= details.requiredConfirmations! - 1;
-  }
-
-  bool isExpiredByTime(TonWalletDetails details) {
-    return transaction.createdAt
-        .add(Duration(seconds: details.expirationTime))
-        .isBefore(NtpTime.now());
-  }
-
-  MultisigSubmitTransaction? get multisigSubmitTransaction {
-    return switch (walletInteractionInfo?.method) {
-      WalletInteractionMethodMultisig(:final data) => switch (data) {
-        MultisigTransactionSubmit(:final data) => data,
-        _ => null,
-      },
-      _ => null,
-    };
-  }
-
-  PublicKey? get custodian {
-    return switch (walletInteractionInfo?.method) {
-      WalletInteractionMethodMultisig(:final data) => switch (data) {
-        MultisigTransactionSubmit(:final data) => data.custodian,
-        MultisigTransactionConfirm(:final data) => data.custodian,
-        _ => null,
-      },
-      _ => null,
-    };
+    return wallet;
   }
 }

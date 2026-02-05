@@ -3,6 +3,33 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## 2026-02-04
+
+### Changes
+
+---
+
+Packages with breaking changes:
+
+ - [`nekoton_repository` - `v4.0.0-dev.0`](#nekoton_repository---v400-dev0)
+
+Packages with other changes:
+
+ - There are no other changes in this release.
+
+---
+
+#### `nekoton_repository` - `v4.0.0-dev.0`
+
+ - **BREAKING** **FEAT**(EWM-638): Implement SSE-based refresh polling manager. ([c5d3e1ab](https://github.com/broxus/nekoton_repository/commit/c5d3e1ab7beda0e899323d836e720c92c4d9ba87))
+
+## 4.0.0-dev.0
+
+> Note: This release has breaking changes.
+
+ - **BREAKING** **FEAT**(EWM-638): Implement SSE-based refresh polling manager. ([c5d3e1ab](https://github.com/broxus/nekoton_repository/commit/c5d3e1ab7beda0e899323d836e720c92c4d9ba87))
+
+
 ## 2026-01-22
 
 ### Changes

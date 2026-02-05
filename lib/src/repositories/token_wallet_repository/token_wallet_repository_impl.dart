@@ -3,21 +3,27 @@ import 'package:flutter/foundation.dart';
 import 'package:logging/logging.dart';
 import 'package:mutex/mutex.dart';
 import 'package:nekoton_repository/nekoton_repository.dart';
+import 'package:nekoton_repository/src/utils/utils.dart';
 import 'package:quiver/iterables.dart';
 import 'package:rxdart/rxdart.dart';
+
+typedef TokenPair = (Address owner, Address rootTokenContract);
 
 mixin TokenWalletRepositoryImpl implements TokenWalletRepository {
   final _logger = Logger('TokenWalletRepositoryImpl');
 
-  TokenWalletTransactionsStorage get tokenWalletStorage;
-
-  TransportStrategy get currentTransport;
-
   /// Subject that allows listening for wallets subscribing/unsubscribing
   /// Key - pair where first item is owner address, second is rootTokenContract
   final _tokenWalletsSubject =
-      BehaviorSubject<Map<(Address, Address), TokenWalletState>>.seeded({});
-  final _mutexes = <(Address, Address), ReadWriteMutex>{};
+      BehaviorSubject<Map<TokenPair, TokenWalletState>>.seeded({});
+  final _mutexes = <TokenPair, ReadWriteMutex>{};
+
+  final _tokenWalletAddresses = <TokenPair, Address>{};
+
+  /// Last call of [updateTokenSubscriptions] that will be stopped if needed.
+  ///
+  /// This allows interrupt updating if there was new request.
+  CancelableOperationAwaited<void>? _lastOperation;
 
   /// How many tokens can be subscribed at time for one cycle in
   /// [TokenWalletRepositoryImpl._updateTokenSubscriptionsPairs].
@@ -55,8 +61,19 @@ mixin TokenWalletRepositoryImpl implements TokenWalletRepository {
   /// destroys too.
   @protected
   @visibleForTesting
-  final tokenWalletSubscriptions =
-      <(Address, Address), TokenWalletSubscription>{};
+  final tokenWalletSubscriptions = <TokenPair, TokenWalletSubscription>{};
+
+  @protected
+  @visibleForTesting
+  final tokenWalletStreamObservers =
+      <TokenPair, RefreshPollingStreamObserver>{};
+
+  TokenWalletTransactionsStorage get tokenWalletStorage;
+
+  TransportStrategy get currentTransport;
+
+  /// Polling manager provided by [NekotonRepository].
+  RefreshPollingManager get refreshPollingManager;
 
   /// Listen for wallets subscribing/unsubscribing
   Stream<List<TokenWalletState>> get tokenWalletsStream =>
@@ -67,16 +84,8 @@ mixin TokenWalletRepositoryImpl implements TokenWalletRepository {
       _tokenWalletsSubject.value.values.toList();
 
   /// Get current available subscriptions for wallets as map
-  Map<(Address, Address), TokenWalletState> get tokenWalletsMap =>
+  Map<TokenPair, TokenWalletState> get tokenWalletsMap =>
       _tokenWalletsSubject.value;
-
-  /// Queues for polling active wallets.
-  /// In common cases, only one wallet should be here because only one wallet
-  /// is active in app at time.
-  /// But other subscriptions could be added here.
-  @protected
-  @visibleForTesting
-  final tokenPollingQueues = <(Address, Address), RefreshPollingQueue>{};
 
   @override
   Future<TokenWalletState> subscribeToken({
@@ -95,8 +104,9 @@ mixin TokenWalletRepositoryImpl implements TokenWalletRepository {
         owner: owner,
         rootTokenContract: rootTokenContract,
       );
+      final state = addTokenWalletInst(wallet);
 
-      return addTokenWalletInst(wallet);
+      return state;
     } finally {
       mutex.release();
       if (mutex.isLocked == false) {
@@ -135,59 +145,6 @@ mixin TokenWalletRepositoryImpl implements TokenWalletRepository {
   }
 
   @override
-  Future<void> startPollingToken(
-    Address owner,
-    Address rootTokenContract, {
-    Duration? refreshInterval,
-    bool stopPrevious = true,
-  }) async {
-    final pair = (owner, rootTokenContract);
-
-    // If wallet has polling but was stopped, so rerun
-    if (tokenPollingQueues[pair] != null) {
-      tokenPollingQueues[pair]!.start();
-
-      return;
-    }
-
-    if (stopPrevious) {
-      stopPollingToken();
-    }
-
-    final wallet = (await getTokenWallet(owner, rootTokenContract)).wallet;
-    if (wallet == null) return;
-
-    tokenPollingQueues[pair] = RefreshPollingQueue(
-      refreshInterval:
-          refreshInterval ??
-          currentTransport.pollingConfig.tokenWalletRefreshInterval,
-      refresher: wallet.inner,
-    )..start();
-  }
-
-  @override
-  void stopPollingToken() {
-    for (final polling in tokenPollingQueues.values) {
-      polling.stop();
-    }
-    tokenPollingQueues.clear();
-  }
-
-  @override
-  void pausePollingToken() {
-    for (final polling in tokenPollingQueues.values) {
-      polling.pause();
-    }
-  }
-
-  @override
-  void resumePollingToken() {
-    for (final polling in tokenPollingQueues.values) {
-      polling.resume();
-    }
-  }
-
-  @override
   Future<void> unsubscribeToken(
     Address owner,
     Address rootTokenContract,
@@ -197,7 +154,6 @@ mixin TokenWalletRepositoryImpl implements TokenWalletRepository {
 
     try {
       final wallet = removeTokenWalletInst(owner, rootTokenContract);
-      tokenPollingQueues.remove((owner, rootTokenContract))?.stop();
       wallet?.wallet?.dispose();
     } finally {
       mutex?.release();
@@ -205,18 +161,6 @@ mixin TokenWalletRepositoryImpl implements TokenWalletRepository {
         _mutexes.remove((owner, rootTokenContract));
       }
     }
-  }
-
-  @override
-  void closeAllTokenSubscriptions() {
-    stopPollingToken();
-
-    for (final wallet in tokenWallets) {
-      wallet.wallet?.dispose();
-    }
-
-    _tokenWalletsSubject.add({});
-    _mutexes.clear();
   }
 
   @override
@@ -236,92 +180,6 @@ mixin TokenWalletRepositoryImpl implements TokenWalletRepository {
     lastUpdatedNetworkGroup = networkGroup;
 
     return _updateTokenSubscriptionsPairs(tokenWallets);
-  }
-
-  /// Last call of [updateTokenSubscriptions] that will be stopped if needed.
-  ///
-  /// This allows interrupt updating if there was new request.
-  CancelableOperationAwaited<void>? _lastOperation;
-
-  /// Update subscriptions for wallets for current transport.
-  /// [tokenWallets] - wallets that should be used in scope of current transport
-  ///
-  /// All old tokens, that is not related to new owner/contract will be
-  /// unsubscribed.
-  Future<void> _updateTokenSubscriptionsPairs(
-    List<(Address, Address)> newWallets,
-  ) async {
-    final toSubscribe = <(Address, Address)>[];
-    final toUnsubscribe = <TokenWalletState>[];
-
-    // Stop last created operation if possible
-    final oldOperation = _lastOperation;
-
-    if (oldOperation != null) {
-      await oldOperation.cancel();
-    }
-
-    toUnsubscribe.addAll(
-      // pick all elements from old list, which is not contains in a new list
-      tokenWallets.where(
-        (w) => !newWallets.any(
-          (a) => a.$1 == w.owner && a.$2 == w.rootTokenContract,
-        ),
-      ),
-    );
-    toSubscribe.addAll(
-      // pick all elements from new list, which is not contains in old list
-      newWallets.where(
-        (a) => !tokenWallets.any(
-          (w) => w.owner == a.$1 && w.rootTokenContract == a.$2,
-        ),
-      ),
-    );
-
-    await Future.wait(
-      toUnsubscribe.map((e) => unsubscribeToken(e.owner, e.rootTokenContract)),
-    );
-
-    late CancelableOperationAwaited<void> operation;
-    operation = CancelableOperationAwaited.fromFuture(() async {
-      // Split all tokens to sublists to allow loading multiple tokens
-      // simultaneously.
-      final parts = partition(toSubscribe, tokenSubscribeAtTimeAmount);
-
-      for (final part in parts) {
-        await Future.wait(part.map(_subscribeTokenAsset));
-
-        // Make this pseudo event to allow other operations in event loop
-        // to be executed
-        await Future<void>.delayed(Duration.zero);
-
-        // If operation was stopped by changing transport/active accounts, then
-        // stop subscribing.
-        if (operation.isCanceled) return;
-      }
-    }());
-    _lastOperation = operation;
-
-    await operation.valueOrCancellation();
-  }
-
-  Future<void> _subscribeTokenAsset((Address, Address) wallet) async {
-    if (currentTransport.transport.disposed) return;
-
-    try {
-      await subscribeToken(owner: wallet.$1, rootTokenContract: wallet.$2);
-    } catch (e, t) {
-      _logger.severe('_subscribeTokenAsset', e, t);
-
-      // Save error state of wallet
-      final res = TokenWalletState.error(
-        err: e,
-        owner: wallet.$1,
-        rootTokenContract: wallet.$2,
-      );
-      tokenWalletsMap[wallet] = res;
-      _tokenWalletsSubject.add(tokenWalletsMap);
-    }
   }
 
   @override
@@ -354,11 +212,6 @@ mixin TokenWalletRepositoryImpl implements TokenWalletRepository {
         .toList();
 
     await _updateTokenSubscriptionsPairs(newWallets);
-
-    // restart polling after transport changed
-    for (final (owner, rootTokenContract) in newWallets) {
-      await startPollingToken(owner, rootTokenContract);
-    }
   }
 
   @override
@@ -469,6 +322,23 @@ mixin TokenWalletRepositoryImpl implements TokenWalletRepository {
     wallets[pair] = res;
     tokenWalletSubscriptions[pair] = _createWalletSubscription(wallet);
     _tokenWalletsSubject.add(wallets);
+    _tokenWalletAddresses[pair] = wallet.tokenAddress;
+
+    refreshPollingManager.registerTarget(
+      RefreshPollingTarget(
+        address: wallet.tokenAddress,
+        refresher: wallet.inner,
+        defaultInterval:
+            currentTransport.pollingConfig.tokenWalletRefreshInterval,
+        intensiveInterval:
+            currentTransport.pollingConfig.intensivePollingInterval,
+        debugLabel: 'TokenWallet(${wallet.owner}, ${wallet.rootTokenContract})',
+      ),
+    );
+
+    final observer = _createStreamObserver(wallet);
+    tokenWalletStreamObservers[pair] = observer;
+    wallet.attachStreamListenersObserver(observer);
 
     return res;
   }
@@ -484,40 +354,19 @@ mixin TokenWalletRepositoryImpl implements TokenWalletRepository {
     final wallets = tokenWalletsMap;
     final pair = (owner, rootTokenContract);
     final wallet = wallets.remove(pair);
+    tokenWalletStreamObservers.remove(pair)?.dispose();
     tokenWalletSubscriptions.remove(pair)?.close();
     _tokenWalletsSubject.add(wallets);
+
+    final address = _tokenWalletAddresses.remove((owner, rootTokenContract));
+    if (address != null) {
+      refreshPollingManager.unregisterTarget(address);
+    }
 
     return wallet;
   }
 
-  TokenWalletSubscription _createWalletSubscription(
-    GenericTokenWallet wallet,
-  ) => TokenWalletSubscription(
-    wallet: wallet,
-    onBalanceChanged: (event) => tokenWalletStorage.updateTokenWalletDetails(
-      owner: wallet.owner,
-      rootTokenContract: wallet.rootTokenContract,
-      group: wallet.transport.group,
-      networkId: wallet.transport.networkId,
-      symbol: wallet.symbol,
-      version: switch (wallet) {
-        Tip3TokenWallet() => wallet.inner.version,
-        _ => null,
-      },
-      balance: wallet.balance,
-      contractState: wallet.contractState,
-    ),
-    onTransactionsFound: (event) => tokenWalletStorage.addFoundTransactions(
-      owner: wallet.owner,
-      rootTokenContract: wallet.rootTokenContract,
-      group: wallet.transport.group,
-      networkId: wallet.transport.networkId,
-      transaction: event.$1,
-    ),
-  );
-
   @override
-  // ignore: long-method
   List<TokenWalletOrdinaryTransaction> mapOrdinaryTokenTransactions({
     required Address rootTokenContract,
     required List<TransactionWithData<TokenWalletTransaction?>> transactions,
@@ -613,5 +462,148 @@ mixin TokenWalletRepositoryImpl implements TokenWalletRepository {
         jettonOutgoingTransfer: jettonOutgoingTransfer,
       );
     }).toList();
+  }
+
+  @protected
+  @visibleForTesting
+  void closeAllTokenSubscriptions() {
+    final wallets = tokenWalletsMap;
+
+    for (final entry in wallets.entries) {
+      final wallet = entry.value;
+      final address =
+          _tokenWalletAddresses.remove(entry.key) ??
+          wallet.wallet?.tokenAddress;
+
+      if (address != null) {
+        refreshPollingManager.unregisterTarget(address);
+      }
+
+      tokenWalletStreamObservers.remove(entry.key)?.dispose();
+      tokenWalletSubscriptions.remove(entry.key)?.close();
+      wallet.wallet?.dispose();
+    }
+
+    tokenWalletStreamObservers.clear();
+    tokenWalletSubscriptions.clear();
+    _tokenWalletsSubject.add({});
+    _mutexes.clear();
+  }
+
+  /// Update subscriptions for wallets for current transport.
+  /// [tokenWallets] - wallets that should be used in scope of current transport
+  ///
+  /// All old tokens, that is not related to new owner/contract will be
+  /// unsubscribed.
+  Future<void> _updateTokenSubscriptionsPairs(
+    List<TokenPair> newWallets,
+  ) async {
+    final toSubscribe = <TokenPair>[];
+    final toUnsubscribe = <TokenWalletState>[];
+
+    // Stop last created operation if possible
+    final oldOperation = _lastOperation;
+
+    if (oldOperation != null) {
+      await oldOperation.cancel();
+    }
+
+    toUnsubscribe.addAll(
+      // pick all elements from old list, which is not contains in a new list
+      tokenWallets.where(
+        (w) => !newWallets.any(
+          (a) => a.$1 == w.owner && a.$2 == w.rootTokenContract,
+        ),
+      ),
+    );
+    toSubscribe.addAll(
+      // pick all elements from new list, which is not contains in old list
+      newWallets.where(
+        (a) => !tokenWallets.any(
+          (w) => w.owner == a.$1 && w.rootTokenContract == a.$2,
+        ),
+      ),
+    );
+
+    await Future.wait(
+      toUnsubscribe.map((e) => unsubscribeToken(e.owner, e.rootTokenContract)),
+    );
+
+    late CancelableOperationAwaited<void> operation;
+    operation = CancelableOperationAwaited.fromFuture(() async {
+      // Split all tokens to sublists to allow loading multiple tokens
+      // simultaneously.
+      final parts = partition(toSubscribe, tokenSubscribeAtTimeAmount);
+
+      for (final part in parts) {
+        await Future.wait(part.map(_subscribeTokenAsset));
+
+        // Make this pseudo event to allow other operations in event loop
+        // to be executed
+        await Future<void>.delayed(Duration.zero);
+
+        // If operation was stopped by changing transport/active accounts, then
+        // stop subscribing.
+        if (operation.isCanceled) return;
+      }
+    }());
+    _lastOperation = operation;
+
+    await operation.valueOrCancellation();
+  }
+
+  Future<void> _subscribeTokenAsset(TokenPair wallet) async {
+    if (currentTransport.transport.disposed) return;
+
+    try {
+      await subscribeToken(owner: wallet.$1, rootTokenContract: wallet.$2);
+    } catch (e, t) {
+      _logger.severe('_subscribeTokenAsset', e, t);
+
+      // Save error state of wallet
+      final res = TokenWalletState.error(
+        err: e,
+        owner: wallet.$1,
+        rootTokenContract: wallet.$2,
+      );
+      tokenWalletsMap[wallet] = res;
+      _tokenWalletsSubject.add(tokenWalletsMap);
+    }
+  }
+
+  TokenWalletSubscription _createWalletSubscription(
+    GenericTokenWallet wallet,
+  ) => TokenWalletSubscription(
+    wallet: wallet,
+    onBalanceChanged: (event) => tokenWalletStorage.updateTokenWalletDetails(
+      owner: wallet.owner,
+      rootTokenContract: wallet.rootTokenContract,
+      group: wallet.transport.group,
+      networkId: wallet.transport.networkId,
+      symbol: wallet.symbol,
+      version: switch (wallet) {
+        Tip3TokenWallet() => wallet.inner.version,
+        _ => null,
+      },
+      balance: wallet.balance,
+      contractState: wallet.contractState,
+    ),
+    onTransactionsFound: (event) => tokenWalletStorage.addFoundTransactions(
+      owner: wallet.owner,
+      rootTokenContract: wallet.rootTokenContract,
+      group: wallet.transport.group,
+      networkId: wallet.transport.networkId,
+      transaction: event.$1,
+    ),
+  );
+
+  RefreshPollingStreamObserver _createStreamObserver(
+    GenericTokenWallet wallet,
+  ) {
+    return RefreshPollingStreamObserver(
+      address: wallet.tokenAddress,
+      refreshPollingManager: refreshPollingManager,
+      internalListenersCount: TokenWalletSubscription.internalListenersCount,
+    );
   }
 }

@@ -26,10 +26,17 @@ class TokenWalletSubscription {
        _onTransactionsFoundSubscription = wallet.onTransactionsFoundStream
            .listen(onTransactionsFound);
 
-  /// Dynamic is used here to avoid importing Tuple lib, anyway we do not need
-  /// this type in subscription.
-  final StreamSubscription<dynamic> _onBalanceChangedSubscription;
-  final StreamSubscription<dynamic> _onTransactionsFoundSubscription;
+  /// Number of stream listeners created internally by this subscription.
+  ///
+  /// Used by lazy polling observers to ignore internal listeners when deciding
+  /// whether to start or stop polling.
+  static const int internalListenersCount = 2;
+
+  final StreamSubscription<BigInt> _onBalanceChangedSubscription;
+  final StreamSubscription<
+    (List<TransactionWithData<TokenWalletTransaction?>>, TransactionsBatchInfo)
+  >
+  _onTransactionsFoundSubscription;
 
   void close() {
     _onBalanceChangedSubscription.cancel();

@@ -44,14 +44,98 @@ class MockProtoTransport extends Mock implements ProtoTransport {
   Future<T> use<T>(Future<T> Function() fn) => fn();
 }
 
+class _FakeStreamListenersObserver extends Fake
+    implements StreamListenersObserver {}
+
 class TokenWalletRepoTest with TokenWalletRepositoryImpl {
-  TokenWalletRepoTest(this.currentTransport, this.tokenWalletStorage);
+  TokenWalletRepoTest(
+    this.currentTransport,
+    this.tokenWalletStorage,
+    this.refreshPollingManager,
+  );
 
   @override
   final MockTransport currentTransport;
 
   @override
   final MockWalletStorage tokenWalletStorage;
+
+  @override
+  final RefreshPollingManager refreshPollingManager;
+}
+
+class FakeRefreshPollingManager implements RefreshPollingManager {
+  final targets = <Address, RefreshPollingTarget>{};
+  final started = <Address>[];
+  final stopped = <Address>[];
+  final modeChanges = <(Address, RefreshPollingMode)>[];
+
+  bool _isPaused = false;
+  final _pausedController = StreamController<bool>.broadcast();
+
+  @override
+  RefreshPollingBackend get backend => RefreshPollingBackend.interval;
+
+  @override
+  bool get isPaused => _isPaused;
+
+  @override
+  Stream<bool> get isPausedStream => _pausedController.stream;
+
+  @override
+  void registerTarget(RefreshPollingTarget target) {
+    targets[target.address] = target;
+  }
+
+  @override
+  void unregisterTarget(Address address) {
+    targets.remove(address);
+  }
+
+  @override
+  bool hasTarget(Address address) => targets.containsKey(address);
+
+  @override
+  Future<void> startPolling(Address address) async {
+    started.add(address);
+  }
+
+  @override
+  void stopPolling(Address address) {
+    stopped.add(address);
+  }
+
+  @override
+  void stopPollingAll() {
+    stopped.addAll(targets.keys);
+  }
+
+  @override
+  void pausePolling() {
+    _isPaused = true;
+    _pausedController.add(true);
+  }
+
+  @override
+  void resumePolling() {
+    _isPaused = false;
+    _pausedController.add(false);
+  }
+
+  @override
+  Future<void> setPollingMode(Address address, RefreshPollingMode mode) async {
+    modeChanges.add((address, mode));
+  }
+
+  @override
+  void clear() {
+    targets.clear();
+  }
+
+  @override
+  void dispose() {
+    _pausedController.close();
+  }
 }
 
 void main() {
@@ -62,6 +146,7 @@ void main() {
   late Tip3TokenWallet tokenWallet;
 
   late TokenWalletRepoTest repository;
+  late FakeRefreshPollingManager pollingManager;
 
   late Stream<BigInt> balanceStream;
   late Stream<
@@ -136,8 +221,11 @@ void main() {
     storage = MockWalletStorage();
     wallet = MockWallet();
     tokenWallet = Tip3TokenWallet(wallet);
-    repository = TokenWalletRepoTest(transport, storage);
+    pollingManager = FakeRefreshPollingManager();
+    repository = TokenWalletRepoTest(transport, storage, pollingManager);
     proto = MockProtoTransport();
+
+    when(() => wallet.attachStreamListenersObserver(any())).thenReturn(null);
 
     box = MockArcTransportBoxTrait();
     registerFallbackValue(box);
@@ -155,6 +243,7 @@ void main() {
 
   setUpAll(() {
     NekotonBridge.initMock(api: bridge);
+    registerFallbackValue(_FakeStreamListenersObserver());
   });
 
   /// We must use this method except of thenThrow because it will broke
@@ -173,11 +262,15 @@ void main() {
       ).thenAnswer((_) => transactionsFoundStream);
       when(() => wallet.owner).thenReturn(owner);
       when(() => wallet.rootTokenContract).thenReturn(root1);
+      when(() => wallet.tokenAddress).thenReturn(tokenAddress);
 
       repository.addTokenWalletInst(tokenWallet);
+      repository.tokenWalletStreamObservers[(owner, root1)]
+          ?.onStreamListenersChanged(3);
 
       expect(repository.tokenWalletsMap[(owner, root1)]!.wallet!.inner, wallet);
       expect(repository.tokenWalletSubscriptions[(owner, root1)], isNotNull);
+      expect(pollingManager.hasTarget(tokenAddress), isTrue);
 
       verify(() => wallet.onBalanceChangedStream).called(1);
       verify(() => wallet.onTransactionsFoundStream).called(1);
@@ -192,13 +285,18 @@ void main() {
       ).thenAnswer((_) => transactionsFoundStream);
       when(() => wallet.owner).thenReturn(owner);
       when(() => wallet.rootTokenContract).thenReturn(root1);
+      when(() => wallet.tokenAddress).thenReturn(tokenAddress);
 
       repository
         ..addTokenWalletInst(tokenWallet)
+        ..tokenWalletStreamObservers[(owner, root1)]?.onStreamListenersChanged(
+          3,
+        )
         ..removeTokenWalletInst(owner, root1);
 
       expect(repository.tokenWalletsMap[(owner, root1)]?.wallet, isNull);
       expect(repository.tokenWalletSubscriptions[(owner, root1)], isNull);
+      expect(pollingManager.hasTarget(tokenAddress), isFalse);
     });
 
     test('unsubscribe', () async {
@@ -210,115 +308,21 @@ void main() {
       ).thenAnswer((_) => transactionsFoundStream);
       when(() => wallet.owner).thenReturn(owner);
       when(() => wallet.rootTokenContract).thenReturn(root1);
+      when(() => wallet.tokenAddress).thenReturn(tokenAddress);
       when(wallet.dispose).thenReturn(null);
       when(wallet.refresh).thenAnswer((_) => Future<void>.value());
       when(() => wallet.refreshDescription).thenReturn('');
 
-      final poller = RefreshPollingQueue(
-        refresher: wallet,
-        refreshInterval: PollingConfig.defaultConfig.tokenWalletRefreshInterval,
-      )..start();
-
-      repository.tokenPollingQueues[(owner, root1)] = poller;
-
       repository.addTokenWalletInst(tokenWallet);
+      repository.tokenWalletStreamObservers[(owner, root1)]
+          ?.onStreamListenersChanged(3);
       await repository.unsubscribeToken(owner, root1);
 
       expect(repository.tokenWalletsMap[(owner, root1)], isNull);
       expect(repository.tokenWalletSubscriptions[(owner, root1)], isNull);
-      expect(repository.tokenPollingQueues[(owner, root1)], isNull);
-      expect(poller.isPolling, isFalse);
+      expect(pollingManager.hasTarget(tokenAddress), isFalse);
 
       verify(wallet.dispose).called(1);
-    });
-
-    test('stopPolling', () {
-      when(
-        () => wallet.onBalanceChangedStream,
-      ).thenAnswer((_) => balanceStream);
-      when(
-        () => wallet.onTransactionsFoundStream,
-      ).thenAnswer((_) => transactionsFoundStream);
-      when(() => wallet.owner).thenReturn(owner);
-      when(() => wallet.rootTokenContract).thenReturn(root1);
-      when(wallet.refresh).thenAnswer((_) => Future<void>.value());
-      when(() => wallet.refreshDescription).thenReturn('');
-
-      final poller1 = RefreshPollingQueue(
-        refresher: wallet,
-        refreshInterval: PollingConfig.defaultConfig.tokenWalletRefreshInterval,
-      )..start();
-      final poller2 = RefreshPollingQueue(
-        refresher: wallet,
-        refreshInterval: PollingConfig.defaultConfig.tokenWalletRefreshInterval,
-      )..start();
-
-      repository.tokenPollingQueues[(owner, root1)] = poller1;
-      repository.tokenPollingQueues[(owner, root2)] = poller2;
-
-      repository
-        ..addTokenWalletInst(tokenWallet)
-        ..stopPollingToken();
-
-      expect(repository.tokenPollingQueues[(owner, root1)], isNull);
-      expect(repository.tokenPollingQueues[(owner, root2)], isNull);
-      expect(poller1.isPolling, isFalse);
-      expect(poller2.isPolling, isFalse);
-    });
-
-    test('startPolling with clearing previous', () async {
-      when(
-        () => wallet.onBalanceChangedStream,
-      ).thenAnswer((_) => balanceStream);
-      when(
-        () => wallet.onTransactionsFoundStream,
-      ).thenAnswer((_) => transactionsFoundStream);
-      when(() => wallet.owner).thenReturn(owner);
-      when(() => wallet.rootTokenContract).thenReturn(root1);
-
-      when(wallet.refresh).thenAnswer((_) => Future<void>.value());
-      when(() => wallet.refreshDescription).thenReturn('');
-
-      final oldPoller = RefreshPollingQueue(
-        refresher: wallet,
-        refreshInterval: PollingConfig.defaultConfig.tokenWalletRefreshInterval,
-      )..start();
-
-      repository.tokenPollingQueues[(owner, root2)] = oldPoller;
-
-      repository.addTokenWalletInst(tokenWallet);
-      await repository.startPollingToken(owner, root1);
-
-      expect(repository.tokenPollingQueues[(owner, root1)], isNotNull);
-      expect(repository.tokenPollingQueues[(owner, root1)]!.isPolling, isTrue);
-      expect(repository.tokenPollingQueues[(owner, root2)], isNull);
-      expect(oldPoller.isPolling, false);
-    });
-
-    test('startPolling without clearing previous', () async {
-      when(
-        () => wallet.onBalanceChangedStream,
-      ).thenAnswer((_) => balanceStream);
-      when(
-        () => wallet.onTransactionsFoundStream,
-      ).thenAnswer((_) => transactionsFoundStream);
-      when(() => wallet.owner).thenReturn(owner);
-      when(() => wallet.rootTokenContract).thenReturn(root1);
-
-      final oldPoller = RefreshPollingQueue(
-        refresher: wallet,
-        refreshInterval: PollingConfig.defaultConfig.tokenWalletRefreshInterval,
-      )..start();
-
-      repository.tokenPollingQueues[(owner, root2)] = oldPoller;
-
-      repository.addTokenWalletInst(tokenWallet);
-      await repository.startPollingToken(owner, root1, stopPrevious: false);
-
-      expect(repository.tokenPollingQueues[(owner, root1)], isNotNull);
-      expect(repository.tokenPollingQueues[(owner, root1)]!.isPolling, isTrue);
-      expect(repository.tokenPollingQueues[(owner, root2)], isNotNull);
-      expect(oldPoller.isPolling, true);
     });
   });
 
@@ -614,6 +618,7 @@ void main() {
       ).thenAnswer((_) => transactionsFoundStream);
       when(() => wallet.owner).thenReturn(owner);
       when(() => wallet.rootTokenContract).thenReturn(root1);
+      when(() => wallet.tokenAddress).thenReturn(tokenAddress);
 
       when(() => transport.transport).thenReturn(proto);
       when(() => proto.disposed).thenReturn(false);

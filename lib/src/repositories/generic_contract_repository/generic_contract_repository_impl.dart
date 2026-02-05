@@ -7,6 +7,7 @@ import 'package:nekoton_repository/nekoton_repository.dart';
 import 'package:nekoton_repository/src/repositories/generic_contract_repository/contract_gql_block_poller.dart';
 import 'package:rxdart/rxdart.dart';
 
+// TODO(komarov): migrate to RefreshPollingManager
 mixin GenericContractRepositoryImpl implements GenericContractRepository {
   final _logger = Logger('GenericContractRepositoryImpl');
 

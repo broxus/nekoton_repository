@@ -3,6 +3,7 @@ class PollingConfig {
     required this.tonWalletRefreshInterval,
     required this.tokenWalletRefreshInterval,
     required this.intensivePollingInterval,
+    this.sseBaseUrl,
   });
 
   static const PollingConfig defaultConfig = PollingConfig(
@@ -14,4 +15,5 @@ class PollingConfig {
   final Duration tonWalletRefreshInterval;
   final Duration tokenWalletRefreshInterval;
   final Duration intensivePollingInterval;
+  final String? sseBaseUrl;
 }
