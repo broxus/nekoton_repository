@@ -58,7 +58,7 @@ class _HttpSseRpcClient implements SseRpcClient {
       SseSubscribeParams(
         uuid: uuid,
         addresses: addresses.map((e) => e.address).toList(),
-      ),
+      ).toJson(),
     );
   }
 
@@ -72,7 +72,7 @@ class _HttpSseRpcClient implements SseRpcClient {
       SseUnsubscribeParams(
         uuid: uuid,
         addresses: addresses.map((e) => e.address).toList(),
-      ),
+      ).toJson(),
     );
   }
 
@@ -80,12 +80,12 @@ class _HttpSseRpcClient implements SseRpcClient {
   Future<void> unsubscribeAll({required String uuid}) {
     return _call(
       SseRpcMethod.unsubscribeAll,
-      SseUnsubscribeAllParams(uuid: uuid),
+      SseUnsubscribeAllParams(uuid: uuid).toJson(),
     );
   }
 
-  Future<void> _call<T>(SseRpcMethod method, T params) async {
-    final payload = SseRpcRequest<T>(
+  Future<void> _call(SseRpcMethod method, Map<String, dynamic> params) async {
+    final payload = SseRpcRequest(
       id: _rpcId++,
       method: method.value,
       params: params,
@@ -93,7 +93,7 @@ class _HttpSseRpcClient implements SseRpcClient {
 
     final response = await dio.post<String>(
       '/rpc',
-      data: jsonEncode(payload.toJson(_encodeJson)),
+      data: jsonEncode(payload.toJson()),
       options: Options(
         contentType: Headers.jsonContentType,
         responseType: ResponseType.plain,
@@ -115,13 +115,6 @@ class _HttpSseRpcClient implements SseRpcClient {
     if (envelope.error != null) {
       throw StateError('SSE RPC error: ${envelope.error}');
     }
-  }
-
-  Object? _encodeJson<T>(T value) {
-    if (value is Map<String, dynamic>) return value;
-    if (value is List) return value;
-    if (value is String || value is num || value is bool) return value;
-    return (value as dynamic).toJson();
   }
 }
 

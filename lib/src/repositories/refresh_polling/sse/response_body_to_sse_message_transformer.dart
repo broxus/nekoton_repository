@@ -48,10 +48,10 @@ class ResponseBodyToSseMessageTransformer
 class _MessageListener {
   _MessageListener(this._controller);
 
-  final StreamController<SseMessage> _controller;
+  static final _lineRegex = RegExp(r'^([^:]*)(?::)?(?: )?(.*)?$');
+  static final _removeEndingNewlineRegex = RegExp(r'^((?:.|\n)*)\n$');
 
-  final _lineRegex = RegExp(r'^([^:]*)(?::)?(?: )?(.*)?$');
-  final _removeEndingNewlineRegex = RegExp(r'^((?:.|\n)*)\n$');
+  final StreamController<SseMessage> _controller;
 
   // the event we are currently building
   var _currentEvent = SseMessage();
