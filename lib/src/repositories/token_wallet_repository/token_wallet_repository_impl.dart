@@ -336,7 +336,7 @@ mixin TokenWalletRepositoryImpl implements TokenWalletRepository {
       ),
     );
 
-    final observer = _createStreamObserver(wallet, pair);
+    final observer = _createStreamObserver(wallet);
     tokenWalletStreamObservers[pair] = observer;
     wallet.attachStreamListenersObserver(observer);
 
@@ -599,7 +599,6 @@ mixin TokenWalletRepositoryImpl implements TokenWalletRepository {
 
   RefreshPollingStreamObserver _createStreamObserver(
     GenericTokenWallet wallet,
-    TokenPair pair,
   ) {
     return RefreshPollingStreamObserver(
       address: wallet.tokenAddress,

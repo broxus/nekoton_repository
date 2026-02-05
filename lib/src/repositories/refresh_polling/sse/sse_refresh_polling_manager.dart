@@ -138,6 +138,12 @@ class SseRefreshPollingManager implements RefreshPollingManager {
   void resumePolling() {
     _pausedSubject.add(false);
     fallbackManager.resumePolling();
+
+    if (!_fallbackEnabled) {
+      // refresh all _activeAddresses immediately after resume,
+      // since we might have missed updates while paused
+      _activeAddresses.forEach(_refreshTarget);
+    }
   }
 
   @override
@@ -184,6 +190,7 @@ class SseRefreshPollingManager implements RefreshPollingManager {
     if (event.event == 'uuid') {
       _uuid = event.data;
       _reconnectAttempt = 0;
+      _subscribedAddresses.clear();
       _subscribeAddresses(_activeAddresses.toList());
       return;
     }
@@ -199,7 +206,10 @@ class SseRefreshPollingManager implements RefreshPollingManager {
     final update = _parseUpdate(payload);
     if (update == null) return;
 
-    final address = update.address;
+    _refreshTarget(update.address);
+  }
+
+  void _refreshTarget(Address address) {
     final target = _targets[address];
     if (target == null) return;
 
@@ -300,6 +310,7 @@ class SseRefreshPollingManager implements RefreshPollingManager {
     _reconnectTimer = null;
     _subscription?.cancel();
     _subscription = null;
+    _subscribedAddresses.clear();
     unawaited(streamClient.close());
   }
 }

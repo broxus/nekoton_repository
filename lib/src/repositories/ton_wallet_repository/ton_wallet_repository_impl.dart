@@ -523,11 +523,12 @@ mixin TonWalletRepositoryImpl implements TonWalletRepository {
           .onError<TimeoutException>(
             (e, _) => refreshPollingManager.isPausedStream
                 .firstWhere((e) => !e) // wait for polling to be resumed
-                // .then((_) => poller.currentRefresh()) // TODO: check this commented
                 .then((_) async {
                   try {
                     return await sentTransactionFuture.timeout(_resumeTimeout);
                   } on TimeoutException catch (_) {
+                    // rethrow original timeout exception
+                    // if transaction was not sent after resume
                     throw e;
                   }
                 }),
