@@ -79,9 +79,7 @@ class SseRefreshPollingManager implements RefreshPollingManager {
     _targets.remove(address);
     _refreshInFlight.remove(address);
 
-    if (_uuid != null) {
-      _unsubscribeAddresses([address]);
-    }
+    _unsubscribeAddresses([address]);
 
     fallbackManager.unregisterTarget(address);
   }
@@ -111,9 +109,7 @@ class SseRefreshPollingManager implements RefreshPollingManager {
     _activeAddresses.remove(address);
     _refreshInFlight.remove(address);
 
-    if (_uuid != null) {
-      _unsubscribeAddresses([address]);
-    }
+    _unsubscribeAddresses([address]);
 
     fallbackManager.stopPolling(address);
   }
@@ -276,19 +272,22 @@ class SseRefreshPollingManager implements RefreshPollingManager {
   }
 
   void _subscribeAddresses(List<Address> addresses) {
-    if (_uuid == null || addresses.isEmpty) return;
+    final uuid = _uuid;
+    if (uuid == null || addresses.isEmpty) return;
 
     final toSubscribe = addresses
         .where((address) => !_subscribedAddresses.contains(address))
         .toList();
     if (toSubscribe.isEmpty) return;
 
-    _subscribedAddresses.addAll(toSubscribe);
-    unawaited(rpcClient.subscribe(uuid: _uuid!, addresses: toSubscribe));
+    rpcClient.subscribe(uuid: uuid, addresses: toSubscribe).then((_) {
+      _subscribedAddresses.addAll(toSubscribe);
+    });
   }
 
   void _unsubscribeAddresses(List<Address> addresses) {
-    if (_uuid == null || addresses.isEmpty) return;
+    final uuid = _uuid;
+    if (uuid == null || addresses.isEmpty) return;
 
     final toUnsubscribe = addresses
         .where(_subscribedAddresses.contains)
@@ -296,13 +295,15 @@ class SseRefreshPollingManager implements RefreshPollingManager {
     if (toUnsubscribe.isEmpty) return;
 
     _subscribedAddresses.removeAll(toUnsubscribe);
-    unawaited(rpcClient.unsubscribe(uuid: _uuid!, addresses: toUnsubscribe));
+    rpcClient.unsubscribe(uuid: uuid, addresses: toUnsubscribe).ignore();
   }
 
   void _unsubscribeAll() {
-    if (_uuid == null) return;
+    final uuid = _uuid;
+    if (uuid == null) return;
+
     _subscribedAddresses.clear();
-    unawaited(rpcClient.unsubscribeAll(uuid: _uuid!));
+    rpcClient.unsubscribeAll(uuid: uuid).ignore();
   }
 
   void _closeStream() {
