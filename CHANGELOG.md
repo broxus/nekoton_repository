@@ -11,6 +11,31 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 Packages with breaking changes:
 
+ - There are no breaking changes in this release.
+
+Packages with other changes:
+
+ - [`nekoton_repository` - `v4.0.1`](#nekoton_repository---v401)
+
+---
+
+#### `nekoton_repository` - `v4.0.1`
+
+ - **FIX**(SPARX-15V): simplify unsubscribe logic and improve subscription handling. ([a7437a35](https://github.com/broxus/nekoton_repository/commit/a7437a352a809945d61b8d4974a36e0217dd9b84))
+
+## 4.0.1
+
+ - **FIX**(SPARX-15V): simplify unsubscribe logic and improve subscription handling. ([a7437a35](https://github.com/broxus/nekoton_repository/commit/a7437a352a809945d61b8d4974a36e0217dd9b84))
+
+
+## 2026-02-05
+
+### Changes
+
+---
+
+Packages with breaking changes:
+
  - [`nekoton_repository` - `v4.0.0`](#nekoton_repository---v400)
 
 Packages with other changes:
