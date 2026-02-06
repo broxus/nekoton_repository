@@ -3,6 +3,31 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## 2026-02-06
+
+### Changes
+
+---
+
+Packages with breaking changes:
+
+ - There are no breaking changes in this release.
+
+Packages with other changes:
+
+ - [`nekoton_repository` - `v4.0.2`](#nekoton_repository---v402)
+
+---
+
+#### `nekoton_repository` - `v4.0.2`
+
+ - **FIX**: close sse stream when polling is paused. ([2291752a](https://github.com/broxus/nekoton_repository/commit/2291752a2557992167e8efbe3dec57f84223b704))
+
+## 4.0.2
+
+ - **FIX**: close sse stream when polling is paused. ([2291752a](https://github.com/broxus/nekoton_repository/commit/2291752a2557992167e8efbe3dec57f84223b704))
+
+
 ## 2026-02-05
 
 ### Changes
