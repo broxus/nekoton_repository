@@ -68,7 +68,7 @@ class SseRefreshPollingManager implements RefreshPollingManager {
     _targets[target.address] = target;
     fallbackManager.registerTarget(target);
 
-    if (_uuid != null && _activeAddresses.contains(target.address)) {
+    if (_activeAddresses.contains(target.address)) {
       _subscribeAddresses([target.address]);
     }
   }
@@ -98,10 +98,7 @@ class SseRefreshPollingManager implements RefreshPollingManager {
     }
 
     _ensureConnected();
-
-    if (_uuid != null) {
-      _subscribeAddresses([address]);
-    }
+    _subscribeAddresses([address]);
   }
 
   @override
@@ -116,9 +113,7 @@ class SseRefreshPollingManager implements RefreshPollingManager {
 
   @override
   void stopPollingAll() {
-    if (_uuid != null) {
-      _unsubscribeAll();
-    }
+    _unsubscribeAll();
     _activeAddresses.clear();
     _subscribedAddresses.clear();
     fallbackManager.stopPollingAll();
@@ -126,12 +121,14 @@ class SseRefreshPollingManager implements RefreshPollingManager {
 
   @override
   void pausePolling() {
+    _closeStream();
     _pausedSubject.add(true);
     fallbackManager.pausePolling();
   }
 
   @override
   void resumePolling() {
+    _ensureConnected();
     _pausedSubject.add(false);
     fallbackManager.resumePolling();
 
@@ -166,6 +163,7 @@ class SseRefreshPollingManager implements RefreshPollingManager {
     fallbackManager.dispose();
   }
 
+  /// All [_activeAddresses] will be subscrubed when SSE returns a new UUID
   void _ensureConnected() {
     if (_fallbackEnabled) return;
     if (_subscription != null) return;
@@ -307,6 +305,7 @@ class SseRefreshPollingManager implements RefreshPollingManager {
   }
 
   void _closeStream() {
+    _uuid = null;
     _reconnectTimer?.cancel();
     _reconnectTimer = null;
     _subscription?.cancel();
