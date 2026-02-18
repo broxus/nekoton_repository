@@ -104,30 +104,30 @@ abstract class SeedKeyRepository {
   });
 
   /// Sign [message] with key it was called on.
-  /// [signatureId] is [Transport.getSignatureId].
+  /// [signatureContext] is [Transport.getSignatureContext].
   /// [signInput] can be get from [SeedKey.signInput].
   Future<String> sign({
     required UnsignedMessageImpl message,
     required SignInput signInput,
-    required int? signatureId,
+    required SignatureContext signatureContext,
   });
 
   /// Sign [data] message with key it was called on.
-  /// [signatureId] is [Transport.getSignatureId].
+  /// [signatureContext] is [Transport.getSignatureContext].
   /// [signInput] can be get from [SeedKey.signInput].
   Future<SignedData> signData({
     required String data,
     required SignInput signInput,
-    required int? signatureId,
+    required SignatureContext signatureContext,
   });
 
   /// Sign raw [data] message with key it was called on.
-  /// [signatureId] is [Transport.getSignatureId].
+  /// [signatureContext] is [Transport.getSignatureContext].
   /// [signInput] can be get from [SeedKey.signInput].
   Future<SignedDataRaw> signDataRaw({
     required String data,
     required SignInput signInput,
-    required int? signatureId,
+    required SignatureContext signatureContext,
   });
 
   /// Remove keys from keystore and return public keys that were deleted

@@ -132,7 +132,7 @@ class SeedList extends Equatable {
 
   /// Sign [message] with [publicKey]
   /// If there is no key for [publicKey], exception will be thrown.
-  /// [signatureId] is [Transport.getSignatureId].
+  /// [signatureContext] is [Transport.getSignatureContext].
   ///
   /// **Note:** Throws [ArgumentError] if the password is not provided for
   /// encrypted/derived key.
@@ -140,20 +140,20 @@ class SeedList extends Equatable {
     required UnsignedMessageImpl message,
     required PublicKey publicKey,
     required SignInputAuth signInputAuth,
-    required int? signatureId,
+    required SignatureContext signatureContext,
   }) {
     final key = _allKeys.firstWhere((k) => k.publicKey == publicKey);
 
     return GetIt.instance<SeedKeyRepository>().sign(
       message: message,
-      signatureId: signatureId,
+      signatureContext: signatureContext,
       signInput: key.signInput(signInputAuth),
     );
   }
 
   /// Sign [data] message with [publicKey]
   /// If there is no key for [publicKey], exception will be thrown.
-  /// [signatureId] is [Transport.getSignatureId].
+  /// [signatureContext] is [Transport.getSignatureContext].
   ///
   /// **Note:** Throws [ArgumentError] if the password is not provided for
   /// encrypted/derived key.
@@ -161,20 +161,20 @@ class SeedList extends Equatable {
     required String data,
     required PublicKey publicKey,
     required SignInputAuth signInputAuth,
-    required int? signatureId,
+    required SignatureContext signatureContext,
   }) {
     final key = _allKeys.firstWhere((k) => k.publicKey == publicKey);
 
     return GetIt.instance<SeedKeyRepository>().signData(
       data: data,
-      signatureId: signatureId,
+      signatureContext: signatureContext,
       signInput: key.signInput(signInputAuth),
     );
   }
 
   /// Sign raw [data] message with [publicKey]
   /// If there is no key for [publicKey], exception will be thrown.
-  /// [signatureId] is [Transport.getSignatureId].
+  /// [signatureContext] is [Transport.getSignatureContext].
   ///
   /// **Note:** Throws [ArgumentError] if the password is not provided for
   /// encrypted/derived key.
@@ -182,29 +182,29 @@ class SeedList extends Equatable {
     required String data,
     required PublicKey publicKey,
     required SignInputAuth signInputAuth,
-    required int? signatureId,
+    required SignatureContext signatureContext,
   }) {
     final key = _allKeys.firstWhere((k) => k.publicKey == publicKey);
 
     return GetIt.instance<SeedKeyRepository>().signDataRaw(
       data: data,
-      signatureId: signatureId,
+      signatureContext: signatureContext,
       signInput: key.signInput(signInputAuth),
     );
   }
 
   /// Check if password of [publicKey] equals to [password].
-  /// [signatureId] is [Transport.getSignatureId].
+  /// [signatureContext] is [Transport.getSignatureContext]..
   Future<bool> checkKeyPassword({
     required PublicKey publicKey,
     required String password,
-    required int? signatureId,
+    required SignatureContext signatureContext,
   }) async {
     try {
       await signData(
         data: fakeSignature(),
         publicKey: publicKey,
-        signatureId: signatureId,
+        signatureContext: signatureContext,
         signInputAuth: SignInputAuth.password(password),
       );
 
