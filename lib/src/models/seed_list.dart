@@ -194,7 +194,7 @@ class SeedList extends Equatable {
   }
 
   /// Check if password of [publicKey] equals to [password].
-  /// [signatureContext] is [Transport.getSignatureContext]..
+  /// [signatureContext] is [Transport.getSignatureContext].
   Future<bool> checkKeyPassword({
     required PublicKey publicKey,
     required String password,
