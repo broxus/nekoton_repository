@@ -3,6 +3,31 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## 2026-02-24
+
+### Changes
+
+---
+
+Packages with breaking changes:
+
+ - There are no breaking changes in this release.
+
+Packages with other changes:
+
+ - [`nekoton_repository` - `v4.1.0-dev.0`](#nekoton_repository---v410-dev0)
+
+---
+
+#### `nekoton_repository` - `v4.1.0-dev.0`
+
+ - **FEAT**(EWM-656): add signature domains support. ([a5a3e04b](https://github.com/broxus/nekoton_repository/commit/a5a3e04bccef1d13399134d49a9f791d4bf5b2e1))
+
+## 4.1.0-dev.0
+
+ - **FEAT**(EWM-656): add signature domains support. ([a5a3e04b](https://github.com/broxus/nekoton_repository/commit/a5a3e04bccef1d13399134d49a9f791d4bf5b2e1))
+
+
 ## 2026-02-06
 
 ### Changes
