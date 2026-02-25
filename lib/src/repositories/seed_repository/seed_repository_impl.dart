@@ -628,30 +628,33 @@ mixin SeedKeyRepositoryImpl implements SeedKeyRepository {
   Future<String> sign({
     required UnsignedMessageImpl message,
     required SignInput signInput,
-    required int? signatureId,
+    required SignatureContext signatureContext,
   }) => keyStore.sign(
     message: message,
     input: signInput,
-    signatureId: signatureId,
+    signatureContext: signatureContext,
   );
 
   @override
   Future<SignedData> signData({
     required String data,
     required SignInput signInput,
-    required int? signatureId,
-  }) =>
-      keyStore.signData(data: data, input: signInput, signatureId: signatureId);
+    required SignatureContext signatureContext,
+  }) => keyStore.signData(
+    data: data,
+    input: signInput,
+    signatureContext: signatureContext,
+  );
 
   @override
   Future<SignedDataRaw> signDataRaw({
     required String data,
     required SignInput signInput,
-    required int? signatureId,
+    required SignatureContext signatureContext,
   }) => keyStore.signDataRaw(
     data: data,
     input: signInput,
-    signatureId: signatureId,
+    signatureContext: signatureContext,
   );
 
   @override
