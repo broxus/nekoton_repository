@@ -593,6 +593,9 @@ mixin NftRepositoryImpl implements NftRepository {
       methodId: methodId,
       input: input ?? {},
       responsible: responsible,
+      signatureContext: const SignatureContext(
+        signatureType: SignatureType.empty,
+      ),
     );
 
     if (result.code != 0) throw TvmException(result.code);
