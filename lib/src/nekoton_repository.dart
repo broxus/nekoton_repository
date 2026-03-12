@@ -154,18 +154,18 @@ class NekotonRepository
   }
 
   /// Pause polling for all wallets.
-  void pausePolling() {
-    _refreshPollingManager?.pausePolling();
+  Future<void> pausePolling() async {
+    await _refreshPollingManager?.pausePolling();
   }
 
   /// Resume polling for all wallets.
-  void resumePolling() {
-    _refreshPollingManager?.resumePolling();
+  Future<void> resumePolling() async {
+    await _refreshPollingManager?.resumePolling();
   }
 
   /// Clear used memory
   Future<void> dispose() async {
-    _refreshPollingManager?.dispose();
+    await _refreshPollingManager?.dispose();
     _keyStore.dispose();
     _accountsStorage.dispose();
     _nekotonStorage.dispose();

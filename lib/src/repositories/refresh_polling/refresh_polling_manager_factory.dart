@@ -3,6 +3,7 @@ import 'dart:convert';
 
 import 'package:dio/dio.dart';
 import 'package:nekoton_repository/nekoton_repository.dart';
+import 'package:rxdart/rxdart.dart';
 
 /// Factory responsible for selecting the polling manager implementation.
 typedef RefreshPollingManagerFactory =
@@ -112,9 +113,9 @@ class _HttpSseRpcClient implements SseRpcClient {
     }
 
     final envelope = SseRpcResponse<dynamic>.fromJson(decoded);
-    if (envelope.error != null) {
-      throw StateError('SSE RPC error: ${envelope.error}');
-    }
+    final error = envelope.error;
+
+    if (error != null) throw error;
   }
 }
 
@@ -123,87 +124,49 @@ class _HttpSseStreamClient implements SseStreamClient {
 
   final Dio dio;
   CancelToken? _cancelToken;
-  void Function()? _cancelSubscription;
 
   @override
-  Stream<SseStreamEvent> connect() {
-    final controller = StreamController<SseStreamEvent>();
+  Future<Stream<SseStreamEvent>> connect() async {
+    // Cancel any existing in-flight request before starting a new one.
+    _cancelToken?.cancel();
+    _cancelToken = CancelToken();
 
-    controller
-      ..onListen = () async {
-        _cancelToken?.cancel();
-        _cancelToken = CancelToken();
-
-        try {
-          final stream = await dio
-              .get<ResponseBody>(
-                '/stream',
-                options: Options(
-                  responseType: ResponseType.stream,
-                  headers: {
-                    'Connection': 'Keep-Alive',
-                    'Accept': 'text/event-stream',
-                    'Cache-Control': 'no-cache',
-                  },
-                ),
-                cancelToken: _cancelToken,
-              )
-              .then((response) {
-                final responseBody = response.data;
-                if (responseBody == null) {
-                  throw StateError('SSE response body is empty');
-                }
-
-                return responseBody.stream.transform(
-                  ResponseBodyToSseMessageTransformer(),
-                );
-              });
-
-          final subscription = stream.listen(
-            (message) {
-              if (message.event == null && message.data == null) return;
-              final event = SseStreamEvent(
-                event: message.event ?? 'message',
-                data: message.data ?? '',
-              );
-              controller.add(event);
+    final stream = await dio
+        .get<ResponseBody>(
+          '/stream',
+          options: Options(
+            responseType: ResponseType.stream,
+            headers: {
+              'Connection': 'Keep-Alive',
+              'Accept': 'text/event-stream',
+              'Cache-Control': 'no-cache',
             },
-            onError: controller.addError,
-            onDone: () {
-              final cancel = _cancelSubscription;
-              _cancelSubscription = null;
-              cancel?.call();
-              controller.close();
-            },
+          ),
+          cancelToken: _cancelToken,
+        )
+        .then((response) {
+          final responseBody = response.data;
+          if (responseBody == null) {
+            throw StateError('SSE response body is empty');
+          }
+
+          return responseBody.stream.transform(
+            ResponseBodyToSseMessageTransformer(),
           );
-          _cancelSubscription = () {
-            unawaited(subscription.cancel());
-          };
-        } catch (e, s) {
-          controller.addError(e, s);
-        }
-      }
-      ..onCancel = () async {
-        final cancel = _cancelSubscription;
-        _cancelSubscription = null;
-        cancel?.call();
+        });
 
-        final token = _cancelToken;
-        _cancelToken = null;
-        token?.cancel();
-      };
-
-    return controller.stream;
+    return stream.map((message) {
+      if (message.event == null && message.data == null) return null;
+      return SseStreamEvent(
+        event: message.event ?? 'message',
+        data: message.data ?? '',
+      );
+    }).whereNotNull();
   }
 
   @override
   Future<void> close() async {
-    final cancel = _cancelSubscription;
-    _cancelSubscription = null;
-    cancel?.call();
-
-    final token = _cancelToken;
+    _cancelToken?.cancel();
     _cancelToken = null;
-    token?.cancel();
   }
 }

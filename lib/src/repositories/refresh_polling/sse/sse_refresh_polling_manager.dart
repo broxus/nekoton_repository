@@ -1,9 +1,11 @@
 import 'dart:async';
 import 'dart:convert';
-import 'dart:math';
 
 import 'package:logging/logging.dart';
+import 'package:mutex/mutex.dart';
 import 'package:nekoton_repository/nekoton_repository.dart';
+import 'package:nekoton_repository/src/repositories/refresh_polling/sse/sse_refresh_polling_connection.dart';
+import 'package:nekoton_repository/src/repositories/refresh_polling/sse/sse_refresh_polling_targets.dart';
 import 'package:rxdart/rxdart.dart';
 
 /// SSE-based polling manager that subscribes to server events.
@@ -22,7 +24,10 @@ class SseRefreshPollingManager implements RefreshPollingManager {
     required this.reconnectPolicy,
     required this.fallbackManager,
     Logger? logger,
-  }) : _logger = logger ?? Logger('SseRefreshPollingManager');
+  }) : _connection = SseRefreshPollingConnection(
+         reconnectPolicy: reconnectPolicy,
+       ),
+       _logger = logger ?? Logger('SseRefreshPollingManager');
 
   /// SSE configuration including base URL and reconnect policy.
   final SseReconnectPolicy reconnectPolicy;
@@ -36,19 +41,14 @@ class SseRefreshPollingManager implements RefreshPollingManager {
   /// Fallback manager used when SSE is unavailable.
   final RefreshPollingManager fallbackManager;
 
+  final SseRefreshPollingConnection _connection;
   final Logger _logger;
 
-  final _targets = <Address, RefreshPollingTarget>{};
-  final _activeAddresses = <Address>{};
-  final _subscribedAddresses = <Address>{};
-  final _refreshInFlight = <Address>{};
+  final _targets = SseRefreshPollingTargets();
   final _pausedSubject = BehaviorSubject<bool>.seeded(false);
+  final _mutex = Mutex();
 
-  StreamSubscription<SseStreamEvent>? _subscription;
-  Timer? _reconnectTimer;
-  String? _uuid;
-  int _reconnectAttempt = 0;
-  bool _fallbackEnabled = false;
+  bool _isDisposed = false;
 
   @override
   RefreshPollingBackend get backend => RefreshPollingBackend.sse;
@@ -61,131 +61,195 @@ class SseRefreshPollingManager implements RefreshPollingManager {
 
   @override
   void registerTarget(RefreshPollingTarget target) {
-    if (_targets.containsKey(target.address)) {
-      unregisterTarget(target.address);
-    }
+    if (_isDisposed) return;
 
-    _targets[target.address] = target;
+    _targets.registerTarget(target);
     fallbackManager.registerTarget(target);
-
-    if (_activeAddresses.contains(target.address)) {
-      _subscribeAddresses([target.address]);
-    }
   }
 
   @override
   void unregisterTarget(Address address) {
-    _activeAddresses.remove(address);
-    _targets.remove(address);
-    _refreshInFlight.remove(address);
+    if (_isDisposed) return;
 
-    _unsubscribeAddresses([address]);
+    if (_targets.isSubscribed(address)) {
+      // ignore: lines_longer_than_80_chars
+      _logger.warning(
+        'Target $address was not unsubscribed properly before unregistering.',
+      );
+      _unsubscribeAddresses([address]).ignore();
+    }
 
+    _targets.unregisterTarget(address);
     fallbackManager.unregisterTarget(address);
   }
 
   @override
-  bool hasTarget(Address address) {
-    return _targets.containsKey(address);
-  }
+  bool hasTarget(Address address) => _targets.hasTarget(address);
 
   @override
   void startPolling(Address address) {
-    _activeAddresses.add(address);
+    if (_isDisposed) return;
 
-    if (_fallbackEnabled) {
+    _targets.activate(address);
+
+    if (isPaused) return;
+
+    if (_connection.isFallbackEnabled) {
       return fallbackManager.startPolling(address);
     }
 
-    _ensureConnected();
-    _subscribeAddresses([address]);
+    _ensureConnected().then((_) => _subscribeAddresses([address])).ignore();
   }
 
   @override
   void stopPolling(Address address) {
-    _activeAddresses.remove(address);
-    _refreshInFlight.remove(address);
+    if (_isDisposed) return;
 
-    _unsubscribeAddresses([address]);
-
+    _targets.deactivate(address);
     fallbackManager.stopPolling(address);
+
+    _unsubscribeAddresses([address]).ignore();
   }
 
   @override
   void stopPollingAll() {
-    _unsubscribeAll();
-    _activeAddresses.clear();
-    _subscribedAddresses.clear();
+    if (_isDisposed) return;
+
+    _unsubscribeAll().ignore();
+    _targets
+      ..clearActiveAddresses()
+      ..clearSubscriptions();
+
     fallbackManager.stopPollingAll();
   }
 
   @override
-  void pausePolling() {
-    _closeStream();
+  Future<void> pausePolling() async {
+    if (_isDisposed || isPaused) return;
+
     _pausedSubject.add(true);
-    fallbackManager.pausePolling();
+
+    await _closeStream();
+    await fallbackManager.pausePolling();
   }
 
   @override
-  void resumePolling() {
-    _ensureConnected();
-    _pausedSubject.add(false);
-    fallbackManager.resumePolling();
+  Future<void> resumePolling() async {
+    if (_isDisposed || !isPaused) return;
 
-    if (!_fallbackEnabled) {
-      // refresh all _activeAddresses immediately after resume,
-      // since we might have missed updates while paused
-      _activeAddresses.forEach(_refreshTarget);
+    _pausedSubject.add(false);
+
+    if (!_connection.isFallbackEnabled) {
+      _targets.refreshActiveTargets();
     }
+
+    await _ensureConnected();
+    await fallbackManager.resumePolling();
   }
 
   @override
   void setPollingMode(Address address, RefreshPollingMode mode) {
-    if (_fallbackEnabled) {
+    if (_isDisposed) return;
+
+    if (_connection.isFallbackEnabled) {
       fallbackManager.setPollingMode(address, mode);
     }
   }
 
   @override
-  void clear() {
-    stopPollingAll();
+  Future<void> dispose() async {
+    if (_isDisposed) return;
+
+    _isDisposed = true;
+    _connection.cancelReconnect();
     _targets.clear();
-    _activeAddresses.clear();
-    _subscribedAddresses.clear();
-    _refreshInFlight.clear();
+
+    await _closeStream();
+    _connection.reset();
+    await _pausedSubject.close();
+    await fallbackManager.dispose();
   }
 
-  @override
-  void dispose() {
-    clear();
-    _closeStream();
-    _pausedSubject.close();
-    fallbackManager.dispose();
+  /// All active addresses from [_targets] will be subscribed
+  /// when SSE returns a new UUID
+  Future<void> _ensureConnected() async {
+    if (_connection.isFallbackEnabled ||
+        _isDisposed ||
+        isPaused ||
+        _connection.isConnected ||
+        _connection.isConnecting) {
+      return;
+    }
+
+    await _mutex.acquire();
+    try {
+      if (_connection.isFallbackEnabled ||
+          _isDisposed ||
+          isPaused ||
+          _connection.isConnected ||
+          _connection.isConnecting) {
+        return;
+      }
+
+      final generation = _connection.beginConnectionAttempt();
+
+      _logger.fine('Opening SSE stream for polling');
+
+      final stream = await streamClient.connect();
+
+      if (!_connection.isCurrentGeneration(
+            generation,
+            isDisposed: _isDisposed,
+          ) ||
+          isPaused) {
+        _connection.abortConnectionAttempt();
+        await streamClient.close();
+        return;
+      }
+
+      final subscription = stream.listen(
+        (event) => _handleEvent(event, generation),
+        onError: (Object error, StackTrace stackTrace) {
+          if (!_connection.isCurrentGeneration(
+            generation,
+            isDisposed: _isDisposed,
+          )) {
+            return;
+          }
+
+          _logger.warning('SSE stream error', error, stackTrace);
+          _handleStreamFailure(generation).ignore();
+        },
+        onDone: () {
+          if (!_connection.isCurrentGeneration(
+            generation,
+            isDisposed: _isDisposed,
+          )) {
+            return;
+          }
+
+          _handleStreamFailure(generation).ignore();
+        },
+      );
+      _connection.attachSubscription(subscription);
+    } catch (e, s) {
+      _connection.abortConnectionAttempt();
+      _logger.warning('Failed to connect to SSE stream', e, s);
+      _handleStreamFailure().ignore();
+    } finally {
+      _mutex.release();
+    }
   }
 
-  /// All [_activeAddresses] will be subscrubed when SSE returns a new UUID
-  void _ensureConnected() {
-    if (_fallbackEnabled) return;
-    if (_subscription != null) return;
+  void _handleEvent(SseStreamEvent event, int generation) {
+    if (!_connection.isCurrentGeneration(generation, isDisposed: _isDisposed)) {
+      return;
+    }
 
-    _logger.fine('Opening SSE stream for polling');
-
-    _subscription = streamClient.connect().listen(
-      _handleEvent,
-      onError: (Object error, StackTrace stackTrace) {
-        _logger.warning('SSE stream error', error, stackTrace);
-        _handleStreamFailure();
-      },
-      onDone: _handleStreamFailure,
-    );
-  }
-
-  void _handleEvent(SseStreamEvent event) {
     if (event.event == 'uuid') {
-      _uuid = event.data;
-      _reconnectAttempt = 0;
-      _subscribedAddresses.clear();
-      _subscribeAddresses(_activeAddresses.toList());
+      _connection.updateUuid(event.data);
+      _targets.clearSubscriptions();
+      _subscribeAddresses(_targets.activeAddresses.toList()).ignore();
       return;
     }
 
@@ -195,24 +259,12 @@ class SseRefreshPollingManager implements RefreshPollingManager {
   }
 
   void _handleUpdate(String payload) {
-    if (isPaused || _fallbackEnabled) return;
+    if (_isDisposed || isPaused || _connection.isFallbackEnabled) return;
 
     final update = _parseUpdate(payload);
     if (update == null) return;
 
-    _refreshTarget(update.address);
-  }
-
-  void _refreshTarget(Address address) {
-    final target = _targets[address];
-    if (target == null) return;
-
-    if (_refreshInFlight.contains(address)) return;
-
-    _refreshInFlight.add(address);
-    target.refresher.refresh().whenComplete(
-      () => _refreshInFlight.remove(address),
-    );
+    _targets.refreshTarget(update.address);
   }
 
   SseStreamUpdate? _parseUpdate(String payload) {
@@ -230,87 +282,128 @@ class SseRefreshPollingManager implements RefreshPollingManager {
     }
   }
 
-  void _handleStreamFailure() {
-    _closeStream();
+  Future<void> _handleStreamFailure([int? generation]) async {
+    if (_isDisposed || isPaused) return;
 
-    if (_fallbackEnabled) return;
+    await _closeStream(generation: generation);
 
-    if (_reconnectAttempt >= reconnectPolicy.maxAttempts) {
+    if (_connection.isFallbackEnabled || _isDisposed || isPaused) return;
+
+    if (_connection.shouldEnableFallback) {
       _enableFallback();
       return;
     }
 
-    final delay = _computeBackoffDelay(_reconnectAttempt);
-    _reconnectAttempt += 1;
+    final delay = _connection.prepareReconnectDelay();
 
     _logger.fine('Scheduling SSE reconnect in $delay');
-    _reconnectTimer?.cancel();
-    _reconnectTimer = Timer(delay, _ensureConnected);
-  }
-
-  Duration _computeBackoffDelay(int attempt) {
-    final min = reconnectPolicy.minDelay.inMilliseconds;
-    final max = reconnectPolicy.maxDelay.inMilliseconds;
-    final exp = (min * pow(reconnectPolicy.factor, attempt)).toDouble();
-    final capped = exp.clamp(min.toDouble(), max.toDouble());
-    final jitter = capped * reconnectPolicy.jitter;
-    final offset = (Random().nextDouble() * 2 - 1) * jitter;
-    final result = (capped + offset).round().clamp(min, max);
-    return Duration(milliseconds: result);
+    _connection.scheduleReconnect(delay, _ensureConnected);
   }
 
   void _enableFallback() {
-    if (_fallbackEnabled) return;
-    _fallbackEnabled = true;
+    if (_connection.isFallbackEnabled || _isDisposed) return;
+
+    _connection.enableFallback();
     _logger.warning('Falling back to interval polling manager');
 
-    for (final address in _activeAddresses) {
+    for (final address in _targets.activeAddresses) {
       fallbackManager.startPolling(address);
     }
   }
 
-  void _subscribeAddresses(List<Address> addresses) {
-    final uuid = _uuid;
+  Future<void> _subscribeAddresses(List<Address> addresses) async {
+    if (_isDisposed) return;
+
+    final uuid = _connection.uuid;
     if (uuid == null || addresses.isEmpty) return;
 
-    final toSubscribe = addresses
-        .where((address) => !_subscribedAddresses.contains(address))
-        .toList();
+    final toSubscribe = _targets.addressesToSubscribe(addresses);
     if (toSubscribe.isEmpty) return;
 
-    rpcClient.subscribe(uuid: uuid, addresses: toSubscribe).then((_) {
-      _subscribedAddresses.addAll(toSubscribe);
-    });
+    await _mutex.acquire();
+    try {
+      final toSubscribe = _targets.addressesToSubscribe(addresses);
+      if (toSubscribe.isEmpty) return;
+
+      await rpcClient.subscribe(uuid: uuid, addresses: toSubscribe);
+      _targets.markSubscribed(toSubscribe);
+    } on SseRpcError catch (e) {
+      _logger.warning('Failed to subscribe addresses', e);
+
+      if (e.code == -32602) {
+        // Invalid subscription (e.g. unknown UUID) - trigger reconnect
+        _handleStreamFailure().ignore();
+        return;
+      }
+
+      // Other subscription errors are logged and swallowed to avoid
+      // surfacing as unhandled zone errors when called from stream handlers.
+    } catch (e, s) {
+      _logger.warning('Failed to subscribe addresses', e, s);
+      // Swallow unexpected errors after logging to avoid unhandled zone errors.
+    } finally {
+      _mutex.release();
+    }
   }
 
-  void _unsubscribeAddresses(List<Address> addresses) {
-    final uuid = _uuid;
+  Future<void> _unsubscribeAddresses(List<Address> addresses) async {
+    if (_isDisposed) return;
+
+    final uuid = _connection.uuid;
     if (uuid == null || addresses.isEmpty) return;
 
-    final toUnsubscribe = addresses
-        .where(_subscribedAddresses.contains)
-        .toList();
+    final toUnsubscribe = _targets.addressesToUnsubscribe(addresses);
     if (toUnsubscribe.isEmpty) return;
 
-    _subscribedAddresses.removeAll(toUnsubscribe);
-    rpcClient.unsubscribe(uuid: uuid, addresses: toUnsubscribe).ignore();
+    await _mutex.acquire();
+    try {
+      final toUnsubscribe = _targets.addressesToUnsubscribe(addresses);
+      if (toUnsubscribe.isEmpty) return;
+
+      _targets.markUnsubscribed(toUnsubscribe);
+      await rpcClient.unsubscribe(uuid: uuid, addresses: toUnsubscribe);
+    } catch (e, s) {
+      _logger.warning('Failed to unsubscribe addresses', e, s);
+    } finally {
+      _mutex.release();
+    }
   }
 
-  void _unsubscribeAll() {
-    final uuid = _uuid;
+  Future<void> _unsubscribeAll() async {
+    if (_isDisposed) return;
+
+    final uuid = _connection.uuid;
     if (uuid == null) return;
 
-    _subscribedAddresses.clear();
-    rpcClient.unsubscribeAll(uuid: uuid).ignore();
+    await _mutex.acquire();
+    try {
+      await rpcClient.unsubscribeAll(uuid: uuid);
+    } catch (e, s) {
+      _logger.warning('Failed to unsubscribe all addresses', e, s);
+    } finally {
+      _mutex.release();
+    }
   }
 
-  void _closeStream() {
-    _uuid = null;
-    _reconnectTimer?.cancel();
-    _reconnectTimer = null;
-    _subscription?.cancel();
-    _subscription = null;
-    _subscribedAddresses.clear();
-    unawaited(streamClient.close());
+  Future<void> _closeStream({int? generation}) async {
+    await _mutex.acquire();
+    try {
+      if (generation != null &&
+          !_connection.isCurrentGeneration(
+            generation,
+            isDisposed: _isDisposed,
+          )) {
+        return;
+      }
+
+      final subscription = _connection.detachSubscription();
+      _connection.clearConnection();
+      _targets.clearSubscriptions();
+
+      await subscription?.cancel();
+      await streamClient.close();
+    } finally {
+      _mutex.release();
+    }
   }
 }

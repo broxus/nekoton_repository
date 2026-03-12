@@ -44,14 +44,14 @@ class RefreshPollingStreamObserver extends StreamListenersObserver {
   void _start() {
     if (_isActive) return;
 
-    refreshPollingManager.startPolling(address);
     _isActive = true;
+    refreshPollingManager.startPolling(address);
   }
 
   void _stop() {
     if (!_isActive) return;
 
-    refreshPollingManager.stopPolling(address);
     _isActive = false;
+    refreshPollingManager.stopPolling(address);
   }
 }
