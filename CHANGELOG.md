@@ -3,6 +3,31 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## 2026-03-12
+
+### Changes
+
+---
+
+Packages with breaking changes:
+
+ - There are no breaking changes in this release.
+
+Packages with other changes:
+
+ - [`nekoton_repository` - `v4.1.3-dev.0`](#nekoton_repository---v413-dev0)
+
+---
+
+#### `nekoton_repository` - `v4.1.3-dev.0`
+
+ - **FIX**(SPARX-167): sse sync. ([acb6ea9d](https://github.com/broxus/nekoton_repository/commit/acb6ea9d9933768f99b2269758a39467f169ed49))
+
+## 4.1.3-dev.0
+
+ - **FIX**(SPARX-167): sse sync. ([acb6ea9d](https://github.com/broxus/nekoton_repository/commit/acb6ea9d9933768f99b2269758a39467f169ed49))
+
+
 ## 2026-03-03
 
 ### Changes
