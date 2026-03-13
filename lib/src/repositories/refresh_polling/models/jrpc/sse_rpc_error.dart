@@ -1,4 +1,4 @@
-class SseRpcError {
+class SseRpcError implements Exception {
   const SseRpcError({required this.code, this.message, this.data});
 
   factory SseRpcError.fromJson(Map<String, dynamic> json) => SseRpcError(

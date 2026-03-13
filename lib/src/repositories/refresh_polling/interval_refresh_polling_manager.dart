@@ -132,7 +132,7 @@ class IntervalRefreshPollingManager implements RefreshPollingManager {
   }
 
   @override
-  void clear() {
+  void dispose() {
     for (final queue in _queues.values) {
       queue.stop();
     }
@@ -140,11 +140,6 @@ class IntervalRefreshPollingManager implements RefreshPollingManager {
     _targets.clear();
     _activeAddresses.clear();
     _modes.clear();
-  }
-
-  @override
-  void dispose() {
-    clear();
     _isPausedSubject.close();
   }
 
