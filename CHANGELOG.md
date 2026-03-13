@@ -15,6 +15,35 @@ Packages with breaking changes:
 
 Packages with other changes:
 
+ - [`nekoton_repository` - `v4.1.3-dev.1`](#nekoton_repository---v413-dev1)
+
+---
+
+#### `nekoton_repository` - `v4.1.3-dev.1`
+
+ - **FIX**(SPARX-167): sse sync. ([bce75154](https://github.com/broxus/nekoton_repository/commit/bce7515470061c35e27d31d497a904163c1ed279))
+ - **FIX**: update `flutter_nekoton_bridge` dependency to version 5.5.2. ([9ef643a9](https://github.com/broxus/nekoton_repository/commit/9ef643a9ec0b70543f4e87ef47f4f50cb4740c4f))
+ - **FIX**: runLocal add signatureContext. ([803fa3a6](https://github.com/broxus/nekoton_repository/commit/803fa3a6a624d2e9d44eeaccec772500834c0ea6))
+
+## 4.1.3-dev.1
+
+ - **FIX**(SPARX-167): sse sync. ([bce75154](https://github.com/broxus/nekoton_repository/commit/bce7515470061c35e27d31d497a904163c1ed279))
+ - **FIX**: update `flutter_nekoton_bridge` dependency to version 5.5.2. ([9ef643a9](https://github.com/broxus/nekoton_repository/commit/9ef643a9ec0b70543f4e87ef47f4f50cb4740c4f))
+ - **FIX**: runLocal add signatureContext. ([803fa3a6](https://github.com/broxus/nekoton_repository/commit/803fa3a6a624d2e9d44eeaccec772500834c0ea6))
+
+
+## 2026-03-13
+
+### Changes
+
+---
+
+Packages with breaking changes:
+
+ - There are no breaking changes in this release.
+
+Packages with other changes:
+
  - [`nekoton_repository` - `v4.1.3-dev.0`](#nekoton_repository---v413-dev0)
 
 ---
