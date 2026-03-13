@@ -44,8 +44,5 @@ class NoopRefreshPollingManager implements RefreshPollingManager {
   void setPollingMode(Address address, RefreshPollingMode mode) {}
 
   @override
-  void clear() {}
-
-  @override
   void dispose() {}
 }
