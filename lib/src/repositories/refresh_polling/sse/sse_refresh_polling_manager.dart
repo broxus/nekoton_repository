@@ -393,12 +393,16 @@ class SseRefreshPollingManager implements RefreshPollingManager {
         return;
       }
 
+      _logger.fine('Closing SSE stream');
+
       final subscription = _connection.detachSubscription();
       _connection.clearConnection();
       _targets.clearSubscriptions();
 
       await subscription?.cancel();
       await streamClient.close();
+    } catch (e, s) {
+      _logger.severe('Failed to close SSE stream', e, s);
     } finally {
       _mutex.release();
     }
