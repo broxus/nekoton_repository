@@ -21,7 +21,7 @@ abstract class SseRpcClient {
 /// Abstraction of SSE stream connection and event dispatching.
 abstract class SseStreamClient {
   /// Opens an SSE stream and yields decoded events.
-  Stream<SseStreamEvent> connect();
+  Future<Stream<SseStreamEvent>> connect();
 
   /// Closes any active SSE connection.
   Future<void> close();

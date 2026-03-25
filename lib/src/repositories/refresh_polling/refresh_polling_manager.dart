@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:nekoton_repository/nekoton_repository.dart';
 
 /// Abstract manager that encapsulates all polling logic for wallets.
@@ -33,17 +35,14 @@ abstract class RefreshPollingManager {
   void stopPollingAll();
 
   /// Pauses polling for all wallets.
-  void pausePolling();
+  FutureOr<void> pausePolling();
 
   /// Resumes polling for all wallets.
-  void resumePolling();
+  FutureOr<void> resumePolling();
 
   /// Switch polling mode for [address].
   void setPollingMode(Address address, RefreshPollingMode mode);
 
-  /// Clears all registered targets and internal state.
-  void clear();
-
   /// Disposes the manager and releases resources.
-  void dispose();
+  FutureOr<void> dispose();
 }

@@ -131,11 +131,6 @@ class MockRefreshPollingManager extends Mock implements RefreshPollingManager {
   }
 
   @override
-  void clear() {
-    targets.clear();
-  }
-
-  @override
   void dispose() {
     _pausedController.close();
   }
