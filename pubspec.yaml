@@ -17,7 +17,7 @@ dependencies:
   fake_async: ^1.3.3
   flutter:
     sdk: flutter
-  flutter_nekoton_bridge: ^5.5.2
+  flutter_nekoton_bridge: ^5.5.3
   freezed_annotation: ^3.1.0
   get_it: ^9.0.5
   injectable: ^2.5.0
@@ -73,7 +73,7 @@ melos:
 
     analyze:
       description: Analyze a specific package in this project.
-      exec: flutter analyze .
+      exec: flutter analyze --no-pub .
       failFast: true
 
     check-format:
@@ -87,14 +87,14 @@ melos:
 
     test:
       description: Run Flutter tests for a specific package in this project.
-      exec: flutter test test
+      exec: flutter test --no-pub test
       failFast: true
       packageFilters:
         flutter: true
         dirExists: test
 
     test:integration:
-      run: melos exec -c 1 --fail-fast -- "flutter test integration_test"
+      run: melos exec -c 1 --fail-fast -- "flutter test --no-pub integration_test"
       description: Run Flutter integration tests for a specific package in this project.
       packageFilters:
         flutter: true
