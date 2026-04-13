@@ -24,6 +24,7 @@ class DefaultRefreshPollingManagerFactory {
     }
 
     final options = BaseOptions(baseUrl: sseBaseUrl);
+    // ignore: parameter_assignments
     dio = dio?.clone(options: options) ?? Dio(options);
 
     return SseRefreshPollingManager(

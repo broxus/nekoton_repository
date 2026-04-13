@@ -163,6 +163,7 @@ mixin SeedKeyRepositoryImpl implements SeedKeyRepository {
   }) async {
     // Generate default seed name if not provided
     if (name?.isEmpty ?? true) {
+      // ignore: parameter_assignments
       name = '$seedPrefix${_getNextSeedNumber()}';
     }
 
@@ -247,6 +248,7 @@ mixin SeedKeyRepositoryImpl implements SeedKeyRepository {
   }) async {
     // Generate default seed name if not provided
     if (name?.isEmpty ?? true) {
+      // ignore: parameter_assignments
       name = '$seedPrefix${_getNextSeedNumber()}';
     }
 
