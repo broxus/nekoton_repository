@@ -15,6 +15,31 @@ Packages with breaking changes:
 
 Packages with other changes:
 
+ - [`nekoton_repository` - `v4.2.1-dev.1`](#nekoton_repository---v421-dev1)
+
+---
+
+#### `nekoton_repository` - `v4.2.1-dev.1`
+
+ - **FIX**: update `flutter_nekoton_bridge` to version 5.5.4-dev.1. ([d7ae0323](https://github.com/broxus/nekoton_repository/commit/d7ae03233b32c220ad53f011ae46b3ef5a7c5900))
+
+## 4.2.1-dev.1
+
+ - **FIX**: update `flutter_nekoton_bridge` to version 5.5.4-dev.1. ([d7ae0323](https://github.com/broxus/nekoton_repository/commit/d7ae03233b32c220ad53f011ae46b3ef5a7c5900))
+
+
+## 2026-04-20
+
+### Changes
+
+---
+
+Packages with breaking changes:
+
+ - There are no breaking changes in this release.
+
+Packages with other changes:
+
  - [`nekoton_repository` - `v4.2.1-dev.0`](#nekoton_repository---v421-dev0)
 
 ---
