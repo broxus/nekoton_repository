@@ -3,6 +3,31 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## 2026-04-20
+
+### Changes
+
+---
+
+Packages with breaking changes:
+
+ - There are no breaking changes in this release.
+
+Packages with other changes:
+
+ - [`nekoton_repository` - `v4.2.1-dev.0`](#nekoton_repository---v421-dev0)
+
+---
+
+#### `nekoton_repository` - `v4.2.1-dev.0`
+
+ - **FIX**: update `flutter_nekoton_bridge` to version 5.5.4-dev.0. ([b7a37b17](https://github.com/broxus/nekoton_repository/commit/b7a37b17b880fbc52392fa53e9cf2305b23f17bc))
+
+## 4.2.1-dev.0
+
+ - **FIX**: update `flutter_nekoton_bridge` to version 5.5.4-dev.0. ([b7a37b17](https://github.com/broxus/nekoton_repository/commit/b7a37b17b880fbc52392fa53e9cf2305b23f17bc))
+
+
 ## 2026-04-13
 
 ### Changes
