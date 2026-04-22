@@ -68,6 +68,14 @@ class TonWalletRepoTest with TonWalletRepositoryImpl {
 
   @override
   final RefreshPollingManager refreshPollingManager;
+
+  @override
+  SeedList get seedList => SeedList(
+    allKeys: const [],
+    mappedAccounts: const {},
+    seedMeta: const {},
+    externalAccounts: const {},
+  );
 }
 
 class MockRefreshPollingManager extends Mock implements RefreshPollingManager {

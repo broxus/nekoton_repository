@@ -185,6 +185,7 @@ class NekotonRepository
   /// Every time when keys are changed, this stream will emit new value.
   ValueStream<SeedList> get seedListStream => _seedsSubject.stream;
 
+  @override
   SeedList get seedList => _seedsSubject.value;
 
   /// Subject that allows track changes in [SeedList]
@@ -341,6 +342,7 @@ class NekotonRepository
     return SeedList(
       seedMeta: seedMeta,
       allKeys: allKeys,
+      externalAccounts: externalAccountsSet,
       mappedAccounts: mapped.map(
         (key, value) => MapEntry(
           key,

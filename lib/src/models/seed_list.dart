@@ -15,7 +15,9 @@ class SeedList extends Equatable {
     required List<KeyStoreEntry> allKeys,
     required Map<PublicKey, AccountList> mappedAccounts,
     required Map<PublicKey, SeedMetadata> seedMeta,
-  }) : _seedsMap = _mapKeysToSeeds(allKeys, mappedAccounts, seedMeta) {
+    Set<Address>? externalAccounts,
+  }) : _seedsMap = _mapKeysToSeeds(allKeys, mappedAccounts, seedMeta),
+       _externalAccounts = externalAccounts ?? {} {
     _allKeys = _seedsMap.values.expand((seed) => seed.allKeys).toList();
   }
 
@@ -24,6 +26,16 @@ class SeedList extends Equatable {
   /// Key - publicKey of masterKey.
   /// Value - Seed.
   final Map<PublicKey, Seed> _seedsMap;
+
+  final Set<Address> _externalAccounts;
+
+  /// TON account addresses tracked by the application that are not derived
+  /// from any seed stored in this [SeedList].
+  ///
+  /// These accounts are managed externally, but are still included in wallet
+  /// management flows where a complete set of known account addresses is
+  /// needed. The returned set is read-only.
+  Set<Address> get externalAccounts => UnmodifiableSetView(_externalAccounts);
 
   /// Get seed by masterKey if it's in list.
   Seed? findSeed(PublicKey masterKey) => _seedsMap[masterKey];

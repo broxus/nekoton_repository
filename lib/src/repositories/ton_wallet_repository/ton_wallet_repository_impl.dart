@@ -29,6 +29,11 @@ mixin TonWalletRepositoryImpl implements TonWalletRepository {
   /// Polling manager provided by [NekotonRepository].
   RefreshPollingManager get refreshPollingManager;
 
+  /// Seed list available to this repository for TON wallet management.
+  /// It represents the collection of imported/known seeds that can be used
+  /// to derive, resolve, and manage wallets handled by this repository.
+  SeedList get seedList;
+
   /// How many tokens can be subscribed at time for one cycle in
   /// [TonWalletRepositoryImpl.updateSubscriptions].
   /// This variable can be changed if you need expand/reduce amount of subscribed
@@ -84,7 +89,14 @@ mixin TonWalletRepositoryImpl implements TonWalletRepository {
 
   @override
   Future<TonWalletState> subscribe(TonWalletAsset asset) async {
-    if (asset.address.isZeroState || asset.address.workchain == -1) {
+    // External accounts are tracked by address only, so they must bypass
+    // TonWallet.subscribe and use the generic address subscription flow.
+    // see EWM-680
+    final isExternal = seedList.externalAccounts.contains(asset.address);
+
+    if (asset.address.isZeroState ||
+        asset.address.workchain == -1 ||
+        isExternal) {
       return subscribeByAddress(asset.address);
     }
 
