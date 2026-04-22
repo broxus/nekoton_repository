@@ -3,6 +3,31 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## 2026-04-22
+
+### Changes
+
+---
+
+Packages with breaking changes:
+
+ - There are no breaking changes in this release.
+
+Packages with other changes:
+
+ - [`nekoton_repository` - `v4.2.1-dev.2`](#nekoton_repository---v421-dev2)
+
+---
+
+#### `nekoton_repository` - `v4.2.1-dev.2`
+
+ - **FIX**(EWM-680): subscribe external accounts by address. ([423ba186](https://github.com/broxus/nekoton_repository/commit/423ba18653635900211df135676e2d225eb9bf1a))
+
+## 4.2.1-dev.2
+
+ - **FIX**(EWM-680): subscribe external accounts by address. ([423ba186](https://github.com/broxus/nekoton_repository/commit/423ba18653635900211df135676e2d225eb9bf1a))
+
+
 ## 2026-04-20
 
 ### Changes
